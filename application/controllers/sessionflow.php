@@ -1,0 +1,76 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Sessionflow extends Tele_Controller {
+	
+	function __construct() {
+	
+		parent::__construct();
+		$this->load->model('M_Sessionflow');
+	
+	}
+	
+	function get_session_stats() {
+		
+		telepath_auth(__CLASS__, __FUNCTION__, $this);
+		
+		// Read input
+		$SID   = $this->input->post('sid');
+		$key    = $this->input->post('searchkey');
+		$range  = $this->_get_range();
+	
+		$stats = $this->M_Sessionflow->get_session_stats($SID, $key, $range);
+		return_success($stats);
+	
+	}
+	
+	
+	function get_sessionflow() {
+		
+		telepath_auth(__CLASS__, __FUNCTION__, $this);
+		
+		// Read input
+		$SID    = $this->input->post('sid');
+		$filter = $this->input->post('filter');
+		$key    = $this->input->post('searchkey');
+		$offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+		$range  = $this->_get_range();
+		$sessionflow = $this->M_Sessionflow->get_sessionflow($SID, $offset, 100, $filter, $key, $range);
+		return_success($sessionflow);
+	
+	}
+	
+	public function get_sessionflow_params() {
+	
+		telepath_auth(__CLASS__, __FUNCTION__, $this);
+		
+		$uid	= $this->input->post('uid', true);
+		$params = $this->M_Sessionflow->get_sessionflow_params($uid);
+		
+		return_success($params);
+
+	}
+	
+	function get_sessionflow_alert() {
+		
+		telepath_auth(__CLASS__, __FUNCTION__, $this);
+		
+		// Read input
+		$alert_id   = intval($this->input->post('alert_id'));
+		$start 		= intval($this->input->post('start'));
+		
+		// Convert alert_id to RID
+		$RID = $this->M_Sessionflow->get_RID_for_alert($alert_id);
+		
+		if(!$RID) {
+			return_fail('Session not found');
+		}
+		
+		// Max requests data to send
+		$limit = 1000;
+		$sessionflow = $this->M_Sessionflow->get_sessionflow($RID, $start, $limit);
+		return_json(array('success' => true, 'RID' => $RID, 'items' => $sessionflow, 'total' => count($sessionflow)));
+	
+	}
+
+	
+}
