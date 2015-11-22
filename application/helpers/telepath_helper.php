@@ -153,9 +153,7 @@
 	
 	function telepath_log($class, $function, $context, $request) {
 
-        $this->load->helper('url');
-        $url=site_url();
-
+        
 		// LOG Request
 		$logfile = 'C:/tmp/telepath_ui_log';
 		$log     = array('timestamp' => time() ,
