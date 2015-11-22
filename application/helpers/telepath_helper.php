@@ -152,9 +152,12 @@
 	}
 	
 	function telepath_log($class, $function, $context, $request) {
-		
+
+        $this->load->helper('url');
+        $url=site_url();
+
 		// LOG Request
-		$logfile = '/tmp/telepath_ui_log';
+		$logfile = 'C:/tmp/telepath_ui_log';
 		$log     = array('timestamp' => time() ,
 						 'userdata' => $context->session->all_userdata(), 
 						 'class' => $class, 
