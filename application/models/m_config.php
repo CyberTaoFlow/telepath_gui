@@ -9,6 +9,9 @@ class M_Config extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
+        // Connect elastic
+        $params = array('hosts' => array('127.0.0.1:9200'));
+        $this->elasticClient = new Elasticsearch\Client($params);
 	}
 
 	public function whitelist_get_ips() {
@@ -174,6 +177,8 @@ class M_Config extends CI_Model {
 	}
 	
 	public function get_regex() {
+
+    //    http://localhost:9200/telepath-config/filter_extensions/extensions_id
 		
 		$ans = array();
 		$this->db->select('header_name, regex');
@@ -188,8 +193,8 @@ class M_Config extends CI_Model {
 
 	public function set_regex($value) 
 	{
-                $this->db->where('header_name', 'URL');
-                $this->db->update('agents_regex', array('regex' => $value));
+        $this->db->where('header_name', 'URL');
+        $this->db->update('agents_regex', array('regex' => $value));
 	}
 	
 	public function get_scheduler($mode) {
