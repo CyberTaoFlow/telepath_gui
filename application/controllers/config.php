@@ -9,7 +9,7 @@ class Config extends CI_Controller {
 	
 	public function _interfaces() {
 
-		$lines = file('/proc/net/dev');
+		$lines = file('c:/dev');
 		$interfaces = array();
 		for ($i = 2; $i < count($lines);  $i++) {
 			$line = explode(':', $lines[$i]);
