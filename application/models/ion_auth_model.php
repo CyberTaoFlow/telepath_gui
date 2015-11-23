@@ -1,10 +1,12 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 /**
-* Name:  Ion Auth Model
+ * Name:  Ion Auth Model
 *
 * Author:  Ben Edmunds
 * 		   ben.edmunds@gmail.com
-*	  	   @benedmunds
+ * @property CI_Loader load
+ *	  	   @benedmunds
 *
 * Added Awesomeness: Phil Sturgeon
 *
