@@ -9,6 +9,7 @@ class M_Config extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
+        require 'vendor/autoload.php';
         // Connect elastic
         $params = array('hosts' => array('127.0.0.1:9200'));
         $this->elasticClient = new Elasticsearch\Client($params);
@@ -176,7 +177,7 @@ class M_Config extends CI_Model {
 		return $result;
 	}
 	
-	public function get_regex() {
+	public function sql_get_regex() {
 
     //    http://localhost:9200/telepath-config/filter_extensions/extensions_id
 		
@@ -191,11 +192,47 @@ class M_Config extends CI_Model {
 		return $ans;
 	}
 
-	public function set_regex($value) 
+	public function get_regex() {
+
+
+		$params = [
+				'index' => 'telepath-config',
+				'type' => 'filter_extensions',
+				'id' => 'extensions_id'
+		];
+
+
+		 $result=$this->elasticClient->get($params);
+
+        return $result['_source']['filter_extensions'];
+
+	}
+
+
+	public function sql_set_regex($value)
 	{
         $this->db->where('header_name', 'URL');
         $this->db->update('agents_regex', array('regex' => $value));
 	}
+
+    public function set_regex($value){
+
+
+		$params = [
+				'index' => 'telepath-config',
+				'type' => 'filter_extensions',
+				'id' => 'extensions_id',
+				'body' => [
+						'doc' => [
+								'filter_extensions' => $value
+						]
+				]
+		];
+
+		$this->elasticClient->update($params);
+
+    }
+
 	
 	public function get_scheduler($mode) {
 		

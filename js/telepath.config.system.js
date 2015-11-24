@@ -253,8 +253,8 @@ telepath.config.system = {
 		}
 
 		if(URL.length > 0) {
-			URL = URL.join(")|(\\.");
-			URL = "(\\." + URL + ")";
+			//URL = URL.join(")|(\\.");
+			//URL = "(\\." + URL + ")";
 			data.regex.URL = URL;
 		}
 		
@@ -653,9 +653,11 @@ telepath.config.system = {
 		this.container.append(this.c_ext);
 		
 		/* Parse out ext ignore list */
-		var URL    = this.data.regex.URL ? this.data.regex.URL : '';
-		var parsed = URL.substring(3,URL.length-1).split(")|(\\.");
-		this.extentsions = $('<div>').teleMulti({ values: parsed, title: 'Extension Ignore List', template: function(element, value) {
+		//var URL    = this.data.regex.URL ? this.data.regex.URL : '';
+		//var parsed = URL.substring(3,URL.length-1).split(")|(\\.");
+		var regex = this.data.regex ? this.data.regex : '';
+
+		this.extentsions = $('<div>').teleMulti({ values: regex, title: 'Extension Ignore List', template: function(element, value) {
 			element.teleInput({ value: value });
 		} }).appendTo(this.c_ext);
 		
