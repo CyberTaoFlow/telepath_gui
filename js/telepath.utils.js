@@ -57,19 +57,20 @@ function old_getRangeUI(data) {
 
 function getRangeUI(data, container) {
 					
-	//if(!data) { data = ''; } else { data = data.trim() }
+	if(!data) { data = ''; }
 
   var is_range= data.from!=data.to;
 
 	//var to = data.to?data.to:data.from;
 						
 	var ipWrap   = $('<div>').addClass('tele-ip-wrap');
-	var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from });
+	var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from});
 	var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
 	
-	var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: data.to});
+	var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: !is_range?'':data.to});
 	
 	if(!is_range) {
+
 		ipDash.hide();
 		ipEnd.hide();
 	}
@@ -98,7 +99,9 @@ function getRangeUI(data, container) {
 		},
 		flipped: is_range
 	});
-	
+
+  if (data==''){ipRemove.hide();} else{ ipAdd.hide();}
+  
 	ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
 	return ipWrap;
 	
