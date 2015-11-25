@@ -596,7 +596,7 @@ telepath.config.system = {
 		
 		
 		$.each(this.data.whitelist, function (i, ip) {
-			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist));
+			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist,true));
 		});
 		
 		// Another blank
