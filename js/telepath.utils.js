@@ -6,20 +6,71 @@ function RangeRemove(that) {
 		$(that).parent().remove();
 	}
 }
+function old_getRangeUI(data) {
+
+  if(!data) { data = ''; } else { data = data.trim() }
+
+  var is_range = data.split('-').length > 1;
+
+  var ipWrap   = $('<div>').addClass('tele-ip-wrap');
+  var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.split('-')[0] });
+  var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
+
+  var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: is_range ? data.split('-')[1] : '' });
+
+  if(!is_range) {
+    ipDash.hide();
+    ipEnd.hide();
+  }
+
+  var ipAdd = $('<div>').addClass('tele-ip-add')
+      .addClass('tele-icon')
+      .addClass('tele-icon-plus')
+      .hover(function () { $(this).addClass('hover'); },
+      function () { $(this).removeClass('hover'); })
+      .click(function () { that.limitRanges.append(getRangeUI()); });
+
+  var ipRemove = $('<div>').addClass('tele-ip-remove')
+      .addClass('tele-icon')
+      .addClass('tele-icon-minus')
+      .hover(function () { $(this).addClass('hover'); },
+      function () { $(this).removeClass('hover'); })
+      .click(function () { $(this).parent().remove(); });
+
+  var ipToggle = $('<div>').toggleFlip({
+
+    left_value: 'Single',
+    right_value: 'Range',
+    flip: function () {
+      ipEnd.toggle();
+      ipDash.toggle();
+    },
+    flipped: is_range,
+
+  });
+
+  ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
+  return ipWrap;
+
+}
+
 
 function getRangeUI(data, container) {
 					
-	if(!data) { data = ''; } else { data = data.trim() }
-	
-	var is_range = data.split('-').length > 1;
+	if(!data) { data = ''; }
+
+  var is_range= data.from!=data.to;
+
+	//var to = data.to?data.to:data.from;
 						
 	var ipWrap   = $('<div>').addClass('tele-ip-wrap');
-	var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.split('-')[0] });
+	var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from});
 	var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
 	
-	var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: is_range ? data.split('-')[1] : '' });
+	var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: !is_range?'':data.to});
 	
 	if(!is_range) {
+
 		ipDash.hide();
 		ipEnd.hide();
 	}
@@ -46,9 +97,11 @@ function getRangeUI(data, container) {
 			ipEnd.toggle();
 			ipDash.toggle();
 		},
-		flipped: is_range,
+		flipped: is_range
 	});
-	
+
+  if (data==''){ipRemove.hide();} else{ ipAdd.hide();}
+  
 	ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
 	return ipWrap;
 	
@@ -67,7 +120,7 @@ function grabNames(arr) {
 	
 	var result = '';
 	$.each(arr, function(i, x) {
-		result = result + x.key + ', ';		
+		result = result + x.key + ', ';
 	});
 	if(result.length > 0) { result = result.substr(0, result.length - 2); }
 	return result;

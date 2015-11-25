@@ -200,11 +200,11 @@ telepath.config.system = {
 			
 			if(is_range) {
 				if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-					data.whitelist.push(ip_start + '-' + ip_end);
+					data.whitelist.push({from: ip_start ,to: ip_end});
 				}
 			} else {
 				if(ip_start) {
-					data.whitelist.push(ip_start);
+					data.whitelist.push({from:ip_start});
 				}
 			}
 

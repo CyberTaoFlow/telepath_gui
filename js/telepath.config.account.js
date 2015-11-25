@@ -308,8 +308,8 @@ telepath.config.account = {
 		that.container.append(that.toggleType);
 		that.container.append(that.limitApps);
 			
-		function getRangeUI(data) {
-			
+		function Old_getRangeUI(data) {
+
 			if(!data) { data = ''; } else { data = data.trim() }
 			
 			var is_range = data.split('-').length > 1;
@@ -354,6 +354,55 @@ telepath.config.account = {
 			ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
 			return ipWrap;
 			
+		}
+
+		function getRangeUI(data, container) {
+
+			//if(!data) { data = ''; } else { data = data.trim() }
+
+			var is_range= data.from!=data.to;
+
+			//var to = data.to?data.to:data.from;
+
+			var ipWrap   = $('<div>').addClass('tele-ip-wrap');
+			var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from });
+			var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
+
+			var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: data.to});
+
+			if(!is_range) {
+				ipDash.hide();
+				ipEnd.hide();
+			}
+
+			var ipAdd = $('<div>').addClass('tele-ip-add')
+				.addClass('tele-icon')
+				.addClass('tele-icon-plus')
+				.hover(function () { $(this).addClass('hover'); },
+				function () { $(this).removeClass('hover'); })
+				.click(function () { container.append(getRangeUI()); });
+
+			var ipRemove = $('<div>').addClass('tele-ip-remove')
+				.addClass('tele-icon')
+				.addClass('tele-icon-minus')
+				.hover(function () { $(this).addClass('hover'); },
+				function () { $(this).removeClass('hover'); })
+				.click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
+
+			var ipToggle = $('<div>').toggleFlip({
+
+				left_value: 'Single',
+				right_value: 'Range',
+				flip: function () {
+					ipEnd.toggle();
+					ipDash.toggle();
+				},
+				flipped: is_range
+			});
+
+			ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
+			return ipWrap;
+
 		}
 					
 					
