@@ -16,7 +16,7 @@ class M_Config extends CI_Model
         $this->elasticClient = new Elasticsearch\Client($params);
     }
 
-    public function old_whitelist_get_ips()
+    public function sql_whitelist_get_ips()
     {
 
         $this->db->select('user_ip');
@@ -49,7 +49,7 @@ class M_Config extends CI_Model
         return $result['_source']['ips'];
     }
 
-    public function old_whitelist_delete_ip($ip)
+    public function sql_whitelist_delete_ip($ip)
     {
         $isValid = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
         if (!$isValid) {
@@ -73,18 +73,9 @@ class M_Config extends CI_Model
         $this->db->from($this->whitelistIPsTableName);
         $this->db->delete();
     }
-        public function whitelist_delete_ip($ip){
-        $params = [
-            'index' => 'telepath-config',
-            'type' => 'ips',
-            'id' => $ip
-        ];
 
-        $this->elasticClient->delete($params);
 
-    }
-
-    public function new_whitelist_add_ip($ip)
+    public function sql_whitelist_add_ip($ip)
     {
         $isValid = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
         if (!$isValid) {
@@ -104,6 +95,24 @@ class M_Config extends CI_Model
         }
         $this->db->insert($this->whitelistIPsTableName, array('user_ip' => $ip));
         return $this->db->insert_id();
+
+    }
+
+    public function whitelist_update_ip($ips)
+    {
+        $params = [
+
+            'index' => 'telepath-config',
+            'type' => 'ips',
+            'id' => 'whitelist_id',
+                'body' => [
+                    'doc' => [
+                        'ips' => $ips
+                    ]
+                ]
+        ];
+
+        $this->elasticClient->update($params);
 
     }
 

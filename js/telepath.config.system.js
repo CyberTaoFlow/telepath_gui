@@ -204,7 +204,7 @@ telepath.config.system = {
 				}
 			} else {
 				if(ip_start) {
-					data.whitelist.push({from:ip_start});
+					data.whitelist.push({from:ip_start,to: ip_start});
 				}
 			}
 

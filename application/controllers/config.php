@@ -180,7 +180,8 @@ class Config extends CI_Controller {
 		return_json(array('success' => true, 'items' => $count));
 		
 	}
-		
+
+
 	public function set_config() {
 		
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
@@ -192,19 +193,21 @@ class Config extends CI_Controller {
 		// Handle White list
 		
 		if(isset($config['whitelist'])) {
+
+			$this->M_Config->whitelist_update_ip($config['whitelist']);
 		
-			#$whitelist_new = explode(',', $config['ip_whitelist']);
-			$whitelist_new = $config['whitelist'];
-			$whitelist_old = $this->M_Config->whitelist_get_ips();
-			$whitelist_del = array_diff($whitelist_old, $whitelist_new);
-			$whitelist_add = array_diff($whitelist_new, $whitelist_old);
-			
-			foreach($whitelist_del as $ip) {
-				$this->M_Config->whitelist_delete_ip($ip);
-			}
-			foreach($whitelist_add as $ip) {
-				$this->M_Config->whitelist_add_ip($ip);
-			}
+//			#$whitelist_new = explode(',', $config['ip_whitelist']);
+//			$whitelist_new = $config['whitelist'];
+//			$whitelist_old = $this->M_Config->whitelist_get_ips();
+//			$whitelist_del = array_diff_assoc($whitelist_old, $whitelist_new);
+//			$whitelist_add = array_diff_assoc($whitelist_new, $whitelist_old);
+//
+//			foreach($whitelist_del as $ip) {
+//				$this->M_Config->whitelist_delete_ip($ip);
+//			}
+//			foreach($whitelist_add as $ip) {
+//				$this->M_Config->whitelist_add_ip($ip);
+//			}
 			
 		}
 
