@@ -55,11 +55,9 @@ function old_getRangeUI(data) {
 }
 
 
-function getRangeUI(data, container, removeButton) {
+function getRangeUI(data, container, addButton) {
 					
 	if(!data) { data = ''; }
-
-  var removeButton = removeButton || false;
 
   var is_range= data.from!=data.to;
 
@@ -76,21 +74,23 @@ function getRangeUI(data, container, removeButton) {
 		ipDash.hide();
 		ipEnd.hide();
 	}
-	if(removeButton){
-        var ipButton = $('<div>').addClass('tele-ip-remove')
-            .addClass('tele-icon')
-            .addClass('tele-icon-minus')
-            .hover(function () { $(this).addClass('hover'); },
-                function () { $(this).removeClass('hover'); })
-            .click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
-    }
-    else{
+	if(addButton){
         var ipButton = $('<div>').addClass('tele-ip-add')
             .addClass('tele-icon')
             .addClass('tele-icon-plus')
             .hover(function () { $(this).addClass('hover'); },
                 function () { $(this).removeClass('hover'); })
             .click(function () { container.append(getRangeUI()); });
+
+
+    }
+    else{
+        var ipButton = $('<div>').addClass('tele-ip-remove')
+            .addClass('tele-icon')
+            .addClass('tele-icon-minus')
+            .hover(function () { $(this).addClass('hover'); },
+                function () { $(this).removeClass('hover'); })
+            .click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
     }
 
 	
