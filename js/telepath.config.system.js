@@ -596,11 +596,11 @@ telepath.config.system = {
 		
 		
 		$.each(this.data.whitelist, function (i, ip) {
-			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist));
+			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist,true));
 		});
 		
 		// Another blank
-		this.c_whitelist.append(getRangeUI('', that.c_whitelist,true));
+		this.c_whitelist.append(getRangeUI('', that.c_whitelist));
 		
 		
 		//this.whitelist = $('<div>').teleMulti({ values: .length > 0 ? this.data.whitelist : [ '' ], title: 'IP Whitelist', template: function(element, value) {

@@ -55,7 +55,7 @@ function old_getRangeUI(data) {
 }
 
 
-function getRangeUI(data, container, addButton) {
+function getRangeUI(data, container) {
 					
 	if(!data) { data = ''; }
 
@@ -74,27 +74,20 @@ function getRangeUI(data, container, addButton) {
 		ipDash.hide();
 		ipEnd.hide();
 	}
-	if(addButton){
-        var ipButton = $('<div>').addClass('tele-ip-add')
-            .addClass('tele-icon')
-            .addClass('tele-icon-plus')
-            .hover(function () { $(this).addClass('hover'); },
-                function () { $(this).removeClass('hover'); })
-            .click(function () { container.append(getRangeUI()); });
-
-
-    }
-    else{
-        var ipButton = $('<div>').addClass('tele-ip-remove')
-            .addClass('tele-icon')
-            .addClass('tele-icon-minus')
-            .hover(function () { $(this).addClass('hover'); },
-                function () { $(this).removeClass('hover'); })
-            .click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
-    }
-
 	
-
+	var ipAdd = $('<div>').addClass('tele-ip-add')
+            .addClass('tele-icon')
+							 .addClass('tele-icon-plus')
+            .hover(function () { $(this).addClass('hover'); },
+                function () { $(this).removeClass('hover'); })
+							 .click(function () { container.append(getRangeUI()); });
+	
+	var ipRemove = $('<div>').addClass('tele-ip-remove')
+            .addClass('tele-icon')
+							 .addClass('tele-icon-minus')
+            .hover(function () { $(this).addClass('hover'); },
+                function () { $(this).removeClass('hover'); })
+							 .click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
 							 
 	var ipToggle = $('<div>').toggleFlip({ 
 	
@@ -107,9 +100,8 @@ function getRangeUI(data, container, addButton) {
 		flipped: is_range
 	});
 
-  //if (data==''){ipRemove.hide();} else{ ipAdd.hide();}
   
-	ipWrap.append(ipButton).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
+	ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
 	return ipWrap;
 	
 }

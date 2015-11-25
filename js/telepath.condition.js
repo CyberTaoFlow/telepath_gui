@@ -290,11 +290,11 @@ $.widget( "tele.condition", {
 			case 'IP':
 
 				$.each(this.options.data.value.split(','), function (i, ip) {
-					that.element.append(getRangeUI(ip, that.element,true));
+					that.element.append(getRangeUI(ip, that.element));
 				});
 				
 				// Another blank
-				this.element.append(getRangeUI('', that.element,false));
+				this.element.append(getRangeUI('', that.element));
 				
 			break;
 			
