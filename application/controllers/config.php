@@ -261,28 +261,29 @@ class Config extends Tele_Controller {
 		
 		if(isset($config['agents'])) {
 			
-			$old_data = $this->M_Config->get_agents();
-			$tmp_old = '';
-			$tmp_new = '';
-			
-			if(!empty($old_data)) {
-				foreach($old_data as $agent) {
-					$tmp_old .= $agent->NetworkInterface . $agent->FilterExpression;
-				}
-			}
-			
-			if(!empty($config['agents'])) {
-				foreach($config['agents'] as $agent) {
-					$tmp_new .= $agent['NetworkInterface'] . $agent['FilterExpression'];
-				}
-			}
-			
-			if($tmp_old != $tmp_new) {
-				$this->M_Config->set_agents($config['agents']);
-				$this->M_Config->update('agents_list_was_changed', 1);
-				system('/opt/telepath/suricata/af-packet.sh &');
-			}
-					
+//			$old_data = $this->M_Config->get_agents();
+//			$tmp_old = '';
+//			$tmp_new = '';
+//
+//			if(!empty($old_data)) {
+//				foreach($old_data as $agent) {
+//					$tmp_old .= $agent->NetworkInterface . $agent->FilterExpression;
+//				}
+//			}
+//
+//			if(!empty($config['agents'])) {
+//				foreach($config['agents'] as $agent) {
+//					$tmp_new .= $agent['NetworkInterface'] . $agent['FilterExpression'];
+//				}
+//			}
+//
+//			if($tmp_old != $tmp_new) {
+//				$this->M_Config->set_agents($config['agents']);
+//				$this->M_Config->update('agents_list_was_changed', 1);
+//				system('/opt/telepath/suricata/af-packet.sh &');
+//			}
+			$this->M_Config->set_agents($config['agents']);
+
 		}
 		
 		$this->M_Config->update('application_list_was_changed', 1);

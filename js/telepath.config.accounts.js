@@ -122,7 +122,7 @@ telepath.config.accounts = {
 					ipEnd.toggle();
 					ipDash.toggle();
 				},
-				flipped: is_range,
+				flipped: is_range
 				
 			});
 			

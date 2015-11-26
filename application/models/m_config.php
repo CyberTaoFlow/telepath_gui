@@ -157,7 +157,7 @@ class M_Config extends CI_Model
 
     }
 
-    public function set_agents($agents)
+    public function sql_set_agents($agents)
     {
 
         // Empty, clear all records
@@ -205,7 +205,7 @@ class M_Config extends CI_Model
 
     }
 
-    public function get_agents()
+    public function sql_get_agents()
     {
         $this->db->select('idx, agent_id, FilterExpression, NetworkInterface');
         $this->db->from('agents');
@@ -213,6 +213,37 @@ class M_Config extends CI_Model
         $result = $query->result();
         return $result;
     }
+
+    public function set_agents($value){
+
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'interfaces',
+            'id' => 'interface_id',
+            'body' => [
+                'doc' => [
+                    'interfaces' => $value
+                ]
+            ]
+        ];
+
+        $this->elasticClient->update($params);
+    }
+
+    public function get_agents(){
+
+        $params =[
+            'index' => 'telepath-config',
+            'type' => 'interfaces',
+            'id' => 'interface_id'
+        ];
+
+        $result = $this->elasticClient->get($params);
+
+        return $result['_source']['interfaces'];
+    }
+
 
     public function sql_get_regex()
     {

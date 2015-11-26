@@ -219,15 +219,15 @@ telepath.config.system = {
 		// Network Interfaces
 		$('.tele-network-wrap', this.interfaces).each(function () {
 		
-			var IDX  = $('.tele-network-idx', this).html();
+			//var IDX  = $('.tele-network-idx', this).html();
 			var NAME = $('.tele-network-name input', this).val();
 			var ETH  = $('.tele-network-select', this).val();
 			var MASK = $('.tele-network-filter input', this).val();
 			
-			data.agents.push({ idx: IDX, agent_id: NAME, NetworkInterface: ETH, FilterExpression: MASK });
-		
+			data.agents.push({ /*idx: IDX,*/ agent_name: NAME, NetworkInterface: ETH, pcap_filter: MASK });
+
 		});
-		
+
 		data.regex = { headers: '', URL: '' };
 				
 		var useragents = [];
@@ -596,7 +596,7 @@ telepath.config.system = {
 		
 		
 		$.each(this.data.whitelist, function (i, ip) {
-			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist,true));
+			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist));
 		});
 		
 		// Another blank
@@ -615,18 +615,18 @@ telepath.config.system = {
 			
 			element.addClass('tele-network-wrap');
 			var Wrap      = element;			
-			var IDX       = $('<div>').html(value.idx).addClass('tele-network-idx');
-			var Name      = $('<div>').teleInput({ label: 'Name', width: 120, value: value.agent_id }).addClass('tele-network-name');
-			var Filter    = $('<div>').teleInput({ label: 'Filter Expression', width: 120, value: value.FilterExpression }).addClass('tele-network-filter');
+			//var IDX       = $('<div>').html(value.idx).addClass('tele-network-idx');
+			var Name      = $('<div>').teleInput({ label: 'Name', width: 120, value: value.agent_name }).addClass('tele-network-name');
+			var Filter    = $('<div>').teleInput({ label: 'Filter Expression', width: 120, value: value.pcap_filter }).addClass('tele-network-filter');
 			var Interface = $('<select>').addClass('tele-network-select');
 			
-			Wrap.append(IDX).append(Name).append(Filter).append(Interface);
+			Wrap.append(Name).append(Filter).append(Interface);
 			$.each(telepath.config.system.data.interfaces, function (i, interfaceName) {
 				var selected = interfaceName == value.NetworkInterface ? 'selected="selected"' : '';
 				Interface.append('<option ' + selected + ' value=' + interfaceName + '>' + interfaceName + '</option>');
 			});
 			
-			// element.append(Wrap);
+			//element.append(Wrap);
 			
 		} }).appendTo(this.c_network);
 	
