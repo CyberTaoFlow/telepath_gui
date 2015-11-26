@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Config extends CI_Controller {
+class Config extends Tele_Controller {
 	
 	function __construct()
 	{
@@ -194,7 +194,7 @@ class Config extends CI_Controller {
 		
 		if(isset($config['whitelist'])) {
 
-			$this->M_Config->whitelist_update_ip($config['whitelist']);
+			$this->M_Config->whitelist_set_ips($config['whitelist']);
 		
 //			#$whitelist_new = explode(',', $config['ip_whitelist']);
 //			$whitelist_new = $config['whitelist'];

@@ -10,10 +10,7 @@ class M_Config extends CI_Model
     function __construct()
     {
         parent::__construct();
-        require 'vendor/autoload.php';
-        // Connect elastic
-        $params = array('hosts' => array('127.0.0.1:9200'));
-        $this->elasticClient = new Elasticsearch\Client($params);
+
     }
 
     public function sql_whitelist_get_ips()
@@ -98,7 +95,7 @@ class M_Config extends CI_Model
 
     }
 
-    public function whitelist_update_ip($ips)
+    public function whitelist_set_ips($ips)
     {
         $params = [
 
