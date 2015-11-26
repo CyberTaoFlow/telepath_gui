@@ -62,6 +62,10 @@ class Config extends Tele_Controller {
 		$this->load->model('M_Config');
 		
 		$ans = $this->M_Config->get();
+
+		//move data from sql to elasticsearch
+		$this->M_Config->insert_to_config();
+
 		
 		$ans['interfaces']        = $this->_interfaces();
 		$ans['agents'] 			  = $this->M_Config->get_agents();
@@ -72,6 +76,7 @@ class Config extends Tele_Controller {
 		return_json($ans);
 
 	}
+
 	
 	// Execute Python -- Delete
 	public function set_to_training_delete() {
@@ -195,7 +200,8 @@ class Config extends Tele_Controller {
 		if(isset($config['whitelist'])) {
 
 			$this->M_Config->whitelist_set_ips($config['whitelist']);
-		
+
+			$this->M_Config->insert_to_config();
 //			#$whitelist_new = explode(',', $config['ip_whitelist']);
 //			$whitelist_new = $config['whitelist'];
 //			$whitelist_old = $this->M_Config->whitelist_get_ips();

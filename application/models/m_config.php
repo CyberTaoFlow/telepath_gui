@@ -9,7 +9,9 @@ class M_Config extends CI_Model
 
     function __construct()
     {
+
         parent::__construct();
+
 
     }
 
@@ -33,6 +35,7 @@ class M_Config extends CI_Model
 
     public function whitelist_get_ips()
     {
+
 
 //        /telepath-config/ips/whitelist_id/
         $params = [
@@ -98,24 +101,37 @@ class M_Config extends CI_Model
     public function whitelist_set_ips($ips)
     {
         $params = [
-
             'index' => 'telepath-config',
             'type' => 'ips',
             'id' => 'whitelist_id',
-                'body' => [
-                    'doc' => [
-                        'ips' => $ips
-                    ]
+            'body' => [
+                'doc' => [
+                    'ips' => $ips
                 ]
+            ]
         ];
 
         $this->elasticClient->update($params);
-
     }
+
+    public function new_get($key = false)
+    {
+
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'config',
+            'id' => 'config'
+        ];
+
+        $result = $this->elasticClient->get($params);
+
+        return $result['_source'];
+    }
+
 
     public function get($key = false)
     {
-
         $this->db->select('name, value');
         $this->db->from($this->tableName);
 
@@ -139,8 +155,28 @@ class M_Config extends CI_Model
         }
 
         return $ans;
-
     }
+
+
+    public function insert_to_config()
+    {
+        $params = $this->get();
+
+        foreach ($params as $key => $value) {
+            $par = [
+                'index' => 'telepath-config',
+                'type' => 'config',
+                'id' => 'config',
+                'body' => [
+                    'doc' => [
+                        $key => $value
+                    ]
+                ]
+            ];
+            $this->elasticClient->update($par);
+        }
+    }
+
 
     public function update($key, $value)
     {
@@ -214,7 +250,8 @@ class M_Config extends CI_Model
         return $result;
     }
 
-    public function set_agents($value){
+    public function set_agents($value)
+    {
 
 
         $params = [
@@ -231,9 +268,10 @@ class M_Config extends CI_Model
         $this->elasticClient->update($params);
     }
 
-    public function get_agents(){
+    public function get_agents()
+    {
 
-        $params =[
+        $params = [
             'index' => 'telepath-config',
             'type' => 'interfaces',
             'id' => 'interface_id'
