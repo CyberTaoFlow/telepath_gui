@@ -688,8 +688,8 @@ telepath.config.system = {
 		$('.tele-config-system-mode').show();
 			
 		// Updates engine status every 5 seconds
-		if(telepath.config.system.engineTimer) { clearInterval(telepath.config.system.engineTimer);	}
-		telepath.config.system.engineTimer = setInterval(function () { that.updateEngineStatus(); }, 5000);
+		//if(telepath.config.system.engineTimer) { clearInterval(telepath.config.system.engineTimer);	}
+		//telepath.config.system.engineTimer = setInterval(function () { that.updateEngineStatus(); }, 5000);
 		//this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true } });	
 	}
 	

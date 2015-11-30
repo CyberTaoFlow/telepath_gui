@@ -30,13 +30,13 @@ $.widget( "tele.notifications", {
 		this.element.append(this.count);
 		
 		setInterval(function () {
-			//that._update();
+			that._update();
 		}, this.options.interval);
 		
 		this.button.click(function () { that.showNotifications(); });
 		this.count.click(function () { that.showNotifications(); });
 		
-        //this._update();
+        this._update();
 		
 		/*
 		telepath.ds.get('/notifications/db_time', function (data) {
@@ -47,7 +47,7 @@ $.widget( "tele.notifications", {
     },
     _setOption: function( key, value ) {
         this.options[ key ] = value;
-       // this._update();
+        this._update();
     },
     _update: function() {
 		

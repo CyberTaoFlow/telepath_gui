@@ -9,7 +9,8 @@ class Config extends Tele_Controller {
 	
 	public function _interfaces() {
 
-		$lines = file('c:/dev');
+		$lines = $this->config->item('interface_file');
+
 		$interfaces = array();
 		for ($i = 2; $i < count($lines);  $i++) {
 			$line = explode(':', $lines[$i]);
