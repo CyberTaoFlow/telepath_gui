@@ -133,10 +133,12 @@ telepath.config.system = {
 		// Operation Mode
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
 		switch(selected_opmod) {
-			case 'training':   data.operation_mode = 1; break;
-			case 'production': data.operation_mode = 2; break;
-			case 'hybrid':     data.operation_mode = 3; break;
+			case 'training':   data.operation_mode_id = 1; break;
+			case 'production': data.operation_mode_id = 2; break;
+			case 'hybrid':     data.operation_mode_id = 3; break;
 		}
+
+
 		data.moveToProductionAfter = $('input', this.moveToProductionAfter).val();
 		
 		// Reports
@@ -393,10 +395,10 @@ telepath.config.system = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 		
-		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo(this.c_mode);
-		
+		$('<div>').addClass('tele-title-1').html('Operation Mode ID').appendTo(this.c_mode);
+
 		var selected_opmod = '';
-		switch(this.data.operation_mode) {
+		switch(this.data.operation_mode_id) {
 			case '1':	selected_opmod = 'training';   break;
 			case '2':	selected_opmod = 'production'; break;
 			case '3':	selected_opmod = 'hybrid';	   break;
@@ -407,7 +409,7 @@ telepath.config.system = {
 		this.opmod = $('<div>').teleRadios({ 
 		checked: selected_opmod,
 		radios: [ 
-			{ key: 'training',   label: 'Training' }, 
+			{ key: 'training',   label: 'Training' },
 			{ key: 'hybrid',     label: 'Hybrid' },
 			{ key: 'production', label: 'Production' },
 		], callback: function(radio) {
@@ -458,7 +460,7 @@ telepath.config.system = {
 		$('<div>').addClass('tele-title-1').html('Learn new apps').appendTo(this.c_mode);
                 this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.addUnknownApp == '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
 
-                $('<p>').html('ETA: ' + this.data.ETA ).appendTo(this.c_mode);
+                $('<p>').html('ETA: ' + this.data.eta_id ).appendTo(this.c_mode);
 
 		// Wrapper
 		this.engineControls = $('<div>').addClass('tele-engine-controls').appendTo(this.c_mode);
@@ -476,7 +478,7 @@ telepath.config.system = {
 		
 		// Rev-Proxy
 		$('<div>').addClass('tele-title-2').html('Reverse Proxy').appendTo(this.engineControls);
-		this.reverseProxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.reverse_proxy_mode == "1" }).appendTo(this.engineControls);
+		this.reverseProxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.reverse_proxy_mode_id == "1" }).appendTo(this.engineControls);
 		
 		// Sniffer
 		$('<div>').addClass('tele-title-2').html('Sniffer').appendTo(this.engineControls);

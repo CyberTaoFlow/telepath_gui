@@ -36,7 +36,6 @@ class M_Config extends CI_Model
     public function whitelist_get_ips()
     {
 
-
 //        /telepath-config/ips/whitelist_id/
         $params = [
             'index' => 'telepath-config',
@@ -114,23 +113,60 @@ class M_Config extends CI_Model
         $this->elasticClient->update($params);
     }
 
-    public function new_get($key = false)
+    public function get($key = false)
     {
+/*        GET /telepath-config/config/_search?pretty=true
+{
+    "query" : {
+    "match_all" : {}
+    },
+    "size": 98
+}*/
 
+/*        $params = [
+            'index' => 'telepath-config',
+            'type' => 'config',
+            'body' => [
+                'query' => [
+                    'match_all' => [
+
+                    ]
+                ]
+            ]
+        ];*/
+
+
+//        $result = $this->elasticClient->search($params);
 
         $params = [
             'index' => 'telepath-config',
             'type' => 'config',
-            'id' => 'config'
+            'body' => [
+                'query' => [
+                    'match_all' => [
+                        ],
+
+
+                ],
+                 "size"=>'97'
+            ]
         ];
+//        return $result['hits'];
 
-        $result = $this->elasticClient->get($params);
+        $result = $this->elasticClient->search($params);
 
-        return $result['_source'];
+//        return $result['hits']['hits'];
+        $results=[];
+        foreach ($result['hits']['hits'] as $value){
+
+            $results[$value['_id']]=$value['_source']['value'];
+
+    }
+        return $results;
     }
 
 
-    public function get($key = false)
+    public function sql_get($key = false)
     {
         $this->db->select('name, value');
         $this->db->from($this->tableName);
@@ -166,15 +202,30 @@ class M_Config extends CI_Model
             $par = [
                 'index' => 'telepath-config',
                 'type' => 'config',
-                'id' => 'config',
+                'id' => $key,
                 'body' => [
-                    'doc' => [
-                        $key => $value
-                    ]
+                        "value" => $value
                 ]
             ];
-            $this->elasticClient->update($par);
+            $this->elasticClient->index($par);
         }
+    }
+
+    public function elastic_update($key, $value){
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'config',
+            'id' => $key,
+            'body' => [
+                'doc' => [
+                    'value' => $value
+                ]
+            ]
+        ];
+
+        $this->elasticClient->update($params);
+
     }
 
 

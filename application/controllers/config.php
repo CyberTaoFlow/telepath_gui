@@ -66,50 +66,50 @@ class Config extends Tele_Controller {
 		//move data from sql to elasticsearch
 		$this->M_Config->insert_to_config();
 
-		
+
 		$ans['interfaces']        = $this->_interfaces();
 		$ans['agents'] 			  = $this->M_Config->get_agents();
 		$ans['regex'] 			  = $this->M_Config->get_regex();
 		$ans['whitelist']		  = $this->M_Config->whitelist_get_ips();
 		$ans['success']			  = true;
-			
+
 		return_json($ans);
 
 	}
 
-	
+
 	// Execute Python -- Delete
 	public function set_to_training_delete() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-	
+
 		exec('/opt/telepath/bin/delete_all_data.py');
 		return_json(array('success' => true));
 	}
 	// Execute Python -- Backup
 	public function set_to_training_backup() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-	
+
 		exec('/opt/telepath/bin/make_backup_and_delete_all_data.py');
 		return_json(array('success' => true));
 	}
-			
+
 	public function get_scheduler() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-		
+
 		$this->load->model('M_Config');
-	
+
 		$mode = $this->input->post('mode', true);
-		
+
 		$table = false;
-		
+
 		// Little mapping (TODO:: undo mapping)
-		
+
 		if($mode == 'get_schedule') 	   { $table = 'scheduler';		  }
 		if($mode == 'get_report_schedule') { $table = 'report_scheduler'; }
-		
+
 		if($table) {
 			return_json(array('scheduler' => $this->M_Config->get_scheduler($table), 'success' => true));
 		}
@@ -118,9 +118,9 @@ class Config extends Tele_Controller {
 
 	public function add_scheduler_event() {
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-	
+
 		$this->load->model('M_Config');
-		
+
 		$mode = $this->input->post('mode', true);
 		$event = $this->input->post('event');
 		$table = false;
@@ -129,7 +129,7 @@ class Config extends Tele_Controller {
 		if($table) {
 			return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event), 'success' => true));
 		}
-	}	
+	}
 
         public function del_scheduler_event() {
                 telepath_auth(__CLASS__, __FUNCTION__, $this);
@@ -148,60 +148,59 @@ class Config extends Tele_Controller {
 
 
 	public function set_scheduler() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-		
+
 		$this->load->model('M_Config');
-	
+
 		$mode = $this->input->post('mode', true);
 		$data = $this->input->post('data', true);
-		
+
 		$table = false;
-		
+
 		// Little mapping (TODO:: undo mapping)
-		
+
 		if($mode == 'get_schedule') 	   { $table = 'scheduler';		  }
 		if($mode == 'get_report_schedule') { $table = 'report_scheduler'; }
-		
+
 		if($table) {
 			return_json($this->M_Config->set_scheduler($table, $data));
 		}
-	
+
 	}
-	
+
 	public function set_schedule() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-	
+
 		$mode = $this->input->post('mode', true);
 	}
-	
+
 	public function get_num_of_studied() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-		
+
 		$this->load->model('ConfigModel');
 		$count = $this->ConfigModel->get_learning_so_far();
 		return_json(array('success' => true, 'items' => $count));
-		
+
 	}
 
 
 	public function set_config() {
-		
+
 		telepath_auth(__CLASS__, __FUNCTION__, $this);
-		
+
 		$this->load->model('M_Config');
-			
+
 		$config = $this->input->post(NULL, true);
-		
+
 		// Handle White list
-		
+
 		if(isset($config['whitelist'])) {
 
 			$this->M_Config->whitelist_set_ips($config['whitelist']);
 
-			$this->M_Config->insert_to_config();
 //			#$whitelist_new = explode(',', $config['ip_whitelist']);
 //			$whitelist_new = $config['whitelist'];
 //			$whitelist_old = $this->M_Config->whitelist_get_ips();
@@ -218,12 +217,31 @@ class Config extends Tele_Controller {
 		}
 
 		foreach($config as $key => $value) {
+
+			switch ($key) {
+
+				case 'operation_mode_id':
+				case 'sniffer_mode_id':
+				case 'engine_mode_id':
+				case 'reverse_proxy_mode_id':
+				case 'eta_id':
+				case 'load_balancer_on':
+				case 'load_balancer_ip':
+				case 'load_balancer_header':
+
+
+				$this->M_Config->elastic_update($key, $value);
+				break;
+			}
+		}
+
+		foreach($config as $key => $value) {
 		
 			switch($key) {
 			
 				// Operation mode
 				case 'input_mode':
-				case 'operation_mode':
+//				case 'operation_mode_id':
 				case 'moveToProductionAfter':
 				// SMTP Config
 				case 'rep_user':
@@ -236,20 +254,20 @@ class Config extends Tele_Controller {
 				case 'proxy_flag':
 				case 'proxy_ip':
 				case 'proxy_port':
-				case 'load_balancer_on':
+				/*case 'load_balancer_on':
 				case 'load_balancer_ip':
-				case 'load_balancer_header':
+				case 'load_balancer_header':*/
 				case 'addUnknownApp':
 				// serive enable / disable
 					$this->M_Config->update($key, $value);
 					break;
 
-				case 'engine_mode':
-				case 'sniffer_mode':
-				case 'reverse_proxy_mode':
+//				case 'engine_mode':
+//				case 'sniffer_mode':
+				/*case 'reverse_proxy_mode':
 					$this->M_Config->update($key, $value);
 					// we need to restart telepath here (Yuli)
-					break;
+					break;*/
 								
 			}
 		

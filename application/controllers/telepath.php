@@ -65,15 +65,15 @@ class Telepath extends Tele_Controller {
 	
 		$this->load->model('M_Config');
 		$key = $this->input->post('key');
-		$this->M_Config->update('licence_key', $key);
+		$this->M_Config->update('license_key_id', $key);
 		
 		// This code should work but currently using the other way around
 		exec($this->checkFunction . " > /dev/null &");
 		// Allow 3 second for engine to validate the key
 		sleep(3);
 		
-		$valid = $this->M_Config->get('licence_valid');
-		$valid = $valid['licence_valid'];
+		$valid = $this->M_Config->get('license_mode_id');
+		$valid = $valid['license_mode_id'];
 		
 		return_json(array('success' => true, 'valid' => $valid));
 		
@@ -83,8 +83,8 @@ class Telepath extends Tele_Controller {
 		
 		// Figure Licence
 		$this->load->model('M_Config');
-		$licence_valid = $this->M_Config->get('licence_valid');
-		$licence_valid = isset($licence_valid['licence_valid']) && $licence_valid['licence_valid'] == 'VALID';
+		$licence_valid = $this->M_Config->get('license_mode_id');
+		$licence_valid = isset($licence_valid['license_mode_id']) && $licence_valid['license_mode_id'] == 'VALID';
 		
 		// Figure Login
 		$logged_in  = $this->ion_auth->logged_in();
