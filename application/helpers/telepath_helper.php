@@ -137,11 +137,11 @@
 		$config = $ci_instance->ConfigModel->get();
 
 		return array(
-		  'protocol' => 'smtp',
-		  'smtp_host' => $config['smtp'],
-		  'smtp_port' => $config['smtp_port'],
-		  'smtp_user' => $config['rep_user'],
-		  'smtp_pass' => $config['rep_pass'],
+		  'protocol' => 'smtp_ip_id',
+		  'smtp_host' => $config['smtp_ip_id'],
+		  'smtp_port_id' => $config['smtp_port_id'],
+		  'smtp_user' => $config['rep_user_id'],
+		  'smtp_pass' => $config['rep_pass_id'],
 		  'mailtype' => 'html',
 		  'charset' => 'iso-8859-1',
 		  'wordwrap' => TRUE

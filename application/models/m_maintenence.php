@@ -290,6 +290,10 @@ class M_Maintenence extends CI_Model {
 		$this->db->update('config', $data); 
 	
 	}
+
+function get_telepath_version_id() {
+
+}
 	
 	function get_engine_version() {
 		

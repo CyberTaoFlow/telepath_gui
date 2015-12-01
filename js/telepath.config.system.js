@@ -37,7 +37,7 @@ telepath.config.system = {
 		//	{ id: 'reports', label: 'Permissions' },
 		//	{ id: 'audit', label: 'Audit Logs' },
 			{ id: 'network', label: 'Network' },
-			// { id: 'lb', label: 'Load Balancers' },
+			//{ id: 'lb', label: 'Load Balancers' },
 			{ id: 'whitelist', label: 'Whitelists' },
 		//	{ id: 'request', label: 'Request Analysis' },
 			// { id: 'ua_ignore', label: 'UserAgent Ignore List' },
@@ -117,18 +117,18 @@ telepath.config.system = {
 		var t_engine  = this.telepathEngineToggle.data('tele-toggleFlip').options.flipped;	
 		var t_inline  = this.reverseProxyToggle.data('tele-toggleFlip').options.flipped;
 		var t_sniffer = this.snifferToggle.data('tele-toggleFlip').options.flipped;
-		data.engine_mode = (t_engine) ? 1: 0;
-		data.sniffer_mode = (t_sniffer) ? 1: 0;
-		data.reverse_proxy_mode = (t_inline) ? 1: 0;
+		data.engine_mode_id = (t_engine) ? 1: 0;
+		data.sniffer_mode_id = (t_sniffer) ? 1: 0;
+		data.reverse_proxy_mode_id = (t_inline) ? 1: 0;
 		
-		data.input_mode = 'off';
+		/*data.input_mode = 'off';
 		
 		if(t_sniffer && t_inline) {
 			data.input_mode = 'both';
 		} else {
 			if(t_inline)  { data.input_mode = 'inline'; }
 			if(t_sniffer) { data.input_mode = 'sniffer';  }
-		}
+		}*/
 		
 		// Operation Mode
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
@@ -139,55 +139,55 @@ telepath.config.system = {
 		}
 
 
-		data.moveToProductionAfter = $('input', this.moveToProductionAfter).val();
+		data.move_to_production_id = $('input', this.move_to_production_id).val();
 		
 		// Reports
 	
-		data.addUnknownApp = this.addUnknownAppToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+		data.add_unknown_applications_id = this.addUnknownAppToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
 
 		// Syslog
-		data.write_to_syslog  = this.syslogToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
-		data.remote_syslog_ip = $('input', this.syslogIP).val();
+		data.write_to_syslog_id  = this.syslogToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+		data.syslog_ip_id = $('input', this.syslogIP).val();
 				
 		// Proxy
 		data.proxy_flag = this.proxyToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
-		data.proxy_ip   = $('input', this.proxyIP).val();
-		data.proxy_port = $('input', this.proxyPort).val();
+		data.proxy_ip_id   = $('input', this.proxyIP).val();
+		data.proxy_port_id = $('input', this.proxyPort).val();
 		
 		// SMTP
 		data.smtp      = $('input', this.smtpServer).val();
-		data.smtp_port = $('input', this.smtpPort).val();
+		data.smtp_port_id = $('input', this.smtp_port_id).val();
 		data.rep_user  = $('input', this.smtpUser).val();
-		data.rep_pass  = $('input', this.smtpPass).val();
+		data.rep_pass_id  = $('input', this.smtpPass).val();
 		
 		
 		
 		// Load Balancer
 		// IPS
-		data.load_balancer_on = this.lbToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
-		data.load_balancer_ip = [];
+		data.loadbalancer_mode_id = this.lbToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+		data.loadbalancerips_id = [];
 		$('.tele-ip', this.lbIPs).each(function () {
 			var ip = $(this).data('tele-ip').getIP();
 			if(ip) {
-				data.load_balancer_ip.push(ip);
+				data.loadbalancerips_id.push(ip);
 			}
 		});
 		
 		// De-Dupe
-		data.load_balancer_ip = data.load_balancer_ip.filter(function(elem, pos) {
-			return data.load_balancer_ip.indexOf(elem) == pos;
+		data.loadbalancerips_id = data.loadbalancerips_id.filter(function(elem, pos) {
+			return data.loadbalancerips_id.indexOf(elem) == pos;
 		});
-		data.load_balancer_ip = data.load_balancer_ip.join(',');
+		data.loadbalancerips_id = data.loadbalancerips_id.join(',');
 		
 		// Headers
-		data.load_balancer_header = [];
+		data.loadbalancerheaders_id = [];
 		$('input', this.lbHeaders).each(function () {
 			var value = $(this).val();
 			if(value != '') {
-				data.load_balancer_header.push(value);
+				data.loadbalancerheaders_id.push(value);
 			}
 		});
-		data.load_balancer_header = data.load_balancer_header.join(',');
+		data.loadbalancerheaders_id = data.loadbalancerheaders_id.join(',');
 		
 		
 		// IP Whitelist
@@ -450,15 +450,16 @@ telepath.config.system = {
 		}, 'Error while trying to get the scheduler.');
 
 		// MV2Prod after
-		this.moveToProductionAfter = $('<div>').teleInput({ 
+		this.move_to_production_id = $('<div>').teleInput({
 			label: 'Move to production after', 
 			suffix: 'Requests', 
 			width: 70, 
-			value: this.data.moveToProductionAfter 
+			value: this.data.move_to_production_id
 		}).addClass('tele-config-mv2prod').appendTo(this.c_mode); 
 
 		$('<div>').addClass('tele-title-1').html('Learn new apps').appendTo(this.c_mode);
-                this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.addUnknownApp == '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
+                this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.add_unknown_applications_id
+				== '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
 
                 $('<p>').html('ETA: ' + this.data.eta_id ).appendTo(this.c_mode);
 
@@ -468,7 +469,7 @@ telepath.config.system = {
 		// Engine
 		$('<div>').addClass('tele-title-2').html('Telepath Engine').appendTo(this.engineControls);
 		
-		this.telepathEngineToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.engine_mode == '1', flip: function (value) {
+		this.telepathEngineToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.engine_mode_id == '1', flip: function (value) {
 			
 			telepath.ds.get('/telepath/set_engine_' + (value ? 'start' : 'stop'), { }, function (data) {
 			
@@ -482,7 +483,7 @@ telepath.config.system = {
 		
 		// Sniffer
 		$('<div>').addClass('tele-title-2').html('Sniffer').appendTo(this.engineControls);
-		this.snifferToggle 		= $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.sniffer_mode == "1" }).appendTo(this.engineControls);
+		this.snifferToggle 		= $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.sniffer_mode_id == "1" }).appendTo(this.engineControls);
 		
 		// Sniffer
 		$('<div>').addClass('tele-title-2').html('Webservice').appendTo(this.engineControls).css({ opacity: 0.3 });
@@ -504,8 +505,8 @@ telepath.config.system = {
 		// -----------------------------------------------------------
 		
 		$('<div>').addClass('tele-title-1').html('Syslog').appendTo(this.c_reports).addClass('tele-title-syslog');
-		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.write_to_syslog == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
-		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.remote_syslog_ip }).addClass('tele-config-syslog-host').appendTo(this.c_reports); 
+		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.write_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
+		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.syslog_ip_id }).addClass('tele-config-syslog-host').appendTo(this.c_reports);
 		
 		// -----------------------------------------------------------
 		// Proxy
@@ -516,18 +517,18 @@ telepath.config.system = {
 		$('<div>').addClass('tele-title-1').html('Proxy').appendTo(this.c_reports).addClass('tele-title-proxy');
 		
 		this.proxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.proxy_flag == '1' }).appendTo(this.c_reports);
-		this.proxyIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.proxy_ip }).addClass('tele-config-proxy-host').appendTo(this.c_reports); 
-		this.proxyPort   = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.proxy_port }).addClass('tele-config-proxy-port').appendTo(this.c_reports); 
+		this.proxyIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.proxy_ip_id }).addClass('tele-config-proxy-host').appendTo(this.c_reports);
+		this.proxyPort   = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.proxy_port_id }).addClass('tele-config-proxy-port').appendTo(this.c_reports);
 		
 		// -----------------------------------------------------------
 		// SMTP
 		// -----------------------------------------------------------
 		$('<div>').addClass('tele-title-1').html('SMTP').appendTo(this.c_reports);
 		
-		this.smtpServer = $('<div>').teleInput({ label: 'Server'  , width: 200, value: this.data.smtp      }).addClass('tele-config-smtp-host').appendTo(this.c_reports); 
-		this.smtpPort   = $('<div>').teleInput({ label: 'Port'    , width: 70,  value: this.data.smtp_port }).addClass('tele-config-smtp-port').appendTo(this.c_reports); 
+		this.smtpServer = $('<div>').teleInput({ label: 'Server'  , width: 200, value: this.data.smtp_ip_id      }).addClass('tele-config-smtp-host').appendTo(this.c_reports);
+		this.smtp_port_id   = $('<div>').teleInput({ label: 'Port'    , width: 70,  value: this.data.smtp_port_id }).addClass('tele-config-smtp-port').appendTo(this.c_reports);
 		this.smtpUser   = $('<div>').teleInput({ label: 'Username', width: 200, value: this.data.rep_user  }).addClass('tele-config-smtp-username').appendTo(this.c_reports); 
-		this.smtpPass   = $('<div>').teleInput({ label: 'Password', width: 200, value: this.data.rep_pass, pass: true  }).addClass('tele-config-smtp-password').appendTo(this.c_reports); 
+		this.smtpPass   = $('<div>').teleInput({ label: 'Password', width: 200, value: this.data.rep_pass_id, pass: true  }).addClass('tele-config-smtp-password').appendTo(this.c_reports);
 		
 		
 		// SMTP Test button
@@ -549,8 +550,8 @@ telepath.config.system = {
 				}
 				
 				telepath.ds.get('/config/testmail', { 
-					'smtp':		 $('input', that.smtpServer).val(),
-					'smtp_port': $('input', that.smtpPort).val(),
+					'smtp_ip_id':		 $('input', that.smtpServer).val(),
+					'smtp_port_id': $('input', that.smtp_port_id).val(),
 					'smtp_user': $('input', that.smtpUser).val(),
 					'smtp_pass': $('input', that.smtpPass).val(),
 					'test_mail': email
@@ -580,13 +581,13 @@ telepath.config.system = {
 		
 		$('<div>').addClass('tele-title-1').html('Load Balancer').appendTo(this.c_lb);
 		
-		this.lbToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.load_balancer_on == '1' }).appendTo(this.c_lb);
-		this.lbIPs     = $('<div>').teleMulti({ values: this.data.load_balancer_ip.split(','), title: 'Load Balancer IPs', template: function(element, value) {
+		this.lbToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.loadbalancer_mode_id == '1' }).appendTo(this.c_lb);
+		this.lbIPs     = $('<div>').teleMulti({ values: this.data.balances.headers, title: 'Load Balancer Headers IPs', template: function(element, value) {
 			element.ip({ data: value });
-		} }).appendTo(this.c_lb).addClass('tele-config-balancer-ips');
-		this.lbHeaders     = $('<div>').teleMulti({ values: this.data.load_balancer_header.split(','), title: 'Load Balancer Headers', template: function(element, value) {
-			element.teleInput({ value: value });
 		} }).appendTo(this.c_lb).addClass('tele-config-balancer-headers');
+		this.lbHeaders     = $('<div>').teleMulti({ values: this.data.balances.ips, title: 'Load Balancer IPs', template: function(element, value) {
+			element.teleInput({ value: value });
+		} }).appendTo(this.c_lb).addClass('tele-config-balancer-ips');
 		
 		// -----------------------------------------------------------
 		// IP Whitelist
@@ -613,24 +614,35 @@ telepath.config.system = {
 		// -----------------------------------------------------------
 		// Network Interfaces
 		// -----------------------------------------------------------
+
 		this.interfaces = $('<div class="interfaces">').teleMulti({ values: this.data.agents, title: 'Network Interfaces', template: function(element, value) {
 			
 			element.addClass('tele-network-wrap');
+		/*	var options = {
+				name: 'name',
+				phone: 'phone'
+			};*/
 			var Wrap      = element;			
 			//var IDX       = $('<div>').html(value.idx).addClass('tele-network-idx');
 			var Name      = $('<div>').teleInput({ label: 'Name', width: 120, value: value.agent_name }).addClass('tele-network-name');
 			var Filter    = $('<div>').teleInput({ label: 'Filter Expression', width: 120, value: value.pcap_filter }).addClass('tele-network-filter');
 			var Interface = $('<select>').addClass('tele-network-select');
-			
+			/*for(var key in options){
+				var $opt = $('<option>').prop('value', key).text(options[key]);
+				$opt.appendTo(Interface);
+			}*/
+
 			Wrap.append(Name).append(Filter).append(Interface);
 			$.each(telepath.config.system.data.interfaces, function (i, interfaceName) {
 				var selected = interfaceName == value.NetworkInterface ? 'selected="selected"' : '';
 				Interface.append('<option ' + selected + ' value=' + interfaceName + '>' + interfaceName + '</option>');
 			});
 			
-			//element.append(Wrap);
+			element.append(Wrap);
 			
-		} }).appendTo(this.c_network);
+		}})/*.teleMulti({ values: this.data.loadbalancerheaders_id.split(','), title: 'Load Balancer Headers', template: function(element, value) {
+			element.teleInput({ value: value });
+		} })*/.appendTo(this.c_network);
 	
 		// -----------------------------------------------------------
 		// User Agent Ignore List

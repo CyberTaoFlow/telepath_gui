@@ -1,0 +1,386 @@
+name: operation_mode
+ value: 2  status:   translate: yes   by name: operation_mode_id
+
+
+name: make_report
+ value: 0  status:  not found
+
+
+name: time_start
+ value: 0  status:   translate: no
+
+
+name: time_end
+ value: 0  status:   translate: no   by name: 
+
+
+name: numOfSessions
+ value: 20  status: not found
+
+
+name: moveToProductionAfter
+ value:   status:   translate: no
+
+
+name: maxSession
+ value: 100000  status:  not found
+
+
+name: max_distance
+ value: 85  status:  not found
+
+
+name: analyze_tree_struct
+ value: 0  status:   not found
+
+
+name: analyze_tree_val
+ value: 0  status:  not found
+
+
+name: analyzeSlowLandingSpeeds
+ value: 0  status:   not found
+
+
+name: analyzeAtt
+ value: 0  status:  not found
+
+
+name: dontMapPage
+ value: 400-600  status: not found
+
+
+name: analyze_posts
+ value: 1  status: not found
+
+
+name: analyze_gets
+ value: 1  status:  not found
+
+
+name: analyze_headers
+ value: 1  status: not found
+
+
+name: alertLevel
+ value: 50%  status:  not found
+
+
+name: exclParameters
+ value: 1,  status:  not found
+
+
+name: rulesFlag
+ value: 0  status: not found
+
+
+name: load_balancer_on
+ value: 1  status:   translate: yes  by name: load_balancer_on
+
+
+name: load_balancer_ip
+ value:   status:   translate: yes   by name: load_balancer_ip
+
+
+name: load_balancer_header
+ value: X-Forwarded-For  status:   translate: yes   by name: load_balancer_header
+
+
+name: savePipeFreqInMin
+ value: 5  status: not found
+
+
+name: sameEventThreshold
+ value: 10  status:  not found
+
+
+name: noisePercent
+ value: 90  status: not found
+
+
+name: excludedIPs
+ value: 10.236.2.  status:  not found
+
+
+name: atmsSendAgentConf
+ value:   status:  not found
+
+
+name: atmsActions
+ value: 0  status: not found
+
+
+name: engineActions
+ value: 1,7,9  status:  not found
+
+
+name: atmsDumpTime
+ value: 7200  status: not found
+
+name: sendSignalToAtms
+ value: 1  status: not found
+
+
+name: noiseStd
+ value: 2  status: not found
+
+
+name: atmsAgentAdd
+ value:   status: not found
+
+
+name: urlDetectRegex
+ value: ^(https?://)|^(www[.])  status: not found
+
+
+name: sqlblacklist
+ value: %22|%27|"|'',  status: not found
+
+
+name: eqGeo
+ value: 0  status:  not found
+
+
+name: eqLanding_speed
+ value: 0  status: not found
+
+
+name: globalHeaders
+ value: 1  status: not found
+
+
+name: excludeGlobal
+ value:   status: not found
+
+
+name: eqHour
+ value: 0  status: not found
+
+
+name: eqWeekDay
+ value: -1  status:  not found
+
+
+name: eqQuery
+ value: 0  status: not found
+
+
+name: limitAlertTrends
+ value: 25  status: not found
+
+
+name: limitTopSuspects
+ value: 25  status: not found
+
+
+name: geoConvergence
+ value: 0  status: not found
+
+
+name: timerInterval
+ value: 1  status: not found
+
+
+name: slowOrFastLanding
+ value: 2  status:  not found
+
+
+name: initRID
+ value: 38329722  status: not found
+
+
+name: exclPageContext
+ value:   status: not found
+
+
+name: threshold_exponent
+ value: -4  status: not found
+
+name: addUnknownApp
+ value: 0  status:   translate: no
+
+
+name: write_to_syslog
+ value: 0  status:   translate: no
+
+
+name: write_stdout
+ value: 0  status: not found
+
+
+name: learning_so_far
+ value: 100000  status:   translate: no
+
+
+name: bot_intelligence
+ value: 1  status:   translate: no
+
+
+name: reportFreq
+ value: 60  status:   translate: no
+
+
+name: maxEvents
+ value: 50  status:   translate: no
+
+
+name: reportWindow
+ value: 60  status:   translate: no
+
+
+name: smtp_port
+ value:   status:   translate: no
+
+
+name: smtp
+ value:   status:   translate: no
+
+
+name: rep_pass
+ value:   status:   translate: no
+
+
+name: rep_user
+ value:   status:   translate: no
+
+
+name: repAllEvents
+ value: 1  status: not found
+
+
+name: email_recipient
+ value: raviv@hybridsec.com  status:   translate: no
+
+
+name: rules_table_was_changed
+ value: 0  status:   translate: no
+
+
+name: enable_report
+ value: 0  status:  not found
+
+
+name: rule_groups_report
+ value: 55,  status:  not found
+
+
+name: proxy_ip
+ value:   status:   translate: no
+
+
+name: proxy_port
+ value:   status:   translate: no
+
+
+name: ETA
+ value: 0d 0h 0m  status:   translate: yes  by name: eta_id
+
+
+name: engine_command_start
+ value: telepath engine start  status: not found
+
+
+name: engine_command_kill
+ value: telepath engine kill  status: not found
+
+
+name: whitelist_table_was_updated
+ value: 0  status: not found
+
+
+name: last_updated_date
+ value: 1447145740  status: not found
+
+
+name: atms_version
+ value: 0000  status:  not found
+
+
+name: engine_version
+ value: 1809  status:   translate: no
+
+
+name: remote_syslog_ip
+ value:   status:   translate: no
+
+
+name: proxy_flag
+ value: 0  status:   translate: no
+
+
+name: workflow_states
+ value: []  status:   translate: no
+
+
+name: business_flow_was_changed
+ value: 0  status:   translate: no
+
+
+name: case_list_was_changed
+ value: 0  status:   translate: no
+
+
+name: max_request_file_size
+ value: 1000  status:  not found
+
+
+name: licence_key
+ value: O6VQ3FRE-CY00-B26B-TPTH-7EF60821DBB9  status:   translate: yes   by name:  license_key_id
+
+
+name: licence_valid
+ value: VALID  status:   translate: yes   by name: license_mode_id
+
+
+name: buildup_rules_user
+ value: user  status: not found
+
+
+name: buildup_rules_password
+ value: pass  status:  not found
+
+
+name: update_titles
+ value: 0  status:  not found
+
+
+name: input_mode
+ value: inline  status:   translate: no
+
+
+name: application_list_was_changed
+ value: 0  status:   translate: no
+
+
+name: debug_mode
+ value: 0  status:  not found
+
+
+name: agents_list_was_changed
+ value: 0  status:   translate: no
+
+
+name: engine_mode
+ value: 0  status:   translate: yes   by name: engine_mode_id
+
+
+name: reverse_proxy_mode
+ value: 0  status:   translate: yes   by name: reverse_proxy_mode_id
+
+
+name: sniffer_mode
+ value: 0  status:   translate: yes   by name: sniffer_mode_id
+
+
+name: enable_weight
+ value: 0  status:  not found
+
+
+name: password_masking
+ value: 1  status:  not found
+
+
+name: cc_masking
+ value: 1  status:  not found
+
+

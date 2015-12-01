@@ -113,27 +113,90 @@ class M_Config extends CI_Model
         $this->elasticClient->update($params);
     }
 
-    public function get($key = false)
+    public function get_balances()
     {
-/*        GET /telepath-config/config/_search?pretty=true
-{
-    "query" : {
-    "match_all" : {}
-    },
-    "size": 98
-}*/
 
-/*        $params = [
+        $params = [
             'index' => 'telepath-config',
-            'type' => 'config',
-            'body' => [
-                'query' => [
-                    'match_all' => [
+            'type' => 'headers',
+            'id' => 'loadbalancerips_id'
+        ];
 
+        $result = $this->elasticClient->get($params);
+
+        $results['ips'] = $result['_source']['value']['ips'];
+
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'headers',
+            'id' => 'loadbalancerheaders_id'
+        ];
+
+        $result = $this->elasticClient->get($params);
+
+        $results['headers'] = $result['_source']['value']['headers'];
+
+        return $results;
+    }
+
+    public function set_balances($headers, $ips)
+    {
+
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'headers',
+            'id' => 'loadbalancerips_id',
+            'body' => [
+                'doc' => [
+                    'value' => [
+                        'ips' => $ips
                     ]
                 ]
             ]
-        ];*/
+        ];
+
+        $this->elasticClient->update($params);
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'headers',
+            'id' => 'loadbalancerheaders_id',
+            'body' => [
+                'doc' => [
+                    'value' => [
+                        'headers' => $headers
+                    ]
+                ]
+            ]
+        ];
+
+        $this->elasticClient->update($params);
+
+    }
+
+    public function get($key = false)
+    {
+        /*        GET /telepath-config/config/_search?pretty=true
+        {
+            "query" : {
+            "match_all" : {}
+            },
+            "size": 98
+        }*/
+
+        /*        $params = [
+                    'index' => 'telepath-config',
+                    'type' => 'config',
+                    'body' => [
+                        'query' => [
+                            'match_all' => [
+
+                            ]
+                        ]
+                    ]
+                ];*/
 
 
 //        $result = $this->elasticClient->search($params);
@@ -144,24 +207,24 @@ class M_Config extends CI_Model
             'body' => [
                 'query' => [
                     'match_all' => [
-                        ],
+                    ],
 
 
                 ],
-                 "size"=>'97'
+                "size" => '97'
             ]
         ];
-//        return $result['hits'];
+
 
         $result = $this->elasticClient->search($params);
 
-//        return $result['hits']['hits'];
-        $results=[];
-        foreach ($result['hits']['hits'] as $value){
 
-            $results[$value['_id']]=$value['_source']['value'];
+        $results = [];
+        foreach ($result['hits']['hits'] as $value) {
 
-    }
+            $results[$value['_id']] = $value['_source']['value'];
+
+        }
         return $results;
     }
 
@@ -193,6 +256,22 @@ class M_Config extends CI_Model
         return $ans;
     }
 
+    public function chek_config()
+    {
+
+        $values = $this->sql_get();
+
+        $write = '';
+        foreach ($values as $key => $value) {
+
+            $write .= 'name: ' . $key . "\n value: " . $value . "  status:   translate: no   by name: \n\n\n";
+
+        }
+        file_put_contents("sql_config.txt", $write);
+
+
+    }
+
 
     public function insert_to_config()
     {
@@ -204,18 +283,19 @@ class M_Config extends CI_Model
                 'type' => 'config',
                 'id' => $key,
                 'body' => [
-                        "value" => $value
+                    "value" => $value
                 ]
             ];
             $this->elasticClient->index($par);
         }
     }
 
-    public function elastic_update($key, $value){
+    public function update($key, $value)
+    {
 
         $params = [
             'index' => 'telepath-config',
-            'type' => 'config',
+            'type' => $this->tableName,
             'id' => $key,
             'body' => [
                 'doc' => [
@@ -229,11 +309,13 @@ class M_Config extends CI_Model
     }
 
 
-    public function update($key, $value)
+    public function sql_update($key, $value)
     {
 
-        $this->db->where('name', $key);
-        $this->db->update($this->tableName, array('value' => $value));
+
+
+        /*$this->db->where('name', $key);
+        $this->db->update($this->tableName, array('value' => $value));*/
 
     }
 

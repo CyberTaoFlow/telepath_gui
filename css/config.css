@@ -1091,12 +1091,25 @@ body .jstree .tele-button {
 	width: 50px;
 }
 .tele-config-balancer-ips {
+
 	float: left;
-	clear: both; 
+	clear: both;
 	width: 300px;
+
+	@media (max-width : 500px) {
+
+	}
+
+
 }
+
 .tele-config-balancer-headers {
+
 	float: left;
+@media (min-width : 500px) {
+
+}
+
 }
 .tele-search-filters {
 	position: absolute;
