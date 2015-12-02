@@ -80,7 +80,8 @@ class Config extends Tele_Controller
         $ans['agents'] = $this->M_Config->get_agents();
         $ans['regex'] = $this->M_Config->get_regex();
         $ans['whitelist'] = $this->M_Config->whitelist_get_ips();
-        $ans['balances'] = $this->M_Config->get_balances();
+        $ans['ip_balances'] = $this->M_Config->get_ip_balances();
+        $ans['header_balances'] = $this->M_Config->get_header_balances();
         $ans['success'] = true;
 
         return_json($ans);
@@ -252,9 +253,15 @@ class Config extends Tele_Controller
 
         }
 
-        if (isset($config['balances'])) {
+        if (isset($config['ip_balances'])) {
 
-            $this->M_Config->set_balances($config['balances']);
+            $this->M_Config->set_ip_balances($config['balances']);
+
+        }
+
+        if (isset($config['header_balances'])) {
+
+            $this->M_Config->set_header_balances($config['balances']);
 
         }
 

@@ -334,7 +334,7 @@
 	margin-right: 2px;
 	width: 38px;
 }
-.tele-ip-wrap {
+.tele-ip-wrap,.tele-ip-wrap-lb {
 	clear: both;
 	margin-top: 15px;
 	/*margin-left: 11px;*/
@@ -346,7 +346,7 @@
 	margin-left: 11px;
 }
 
-.tele-ip-wrap .tele-icon {
+.tele-ip-wrap .tele-icon, .tele-ip-wrap-lb .tele-icon  {
 	margin-top: 2px;
 }
 .tele-ip-dash {

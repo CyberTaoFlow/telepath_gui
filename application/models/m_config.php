@@ -113,7 +113,7 @@ class M_Config extends CI_Model
         $this->elasticClient->update($params);
     }
 
-    public function get_balances()
+    public function get_ip_balances()
     {
 
         $params = [
@@ -124,8 +124,12 @@ class M_Config extends CI_Model
 
         $result = $this->elasticClient->get($params);
 
-        $results['ips'] = $result['_source']['value']['ips'];
+        return  $result['_source']['value']['ips'];
 
+    }
+
+    public function get_header_balances()
+    {
 
         $params = [
             'index' => 'telepath-config',
@@ -135,12 +139,11 @@ class M_Config extends CI_Model
 
         $result = $this->elasticClient->get($params);
 
-        $results['headers'] = $result['_source']['value']['headers'];
+        return $result['_source']['value']['headers'];
 
-        return $results;
     }
 
-    public function set_balances($headers, $ips)
+    public function set_ip_balances($ips)
     {
 
 
@@ -158,6 +161,14 @@ class M_Config extends CI_Model
         ];
 
         $this->elasticClient->update($params);
+
+
+
+    }
+
+    public function set_header_balances($headers)
+    {
+
 
         $params = [
             'index' => 'telepath-config',

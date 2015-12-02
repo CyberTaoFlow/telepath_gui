@@ -192,7 +192,7 @@ telepath.config.system = {
 		data.balances =[];
 
 
-		data.balances.ips=[];
+		data.ip_balances=[];
 
 		$('.tele-ip-wrap-lb', this.ips).each(function () {
 
@@ -203,19 +203,19 @@ telepath.config.system = {
 
 			if(is_range) {
 				if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-					data.balances.ips.push({from: ip_start ,to: ip_end});
+					data.ip_balances.push({from: ip_start ,to: ip_end});
 				}
 			} else {
 				if(ip_start) {
-					data.balances.ips.push({from:ip_start, to: ip_start});
+					data.ip_balances.push({from:ip_start, to: ip_start});
 				}
 			}
 
 		});
 
 		// De-Dupe
-		data.balances.ips = data.balances.ips.filter(function(elem, pos) {
-			return data.balances.ips.indexOf(elem) == pos;
+		data.ip_balances = data.ip_balances.filter(function(elem, pos) {
+			return data.ip_balances.indexOf(elem) == pos;
 		});
 
 
@@ -672,7 +672,7 @@ telepath.config.system = {
 
 
 
-		$.each(this.data.balances.ips, function (i, ip) {
+		$.each(this.data.ip_balances, function (i, ip) {
 			that.c_lb.append(getRangeLB(ip, that.c_lb));
 		});
 
