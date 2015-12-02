@@ -1,5 +1,9 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+
+/**
+ * @property  M_Config M_Config
+ */
 class Config extends Tele_Controller
 {
 
