@@ -189,8 +189,15 @@ telepath.config.system = {
 		});
 		data.loadbalancerheaders_id = data.loadbalancerheaders_id.join(',');*/
 		
-		data.balances =[];
+		data.header_balances=[];
 
+		//headerBalances
+
+		$('.tele-input input', this.headerBalances).each(function () {
+			if($(this).val() != '') {
+				data.header_balances.push($(this).val());
+			}
+		});
 
 		data.ip_balances=[];
 
@@ -667,17 +674,42 @@ telepath.config.system = {
 			
 		}}).appendTo(this.c_network);
 
+
+
+		//this.loadbalancer_mode = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.loadbalancer_mode_id == '1' }).addClass('tele-balancer-toggle').appendTo(this.c_network);
+
+		var header_balances =this.data.header_balances ? this.data.header_balances:'';
+
+		var headerbalances= this.headerBalances = $('<div>').teleMulti({ values: header_balances, template: function(element, value) {
+			element.teleInput({ value: value });
+		} });
+
+		//headerbalances.appendTo(this.c_network);
+
 		this.c_lb = $('<div>').addClass('tele-config-system-lb');
-		this.c_network.append(this.c_lb);
+		//this.c_network.append(this.c_lb);
 
-
-
-		$.each(this.data.ip_balances, function (i, ip) {
+		var ip_balances = $.each(this.data.ip_balances, function (i, ip) {
 			that.c_lb.append(getRangeLB(ip, that.c_lb));
 		});
 
 		// Another blank
-		this.c_lb.append(getRangeLB('', that.c_lb));
+		var another_ip_balancesthis= this.c_lb.append(getRangeLB('', that.c_lb));
+
+		var ipToggle = $('<div>').toggleFlip({
+
+			flip: function () {
+				//ip_balances.toggle();
+				another_ip_balancesthis.toggle();
+				headerbalances.toggle();
+			},
+			flipped: this.data.loadbalancer_mode_id == '1'
+		});
+
+		this.c_network.append(ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb)
+;
+
+
 	
 		// -----------------------------------------------------------
 		// User Agent Ignore List
