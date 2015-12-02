@@ -86,7 +86,7 @@ $.widget( "tele.vMap", {
 				
 				var row   = $('<div>').addClass('tele-popover-row');
 				var icon  = $('<div>').addClass('tele-icon tele-icon-alert');
-				var count = $('<div>').addClass('tele-count').html(telepath.dashboard.data.items.map[code] ? telepath.dashboard.data.items.map[code] : 0);
+				var count = $('<div>').addClass('tele-count').html(telepath.dashboard.data.items.map[code.toUpperCase()] ? telepath.dashboard.data.items.map[code.toUpperCase()] : 0);
 				var title = $('<span>').addClass('tele-popover-subtitle').html(telepath.countries.a2n(code.toUpperCase()));
 				
 				row.append(icon).append(count).append(title);
