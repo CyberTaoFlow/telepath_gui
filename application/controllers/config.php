@@ -248,9 +248,9 @@ class Config extends Tele_Controller
 
         }
 
-        if (isset($config['whitelist'])) {
+        if (isset($config['balances'])) {
 
-            $this->M_Config->whitelist_set_ips($config['whitelist']);
+            $this->M_Config->set_balances($config['balances']);
 
         }
 
