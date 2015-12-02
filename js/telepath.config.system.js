@@ -121,14 +121,14 @@ telepath.config.system = {
 		data.sniffer_mode_id = (t_sniffer) ? 1: 0;
 		data.reverse_proxy_mode_id = (t_inline) ? 1: 0;
 		
-		/*data.input_mode = 'off';
+		data.input_mode = 'off';
 		
 		if(t_sniffer && t_inline) {
 			data.input_mode = 'both';
 		} else {
 			if(t_inline)  { data.input_mode = 'inline'; }
 			if(t_sniffer) { data.input_mode = 'sniffer';  }
-		}*/
+		}
 		
 		// Operation Mode
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
@@ -191,9 +191,8 @@ telepath.config.system = {
 		
 		data.balances =[];
 
-		data.balances.ips=[];
 
-		$('.tele-ip-wrap', this.balances.ips).each(function () {
+		$('.tele-ip-wrap', this.balances).each(function () {
 
 			var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
 
@@ -202,15 +201,19 @@ telepath.config.system = {
 
 			if(is_range) {
 				if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-					data.balances.ips.push({from: ip_start ,to: ip_end});
+					data.balances.push({from: ip_start ,to: ip_end});
 				}
 			} else {
 				if(ip_start) {
-					data.balances.ips.push({from:ip_start,to: ip_start});
+					data.balances.push({from:ip_start, to: ip_start});
 				}
 			}
 
 		});
+
+		//data.balances.headers =[];
+
+
 
 
 		// IP Whitelist
@@ -659,7 +662,7 @@ telepath.config.system = {
 			
 		}}).appendTo(this.c_network);
 
-		this.c_lb = $('<div>').addClass('tele-config-system-tab tele-config-system-lb');
+		this.c_lb = $('<div>').addClass('tele-config-system-lb');
 		this.c_network.append(this.c_lb);
 
 
