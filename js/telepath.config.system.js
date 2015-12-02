@@ -192,7 +192,9 @@ telepath.config.system = {
 		data.balances =[];
 
 
-		$('.tele-ip-wrap', this.balances).each(function () {
+		data.balances.ips=[];
+
+		$('.tele-ip-wrap-lb', this.ips).each(function () {
 
 			var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
 
@@ -201,17 +203,20 @@ telepath.config.system = {
 
 			if(is_range) {
 				if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-					data.balances.push({from: ip_start ,to: ip_end});
+					data.balances.ips.push({from: ip_start ,to: ip_end});
 				}
 			} else {
 				if(ip_start) {
-					data.balances.push({from:ip_start, to: ip_start});
+					data.balances.ips.push({from:ip_start, to: ip_start});
 				}
 			}
 
 		});
 
-		//data.balances.headers =[];
+		// De-Dupe
+		data.balances.ips = data.balances.ips.filter(function(elem, pos) {
+			return data.balances.ips.indexOf(elem) == pos;
+		});
 
 
 
@@ -668,11 +673,11 @@ telepath.config.system = {
 
 
 		$.each(this.data.balances.ips, function (i, ip) {
-			that.c_lb.append(getRangeUI(ip, that.c_lb));
+			that.c_lb.append(getRangeLB(ip, that.c_lb));
 		});
 
 		// Another blank
-		this.c_lb.append(getRangeUI('', that.c_lb));
+		this.c_lb.append(getRangeLB('', that.c_lb));
 	
 		// -----------------------------------------------------------
 		// User Agent Ignore List
