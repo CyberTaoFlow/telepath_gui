@@ -241,7 +241,7 @@ class Cron extends Tele_Controller
 
         $base_path = 'http://www.hybridsec.com/updates/';
 
-        $proxy = $config['proxy_flag'] == '1' &&
+        $proxy = $config['proxy_mode_id'] == '1' &&
         $config['proxy_ip_id'] != '' &&
         $config['proxy_port_id'] != '' ?
             $config['proxy_ip_id'] . ':' . $config['proxy_port_id'] : false;

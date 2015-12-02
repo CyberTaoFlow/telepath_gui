@@ -275,6 +275,7 @@ class Config extends Tele_Controller
                 case 'syslog_ip_id':
                 case 'write_to_syslog_id':
                 case 'add_unknown_applications_id':
+                case 'proxy_mode_id':
                 case 'rep_pass_id':
 
 
@@ -283,43 +284,43 @@ class Config extends Tele_Controller
             }
         }
 
-        foreach ($config as $key => $value) {
+/*        foreach ($config as $key => $value) {
 
             switch ($key) {
 
-                // Operation mode
-//                case 'input_mode':
-//				case 'operation_mode_id':
-//				case 'moveToProductionAfter':
-                    // SMTP Config
-//                case 'rep_user':
-//                case 'rep_pass':
-//                case 'smtp':
-//                case 'smtp_port':
-//                case 'write_to_syslog':
-//                case 'remote_syslog_ip':
-                    // Proxy Config
+                 Operation mode
+                case 'input_mode':
+				case 'operation_mode_id':
+				case 'moveToProductionAfter':
+                     SMTP Config
+                case 'rep_user':
+                case 'rep_pass':
+                case 'smtp':
+                case 'smtp_port':
+                case 'write_to_syslog':
+                case 'remote_syslog_ip':
+                     Proxy Config
                 case 'proxy_flag':
-//                case 'proxy_ip':
-//                case 'proxy_port':
-                    /*case 'load_balancer_on':
+                case 'proxy_ip':
+                case 'proxy_port':
+                    case 'load_balancer_on':
                     case 'load_balancer_ip':
-                    case 'load_balancer_header':*/
-//                case 'addUnknownApp':
+                    case 'load_balancer_header':
+                case 'addUnknownApp':
                     // serive enable / disable
-                    $this->M_Config->update($key, $value);
+                    $this->M_Config->sql_update($key, $value);
                     break;
 
-//				case 'engine_mode':
-//				case 'sniffer_mode':
-                /*case 'reverse_proxy_mode':
+				case 'engine_mode':
+				case 'sniffer_mode':
+                case 'reverse_proxy_mode':
                     $this->M_Config->update($key, $value);
                     // we need to restart telepath here (Yuli)
-                    break;*/
+                    break;
 
             }
 
-        }
+        }*/
         // set ignore extensions, Yuli
         $this->M_Config->set_regex($config['regex']['URL']);
         /*
