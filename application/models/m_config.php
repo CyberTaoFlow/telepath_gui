@@ -154,7 +154,13 @@ class M_Config extends CI_Model
 
     public function set_ip_balances($ips)
     {
+        function compare_from($a, $b)
+        {
+            return strnatcmp($a['from'], $b['from']);
+        }
 
+        // sort alphabetically by name
+        usort($ips, 'compare_from');
 
         $params = [
             'index' => 'telepath-config',

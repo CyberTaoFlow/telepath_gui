@@ -661,9 +661,11 @@ telepath.config.system = {
 		// Network Interfaces
 		// -----------------------------------------------------------
 
-		this.row = $('<div class="row">').appendTo(this.c_network);
+		this.row = $('<div class="wrap-network-interfaces">').appendTo(this.c_network);
 
-		this.interfaces = $('<div class="interfaces col-md-6">').teleMulti({ values: this.data.agents, title: 'Network Interfaces', template: function(element, value) {
+		this.col1 = $('<div class="tele-network-interfaces-wrap">').appendTo(this.row);
+
+		this.interfaces = $('<div class="interfaces">').teleMulti({ values: this.data.agents, title: 'Network Interfaces', template: function(element, value) {
 			
 			element.addClass('tele-network-wrap');
 
@@ -682,11 +684,11 @@ telepath.config.system = {
 			
 			element.append(Wrap);
 			
-		}}).appendTo(this.row);
+		}}).appendTo(this.col1);
 
-		this.col = $('<div class="col-md-6">').appendTo(this.row);
+		this.col2 = $('<div class="tele-balancer-wrap">').appendTo(this.row);
 
-		$('<div>').addClass('tele-title-1').html('Load Balancer').appendTo(this.col);
+		$('<div>').addClass('tele-title-1').html('Load Balancer').appendTo(this.col2);
 
 		var header_balances =this.data.header_balances ? this.data.header_balances:'';
 
@@ -726,7 +728,7 @@ telepath.config.system = {
 			flipped: state
 		});
 
-		this.col.append(this.ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb);
+		this.col2.append(this.ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb);
 ;
 
 

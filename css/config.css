@@ -1096,20 +1096,23 @@ body .jstree .tele-button {
 	clear: both;
 	width: 300px;
 
-	@media (max-width : 500px) {
-
-	}
-
-
 }
+.wrap-network-interfaces{
+	overflow: hidden;
+}
+
+.tele-network-interfaces-wrap{
+	float: left;
+}
+
+.tele-balancer-wrap{
+	float: right;
+}
+
 
 .tele-config-balancer-headers {
 
 	float: left;
-@media (min-width : 500px) {
-
-}
-
 }
 .tele-search-filters {
 	position: absolute;
