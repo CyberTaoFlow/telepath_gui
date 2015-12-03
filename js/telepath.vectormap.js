@@ -29,7 +29,7 @@ $.widget( "tele.vMap", {
 		
 		var scaleColors = ['#C4E8B2', '#60BB3C'];
 		
-		// TODO:: Make this changable instead of CSS
+		// TODO:: Make this changeable instead of CSS
 		
 		
 		
@@ -60,7 +60,13 @@ $.widget( "tele.vMap", {
 		
 		
 		this.element.append(this.vectorMap);
-		
+
+
+		var country_rate =Array();
+		$.each(this.options.data, function(index, value) {
+			country_rate[index.toLowerCase()] = value;
+		});
+
 		this.vectorMap.vectorMap({
 			map: 'world_en',
 			backgroundColor: '#304F68',
@@ -69,7 +75,7 @@ $.widget( "tele.vMap", {
 			selectedColor: '#666666',
 			enableZoom: true,
 			showTooltip: true,
-			values: this.options.data,
+			values: country_rate,
 			scaleColors: scaleColors,
 			normalizeFunction: 'polynomial',
 			onRegionClick: function(x, y) {
