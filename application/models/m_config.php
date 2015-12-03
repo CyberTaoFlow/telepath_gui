@@ -99,6 +99,15 @@ class M_Config extends CI_Model
 
     public function whitelist_set_ips($ips)
     {
+
+        function compare_from($a, $b)
+        {
+            return strnatcmp($a['from'], $b['from']);
+        }
+
+        // sort alphabetically by name
+        usort($ips, 'compare_from');
+
         $params = [
             'index' => 'telepath-config',
             'type' => 'ips',
