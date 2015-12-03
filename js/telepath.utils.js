@@ -8,7 +8,7 @@ function RangeRemove(that) {
 }
 
 function RangeRemoveLB(that) {
-  numRanges = $(that).parent().parent().children('.tele-ip-wrap').length;
+  numRanges = $(that).parent().parent().children('.tele-ip-wrap-lb').length;
   if (numRanges > 1)
   {
     $(that).parent().remove();
