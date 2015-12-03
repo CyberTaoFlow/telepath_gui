@@ -255,13 +255,13 @@ class Config extends Tele_Controller
 
         if (isset($config['ip_balances'])) {
 
-            $this->M_Config->set_ip_balances($config['balances']);
+            $this->M_Config->set_ip_balances($config['ip_balances']);
 
         }
 
         if (isset($config['header_balances'])) {
 
-            $this->M_Config->set_header_balances($config['balances']);
+            $this->M_Config->set_header_balances($config['header_balances']);
 
         }
 
