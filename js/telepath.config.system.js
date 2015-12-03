@@ -188,7 +188,15 @@ telepath.config.system = {
 			}
 		});
 		data.loadbalancerheaders_id = data.loadbalancerheaders_id.join(',');*/
-		
+
+
+		/*var loadbalancer  = this.loadbalancer_mode_id.data('tele-toggleFlip').options.flipped;
+
+		data.loadbalancer_mode_id = (loadbalancer) ? 1: 0;*/
+
+		data.loadbalancer_mode_id = this.ipToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+		//data.loadbalancer_mode_id = this.ipToggle.data('toggleFlip').options.flipped ? 1 : 0;
+
 		data.header_balances=[];
 
 		//headerBalances
@@ -653,6 +661,10 @@ telepath.config.system = {
 		// Network Interfaces
 		// -----------------------------------------------------------
 
+		this.row = $('<div class="wrap-network-interfaces">').appendTo(this.c_network);
+
+		this.col1 = $('<div class="tele-network-interfaces-wrap">').appendTo(this.row);
+
 		this.interfaces = $('<div class="interfaces">').teleMulti({ values: this.data.agents, title: 'Network Interfaces', template: function(element, value) {
 			
 			element.addClass('tele-network-wrap');
@@ -672,11 +684,11 @@ telepath.config.system = {
 			
 			element.append(Wrap);
 			
-		}}).appendTo(this.c_network);
+		}}).appendTo(this.col1);
 
+		this.col2 = $('<div class="tele-balancer-wrap">').appendTo(this.row);
 
-
-		//this.loadbalancer_mode = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.loadbalancer_mode_id == '1' }).addClass('tele-balancer-toggle').appendTo(this.c_network);
+		$('<div>').addClass('tele-title-1').html('Load Balancer').appendTo(this.col2);
 
 		var header_balances =this.data.header_balances ? this.data.header_balances:'';
 
@@ -689,24 +701,34 @@ telepath.config.system = {
 		this.c_lb = $('<div>').addClass('tele-config-system-lb');
 		//this.c_network.append(this.c_lb);
 
-		var ip_balances = $.each(this.data.ip_balances, function (i, ip) {
+		$.each(this.data.ip_balances, function (i, ip) {
 			that.c_lb.append(getRangeLB(ip, that.c_lb));
 		});
 
 		// Another blank
 		var another_ip_balancesthis= this.c_lb.append(getRangeLB('', that.c_lb));
 
-		var ipToggle = $('<div>').toggleFlip({
+		var state;
+
+		this.data.loadbalancer_mode_id=='0'?state=false:state=true;
+
+		if (!state){
+			another_ip_balancesthis.hide();
+			headerbalances.hide();
+		}
+
+		this.ipToggle = $('<div>').toggleFlip({
+			left_value: 'Off', right_value: 'On',
 
 			flip: function () {
-				//ip_balances.toggle();
 				another_ip_balancesthis.toggle();
 				headerbalances.toggle();
 			},
-			flipped: this.data.loadbalancer_mode_id == '1'
+
+			flipped: state
 		});
 
-		this.c_network.append(ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb)
+		this.col2.append(this.ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb);
 ;
 
 

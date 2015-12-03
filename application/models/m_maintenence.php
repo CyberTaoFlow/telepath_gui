@@ -285,15 +285,25 @@ class M_Maintenence extends CI_Model {
 	
 	function set_database_version($version) {
 		
-		$data = array('value' => $version);
+/*		$data = array('value' => $version);
 		$this->db->where('name', 'engine_version');
-		$this->db->update('config', $data); 
-	
+		$this->db->update('config', $data);*/
+
+		$params = [
+			'index' => 'telepath-config',
+			'type' => 'config',
+			'id' => 'telepath_version_id',
+			'body' => [
+				'doc' => [
+					'value' =>  $version
+					]
+			]
+		];
+
+		$this->elasticClient->update($params);
+
 	}
 
-function get_telepath_version_id() {
-
-}
 	
 	function get_engine_version() {
 		
@@ -307,14 +317,24 @@ function get_telepath_version_id() {
 	}
 	
 	function get_database_version() {
+
+		$params = [
+			'index' => 'telepath-config',
+			'type' => 'config',
+			'id' => 'telepath_version_id',
+		];
+
+		$result = $this->elasticClient->get($params);
+
+		return  $result['_source']['value'];
 		
-		// We have config, lets check its version and verify against the engine
+		/*// We have config, lets check its version and verify against the engine
 		$row = $this->db->where('name', 'engine_version')->get('config')->row_array();
 		// Serious problem here, stop
 		if(!$row) {	return false; }
 	
 		return intval($row['value']);
-	
+	*/
 	}
 	
 }
