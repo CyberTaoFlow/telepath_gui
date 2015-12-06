@@ -50,18 +50,25 @@ $active_record = TRUE;
 
 // Need to read our ATMS.CONF
 
-$atms_conf = parse_ini_file('/opt/telepath/conf/atms.conf');
+//$atms_conf = parse_ini_file('/opt/telepath/conf/atms.conf');
 // Main DB Config
 
-$db['default']['hostname'] = $atms_conf['database_address'];
+//$db['default']['hostname'] = $atms_conf['database_address'];
+//
+//if(isset($atms_conf['database_port'])) {
+//	$db['default']['port']     = $atms_conf['database_port'];
+//}
+//
+//$db['default']['database'] = $atms_conf['database_name'];
+//$db['default']['username'] = $atms_conf['username'];
+//$db['default']['password'] = $atms_conf['password'];
+$db['default']['hostname'] = "localhost";
+$db['default']['port']     = "3307";
+$db['default']['database'] = "telepath";
+$db['default']['username'] = "telepath";
+$db['default']['password'] = "L4ttbIcQlIbgEfZR";
 
-if(isset($atms_conf['database_port'])) {
-	$db['default']['port']     = $atms_conf['database_port'];
-}
 
-$db['default']['database'] = $atms_conf['database_name'];
-$db['default']['username'] = $atms_conf['username'];
-$db['default']['password'] = $atms_conf['password'];
 $db['default']['dbdriver'] = 'mysqli';
 
 // Main DB Config -- CodeIgniter
@@ -79,3 +86,5 @@ $db['default']['stricton'] = FALSE;
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */
+
+
