@@ -1,3 +1,6 @@
+/vendor/elasticsearch/elasticsearch/src/Elasticsearch/Connections/AbstractConnection.php
+/application/config/database.php
+/application/config/config.php
 .idea/
 application/controllers/test.php
 application/models/m_test.php
