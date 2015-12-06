@@ -70,7 +70,7 @@ $.widget( "tele.vMap", {
 		this.vectorMap.vectorMap({
 			map: 'world_en',
 			backgroundColor: '#304F68',
-			color: '#A6CA94',
+			color: '#C4E8B2',
 			hoverOpacity: 0.7,
 			selectedColor: '#666666',
 			enableZoom: true,
