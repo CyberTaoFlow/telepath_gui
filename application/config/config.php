@@ -357,8 +357,8 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
-$config['interface_file']='C:/dev';
-//'/proc/net/dev'
+$config['interface_file']='/proc/net/dev';
+
 
 
 /* End of file config.php */

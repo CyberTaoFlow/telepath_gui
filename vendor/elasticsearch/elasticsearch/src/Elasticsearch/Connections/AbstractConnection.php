@@ -93,7 +93,7 @@ abstract class AbstractConnection implements ConnectionInterface
             $this->transportSchema = $hostDetails['scheme'];
         }
 
-        $host = $this->transportSchema.'://10.0.0.142:'.$hostDetails['port'];
+        $host = $this->transportSchema.'://'.$hostDetails['host'].':'.$hostDetails['port'];
         if (isset($hostDetails['path']) === true) {
             $host .= $hostDetails['path'];
         }
