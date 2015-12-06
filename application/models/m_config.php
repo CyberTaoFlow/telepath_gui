@@ -98,15 +98,10 @@ class M_Config extends CI_Model
     }
 
     public function whitelist_set_ips($ips)
+
     {
 
-        function compare_from($a, $b)
-        {
-            return strnatcmp($a['from'], $b['from']);
-        }
-
-        // sort alphabetically by name
-        usort($ips, 'compare_from');
+        usort($ips, [$this, 'compare_from']);
 
         $params = [
             'index' => 'telepath-config',
@@ -127,13 +122,13 @@ class M_Config extends CI_Model
 
         $params = [
             'index' => 'telepath-config',
-            'type' => 'headers',
+            'type' => 'ips',
             'id' => 'loadbalancerips_id'
         ];
 
         $result = $this->elasticClient->get($params);
 
-        return  $result['_source']['value']['ips'];
+        return  $result['_source']['ips'];
 
     }
 
@@ -148,29 +143,28 @@ class M_Config extends CI_Model
 
         $result = $this->elasticClient->get($params);
 
-        return $result['_source']['value']['headers'];
+        return $result['_source']['headers'];
 
     }
 
+    function compare_from($a, $b)
+    {
+        return strnatcmp($a['from'], $b['from']);
+    }
+
+    
     public function set_ip_balances($ips)
     {
-        function compare_from($a, $b)
-        {
-            return strnatcmp($a['from'], $b['from']);
-        }
 
-        // sort alphabetically by name
-        usort($ips, 'compare_from');
+        usort($ips, [$this, 'compare_from']);
 
         $params = [
             'index' => 'telepath-config',
-            'type' => 'headers',
+            'type' => 'ips',
             'id' => 'loadbalancerips_id',
             'body' => [
                 'doc' => [
-                    'value' => [
                         'ips' => $ips
-                    ]
                 ]
             ]
         ];
@@ -191,9 +185,7 @@ class M_Config extends CI_Model
             'id' => 'loadbalancerheaders_id',
             'body' => [
                 'doc' => [
-                    'value' => [
                         'headers' => $headers
-                    ]
                 ]
             ]
         ];
