@@ -1,5 +1,8 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * @property  M_Config M_Config
+ */
 class Actions extends Tele_Controller
 {
 
@@ -106,6 +109,7 @@ class Actions extends Tele_Controller
         return_success($results);
 
     }
+
 
     public function set_flow()
     {
