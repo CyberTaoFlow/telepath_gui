@@ -6,7 +6,7 @@ class M_Search extends CI_Model {
 		parent::__construct();
 		
 		$params = array();
-		$params['hosts'] = array ('127.0.0.1:9200');
+		//$params['hosts'] = array ('127.0.0.1:9200');
 // $params['logging'] = true;
 // $params['logPath'] = '/tmp/elasticsearch.log';
 
