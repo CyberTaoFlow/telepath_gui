@@ -308,8 +308,8 @@ telepath.config.system = {
 		
 		telepath.ds.get('/config/set_config', data, function (data) {
 			
-			that.data = data;
-			that.showConfig();
+			//that.data = data;
+			//that.showConfig();
 			
 			telepath.dialog({ msg: 'Configuration Saved' });
 			
