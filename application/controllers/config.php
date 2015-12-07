@@ -15,7 +15,7 @@ class Config extends Tele_Controller
     public function _interfaces()
     {
 
-        $lines = $this->config->item('interface_file');
+        $lines = file($this->config->item('interface_file'));
 
         $interfaces = array();
         for ($i = 2; $i < count($lines); $i++) {
