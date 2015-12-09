@@ -283,7 +283,7 @@ class Cron extends Tele_Controller
 
         $insert_data = array();
 
-        foreach ($bot_list as $line) {
+        /*foreach ($bot_list as $line) {
             preg_match('/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/', $line, $m);
             if (!empty($m)) {
                 $insert_data[] = array('ip_addr' => $m[0], 'name' => 'KB');
@@ -295,15 +295,44 @@ class Cron extends Tele_Controller
             if (!empty($m)) {
                 $insert_data[] = array('ip_addr' => $m[0], 'name' => 'Tor');
                 $tors++;
+
+            }
+        }*/
+
+        foreach ($bot_list as $line) {
+            preg_match('/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/', $line, $m);
+            if (!empty($m)) {
+                $insert_data[] = array('from' => $m[0], 'to' => $m[1]);
+                $bots++;
+            }
+        }
+        foreach ($tor_list as $line) {
+            preg_match('/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/', $line, $m);
+            if (!empty($m)) {
+                $insert_data[] = array('from' => $m[0], 'to' => $m[1]);
+                $tors++;
             }
         }
 
         echo 'Telepath Update :: KB :: ' . $bots . ' :: TOR :: ' . $tors . "\n";
 
         echo 'Updating DB Start';
-        $this->db->query('TRUNCATE TABLE bad_ips');
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'ips',
+            'id' => 'bad_ips',
+            'body' => [
+                'doc' => [
+                    'ips' => $insert_data
+                ]
+            ]
+        ];
+
+        $this->elasticClient->update($params);
+       /* $this->db->query('TRUNCATE TABLE bad_ips');
         $this->db->insert_batch('bad_ips', $insert_data);
-        $this->db->query("UPDATE config SET value='1' WHERE action_code=71");
+        $this->db->query("UPDATE config SET value='1' WHERE action_code=71");*/
         echo 'Updating DB End';
 
     }
