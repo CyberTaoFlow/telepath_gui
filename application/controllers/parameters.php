@@ -22,7 +22,7 @@ class Parameters extends Tele_Controller
         $ans = array('items' => array(), 'success' => true);
 
         foreach ($headers as $header) {
-            $ans['items'][] = $header->att_name;
+            $ans['items'][] = $header;
         }
         $ans['items'][] = 'user-agent';
         sort($ans['items']);

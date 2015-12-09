@@ -38,7 +38,7 @@ class Applications extends Tele_Controller
 
         $search = $this->input->post('search');
 
-        //$res = $this->redisObj->get('cache_applications');
+//        $res = $this->redisObj->get('cache_applications');
 
         if (isset($res) && $res) {
             $data = json_decode($res);
@@ -49,7 +49,7 @@ class Applications extends Tele_Controller
 
         $data = $this->M_Applications->index($search);
 
-        $this->redisObj->set('cache_applications', json_encode($data), 600);
+//        $this->redisObj->set('cache_applications', json_encode($data), 600);
 
         return_success($data);
 
