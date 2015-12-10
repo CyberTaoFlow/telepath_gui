@@ -4,3 +4,4 @@
 .idea/
 application/controllers/test.php
 application/models/m_test.php
+tmp/
