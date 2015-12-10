@@ -1,0 +1,33 @@
+bad_domains not found
+
+bad_ips
+
+bad_user_agent not found
+
+ci_group_perm
+
+ci_groups
+
+ci_login_attempts
+
+ci_perm_data
+
+ci_user_perm
+
+ci_users
+
+ci_users_groups
+
+dashboard_order not found
+
+global_headers
+
+registered_users
+
+report_scheduler
+
+report_profiles
+
+reputation_ips  not found
+
+reputation_users

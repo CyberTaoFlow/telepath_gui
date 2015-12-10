@@ -328,7 +328,7 @@ telepath.config.system = {
 		}
 	},
 	parseRanges: function(eventsData) {
-		
+
 		var events = [];
 		
 		function GetDaysOfWeek(date) {
@@ -358,7 +358,7 @@ telepath.config.system = {
 			
 			var current_to = false;
 			var current_from = false;
-			$.each(eventsData[n], function(num, val) {
+			/*$.each(eventsData[n], function(num, val) {
 				i = parseInt(num.substring(1));
 				if(val == '1') {
 					date.setHours(i);
@@ -370,6 +370,23 @@ telepath.config.system = {
 					events.push({ id: index, start: current_from, end: current_to, title: '' });
 					index++;
 				}
+			});*/
+
+			$.each(eventsData, function(num, value) {
+
+
+			$.each(value._source.times, function(j, val) {
+
+				date.setHours(val.from);
+				date.setMinutes(0);
+				date.setSeconds(0);
+				current_from = new Date(date);
+				//date.setHours(i + 1);
+				date.setHours(val.to);
+				current_to = new Date(date);
+				events.push({id: index, start: current_from, end: current_to, title: ''});
+				index++;
+			});
 			});
 		});
 
@@ -486,13 +503,14 @@ telepath.config.system = {
 				eventDelete: function(calEvent, element, dayFreeBusyManager,
                                                       calendar, clickEvent) {
 					calendar.weekCalendar('removeEvent',calEvent.id);
-					telepath.ds.get('/config/del_scheduler_event', { mode: "get_schedule", 'event': calEvent.start });
+					telepath.ds.get('/config/del_scheduler_event', { mode: "get_schedule", from: calEvent.from ,to: calEvent.to});
 				},
 				eventNew: function(calEvent, element, dayFreeBusyManager, calendar, mouseupEvent) {
-					telepath.ds.get('/config/add_scheduler_event', { mode: "get_schedule", 'event': calEvent.start });
+					telepath.ds.get('/config/add_scheduler_event', { mode: "get_schedule", from: calEvent.from ,to: calEvent.to});
 				}
 			});
-					
+
+
 		}, 'Error while trying to get the scheduler.');
 
 		// MV2Prod after

@@ -9,7 +9,7 @@ class M_Globalheaders extends CI_Model {
 		parent::__construct();
 	}
 
-	public function get_global_headers($app_id = 0) {
+	public function sql_get_global_headers($app_id = 0) {
 
 		$this->db->select('att_id, att_name');
 		$this->db->from($this->tableName);
@@ -24,6 +24,22 @@ class M_Globalheaders extends CI_Model {
 
 		return $result;
 		
+	}
+
+	public function get_global_headers($app_id = 0) {
+
+//		/telepath-config/headers/globalheaders_id
+		$params = [
+			'index' => 'telepath-config',
+			'type' => 'headers',
+			'id' => 'globalheaders_id',
+		];
+
+		$result = $this->elasticClient->get($params);
+
+		return $result['_source']['headers'];
+
+
 	}
 	
 }

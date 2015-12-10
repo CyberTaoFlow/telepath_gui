@@ -477,7 +477,6 @@ class M_Config extends CI_Model
     public function set_regex($value)
     {
 
-
         $params = [
             'index' => 'telepath-config',
             'type' => 'filter_extensions',
@@ -494,7 +493,7 @@ class M_Config extends CI_Model
     }
 
 
-    public function get_scheduler($mode)
+    public function sql_get_scheduler($mode)
     {
 
         // Sanity Check
@@ -521,7 +520,29 @@ class M_Config extends CI_Model
 
     }
 
-    public function add_scheduler_event($mode, $event, $add = 1)
+public function get_scheduler($a)
+{
+
+    $params = [
+        'index' => 'telepath-scheduler',
+        'type' => 'times',
+        'body' => [
+            'query' => [
+                'match_all' => [
+
+                ]
+            ]
+        ]
+    ];
+
+    $result = $this->elasticClient->search($params);
+
+    return $result['hits']['hits'];
+}
+
+
+
+    public function sql_add_scheduler_event($mode, $event, $add = 1)
     {
         $table = false;
         if ($mode == 'scheduler') {
@@ -545,6 +566,64 @@ class M_Config extends CI_Model
         return $event;
     }
 
+    public function add_scheduler_event($mode, $event, $add = 1)
+    {
+        $table = false;
+        if ($mode == 'scheduler') {
+            $table = 'scheduler';
+        }
+        if ($mode == 'report_scheduler') {
+            $table = 'report_scheduler';
+        }
+        if (!$table) return 1;
+
+        if (!$event) return 2;
+        $weekdays = array("Sat" => "Saturday", "Sun" => "Sunday", "Mon" => "Monday",
+            "Tue" => "Tuesday", "Wed" => "Wednesday", "Thu" => "Thursday", "Fri" => "Friday");
+        //$t = "Sun Jun 14 2015 16:00:00 GMT+0300 (Jerusalem Daylight Time)";
+        $wday = $weekdays[substr($event, 0, 3)];
+        $d = @date_parse($event);
+        if (!$d) return 3;
+
+        $params = [
+            'index' => 'telepath-scheduler',
+            'type' => 'times',
+            'id' => $wday,
+            'body' => [
+                'query' => [
+                    'match_all' => [
+
+                    ]
+                ]
+            ]
+        ];
+
+        $result = $this->elasticClient->search($params);
+
+        $arr=array();
+        array_diff_assoc($result,$d['hour'],$arr);
+        {
+
+            $params = [
+                'index' => 'telepath-scheduler',
+                'type' => 'times',
+                'id' => $wday,
+                'body' => [
+                    'doc' => [
+                        'times' => ''
+                    ]
+                ]
+            ];
+
+            $this->elasticClient->update($params);
+
+        }
+
+        //$this->db->from($table);
+        $this->db->where('day', $wday);
+        $this->db->update($table, array(("n" . $d['hour']) => $add));
+        return $event;
+    }
 
     public function set_scheduler($mode, $data)
     {
