@@ -520,7 +520,7 @@ class M_Config extends CI_Model
 
     }
 
-public function get_scheduler($a)
+public function get_scheduler()
 {
 
     $params = [
