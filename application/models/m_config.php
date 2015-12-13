@@ -543,15 +543,20 @@ public function get_scheduler()
     public function set_scheduler($times)
     {
 
-        foreach ($times as $time => $param) {
+
+        $weekDay=array('Sunday'=>[],'Monday'=>[],'Tuesday'=>[],'Wednesday'=>[],'Thursday'=>[],'Friday'=>[],'Saturday'=>[]);
+
+        $weekDay = array_merge($weekDay,$times);
+
+        foreach ($weekDay as $day => $times) {
 
             $params = [
                 'index' => 'telepath-scheduler',
                 'type' => 'times',
-                'id' => $time,
+                'id' => $day,
                 'body' => [
                     'doc' => [
-                        'times' => $param
+                        'times' => $times
                 ]
             ]
             ];

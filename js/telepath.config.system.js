@@ -325,7 +325,7 @@ telepath.config.system = {
 
 		$.each(weekday, function(i,val){
 
-			data.scheduler[val]=[null];
+			data.scheduler[val]=[];
 
 		});
 
@@ -404,6 +404,7 @@ telepath.config.system = {
 						current_from = new Date(date);
 						//date.setHours(i + 1);
 						date.setHours(val.to);
+						
 						current_to = new Date(date);
 						events.push({id: index, start: current_from, end: current_to, title: ''});
 						index++;
