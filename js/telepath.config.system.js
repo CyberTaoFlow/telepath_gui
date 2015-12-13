@@ -306,13 +306,40 @@ telepath.config.system = {
 			data.regex.URL = URL;
 		}
 
-		data.scheduler=[];
 
 
-		var Events = $(that.scheduler).weekCalendar("serializeEvents");
+		data.scheduler={};
+
+		var Events = $(that.cal).weekCalendar("serializeEvents");
+
+		var weekday = new Array(7);
+		weekday[0]=  "Sunday";
+		weekday[1] = "Monday";
+		weekday[2] = "Tuesday";
+		weekday[3] = "Wednesday";
+		weekday[4] = "Thursday";
+		weekday[5] = "Friday";
+		weekday[6] = "Saturday";
+
+
+
+		$.each(weekday, function(i,val){
+
+			data.scheduler[val]=[null];
+
+		});
 
 		$.each(Events,function(i, val){
-			data.scheduler[Events.]
+
+			var from = new Date(val.start);
+
+			var to = new Date(val.end);
+
+			var dey = weekday[from.getDay()];
+
+			data.scheduler[dey].push({from:parseInt(from.getHours()),to:parseInt(to.getHours())});
+
+
 		});
 
 		telepath.ds.get('/config/set_config', data, function (data) {
@@ -361,25 +388,6 @@ telepath.config.system = {
 		
 		$.each(days, function(i, date) {
 
-			var n = weekday[date.getDay()];
-
-			var tracking = false;
-
-/*			var current_to = '';
-			var current_from = '';
-			$.each(eventsData[n], function (num, val) {
-				i = parseInt(num.substring(1));
-				if (val == '1') {
-					date.setHours(i);
-					date.setMinutes(0);
-					date.setSeconds(0);
-					current_from = new Date(date);
-					date.setHours(i + 1);
-					current_to = new Date(date);
-					events.push({id: index, start: current_from, end: current_to, title: ''});
-					index++;
-				}
-			});*/
 			var n = weekday[date.getDay()];
 			var current_to = '';
 			var current_from = '';
@@ -455,7 +463,11 @@ telepath.config.system = {
 		
 		});
 */
-		
+
+		var that = this;
+
+		that.index=index;
+
 		return events;
 		
 	},
@@ -515,17 +527,18 @@ telepath.config.system = {
 				resizable : function(calEvent, element) { return false;},
 				// event drag is disabled. the user had to remobe old and create new event
 				draggable : function(calEvent, element) { return false;},
+				eventNew: function(calEvent, element, dayFreeBusyManager,
+								   calendar, mouseupEvent) {
+					calEvent.id=that.index;
+					that.index++;
+				},
 				eventDelete: function(calEvent, element, dayFreeBusyManager,
-                                                      calendar, clickEvent) {
-					calendar.weekCalendar('removeEvent',calEvent.id);
-					//telepath.ds.get('/config/del_scheduler_event', { mode: "get_schedule", from: calEvent.from ,to: calEvent.to});
+									  calendar, clickEvent) {
+						calendar.weekCalendar('removeEvent', calEvent.id);
+
 				},
 				eventDrop: function(newCalEvent, oldCalEvent, element){
-
 				}
-				//eventNew: function(calEvent, element, dayFreeBusyManager, calendar, mouseupEvent) {
-				//	telepath.ds.get('/config/add_scheduler_event', { mode: "get_schedule", from: calEvent.from ,to: calEvent.to});
-				//}
 			});
 
 
@@ -765,7 +778,6 @@ telepath.config.system = {
 		});
 
 		this.col2.append(this.ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb);
-;
 
 
 	

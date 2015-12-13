@@ -540,8 +540,27 @@ public function get_scheduler()
     return $result['hits']['hits'];
 }
 
+    public function set_scheduler($times)
+    {
 
+        foreach ($times as $time => $param) {
 
+            $params = [
+                'index' => 'telepath-scheduler',
+                'type' => 'times',
+                'id' => $time,
+                'body' => [
+                    'doc' => [
+                        'times' => $param
+                ]
+            ]
+            ];
+
+            $this->elasticClient->update($params);
+
+        }
+
+    }
     public function sql_add_scheduler_event($mode, $event, $add = 1)
     {
         $table = false;
@@ -585,47 +604,14 @@ public function get_scheduler()
         $d = @date_parse($event);
         if (!$d) return 3;
 
-        $params = [
-            'index' => 'telepath-scheduler',
-            'type' => 'times',
-            'id' => $wday,
-            'body' => [
-                'query' => [
-                    'match_all' => [
 
-                    ]
-                ]
-            ]
-        ];
-
-        $result = $this->elasticClient->search($params);
-
-        $arr=array();
-        array_diff_assoc($result,$d['hour'],$arr);
-        {
-
-            $params = [
-                'index' => 'telepath-scheduler',
-                'type' => 'times',
-                'id' => $wday,
-                'body' => [
-                    'doc' => [
-                        'times' => ''
-                    ]
-                ]
-            ];
-
-            $this->elasticClient->update($params);
-
-        }
-
-        //$this->db->from($table);
+        $this->db->from($table);
         $this->db->where('day', $wday);
         $this->db->update($table, array(("n" . $d['hour']) => $add));
         return $event;
     }
 
-    public function set_scheduler($mode, $data)
+    public function sql_set_scheduler($mode, $data)
     {
 
         // Sanity Check
