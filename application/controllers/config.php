@@ -116,22 +116,9 @@ class Config extends Tele_Controller
 
         $this->load->model('M_Config');
 
-        $mode = $this->input->post('mode', true);
 
-        $table = false;
+            return_json(array('scheduler' => $this->M_Config->get_scheduler(), 'success' => true));
 
-        // Little mapping (TODO:: undo mapping)
-
-        if ($mode == 'get_schedule') {
-            $table = 'scheduler';
-        }
-        if ($mode == 'get_report_schedule') {
-            $table = 'report_scheduler';
-        }
-
-        if ($table) {
-            return_json(array('scheduler' => $this->M_Config->get_scheduler($table), 'success' => true));
-        }
 
     }
 
@@ -176,7 +163,7 @@ class Config extends Tele_Controller
     }
 
 
-    public function set_scheduler()
+    /*public function set_scheduler()
     {
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
@@ -201,7 +188,8 @@ class Config extends Tele_Controller
             return_json($this->M_Config->set_scheduler($table, $data));
         }
 
-    }
+    }*/
+
 
     public function set_schedule()
     {
@@ -250,6 +238,12 @@ class Config extends Tele_Controller
 //			foreach($whitelist_add as $ip) {
 //				$this->M_Config->whitelist_add_ip($ip);
 //			}
+
+        }
+
+        if (isset($config['scheduler'])) {
+
+            $this->M_Config->set_scheduler($config['scheduler']);
 
         }
 
