@@ -171,6 +171,13 @@ class Ion_auth_model extends CI_Model
 	public function __construct()
 	{
 		parent::__construct();
+
+		// ElasticSearch Library
+		require 'vendor/autoload.php';
+		// Connect elastic
+		//$params = array('hosts' => array('127.0.0.1:9200'));
+		$this->elasticClient = new Elasticsearch\Client();
+
 		$this->load->database();
 		$this->load->config('ion_auth', TRUE);
 		$this->load->helper('cookie');
