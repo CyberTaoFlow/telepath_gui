@@ -367,19 +367,6 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select('password, salt')
-			->where('id', $id)
-			->limit(1)
-			->get($this->tables['users']);
-
-		$hash_password_db = $query->row();
-
-		if ($query->num_rows() !== 1)
-		{
-			return FALSE;
-		}
-
-
 
 		$params = [
 			'index' => 'telepath-users',
@@ -398,12 +385,11 @@ class Ion_auth_model extends CI_Model
 
 		$result = $this->elasticClient->search($params);
 
-		if ($result['hits']['hits']==[null])
+		if ($result['hits']['total']== 0)
 		{
-
 			return false;
 		}
-
+		$hash_password_db=$result['hits']['hits']['_source']['password'];
 
 		// bcrypt
 		if ($use_sha1_override === FALSE && $this->hash_method == 'bcrypt')
