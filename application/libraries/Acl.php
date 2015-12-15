@@ -15,6 +15,10 @@ class acl
 
 	function __construct() {
 		$this->ci = &get_instance();
+		// ElasticSearch Library
+		require 'vendor/autoload.php';
+		// Connect to elastic
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 	
 	// Determines if user has access to all apps
@@ -268,7 +272,7 @@ class acl
 	}
 	
 	// Get permission name from permID
-	
+	// Not needed in ELastic
 	function get_perm_data($perm_id) {
 		$this->ci->db->select('class, function');
 		$this->ci->db->where('id', floatval($perm_id));
@@ -280,10 +284,30 @@ class acl
 	/* GROUP RELATED */
 	
 	// Clear Group Permissions
-	function clear_group_perm($group_id) {
+	function sql_clear_group_perm($group_id) {
 		$this->ci->db->where('group_id', $group_id)->delete('ci_group_perm');
+
 	}
-	
+
+	// Clear Group Permissions
+	function clear_group_perm($group_id) {
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+				'body' => [
+						'doc' => [
+								'permissions' => ''
+						]
+				]
+		];
+
+		$this->elasticClient->update($params);
+	}
+
+
+
+
 	// Set Group Permission
 	function set_group_perm($group_id, $perm_id) {
 		$this->ci->db->insert('ci_group_perm', array('group_id' => $group_id, 'perm_id' => $perm_id, 'value' => 1));
