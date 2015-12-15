@@ -385,7 +385,7 @@ class Ion_auth_model extends CI_Model
 
 		$result = $this->elasticClient->search($params);
 
-		if ($result['hits']['total']== 0)
+		if ($result['hits']['total']!== 1)
 		{
 			return false;
 		}
