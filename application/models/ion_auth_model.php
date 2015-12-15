@@ -305,7 +305,7 @@ class Ion_auth_model extends CI_Model
 	 * @return void
 	 * @author Mathew
 	 **/
-	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
+/*	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
 	{
 		if (empty($id) || empty($password))
 		{
@@ -357,8 +357,86 @@ class Ion_auth_model extends CI_Model
 		{
 			return FALSE;
 		}
-	}
+	}*/
+	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
+	{
+		if (empty($id) || empty($password))
+		{
+			return FALSE;
+		}
 
+		$this->trigger_events('extra_where');
+
+		$query = $this->db->select('password, salt')
+			->where('id', $id)
+			->limit(1)
+			->get($this->tables['users']);
+
+		$hash_password_db = $query->row();
+
+		if ($query->num_rows() !== 1)
+		{
+			return FALSE;
+		}
+
+
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'ids' => [
+						'values'=>[
+							$id
+						]
+					],
+
+				]
+			]
+		];
+
+		$result = $this->elasticClient->search($params);
+
+		if ($result['hits']['hits']==[null])
+		{
+
+			return false;
+		}
+
+
+		// bcrypt
+		if ($use_sha1_override === FALSE && $this->hash_method == 'bcrypt')
+		{
+			if ($this->bcrypt->verify($password,$hash_password_db->password))
+			{
+				return TRUE;
+			}
+
+			return FALSE;
+		}
+
+		// sha1
+		if ($this->store_salt)
+		{
+			$db_password = sha1($password . $hash_password_db->salt);
+		}
+		else
+		{
+			$salt = substr($hash_password_db->password, 0, $this->salt_length);
+
+			$db_password =  $salt . substr(sha1($salt . $password), 0, -$this->salt_length);
+		}
+
+		if($db_password == $hash_password_db->password)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
 	/**
 	 * Generates a random salt value for forgotten passwords or any other keys. Uses SHA1.
 	 *
