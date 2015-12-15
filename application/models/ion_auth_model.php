@@ -1417,6 +1417,8 @@ class Ion_auth_model extends CI_Model
 		//check if unique - num_rows() > 0 means row found
 		if ($this->db->where(array( $this->join['groups'] => (int)$group_id, $this->join['users'] => (int)$user_id))->get($this->tables['users_groups'])->num_rows()) return false;
 
+//		if ('')return false;
+
 		if ($return = $this->db->insert($this->tables['users_groups'], array( $this->join['groups'] => (int)$group_id, $this->join['users'] => (int)$user_id)))
 		{
 			if (isset($this->_cache_groups[$group_id])) {
@@ -1855,6 +1857,19 @@ class Ion_auth_model extends CI_Model
 		// insert the new group
 		$this->db->insert($this->tables['groups'], $data);
 		$group_id = $this->db->insert_id();
+
+		$data['extradata']=str_replace('"','',$data['extradata']);
+
+		$new_id = str_replace(' ','_',$data['name']);
+
+		$params = array();
+		$params['body']  =  $data;
+
+		$params['index'] = 'telepath-users';
+		$params['type']  = 'groups';
+		$params['id'] = $new_id;
+
+		$this->elasticClient->index($params);
 
 		// report success
 		$this->set_message('group_creation_successful');
