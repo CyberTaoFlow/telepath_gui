@@ -360,6 +360,7 @@ class Ion_auth_model extends CI_Model
 	}*/
 	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
 	{
+
 		if (empty($id) || empty($password))
 		{
 			return FALSE;
@@ -367,29 +368,40 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-
 		$params = [
 			'index' => 'telepath-users',
 			'type' => 'users',
 			'body' => [
 				'query' => [
 					'ids' => [
-						'values'=>[
+						'values' => [
 							$id
-						]
-					],
 
+						]
+					]
 				]
 			]
 		];
 
 		$result = $this->elasticClient->search($params);
 
-		if ($result['hits']['total']!== 1)
+
+		if ($result['hits']['total']== 0)
 		{
 			return false;
 		}
-		$hash_password_db=$result['hits']['hits']['_source']['password'];
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+				'id'=>$id
+		]
+		;
+
+		$result = $this->elasticClient->get($params);
+
+		return $result;
+		$hash_password_db=$result['_source']['password'];
 
 		// bcrypt
 		if ($use_sha1_override === FALSE && $this->hash_method == 'bcrypt')
@@ -619,6 +631,23 @@ class Ion_auth_model extends CI_Model
 		);
 
 		$this->trigger_events('extra_where');
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' => $id,
+			'body' => [
+				'doc' => [
+					'activation_code' => $activation_code,
+					'active' => 0
+				]
+			]
+		];
+
+		$result = $this->elasticClient->update($params);
+
+
+
 		$this->db->update($this->tables['users'], $data, array('id' => $id));
 
 		$return = $this->db->affected_rows() == 1;
@@ -725,26 +754,40 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select('id, password, salt')
+	/*	$query = $this->db->select('id, password, salt')
 		                  ->where($this->identity_column, $identity)
 		                  ->limit(1)
-		                  ->get($this->tables['users']);
+		                  ->get($this->tables['users']);*/
 
-		if ($query->num_rows() !== 1)
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$this->identity_column => $identity
+					]
+				]
+			]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		if ($results['hits']['total'] !== 1)
 		{
 			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
 			$this->set_error('password_change_unsuccessful');
 			return FALSE;
 		}
 
-		$user = $query->row();
+		$user = $results['hits']['hits'];
 
-		$old_password_matches = $this->hash_password_db($user->id, $old);
+		$old_password_matches = $this->hash_password_db($user['_id'], $old);
 
 		if ($old_password_matches === TRUE)
 		{
 			//store the new password and reset the remember code so all remembered instances have to re-login
-			$hashed_new_password  = $this->hash_password($new, $user->salt);
+			$hashed_new_password  = $this->hash_password($new, $user['_source']['salt']);
 			$data = array(
 			    'password' => $hashed_new_password,
 			    'remember_code' => NULL,
@@ -1026,6 +1069,8 @@ class Ion_auth_model extends CI_Model
 	 **/
 	public function login($identity, $password, $remember=FALSE)
 	{
+
+
 		$this->trigger_events('pre_login');
 
 		if (empty($identity) || empty($password))
@@ -1058,6 +1103,7 @@ class Ion_auth_model extends CI_Model
 			// temp hack, to enable any passwords (Yuli)
 			//$password = TRUE;
 
+			$password=TRUE;
 			if ($password === TRUE)
 			{
 				if ($user->active == 0)
