@@ -519,6 +519,80 @@ class Ion_auth_model extends CI_Model
 		return $return;
 	}
 
+	/*public function activate($id, $code = false)
+	{
+		$this->trigger_events('pre_activate');
+
+		if ($code !== FALSE)
+		{
+			$query = $this->db->select($this->identity_column)
+				->where('activation_code', $code)
+				->limit(1)
+				->get($this->tables['users']);
+
+			$result = $query->row();
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+					'query' => [
+						'match' => [
+							'activation_code' => $code
+						]
+					]
+				]
+			];
+
+			$result = $this->elasticClient->search($params);
+
+
+			if ($result['hits']['total'] !== 1)
+			{
+				$this->trigger_events(array('post_activate', 'post_activate_unsuccessful'));
+				$this->set_error('activate_unsuccessful');
+				return FALSE;
+			}
+
+
+			$identity = $result->{$this->identity_column};
+
+			$data = array(
+				'activation_code' => NULL,
+				'active'          => 1
+			);
+
+			$this->trigger_events('extra_where');
+			$this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
+		}
+		else
+		{
+			$data = array(
+				'activation_code' => NULL,
+				'active'          => 1
+			);
+
+
+			$this->trigger_events('extra_where');
+			$this->db->update($this->tables['users'], $data, array('id' => $id));
+		}
+
+
+		$return = $this->db->affected_rows() == 1;
+		if ($return)
+		{
+			$this->trigger_events(array('post_activate', 'post_activate_successful'));
+			$this->set_message('activate_successful');
+		}
+		else
+		{
+			$this->trigger_events(array('post_activate', 'post_activate_unsuccessful'));
+			$this->set_error('activate_unsuccessful');
+		}
+
+
+		return $return;
+	}*/
 
 	/**
 	 * Deactivate
