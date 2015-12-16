@@ -799,35 +799,57 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select('id, password, salt')
-		                  ->where($this->identity_column, $identity)
-		                  ->limit(1)
-		                  ->get($this->tables['users']);
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$this->identity_column => $identity
+					]
+				]
+			]
+		];
 
-		if ($query->num_rows() !== 1)
-		{
+		$result=$this->elasticClient->search($params);
+
+
+		if ($result['hits']['total']!==1) {
+
 			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
 			$this->set_error('password_change_unsuccessful');
 			return FALSE;
 		}
 
-		$result = $query->row();
+		$new = $this->hash_password($new, $result['hits']['hits'][0]['_source']['salt']);
 
-		$new = $this->hash_password($new, $result->salt);
 
 		//store the new password and reset the remember code so all remembered instances have to re-login
 		//also clear the forgotten password code
-		$data = array(
+		$data = [
 		    'password' => $new,
 		    'remember_code' => NULL,
 		    'forgotten_password_code' => NULL,
 		    'forgotten_password_time' => NULL,
-		);
+		];
 
 		$this->trigger_events('extra_where');
-		$this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
 
-		$return = $this->db->affected_rows() == 1;
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' => $result['hits']['hits'][0]['_id'],
+			'body' => [
+				'doc' => $data
+
+			]
+		];
+
+
+		$this->elasticClient->update($params);
+
+		$return = $result['hits']['total']==1;
+		
 		if ($return)
 		{
 			$this->trigger_events(array('post_change_password', 'post_change_password_successful'));
