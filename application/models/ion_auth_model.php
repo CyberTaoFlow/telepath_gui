@@ -709,7 +709,7 @@ class Ion_auth_model extends CI_Model
 		return true;
 	}
 
-	public function clear_forgotten_password_code($code) {
+	/*public function clear_forgotten_password_code($code) {
 
 		if (empty($code))
 		{
@@ -731,6 +731,56 @@ class Ion_auth_model extends CI_Model
 		}
 
 		return FALSE;
+	}*/
+
+	public function clear_forgotten_password_code($code) {
+
+		if (empty($code))
+		{
+			return FALSE;
+		}
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						'forgotten_password_code' => $code
+					]
+				]
+			]
+		];
+
+		$result=$this->elasticClient->search($params);
+
+
+		if ($result['hits']['total']){
+
+			$data = [
+				'forgotten_password_code' => NULL,
+				'forgotten_password_time' => NULL
+			];
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $result['hits']['hits'][0]['_id'],
+				'body' => [
+					'doc' => $data
+
+				]
+			];
+
+
+			 $this->elasticClient->update($params);
+
+			return TRUE;
+		}
+
+		return FALSE;
+
+
 	}
 
 	/**
