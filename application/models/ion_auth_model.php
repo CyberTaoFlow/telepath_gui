@@ -612,6 +612,31 @@ class Ion_auth_model extends CI_Model
 	 * @return void
 	 * @author Mathew
 	 **/
+
+	/*public function deactivate($id = NULL)
+	{
+		$this->trigger_events('deactivate');
+		if (!isset($id))
+		{
+			$this->set_error('deactivate_unsuccessful');
+			return FALSE;
+		}
+		$activation_code       = sha1(md5(microtime()));
+		$this->activation_code = $activation_code;
+		$data = array(
+			'activation_code' => $activation_code,
+			'active'          => 0
+		);
+		$this->trigger_events('extra_where');
+		$this->db->update($this->tables['users'], $data, array('id' => $id));
+		$return = $this->db->affected_rows() == 1;
+		if ($return)
+			$this->set_message('deactivate_successful');
+		else
+			$this->set_error('deactivate_unsuccessful');
+		return $return;
+	}*/
+
 	public function deactivate($id = NULL)
 	{
 		$this->trigger_events('deactivate');
@@ -622,13 +647,16 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
+
+
+
 		$activation_code       = sha1(md5(microtime()));
 		$this->activation_code = $activation_code;
 
-		$data = array(
+		$data = [
 		    'activation_code' => $activation_code,
-		    'active'          => 0
-		);
+		    'active'          => 2
+		];
 
 		$this->trigger_events('extra_where');
 
@@ -637,26 +665,48 @@ class Ion_auth_model extends CI_Model
 			'type' => 'users',
 			'id' => $id,
 			'body' => [
-				'doc' => [
-					'activation_code' => $activation_code,
-					'active' => 0
+				'doc' => $data
+
+			]
+		];
+
+		$check=$this->check_id($params);
+
+		if (!$check)
+		{
+			$this->set_error('deactivate_unsuccessful');
+
+			return $check;
+		}
+		$result = $this->elasticClient->update($params);
+
+		$this->set_message('deactivate_successful');
+
+		return $result;
+	}
+
+	public function check_id($param){
+
+		$params = [
+			'index' => $param['index'],
+			'type' => $param['type'],
+			'body' => [
+				'query' => [
+					'ids' => [
+						'values' => [
+							$param['id'],
+						]
+					]
 				]
 			]
 		];
 
-		$result = $this->elasticClient->update($params);
+		$result = $this->elasticClient->search($params);
 
-
-
-		$this->db->update($this->tables['users'], $data, array('id' => $id));
-
-		$return = $this->db->affected_rows() == 1;
-		if ($return)
-			$this->set_message('deactivate_successful');
-		else
-			$this->set_error('deactivate_unsuccessful');
-
-		return $return;
+		if ($result['hits']['total']==0){
+			return false;
+		}
+		return true;
 	}
 
 	public function clear_forgotten_password_code($code) {
