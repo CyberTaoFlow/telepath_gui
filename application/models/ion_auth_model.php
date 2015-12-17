@@ -247,6 +247,7 @@ class Ion_auth_model extends CI_Model
 		}
 
 		$this->trigger_events('model_constructor');
+
 	}
 
 	/**
@@ -1467,7 +1468,7 @@ class Ion_auth_model extends CI_Model
 	{
 		$this->trigger_events('pre_update_user');
 
-		$user = $this->user($id)->row();
+		//$user = $this->user($id)->row();
 
 		$this->db->trans_begin();
 
@@ -1526,7 +1527,7 @@ class Ion_auth_model extends CI_Model
 	* @return bool
 	* @author Phil Sturgeon
 	**/
-	public function delete_user($id)
+	public function sql_delete_user($id)
 	{
 		$this->trigger_events('pre_delete_user');
 
@@ -1560,6 +1561,29 @@ class Ion_auth_model extends CI_Model
 	}
 
 	/**
+	* delete_user
+	*
+	* @return bool
+	* @author Phil Sturgeon
+	**/
+	public function delete_user($id)
+	{
+		$this->trigger_events('pre_delete_user');
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $id,
+		];
+
+		$this->elasticClient->delete($params);
+
+		$this->trigger_events(array('post_delete_user', 'post_delete_user_successful'));
+		$this->set_message('delete_successful');
+		return TRUE;
+	}
+
+	/**
 	 * update_last_login
 	 *
 	 * @return bool
@@ -1573,9 +1597,24 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$this->db->update($this->tables['users'], array('last_login' => time()), array('id' => $id));
+		//$this->db->update($this->tables['users'], array('last_login' => time()), array('id' => $id));
 
-		return $this->db->affected_rows() == 1;
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $id,
+				'body' => [
+						'doc' =>
+								["last_login"=>time()]
+
+				]
+		];
+
+		$response=$this->elasticClient->update($params);
+
+		//return $this->db->affected_rows() == 1;
+
+		return $response;
 	}
 
 	/**
@@ -1640,6 +1679,8 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Ben Edmunds
 	 **/
+
+	// Not used in this project
 	public function remember_user($id)
 	{
 		$this->trigger_events('pre_remember_user');
@@ -1694,6 +1735,8 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Ben Edmunds
 	 **/
+
+	// Not used in this project
 	public function login_remembered_user()
 	{
 		$this->trigger_events('pre_login_remembered_user');
@@ -1742,7 +1785,7 @@ class Ion_auth_model extends CI_Model
 	 *
 	 * @author aditya menon
 	*/
-	public function create_group($group_name = FALSE, $group_description = '', $additional_data = array())
+	public function sql_create_group($group_name = FALSE, $group_description = '', $additional_data = array())
 	{
 		// bail if the group name was not passed
 		if(!$group_name)
@@ -1778,12 +1821,74 @@ class Ion_auth_model extends CI_Model
 	}
 
 	/**
+	 * create_group
+	 *
+	 * @author aditya menon
+	*/
+	public function create_group($group_name = FALSE, $group_description = '', $additional_data = array())
+	{
+		// bail if the group name was not passed
+		if(!$group_name)
+		{
+			$this->set_error('group_name_required');
+			return FALSE;
+		}
+
+		// bail if the group name already exists
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'body' => [
+						'query' => [
+								'filtered' => [
+										'filter' => [
+												'term' => [ 'name' => $group_name ]
+										]
+								]
+						]
+				]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		if($results['hits']['total']>0)
+		{
+			$this->set_error('group_already_exists');
+			return FALSE;
+		}
+
+		$data = array('name'=>$group_name,'description'=>$group_description,'additional_data'=>$additional_data);
+
+		//filter out any data passed that doesnt have a matching column in the groups table
+		//and merge the set group data and the additional data
+		//if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['groups'], $additional_data), $data);
+
+
+		$this->trigger_events('extra_group_set');
+
+		// insert the new group
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'body' => $data
+		];
+
+// Document will be indexed to my_index/my_type/my_id
+		$response=$this->elasticClient->index($params);
+
+		// report success
+		$this->set_message('group_creation_successful');
+		// return the brand new group id
+		return $response['_id'];
+	}
+
+	/**
 	 * update_group
 	 *
 	 * @return bool
 	 * @author aditya menon
 	 **/
-	public function update_group($group_id = FALSE, $group_name = FALSE, $additional_data = array())
+	public function sql_update_group($group_id = FALSE, $group_name = FALSE, $additional_data = array())
 	{
 		if (empty($group_id)) return FALSE;
 
@@ -1823,12 +1928,90 @@ class Ion_auth_model extends CI_Model
 	}
 
 	/**
+	 * update_group
+	 *
+	 * @return bool
+	 * @author aditya menon
+	 **/
+	public function update_group($group_id = FALSE, $group_name = FALSE, $description=FALSE, $additional_data = array())
+	{
+		if (empty($group_id)) return FALSE;
+
+		$data = array();
+
+		if (!empty($group_name))
+		{
+			// we are changing the name, so do some checks
+
+			// bail if the group name already exists
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'groups',
+					'body' => [
+							'query' => [
+									'filtered' => [
+											'filter' => [
+													'term' => [ 'name' => $group_name ]
+											]
+									]
+							]
+					]
+			];
+
+			$results = $this->elasticClient->search($params);
+
+			if($results['hits']['total']>0 && $results['hits']['hits']['_id']!=$group_id)
+
+			{
+				$this->set_error('group_already_exists');
+				return FALSE;
+			}
+
+			$data['name'] = $group_name;
+
+		}
+		if (!empty($description))
+			$data['description']=$description;
+
+
+		// IMPORTANT!! Third parameter was string type $description; this following code is to maintain backward compatibility
+		// New projects should work with 3rd param as array
+	//	if (is_string($additional_data)) $additional_data = array('description' => $additional_data);
+
+
+		//filter out any data passed that doesnt have a matching column in the groups table
+		//and merge the set group data and the additional data
+		//if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['groups'], $additional_data), $data);
+
+		if (!empty($additional_data))
+			$data['additional_data']=$additional_data;
+
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+				'body' => [
+						'doc' =>
+								$data
+
+				]
+		];
+
+		$this->elasticClient->update($params);
+
+		$this->set_message('group_update_successful');
+
+		return TRUE;
+	}
+
+	/**
 	* delete_group
 	*
 	* @return bool
 	* @author aditya menon
 	**/
-	public function delete_group($group_id = FALSE)
+	public function sqldelete_group($group_id = FALSE)
 	{
 		// bail if mandatory param not set
 		if(!$group_id || empty($group_id))
@@ -1854,6 +2037,79 @@ class Ion_auth_model extends CI_Model
 		}
 
 		$this->db->trans_commit();
+
+		$this->trigger_events(array('post_delete_group', 'post_delete_group_successful'));
+		$this->set_message('group_delete_successful');
+		return TRUE;
+	}
+
+	/**
+	* delete_group
+	*
+	* @return bool
+	* @author aditya menon
+	**/
+	public function delete_group($group_id = FALSE)
+	{
+		// bail if mandatory param not set
+		if(!$group_id || empty($group_id))
+		{
+			return FALSE;
+		}
+
+		$this->trigger_events('pre_delete_group');
+
+		// remove all users from this group
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+						'query' => [
+								'match' => [
+										'group_id' => $group_id
+								]
+						]
+				]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		if($results['hits']['total']>0){
+
+		foreach ( $results['hits']['hits']as $user) {
+			$group_ids=$user['_source']['group_id'];
+			if(is_numeric($group_ids)){
+				$group_ids= new \stdClass();
+			}
+			else{
+				$group_ids=array_values(array_diff ($group_ids,[$group_id]));
+			}
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'users',
+					'id' => $user['_id'],
+					'body' => [
+							'doc' => [
+									'group_id' => $group_ids
+							]
+					]
+			];
+
+			$this->elasticClient->update($params);
+
+		}
+		}
+
+		// remove the group itself
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+		];
+
+		$this->elasticClient->delete($params);
+
 
 		$this->trigger_events(array('post_delete_group', 'post_delete_group_successful'));
 		$this->set_message('group_delete_successful');
@@ -2071,23 +2327,27 @@ class Ion_auth_model extends CI_Model
 		}
 	}
 
+	//TODO get the mapping of the elastic type
 	protected function _filter_data($table, $data)
 	{
-		$filtered_data = array();
-		$columns = $this->db->list_fields($table);
-
-		if (is_array($data))
-		{
-			foreach ($columns as $column)
-			{
-				if (array_key_exists($column, $data))
-					$filtered_data[$column] = $data[$column];
-			}
-		}
-
-		return $filtered_data;
+//		$filtered_data = array();
+//		$columns = $this->db->list_fields($table);
+//
+//		if (is_array($data))
+//		{
+//			foreach ($columns as $column)
+//			{
+//				if (array_key_exists($column, $data))
+//					$filtered_data[$column] = $data[$column];
+//			}
+//		}
+//
+//		return $filtered_data;
+		return $data;
 	}
 
+
+	//TODO check what about elastic
 	protected function _prepare_ip($ip_address) {
 		if ($this->db->platform() === 'postgre' || $this->db->platform() === 'sqlsrv' || $this->db->platform() === 'mssql')
 		{
