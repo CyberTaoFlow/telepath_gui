@@ -1,14 +1,50 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Permissions extends CI_Controller
+class Permissions extends Tele_Controller
 {
 
     function __construct()
     {
         parent::__construct();
+
     }
 
-    function get_list()
+
+    // Script to migrate data from mysql ci_perm_data table to elastic
+    function initialize_permissions()
+    {
+        $data = $this->db->get('ci_perm_data')->result();
+        foreach ($data as $perm) {
+            $perm = (array)$perm;
+            $ans = array(
+                'class' => $perm['class'],
+                'function' => $perm['function'],
+                'alias' => $perm['alias'],
+                'description' => $perm['description']
+            );
+
+            $params = [
+                'index' => 'telepath-users',
+                'type' => 'permissions',
+                'id' => $perm['id'],
+                'body' => [
+
+                    'permissions' => $ans
+
+                ]
+            ];
+
+            $this->elasticClient->index($params);
+        }
+
+    }
+
+    function test(){
+        return_success($this->ion_auth->register('test1234','test1234','yy@yy.com',[],[4]));
+    }
+
+
+    function sql_get_list()
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
@@ -51,6 +87,25 @@ class Permissions extends CI_Controller
 
     }
 
+    //get list of permissions from elastic db
+    function get_list()
+
+    {
+
+      //  telepath_auth(__CLASS__, __FUNCTION__);
+
+        $params = [
+            'index' => 'telepath-users',
+            'type' => 'permissions',
+            'id' => 'permissions_id'
+        ];
+
+        $response=$this->elasticClient->get($params);
+        return_success($response['_source']['permissions']) ;
+    }
+
+
+    // All these functions are not used
     function get_permission()
     {
 

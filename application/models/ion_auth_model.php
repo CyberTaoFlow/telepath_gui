@@ -1537,7 +1537,7 @@ class Ion_auth_model extends CI_Model
 
 		//filter out any data passed that doesnt have a matching column in the users table
 		//and merge the set user data and the additional data
-		$user_data = array_merge($this->_filter_data($this->tables['users'], $additional_data), $data);
+		$user_data = array_merge( $additional_data, $data);
 
 		$this->trigger_events('extra_set');
 
@@ -1545,10 +1545,8 @@ class Ion_auth_model extends CI_Model
 		$params = [
 			'index' => 'telepath-users',
 			'type' => 'users',
-			'body' => [
-				'doc' => $user_data
-
-			]
+			'body' =>
+					$user_data
 		];
 
 		$result=$this->elasticClient->index($params);
@@ -1564,12 +1562,12 @@ class Ion_auth_model extends CI_Model
 			}
 		}
 
-		//add to default group if not already set
-		$default_group = $this->where('name', $this->config->item('default_group', 'ion_auth'))->group()->row();
-		if ((isset($default_group->id) && !isset($groups)) || (empty($groups) && !in_array($default_group->id, $groups)))
-		{
-			$this->add_to_group($default_group->id, $id);
-		}
+		//TODO: add to default group if not already set
+//		$default_group = $this->where('name', $this->config->item('default_group', 'ion_auth'))->group()->row();
+//		if ((isset($default_group->id) && !isset($groups)) || (empty($groups) && !in_array($default_group->id, $groups)))
+//		{
+//			$this->add_to_group($default_group->id, $id);
+//		}
 
 		$this->trigger_events('post_register');
 
@@ -1687,25 +1685,27 @@ class Ion_auth_model extends CI_Model
 		$result = $this->elasticClient->search($params);
 
 
-		if($this->is_time_locked_out($identity))
-		{
-			//Hash something anyway, just to take up time
-			$this->hash_password($password);
-
-			$this->trigger_events('post_login_unsuccessful');
-			$this->set_error('login_timeout');
-
-			return FALSE;
-		}
+//		if($this->is_time_locked_out($identity))
+//		{
+//			//Hash something anyway, just to take up time
+//			$this->hash_password($password);
+//
+//			$this->trigger_events('post_login_unsuccessful');
+//			$this->set_error('login_timeout');
+//
+//			return FALSE;
+//		}
 		if ($result['hits']['total'] === 1)
 		{
 			$user = $result['hits']['hits'][0]['_source'];
+			$user['id']=$result['hits']['hits'][0]['_id'];
+			$user = json_decode(json_encode($user), FALSE);
 
 			$password = $this->hash_password_db($user->id, $password);
 			// temp hack, to enable any passwords (Yuli)
 			//$password = TRUE;
 
-			$password=TRUE;
+			//$password=TRUE;
 			if ($password === TRUE)
 			{
 				if ($user->active == 0)
@@ -2343,12 +2343,21 @@ class Ion_auth_model extends CI_Model
 		//if no id was passed use the current users id
 		$id || $id = $this->session->userdata('user_id');
 
-//		$this->limit(1);
-		$this->where($this->tables['users'].'.id', $id);
 
-		$this->users();
+		{
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'users',
+					'id' => $id
+			];
 
-		return $this;
+			$result = $this->elasticClient->get($params);
+
+		}
+		$result['_source']['id']=$id;
+
+
+		return  json_decode(json_encode($result['_source']), FALSE);
 	}
 
 	/**
@@ -2385,7 +2394,13 @@ class Ion_auth_model extends CI_Model
 
 		$result = $this->elasticClient->get($params);
 
-		return $result['_source']['group_id'];
+		$group_ids=[];
+		foreach ($result['_source']['group_id'] as $group_id){
+			$group_ids[]=$this->group($group_id);
+		}
+
+		return $group_ids;
+
 	}
 
 	/**
@@ -2728,14 +2743,19 @@ class Ion_auth_model extends CI_Model
 
 		if (isset($id))
 		{
-			$this->db->where($this->tables['groups'].'.id', $id);
-			$this->where('group_id',$id);
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'groups',
+					'id' => $id
+			];
+
+			$result = $this->elasticClient->get($params);
 
 		}
+		$result['_source']['id']=$id;
 
-		$this->limit(1);
 
-		return $this->groups();
+		return  json_decode(json_encode($result['_source']), FALSE);
 	}
 	/**
 	 * update

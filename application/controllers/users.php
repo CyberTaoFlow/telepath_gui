@@ -191,12 +191,13 @@ class Users extends CI_Controller
         // Clear OLD
         $this->acl->clear_user_perm($user_id);
         // Set NEW
-        $data = isset($post['items']['perm']) ? $post['items']['perm'] : array();
+        $perm_ids = isset($post['items']['perm']) ? $post['items']['perm'] : array();
 
-        if (!empty($data)) {
-            foreach ($data as $perm_id) {
-                $this->acl->set_user_perm($user_id, $perm_id);
-            }
+        if (!empty($perm_ids)) {
+//            foreach ($data as $perm_id) {
+//                $this->acl->set_user_perm($user_id, $perm_id);
+//            }
+            $this->acl->set_user_perm($user_id, $perm_ids);
         }
 
     }

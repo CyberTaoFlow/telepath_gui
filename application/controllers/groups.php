@@ -104,9 +104,10 @@ class Groups extends CI_Controller
         $this->acl->clear_group_perm($group_id);
 
         if ($perm_new && !empty($perm_new)) {
-            foreach ($perm_new as $perm_id) {
-                $this->acl->set_group_perm($group_id, $perm_id);
-            }
+//            foreach ($perm_new as $perm_id) {
+//                $this->acl->set_group_perm($group_id, $perm_id);
+//            }
+            $this->acl->set_group_perm($group_id, $perm_new);
         }
 
         return_success(array('group_id' => $group_id));
@@ -166,9 +167,11 @@ class Groups extends CI_Controller
         $this->acl->clear_group_perm($group_id);
 
         if ($perm_new && !empty($perm_new)) {
-            foreach ($perm_new as $perm_id) {
-                $this->acl->set_group_perm($group_id, $perm_id);
-            }
+//            foreach ($perm_new as $perm_id) {
+//                $this->acl->set_group_perm($group_id, $perm_new);
+//            }
+            $this->acl->set_group_perm($group_id, $perm_new);
+
         }
 
         return_success(array('group_id' => $group_id));

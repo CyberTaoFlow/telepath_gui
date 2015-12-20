@@ -164,37 +164,37 @@ class Auth extends CI_Controller
 
         $check_new = $this->ion_auth->username_check($username);
 
-        // Not yet registered with ION
+        // Not yet registered with ION (now we don't use the 'registered_users" table for the admin user, all the users are in the same table)
         if (!$check_new) {
 
-            $this->db->from('registered_users');
-            $this->db->where('user', $username);
-            $this->db->where('password', $password);
-
-            if ($this->db->count_all_results() == 1) {
-
-                // Note the array(1) is setting default group for converted users to admin
-                $user_id = $this->ion_auth->register($username, $password, '', array(), array(1));
-
-                if ($user_id) {
-
-                    $this->ion_auth->login($username, $password, $remember);
-
-                    telepath_log('Telepath', 'login', $this, array());
-
-                    return_json(array('success' => true));
-
-                } else {
-
-                    return_json(array('success' => false, 'error' => $this->ion_auth->errors()));
-
-                }
-
-            } else {
+//            $this->db->from('registered_users');
+//            $this->db->where('user', $username);
+//            $this->db->where('password', $password);
+//
+//            if ($this->db->count_all_results() == 1) {
+//
+//                // Note the array(1) is setting default group for converted users to admin
+//                $user_id = $this->ion_auth->register($username, $password, '', array(), array(1));
+//
+//                if ($user_id) {
+//
+//                    $this->ion_auth->login($username, $password, $remember);
+//
+//                    telepath_log('Telepath', 'login', $this, array());
+//
+//                    return_json(array('success' => true));
+//
+//                } else {
+//
+//                    return_json(array('success' => false, 'error' => $this->ion_auth->errors()));
+//
+//                }
+//
+//            } else {
 
                 return_json(array('success' => false, 'error' => 'Could not login'));
 
-            }
+        //    }
 
         }
 
