@@ -201,7 +201,7 @@ class acl
 		
 		
 		
-		$users_groups = $this->ci->ion_auth->get_users_groups($this->user_id)->result();
+		$users_groups = $this->ci->ion_auth->get_users_groups($this->user_id);
 		
 		foreach ($users_groups as $group) { 
 			$groups_array[] = $group->id; 
@@ -225,7 +225,7 @@ class acl
 		$user_apps   = is_array($this->user_extra) && isset($this->user_extra['apps']) ? $this->user_extra['apps'] : array();
 		$user_ranges = is_array($this->user_extra) && isset($this->user_extra['ranges']) ? $this->user_extra['ranges'] : array();
 		
-		$groups_data = $this->ci->ion_auth->groups($groups_array)->result();
+		$groups_data = $this->ci->ion_auth->groups($groups_array);
 		
 		foreach($groups_data as $group) {
 			if(isset($group->extradata) && $group->extradata != '') {
@@ -389,21 +389,29 @@ class acl
 	}
 
 	// Get Group Permissions
-	function get_group_perm($group_id) {
+	function get_group_perm($groups_id)
+	{
 
-		$params = [
+		$perms = array();
+		foreach ($groups_id as $group_id) {
+
+			$params = [
 				'index' => 'telepath-users',
 				'type' => 'groups',
 				'id' => $group_id,
-		];
+			];
 
-		$response=$this->elasticClient->get($params);
+			$response = $this->elasticClient->get($params);
 
-		$perms = array();
-		foreach ( $response['_source']['permissions'][0] as $perm) {
-			$perms[$perm['alias']]=$perm;
+
+			$perms = $response['_source']['permissions']['alias'];
+
+			/*foreach ($response['_source']['permissions'] as $perm) {
+				$perms[$perm['alias']] = $perm;
+			}
+		}*/
+			return $perms;
 		}
-		return $perms;
 	}
 	
 	/* USER RELATED */
@@ -511,9 +519,11 @@ class acl
 		$response=$this->elasticClient->get($params);
 
 		$perms = array();
-		foreach ( $response['_source']['permissions'][0] as $perm) {
+
+		$perms =$response['_source']['permissions']['alias'];
+		/*foreach ( $response['_source']['permissions'] as $perm) {
 			$perms[$perm['alias']]=$perm;
-		}
+		}*/
 		return $perms;
 	}
 

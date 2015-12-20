@@ -1527,7 +1527,8 @@ class Ion_auth_model extends CI_Model
 			'created_on' => time(),
 			'last_login' => time(),
 			'active'     => ($manual_activation === false ? 1 : 0),
-			'group_id'   => $groups
+			'group_id'   => $groups,
+			'extradata'	 =>''
 		);
 
 		if ($this->store_salt)
@@ -2581,7 +2582,7 @@ class Ion_auth_model extends CI_Model
 	 * @return object
 	 * @author Ben Edmunds
 	 **/
-	/*public function groups()
+	public function sql_groups()
 	{
 		$this->trigger_events('groups');
 		// run each where that was passed
@@ -2611,7 +2612,7 @@ class Ion_auth_model extends CI_Model
 		}
 		$this->response = $this->db->get($this->tables['groups']);
 		return $this;
-	}*/
+	}
 
 	public function groups()
 	{
@@ -2687,9 +2688,19 @@ class Ion_auth_model extends CI_Model
 
 		$result = $this->elasticClient->search($params);
 
+		$results=[];
 
+		foreach ($result['hits']['hits'] as $res){
+//			$param[] = (object)$res['_id'];
+//			$param[] = (object)$res['_source'];
+//			$param['id']=$res['_id'];
+//			$param[]=$res['_source'];
+//			$out = array_values($param);
+//
+			$results[]= json_decode(json_encode(['id'=>$res['_id'],$res['_source']]));
+		}
 
-		return $result['hits']['hits'];
+		return $results;
 
 
 		/*if (isset($this->_ion_limit) && isset($this->_ion_offset))

@@ -67,7 +67,7 @@ class Users extends CI_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $group_id = $this->input->post('group') && $this->input->post('group') != 'All' ? intval($this->input->post('group')) : false;
-        $users = $this->ion_auth->users($group_id)->result();
+        $users = $this->ion_auth->users($group_id);
         $ans = array();
 
         foreach ($users as $user) {

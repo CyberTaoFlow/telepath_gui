@@ -13,7 +13,7 @@ class Groups extends CI_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $groups = $this->ion_auth->groups()->result();
+        $groups = $this->ion_auth->groups();
         $ans = array();
         foreach ($groups as $group) {
             $ans[] = array('id' => $group->id,
@@ -57,7 +57,7 @@ class Groups extends CI_Controller
             $users_clean[] = array('id' => $user->id);
         }
 
-        $perm = $this->acl->get_group_perm(array($id));
+        $perm = $this->acl->get_group_perm($id);
 
         return_success(array('group' => $group, 'users' => $users_clean, 'perm' => $perm, 'apps' => $group_apps, 'ranges' => $group_ranges));
 
