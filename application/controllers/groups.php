@@ -13,7 +13,7 @@ class Groups extends CI_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $groups = $this->ion_auth->groups()->result();
+        $groups = $this->ion_auth->groups();
         $ans = array();
         foreach ($groups as $group) {
             $ans[] = array('id' => $group->id,
@@ -57,7 +57,7 @@ class Groups extends CI_Controller
             $users_clean[] = array('id' => $user->id);
         }
 
-        $perm = $this->acl->get_group_perm(array($id));
+        $perm = $this->acl->get_group_perm($id);
 
         return_success(array('group' => $group, 'users' => $users_clean, 'perm' => $perm, 'apps' => $group_apps, 'ranges' => $group_ranges));
 
@@ -104,9 +104,10 @@ class Groups extends CI_Controller
         $this->acl->clear_group_perm($group_id);
 
         if ($perm_new && !empty($perm_new)) {
-            foreach ($perm_new as $perm_id) {
-                $this->acl->set_group_perm($group_id, $perm_id);
-            }
+//            foreach ($perm_new as $perm_id) {
+//                $this->acl->set_group_perm($group_id, $perm_id);
+//            }
+            $this->acl->set_group_perm($group_id, $perm_new);
         }
 
         return_success(array('group_id' => $group_id));
@@ -166,9 +167,11 @@ class Groups extends CI_Controller
         $this->acl->clear_group_perm($group_id);
 
         if ($perm_new && !empty($perm_new)) {
-            foreach ($perm_new as $perm_id) {
-                $this->acl->set_group_perm($group_id, $perm_id);
-            }
+//            foreach ($perm_new as $perm_id) {
+//                $this->acl->set_group_perm($group_id, $perm_new);
+//            }
+            $this->acl->set_group_perm($group_id, $perm_new);
+
         }
 
         return_success(array('group_id' => $group_id));

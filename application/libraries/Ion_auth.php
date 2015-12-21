@@ -483,7 +483,7 @@ class Ion_auth
 		}
 		else
 		{
-			$users_groups = $this->ion_auth_model->get_users_groups($id)->result();
+			$users_groups = $this->ion_auth_model->get_users_groups($id);
 			$groups_array = array();
 			foreach ($users_groups as $group)
 			{

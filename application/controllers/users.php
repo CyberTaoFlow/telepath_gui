@@ -67,7 +67,7 @@ class Users extends CI_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $group_id = $this->input->post('group') && $this->input->post('group') != 'All' ? intval($this->input->post('group')) : false;
-        $users = $this->ion_auth->users($group_id)->result();
+        $users = $this->ion_auth->users($group_id);
         $ans = array();
 
         foreach ($users as $user) {
@@ -191,12 +191,13 @@ class Users extends CI_Controller
         // Clear OLD
         $this->acl->clear_user_perm($user_id);
         // Set NEW
-        $data = isset($post['items']['perm']) ? $post['items']['perm'] : array();
+        $perm_ids = isset($post['items']['perm']) ? $post['items']['perm'] : array();
 
-        if (!empty($data)) {
-            foreach ($data as $perm_id) {
-                $this->acl->set_user_perm($user_id, $perm_id);
-            }
+        if (!empty($perm_ids)) {
+//            foreach ($data as $perm_id) {
+//                $this->acl->set_user_perm($user_id, $perm_id);
+//            }
+            $this->acl->set_user_perm($user_id, $perm_ids);
         }
 
     }

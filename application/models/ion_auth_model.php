@@ -171,6 +171,13 @@ class Ion_auth_model extends CI_Model
 	public function __construct()
 	{
 		parent::__construct();
+
+		// ElasticSearch Library
+		require 'vendor/autoload.php';
+		// Connect elastic
+		//$params = array('hosts' => array('127.0.0.1:9200'));
+		$this->elasticClient = new Elasticsearch\Client();
+
 		$this->load->database();
 		$this->load->config('ion_auth', TRUE);
 		$this->load->helper('cookie');
@@ -247,6 +254,7 @@ class Ion_auth_model extends CI_Model
 		}
 
 		$this->trigger_events('model_constructor');
+
 	}
 
 	/**
@@ -298,7 +306,7 @@ class Ion_auth_model extends CI_Model
 	 * @return void
 	 * @author Mathew
 	 **/
-	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
+/*	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
 	{
 		if (empty($id) || empty($password))
 		{
@@ -350,8 +358,84 @@ class Ion_auth_model extends CI_Model
 		{
 			return FALSE;
 		}
-	}
+	}*/
+	public function hash_password_db($id, $password, $use_sha1_override=FALSE)
+	{
 
+		if (empty($id) || empty($password))
+		{
+			return FALSE;
+		}
+
+		$this->trigger_events('extra_where');
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'ids' => [
+						'values' => [
+							$id
+
+						]
+					]
+				]
+			]
+		];
+
+		$result = $this->elasticClient->search($params);
+
+
+		if ($result['hits']['total']== 0)
+		{
+			return false;
+		}
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+				'id'=>$id
+		]
+		;
+
+		$result = $this->elasticClient->get($params);
+
+//		return $result;
+		$hash_password_db=$result['_source'];
+
+		// bcrypt
+		if ($use_sha1_override === FALSE && $this->hash_method == 'bcrypt')
+		{
+			if ($this->bcrypt->verify($password,$hash_password_db['password']))
+			{
+				return TRUE;
+			}
+
+			return FALSE;
+		}
+
+		// sha1
+		if ($this->store_salt)
+		{
+			$db_password = sha1($password . $hash_password_db['salt']);
+		}
+		else
+		{
+			$salt = substr($hash_password_db['password'], 0, $this->salt_length);
+
+			$db_password =  $salt . substr(sha1($salt . $password), 0, -$this->salt_length);
+		}
+
+		if($db_password == $hash_password_db['password'])
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
 	/**
 	 * Generates a random salt value for forgotten passwords or any other keys. Uses SHA1.
 	 *
@@ -448,6 +532,80 @@ class Ion_auth_model extends CI_Model
 		return $return;
 	}
 
+	/*public function activate($id, $code = false)
+	{
+		$this->trigger_events('pre_activate');
+
+		if ($code !== FALSE)
+		{
+			$query = $this->db->select($this->identity_column)
+				->where('activation_code', $code)
+				->limit(1)
+				->get($this->tables['users']);
+
+			$result = $query->row();
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+					'query' => [
+						'match' => [
+							'activation_code' => $code
+						]
+					]
+				]
+			];
+
+			$result = $this->elasticClient->search($params);
+
+
+			if ($result['hits']['total'] !== 1)
+			{
+				$this->trigger_events(array('post_activate', 'post_activate_unsuccessful'));
+				$this->set_error('activate_unsuccessful');
+				return FALSE;
+			}
+
+
+			$identity = $result->{$this->identity_column};
+
+			$data = array(
+				'activation_code' => NULL,
+				'active'          => 1
+			);
+
+			$this->trigger_events('extra_where');
+			$this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
+		}
+		else
+		{
+			$data = array(
+				'activation_code' => NULL,
+				'active'          => 1
+			);
+
+
+			$this->trigger_events('extra_where');
+			$this->db->update($this->tables['users'], $data, array('id' => $id));
+		}
+
+
+		$return = $this->db->affected_rows() == 1;
+		if ($return)
+		{
+			$this->trigger_events(array('post_activate', 'post_activate_successful'));
+			$this->set_message('activate_successful');
+		}
+		else
+		{
+			$this->trigger_events(array('post_activate', 'post_activate_unsuccessful'));
+			$this->set_error('activate_unsuccessful');
+		}
+
+
+		return $return;
+	}*/
 
 	/**
 	 * Deactivate
@@ -455,6 +613,31 @@ class Ion_auth_model extends CI_Model
 	 * @return void
 	 * @author Mathew
 	 **/
+
+	/*public function deactivate($id = NULL)
+	{
+		$this->trigger_events('deactivate');
+		if (!isset($id))
+		{
+			$this->set_error('deactivate_unsuccessful');
+			return FALSE;
+		}
+		$activation_code       = sha1(md5(microtime()));
+		$this->activation_code = $activation_code;
+		$data = array(
+			'activation_code' => $activation_code,
+			'active'          => 0
+		);
+		$this->trigger_events('extra_where');
+		$this->db->update($this->tables['users'], $data, array('id' => $id));
+		$return = $this->db->affected_rows() == 1;
+		if ($return)
+			$this->set_message('deactivate_successful');
+		else
+			$this->set_error('deactivate_unsuccessful');
+		return $return;
+	}*/
+
 	public function deactivate($id = NULL)
 	{
 		$this->trigger_events('deactivate');
@@ -465,27 +648,69 @@ class Ion_auth_model extends CI_Model
 			return FALSE;
 		}
 
+
+
+
 		$activation_code       = sha1(md5(microtime()));
 		$this->activation_code = $activation_code;
 
-		$data = array(
+		$data = [
 		    'activation_code' => $activation_code,
-		    'active'          => 0
-		);
+		    'active'          => 2
+		];
 
 		$this->trigger_events('extra_where');
-		$this->db->update($this->tables['users'], $data, array('id' => $id));
 
-		$return = $this->db->affected_rows() == 1;
-		if ($return)
-			$this->set_message('deactivate_successful');
-		else
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' => $id,
+			'body' => [
+				'doc' => $data
+
+			]
+		];
+
+		$check=$this->check_id($params);
+
+		if (!$check)
+		{
 			$this->set_error('deactivate_unsuccessful');
 
-		return $return;
+			return $check;
+		}
+		$result = $this->elasticClient->update($params);
+
+		$this->set_message('deactivate_successful');
+
+		return $result;
 	}
 
-	public function clear_forgotten_password_code($code) {
+	public function check_id($param){
+
+		$params = [
+			'index' => $param['index'],
+			'type' => $param['type'],
+			'body' => [
+				'query' => [
+					'ids' => [
+						'values' => [
+							$param['id'],
+						]
+					]
+				]
+			]
+		];
+
+		$result = $this->elasticClient->search($params);
+
+		if ($result['hits']['total']==0){
+			return false;
+		}
+		return true;
+	}
+
+	/*public function clear_forgotten_password_code($code) {
 
 		if (empty($code))
 		{
@@ -507,6 +732,56 @@ class Ion_auth_model extends CI_Model
 		}
 
 		return FALSE;
+	}*/
+
+	public function clear_forgotten_password_code($code) {
+
+		if (empty($code))
+		{
+			return FALSE;
+		}
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						'forgotten_password_code' => $code
+					]
+				]
+			]
+		];
+
+		$result=$this->elasticClient->search($params);
+
+
+		if ($result['hits']['total']){
+
+			$data = [
+				'forgotten_password_code' => NULL,
+				'forgotten_password_time' => NULL
+			];
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $result['hits']['hits'][0]['_id'],
+				'body' => [
+					'doc' => $data
+
+				]
+			];
+
+
+			 $this->elasticClient->update($params);
+
+			return TRUE;
+		}
+
+		return FALSE;
+
+
 	}
 
 	/**
@@ -515,6 +790,50 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
+/*	public function reset_password($identity, $new) {
+		$this->trigger_events('pre_change_password');
+		if (!$this->identity_check($identity)) {
+			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
+			return FALSE;
+		}
+		$this->trigger_events('extra_where');
+		$query = $this->db->select('id, password, salt')
+			->where($this->identity_column, $identity)
+			->limit(1)
+			->order_by('id', 'desc')
+			->get($this->tables['users']);
+		if ($query->num_rows() !== 1)
+		{
+			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
+			$this->set_error('password_change_unsuccessful');
+			return FALSE;
+		}
+		$result = $query->row();
+		$new = $this->hash_password($new, $result->salt);
+		// store the new password and reset the remember code so all remembered instances have to re-login
+		// also clear the forgotten password code
+		$data = array(
+			'password' => $new,
+			'remember_code' => NULL,
+			'forgotten_password_code' => NULL,
+			'forgotten_password_time' => NULL,
+		);
+		$this->trigger_events('extra_where');
+		$this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
+		$return = $this->db->affected_rows() == 1;
+		if ($return)
+		{
+			$this->trigger_events(array('post_change_password', 'post_change_password_successful'));
+			$this->set_message('password_change_successful');
+		}
+		else
+		{
+			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
+			$this->set_error('password_change_unsuccessful');
+		}
+		return $return;
+	}*/
+
 	public function reset_password($identity, $new) {
 		$this->trigger_events('pre_change_password');
 
@@ -525,35 +844,57 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select('id, password, salt')
-		                  ->where($this->identity_column, $identity)
-		                  ->limit(1)
-		                  ->get($this->tables['users']);
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$this->identity_column => $identity
+					]
+				]
+			]
+		];
 
-		if ($query->num_rows() !== 1)
-		{
+		$result=$this->elasticClient->search($params);
+
+		$return = $result['hits']['total']==1;
+
+		if (!$return) {
+
 			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
 			$this->set_error('password_change_unsuccessful');
 			return FALSE;
 		}
 
-		$result = $query->row();
+		$new = $this->hash_password($new, $result['hits']['hits'][0]['_source']['salt']);
 
-		$new = $this->hash_password($new, $result->salt);
 
 		//store the new password and reset the remember code so all remembered instances have to re-login
 		//also clear the forgotten password code
-		$data = array(
+		$data = [
 		    'password' => $new,
 		    'remember_code' => NULL,
 		    'forgotten_password_code' => NULL,
 		    'forgotten_password_time' => NULL,
-		);
+		];
 
 		$this->trigger_events('extra_where');
-		$this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
 
-		$return = $this->db->affected_rows() == 1;
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' => $result['hits']['hits'][0]['_id'],
+			'body' => [
+				'doc' => $data
+
+			]
+		];
+
+
+		$this->elasticClient->update($params);
+
+
 		if ($return)
 		{
 			$this->trigger_events(array('post_change_password', 'post_change_password_successful'));
@@ -574,40 +915,116 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function change_password($identity, $old, $new)
+
+	/*public function change_password($identity, $old, $new)
 	{
 		$this->trigger_events('pre_change_password');
-
 		$this->trigger_events('extra_where');
-
 		$query = $this->db->select('id, password, salt')
-		                  ->where($this->identity_column, $identity)
-		                  ->limit(1)
-		                  ->get($this->tables['users']);
-
+			->where($this->identity_column, $identity)
+			->limit(1)
+			->order_by('id', 'desc')
+			->get($this->tables['users']);
 		if ($query->num_rows() !== 1)
 		{
 			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
 			$this->set_error('password_change_unsuccessful');
 			return FALSE;
 		}
-
 		$user = $query->row();
-
 		$old_password_matches = $this->hash_password_db($user->id, $old);
-
 		if ($old_password_matches === TRUE)
 		{
-			//store the new password and reset the remember code so all remembered instances have to re-login
+			// store the new password and reset the remember code so all remembered instances have to re-login
 			$hashed_new_password  = $this->hash_password($new, $user->salt);
 			$data = array(
+				'password' => $hashed_new_password,
+				'remember_code' => NULL,
+			);
+			$this->trigger_events('extra_where');
+			$successfully_changed_password_in_db = $this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
+			if ($successfully_changed_password_in_db)
+			{
+				$this->trigger_events(array('post_change_password', 'post_change_password_successful'));
+				$this->set_message('password_change_successful');
+			}
+			else
+			{
+				$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
+				$this->set_error('password_change_unsuccessful');
+			}
+			return $successfully_changed_password_in_db;
+		}
+		$this->set_error('password_change_unsuccessful');
+		return FALSE;
+	}*/
+
+
+	public function change_password($identity, $old, $new)
+	{
+		$this->trigger_events('pre_change_password');
+
+		$this->trigger_events('extra_where');
+
+	/*	$query = $this->db->select('id, password, salt')
+		                  ->where($this->identity_column, $identity)
+		                  ->limit(1)
+		                  ->get($this->tables['users']);*/
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$this->identity_column => $identity
+					]
+				]
+			]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+//		return $results;
+
+		if ($results['hits']['total'] !== 1)
+		{
+			$this->trigger_events(array('post_change_password', 'post_change_password_unsuccessful'));
+			$this->set_error('password_change_unsuccessful');
+			return FALSE;
+		}
+
+		$user = $results['hits']['hits'][0];
+
+//		return $user;
+		$old_password_matches = $this->hash_password_db($user['_id'], $old);
+
+//		return $old_password_matches;
+		if ($old_password_matches === false)
+		{
+			//store the new password and reset the remember code so all remembered instances have to re-login
+			$hashed_new_password  = $this->hash_password($new, $user['_source']['salt']);
+			$data = [
 			    'password' => $hashed_new_password,
 			    'remember_code' => NULL,
-			);
+			];
 
 			$this->trigger_events('extra_where');
 
-			$successfully_changed_password_in_db = $this->db->update($this->tables['users'], $data, array($this->identity_column => $identity));
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $user['_id'],
+				'body' => [
+					'doc' => $data
+
+				]
+			];
+
+
+			$successfully_changed_password_in_db = $this->elasticClient->update($params);
+
 			if ($successfully_changed_password_in_db)
 			{
 				$this->trigger_events(array('post_change_password', 'post_change_password_successful'));
@@ -632,7 +1049,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function username_check($username = '')
+	/*public function username_check($username = '')
 	{
 		$this->trigger_events('username_check');
 
@@ -645,7 +1062,42 @@ class Ion_auth_model extends CI_Model
 
 		return $this->db->where('username', $username)
 		                ->count_all_results($this->tables['users']) > 0;
+	}*/
+
+	public function param_check($param, $value){
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$param => $value
+					]
+				]
+			]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		return $results['hits']['total'] > 0;
 	}
+
+	public function username_check($username = '')
+	{
+		$this->trigger_events('username_check');
+
+		if (empty($username))
+		{
+			return FALSE;
+		}
+
+		$this->trigger_events('extra_where');
+
+		return $this->param_check('username',$username);
+
+	}
+
 
 	/**
 	 * Checks email
@@ -653,7 +1105,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function email_check($email = '')
+	/*public function email_check($email = '')
 	{
 		$this->trigger_events('email_check');
 
@@ -665,7 +1117,21 @@ class Ion_auth_model extends CI_Model
 		$this->trigger_events('extra_where');
 
 		return $this->db->where('email', $email)
-		                ->count_all_results($this->tables['users']) > 0;
+			->count_all_results($this->tables['users']) > 0;
+	}*/
+
+	public function email_check($email = '')
+	{
+		$this->trigger_events('email_check');
+
+		if (empty($email))
+		{
+			return FALSE;
+		}
+
+		$this->trigger_events('extra_where');
+
+		return $this->param_check('email',$email);
 	}
 
 	/**
@@ -674,7 +1140,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function identity_check($identity = '')
+	/*public function identity_check($identity = '')
 	{
 		$this->trigger_events('identity_check');
 
@@ -685,6 +1151,17 @@ class Ion_auth_model extends CI_Model
 
 		return $this->db->where($this->identity_column, $identity)
 		                ->count_all_results($this->tables['users']) > 0;
+	}*/
+	public function identity_check($identity = '')
+	{
+		$this->trigger_events('identity_check');
+
+		if (empty($identity))
+		{
+			return FALSE;
+		}
+
+		return $this->param_check($this->identity_column,$identity);
 	}
 
 	/**
@@ -695,7 +1172,7 @@ class Ion_auth_model extends CI_Model
 	 * @updated Ryan
 	 * @updated 52aa456eef8b60ad6754b31fbdcc77bb
 	 **/
-	public function forgotten_password($identity)
+	/*public function forgotten_password($identity)
 	{
 		if (empty($identity))
 		{
@@ -734,6 +1211,70 @@ class Ion_auth_model extends CI_Model
 			$this->trigger_events(array('post_forgotten_password', 'post_forgotten_password_unsuccessful'));
 
 		return $return;
+	}*/
+
+	public function forgotten_password($identity)
+	{
+		if (empty($identity))
+		{
+			$this->trigger_events(array('post_forgotten_password', 'post_forgotten_password_unsuccessful'));
+			return FALSE;
+		}
+
+		//All some more randomness
+		$activation_code_part = "";
+		if(function_exists("openssl_random_pseudo_bytes")) {
+			$activation_code_part = openssl_random_pseudo_bytes(128);
+		}
+
+		for($i=0;$i<1024;$i++) {
+			$activation_code_part = sha1($activation_code_part . mt_rand() . microtime());
+		}
+
+		$key = $this->hash_code($activation_code_part.$identity);
+
+		$this->forgotten_password_code = $key;
+
+		$this->trigger_events('extra_where');
+
+		$update = [
+			'forgotten_password_code' => $key,
+			'forgotten_password_time' => time()
+		];
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$this->identity_column => $identity
+					]
+				]
+			]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' =>$results['hits']['hits'][0]['_id'],
+			'body' => [
+				'doc' => $update
+
+			]
+		];
+
+
+		$return = $this->elasticClient->update($params);
+
+
+		if ($return)
+			$this->trigger_events(array('post_forgotten_password', 'post_forgotten_password_successful'));
+		else
+			$this->trigger_events(array('post_forgotten_password', 'post_forgotten_password_unsuccessful'));
+
+		return $return;
 	}
 
 	/**
@@ -742,7 +1283,7 @@ class Ion_auth_model extends CI_Model
 	 * @return string
 	 * @author Mathew
 	 **/
-	public function forgotten_password_complete($code, $salt=FALSE)
+	/*public function forgotten_password_complete($code, $salt=FALSE)
 	{
 		$this->trigger_events('pre_forgotten_password_complete');
 
@@ -783,6 +1324,72 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events(array('post_forgotten_password_complete', 'post_forgotten_password_complete_unsuccessful'));
 		return FALSE;
+	}*/
+	public function forgotten_password_complete($code, $salt=FALSE)
+	{
+		$this->trigger_events('pre_forgotten_password_complete');
+
+		if (empty($code))
+		{
+			$this->trigger_events(array('post_forgotten_password_complete', 'post_forgotten_password_complete_unsuccessful'));
+			return FALSE;
+		}
+
+		$profile = $this->where('forgotten_password_code', $code)->users()->row(); //pass the code to profile
+
+		if ($profile) {
+
+			if ($this->config->item('forgot_password_expiration', 'ion_auth') > 0) {
+				//Make sure it isn't expired
+				$expiration = $this->config->item('forgot_password_expiration', 'ion_auth');
+				if (time() - $profile->forgotten_password_time > $expiration) {
+					//it has expired
+					$this->set_error('forgot_password_expired');
+					$this->trigger_events(array('post_forgotten_password_complete', 'post_forgotten_password_complete_unsuccessful'));
+					return FALSE;
+				}
+			}
+
+			$password = $this->salt();
+
+			$data = [
+				'password'                => $this->hash_password($password, $salt),
+				'forgotten_password_code' => NULL,
+				'active'                  => 1,
+			];
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+					'query' => [
+						'match' => [
+							'forgotten_password_code' => $code
+						]
+					]
+				]
+			];
+
+			$result = $this->elasticClient->search($params);
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' =>$result['hits']['hits'][0]['_id'],
+				'body' => [
+					'doc' => $data
+
+				]
+			];
+
+			$this->elasticClient->update($params);
+
+			$this->trigger_events(array('post_forgotten_password_complete', 'post_forgotten_password_complete_successful'));
+			return $password;
+		}
+
+		$this->trigger_events(array('post_forgotten_password_complete', 'post_forgotten_password_complete_unsuccessful'));
+		return FALSE;
 	}
 
 	/**
@@ -791,7 +1398,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function register($username, $password, $email, $additional_data = array(), $groups = array())
+	/*public function register($username, $password, $email, $additional_data = array(), $groups = array())
 	{
 		$this->trigger_events('pre_register');
 
@@ -848,6 +1455,8 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_set');
 
+
+
 		$this->db->insert($this->tables['users'], $user_data);
 
 		$id = $this->db->insert_id();
@@ -871,16 +1480,110 @@ class Ion_auth_model extends CI_Model
 		$this->trigger_events('post_register');
 
 		return (isset($id)) ? $id : FALSE;
-	}
+	}*/
 
+
+	public function register($username, $password, $email, $additional_data = array(), $groups = array())
+	{
+		$this->trigger_events('pre_register');
+
+		$manual_activation = $this->config->item('manual_activation', 'ion_auth');
+
+		if ($this->identity_column == 'email' && $this->email_check($email))
+		{
+			$this->set_error('account_creation_duplicate_email');
+			return FALSE;
+		}
+		elseif ($this->identity_column == 'username' && $this->username_check($username))
+		{
+			$this->set_error('account_creation_duplicate_username');
+			return FALSE;
+		}
+
+		// If username is taken, use username1 or username2, etc.
+		if ($this->identity_column != 'username')
+		{
+			$original_username = $username;
+			for($i = 0; $this->username_check($username); $i++)
+			{
+				if($i > 0)
+				{
+					$username = $original_username . $i;
+				}
+			}
+		}
+
+		// IP Address
+		$ip_address = $this->_prepare_ip($this->input->ip_address());
+		$salt       = $this->store_salt ? $this->salt() : FALSE;
+		$password   = $this->hash_password($password, $salt);
+
+		// Users table.
+		$data = array(
+			'username'   => $username,
+			'password'   => $password,
+			'email'      => $email,
+			'ip_address' => $ip_address,
+			'created_on' => time(),
+			'last_login' => time(),
+			'active'     => ($manual_activation === false ? 1 : 0),
+			'group_id'   => $groups,
+			'extradata'	 =>''
+		);
+
+		if ($this->store_salt)
+		{
+			$data['salt'] = $salt;
+		}
+
+		//filter out any data passed that doesnt have a matching column in the users table
+		//and merge the set user data and the additional data
+		$user_data = array_merge( $additional_data, $data);
+
+		$this->trigger_events('extra_set');
+
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' =>
+					$user_data
+		];
+
+		$result=$this->elasticClient->index($params);
+
+		$id = $result['_id'];
+
+		if (!empty($groups))
+		{
+			//add to groups
+			foreach ($groups as $group)
+			{
+				$this->add_to_group($group, $id);
+			}
+		}
+
+		//TODO: add to default group if not already set
+//		$default_group = $this->where('name', $this->config->item('default_group', 'ion_auth'))->group()->row();
+//		if ((isset($default_group->id) && !isset($groups)) || (empty($groups) && !in_array($default_group->id, $groups)))
+//		{
+//			$this->add_to_group($default_group->id, $id);
+//		}
+
+		$this->trigger_events('post_register');
+
+		return (isset($id)) ? $id : FALSE;
+	}
 	/**
 	 * login
 	 *
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function login($identity, $password, $remember=FALSE)
+	/*public function login($identity, $password, $remember=FALSE)
 	{
+
+
 		$this->trigger_events('pre_login');
 
 		if (empty($identity) || empty($password))
@@ -913,6 +1616,97 @@ class Ion_auth_model extends CI_Model
 			// temp hack, to enable any passwords (Yuli)
 			//$password = TRUE;
 
+			$password=TRUE;
+			if ($password === TRUE)
+			{
+				if ($user->active == 0)
+				{
+					$this->trigger_events('post_login_unsuccessful');
+					$this->set_error('login_unsuccessful_not_active');
+
+					return FALSE;
+				}
+
+				$this->set_session($user);
+
+				$this->update_last_login($user->id);
+
+				$this->clear_login_attempts($identity);
+
+				if ($remember && $this->config->item('remember_users', 'ion_auth'))
+				{
+					$this->remember_user($user->id);
+				}
+
+				$this->trigger_events(array('post_login', 'post_login_successful'));
+				$this->set_message('login_successful');
+
+				return TRUE;
+			}
+		}
+
+		//Hash something anyway, just to take up time
+		$this->hash_password($password);
+
+		$this->increase_login_attempts($identity);
+
+		$this->trigger_events('post_login_unsuccessful');
+		$this->set_error('login_unsuccessful');
+
+		return FALSE;
+	}*/
+
+	public function login($identity, $password, $remember=FALSE)
+	{
+
+
+		$this->trigger_events('pre_login');
+
+		if (empty($identity) || empty($password))
+		{
+			$this->set_error('login_unsuccessful');
+			return FALSE;
+		}
+
+		$this->trigger_events('extra_where');
+
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'body' => [
+				'query' => [
+					'match' => [
+						$this->identity_column => $identity
+					]
+				]
+			]
+		];
+
+		$result = $this->elasticClient->search($params);
+
+
+//		if($this->is_time_locked_out($identity))
+//		{
+//			//Hash something anyway, just to take up time
+//			$this->hash_password($password);
+//
+//			$this->trigger_events('post_login_unsuccessful');
+//			$this->set_error('login_timeout');
+//
+//			return FALSE;
+//		}
+		if ($result['hits']['total'] === 1)
+		{
+			$user = $result['hits']['hits'][0]['_source'];
+			$user['id']=$result['hits']['hits'][0]['_id'];
+			$user = json_decode(json_encode($user), FALSE);
+
+			$password = $this->hash_password_db($user->id, $password);
+			// temp hack, to enable any passwords (Yuli)
+			//$password = TRUE;
+
+			//$password=TRUE;
 			if ($password === TRUE)
 			{
 				if ($user->active == 0)
@@ -977,7 +1771,7 @@ class Ion_auth_model extends CI_Model
 	 * @param	string $identity
 	 * @return	int
 	 */
-	function get_attempts_num($identity)
+	/*function get_attempts_num($identity)
 	{
         if ($this->config->item('track_login_attempts', 'ion_auth')) {
             $ip_address = $this->_prepare_ip($this->input->ip_address());
@@ -988,6 +1782,43 @@ class Ion_auth_model extends CI_Model
             return $qres->num_rows();
         }
         return 0;
+	}*/
+	function get_attempts_num($identity)
+	{
+		if ($this->config->item('track_login_attempts', 'ion_auth')) {
+			$ip_address = $this->_prepare_ip($this->input->ip_address());
+
+			if ($this->config->item('track_login_ip_address', 'ion_auth')){
+
+				$where = ['ip_address'=> $ip_address];
+			}
+
+
+			else if (strlen($identity) > 0)
+			{
+				$where = ['login', $identity];
+			}
+
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+					'query' => [
+						'match' => [
+							$where
+						]
+					]
+				]
+			];
+
+			$qres = $this->elasticClient->search($params);
+
+//			$qres = $this->db->get($this->tables['login_attempts']);
+
+			return $qres['hits']['total'];
+		}
+		return 0;
 	}
 
 	/**
@@ -1007,7 +1838,7 @@ class Ion_auth_model extends CI_Model
 	 * @param	string $identity
 	 * @return	int
 	 */
-	public function get_last_attempt_time($identity) {
+	/*public function get_last_attempt_time($identity) {
 		if ($this->config->item('track_login_attempts', 'ion_auth')) {
 			$ip_address = $this->_prepare_ip($this->input->ip_address());
 
@@ -1022,6 +1853,45 @@ class Ion_auth_model extends CI_Model
 		}
 
 		return 0;
+	}*/
+
+	// TODO: improve migration to elastic
+	public function get_last_attempt_time($identity) {
+		if ($this->config->item('track_login_attempts', 'ion_auth')) {
+			$ip_address = $this->_prepare_ip($this->input->ip_address());
+
+			if ($this->config->item('track_login_ip_address', 'ion_auth'))
+				$where = ['ip_address' => $ip_address];
+			else if (strlen($identity) > 0)
+				$where = ['login' => $identity];
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'login_attempts',
+				'body' => [
+					'filter' => [
+						'match_all' => [
+
+						]
+					],
+					'sort' => [
+						'time' => [
+							'order' => 'desc',
+							'mode' => 'max'
+						]
+					],
+					'size' => 1
+				]
+			];
+
+			$qres = $this->elasticClient->search($params);
+
+
+			if ($qres['hits']['total'] > 0) {
+				return $qres['hits']['hits'];
+			}
+		}
+		return 0;
 	}
 
 	/**
@@ -1029,13 +1899,38 @@ class Ion_auth_model extends CI_Model
 	 * Based on code from Tank Auth, by Ilya Konyukhov (https://github.com/ilkon/Tank-Auth)
 	 *
 	 * @param string $identity
+	 * @return	boolean
 	 **/
-	public function increase_login_attempts($identity) {
+
+	/*public function increase_login_attempts($identity) {
 		if ($this->config->item('track_login_attempts', 'ion_auth')) {
 			$ip_address = $this->_prepare_ip($this->input->ip_address());
 			return $this->db->insert($this->tables['login_attempts'], array('ip_address' => $ip_address, 'login' => $identity, 'time' => time()));
 		}
 		return FALSE;
+	}*/
+
+
+	public function increase_login_attempts($identity) {
+
+		if ($this->config->item('track_login_attempts', 'ion_auth')) {
+			$ip_address = $this->_prepare_ip($this->input->ip_address());
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+					'ip_address' => $ip_address,
+					'login' => $identity,
+					'time' => time()
+
+				]
+			];
+
+			$result=$this->elasticClient->index($params);
+
+		}
+		return $result;
 	}
 
 	/**
@@ -1043,8 +1938,9 @@ class Ion_auth_model extends CI_Model
 	 * Based on code from Tank Auth, by Ilya Konyukhov (https://github.com/ilkon/Tank-Auth)
 	 *
 	 * @param string $identity
+	 * @return	boolean
 	 **/
-	public function clear_login_attempts($identity, $expire_period = 86400) {
+	/*public function clear_login_attempts($identity, $expire_period = 86400) {
 		if ($this->config->item('track_login_attempts', 'ion_auth')) {
 			$ip_address = $this->_prepare_ip($this->input->ip_address());
 
@@ -1053,6 +1949,35 @@ class Ion_auth_model extends CI_Model
 			$this->db->or_where('time <', time() - $expire_period, FALSE);
 
 			return $this->db->delete($this->tables['login_attempts']);
+		}
+		return FALSE;
+	}*/
+	// TODO: migrate to elastic
+	public function clear_login_attempts( $expire_period = 86400) {
+
+		if ($this->config->item('track_login_attempts', 'ion_auth')) {
+
+			$ip_address = $this->_prepare_ip($this->input->ip_address());
+
+			$where=['ip_address' => $ip_address, 'login' => 'moshe'];
+
+			// Purge obsolete login attempts
+			$where=['time <', time() - $expire_period];
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'login_attempts',
+				'body' => [
+					'query' => [
+									'term' => ["login" => "moshe"]
+								]
+							]
+			];
+
+			$result= $this->elasticClient->search($params);
+
+			return $result;
+
 		}
 		return FALSE;
 	}
@@ -1073,6 +1998,8 @@ class Ion_auth_model extends CI_Model
 		return $this;
 	}
 
+
+	//
 	public function where($where, $value = NULL)
 	{
 		$this->trigger_events('where');
@@ -1086,7 +2013,7 @@ class Ion_auth_model extends CI_Model
 
 		return $this;
 	}
-
+//TODO not fix
 	public function like($like, $value = NULL, $position = 'both')
 	{
 		$this->trigger_events('like');
@@ -1179,7 +2106,7 @@ class Ion_auth_model extends CI_Model
 	 * @return object Users
 	 * @author Ben Edmunds
 	 **/
-	public function users($groups = NULL)
+	public function sql_users($groups = NULL)
 	{
 		$this->trigger_events('users');
 
@@ -1276,6 +2203,134 @@ class Ion_auth_model extends CI_Model
 		return $this;
 	}
 
+	public function users($groups = NULL)
+	{
+		$this->trigger_events('users');
+
+		$selects=[];
+
+		if (isset($this->_ion_select) && !empty($this->_ion_select))
+		{
+			foreach ($this->_ion_select as $select)
+			{
+				$selects[]=$select;
+			}
+
+			$this->_ion_select = array();
+		}
+		else
+		{
+
+		//default selects
+//			$selects[]='*';
+//			$selects[]='id';
+//			$selects[]='id';
+
+
+		}
+
+		//filter by group id(s) if passed
+		/*if (isset($groups))
+		{
+			//build an array if only one group was passed
+			if (is_numeric($groups))
+			{
+				$groups = Array($groups);
+			}
+
+			//join and then run a where_in against the group ids
+			if (isset($groups) && !empty($groups))
+			{
+				$this->db->distinct();
+				$this->db->join(
+					$this->tables['users_groups'],
+					$this->tables['users_groups'].'.'.$this->join['users'].'='.$this->tables['users'].'.id',
+					'inner'
+				);
+
+				$this->db->where_in($this->tables['users_groups'].'.'.$this->join['groups'], $groups);
+			}
+		}*/
+
+		$this->trigger_events('extra_where');
+
+		$es_where=[];
+
+		//run each where that was passed
+		if (isset($this->_ion_where) && !empty($this->_ion_where))
+		{
+			foreach ($this->_ion_where as $where)
+			{
+				$es_where[]=$where;
+			}
+
+			$this->_ion_where = array();
+		}
+
+		$es_like=[];
+
+		if (isset($this->_ion_like) && !empty($this->_ion_like))
+		{
+			foreach ($this->_ion_like as $like)
+			{
+				$es_like[]=$like;
+			}
+
+			$this->_ion_like = array();
+		}
+
+		$oe_limit=[];
+		if (isset($this->_ion_limit) && isset($this->_ion_offset))
+		{
+			$oe_limit[]= $this->_ion_limit;
+
+			$this->_ion_limit  = NULL;
+			$this->_ion_offset = NULL;
+		}
+		else if (isset($this->_ion_limit))
+		{
+			$oe_limit[]= $this->_ion_limit;
+
+			$this->_ion_limit  = NULL;
+		}
+
+		$os_order_by=[];
+
+		//set the order
+		if (isset($this->_ion_order_by) && isset($this->_ion_order))
+		{
+			$os_order_by[]=[$this->_ion_order_by=> $this->_ion_order];
+
+			$this->_ion_order    = NULL;
+			$this->_ion_order_by = NULL;
+		}
+
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+];
+
+		if(count($es_where) > 1){
+
+			foreach($es_where as $value){
+				foreach($value as $key=>$val) {
+					$params['body']['query']['filtered']['filter']['and'][]['term'][$key] = $val;
+
+				}
+			}
+		}
+		elseif(count($es_where) == 1){
+			$params['body']['query']['match'] = $es_where[0];
+		}
+
+		$result = $this->elasticClient->search($params);
+
+
+
+		return $result['hits']['hits'];
+	}
+
 	/**
 	 * user
 	 *
@@ -1289,12 +2344,21 @@ class Ion_auth_model extends CI_Model
 		//if no id was passed use the current users id
 		$id || $id = $this->session->userdata('user_id');
 
-		$this->limit(1);
-		$this->where($this->tables['users'].'.id', $id);
 
-		$this->users();
+		{
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'users',
+					'id' => $id
+			];
 
-		return $this;
+			$result = $this->elasticClient->get($params);
+
+		}
+		$result['_source']['id']=$id;
+
+
+		return  json_decode(json_encode($result['_source']), FALSE);
 	}
 
 	/**
@@ -1303,7 +2367,7 @@ class Ion_auth_model extends CI_Model
 	 * @return array
 	 * @author Ben Edmunds
 	 **/
-	public function get_users_groups($id=FALSE)
+	/*public function get_users_groups($id=FALSE)
 	{
 		$this->trigger_events('get_users_group');
 
@@ -1314,6 +2378,30 @@ class Ion_auth_model extends CI_Model
 		                ->where($this->tables['users_groups'].'.'.$this->join['users'], $id)
 		                ->join($this->tables['groups'], $this->tables['users_groups'].'.'.$this->join['groups'].'='.$this->tables['groups'].'.id')
 		                ->get($this->tables['users_groups']);
+	}*/
+	// Get groups per user_id
+	public function get_users_groups($id=FALSE)
+	{
+		$this->trigger_events('get_users_group');
+
+		//if no id was passed use the current users id
+		$id || $id = $this->session->userdata('user_id');
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' => $id
+		];
+
+		$result = $this->elasticClient->get($params);
+
+		$group_ids=[];
+		foreach ($result['_source']['group_id'] as $group_id){
+			$group_ids[]=$this->group($group_id);
+		}
+
+		return $group_ids;
+
 	}
 
 	/**
@@ -1322,7 +2410,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Ben Edmunds
 	 **/
-	public function add_to_group($group_id, $user_id=false)
+	/*public function add_to_group($group_id, $user_id=false)
 	{
 		$this->trigger_events('add_to_group');
 
@@ -1345,18 +2433,85 @@ class Ion_auth_model extends CI_Model
 			$this->_cache_user_in_group[$user_id][$group_id] = $group_name;
 		}
 		return $return;
-	}
+	}*/
+	public function add_to_group($group_id, $user_id=false)
+	{
+		$this->trigger_events('add_to_group');
 
+		//if no id was passed use the current users id
+		$user_id || $user_id = $this->session->userdata('user_id');
+
+		//check if unique - num_rows() > 0 means row found
+//		if ($this->db->where(array( $this->join['groups'] => (int)$group_id, $this->join['users'] => (int)$user_id))->get($this->tables['users_groups'])->num_rows()) return false;
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' => $user_id
+		];
+
+		$result = $this->elasticClient->get($params);
+
+		if ($return =in_array($user_id, $result['_source']['group_id']))
+//		if ($return = $this->db->insert($this->tables['users_groups'], array( $this->join['groups'] => (int)$group_id, $this->join['users'] => (int)$user_id)))
+		{
+			if (isset($this->_cache_groups[$group_id])) {
+				$group_name = $this->_cache_groups[$group_id];
+			}
+			else {
+				$group = $this->group($group_id)->result();
+				$group_name = $group[0]->name;
+				$this->_cache_groups[$group_id] = $group_name;
+			}
+			$this->_cache_user_in_group[$user_id][$group_id] = $group_name;
+		}
+		return $return;
+	}
 	/**
 	 * remove_from_group
 	 *
 	 * @return bool
 	 * @author Ben Edmunds
 	 **/
+	/*public function remove_from_group($group_ids=false, $user_id=false)
+	{
+		$this->trigger_events('remove_from_group');
+		// user id is required
+		if(empty($user_id))
+		{
+			return FALSE;
+		}
+		// if group id(s) are passed remove user from the group(s)
+		if( ! empty($group_ids))
+		{
+			if(!is_array($group_ids))
+			{
+				$group_ids = array($group_ids);
+			}
+			foreach($group_ids as $group_id)
+			{
+				$this->db->delete($this->tables['users_groups'], array($this->join['groups'] => (float)$group_id, $this->join['users'] => (float)$user_id));
+				if (isset($this->_cache_user_in_group[$user_id]) && isset($this->_cache_user_in_group[$user_id][$group_id]))
+				{
+					unset($this->_cache_user_in_group[$user_id][$group_id]);
+				}
+			}
+			$return = TRUE;
+		}
+		// otherwise remove user from all groups
+		else
+		{
+			if ($return = $this->db->delete($this->tables['users_groups'], array($this->join['users'] => (float)$user_id))) {
+				$this->_cache_user_in_group[$user_id] = array();
+			}
+		}
+		return $return;
+	}*/
 	public function remove_from_group($group_ids=false, $user_id=false)
 	{
 		$this->trigger_events('remove_from_group');
 
+		$return = FALSE;
 		// user id is required
 		if(empty($user_id))
 		{
@@ -1373,7 +2528,36 @@ class Ion_auth_model extends CI_Model
 
 			foreach($group_ids as $group_id)
 			{
-				$this->db->delete($this->tables['users_groups'], array($this->join['groups'] => (int)$group_id, $this->join['users'] => (int)$user_id));
+//				$this->db->delete($this->tables['users_groups'], array($this->join['groups'] => (int)$group_id, $this->join['users'] => (int)$user_id));
+				$params = [
+					'index' => 'telepath-users',
+					'type' => 'users',
+					'id' => $user_id
+				];
+
+				$result = $this->elasticClient->get($params);
+
+				$results=( $result['_source']['group_id']);
+
+				if (in_array($group_ids ,$results)){
+					unset($results[array_search($group_ids,$results)]);
+				}
+
+				$params = [
+					'index' => 'telepath-users',
+					'type' => 'users',
+					'id' =>$user_id,
+					'body' => [
+						'doc' => ['group_id'=> $results]
+
+					]
+				];
+
+
+
+				$this->elasticClient->update($params);
+
+
 				if (isset($this->_cache_user_in_group[$user_id]) && isset($this->_cache_user_in_group[$user_id][$group_id]))
 				{
 					unset($this->_cache_user_in_group[$user_id][$group_id]);
@@ -1383,12 +2567,12 @@ class Ion_auth_model extends CI_Model
 			$return = TRUE;
 		}
 		// otherwise remove user from all groups
-		else
+		/*else
 		{
 			if ($return = $this->db->delete($this->tables['users_groups'], array($this->join['users'] => (int)$user_id))) {
 				$this->_cache_user_in_group[$user_id] = array();
 			}
-		}
+		}*/
 		return $return;
 	}
 
@@ -1398,11 +2582,10 @@ class Ion_auth_model extends CI_Model
 	 * @return object
 	 * @author Ben Edmunds
 	 **/
-	public function groups()
+	public function sql_groups()
 	{
 		$this->trigger_events('groups');
-
-		//run each where that was passed
+		// run each where that was passed
 		if (isset($this->_ion_where) && !empty($this->_ion_where))
 		{
 			foreach ($this->_ion_where as $where)
@@ -1411,8 +2594,116 @@ class Ion_auth_model extends CI_Model
 			}
 			$this->_ion_where = array();
 		}
-
 		if (isset($this->_ion_limit) && isset($this->_ion_offset))
+		{
+			$this->db->limit($this->_ion_limit, $this->_ion_offset);
+			$this->_ion_limit  = NULL;
+			$this->_ion_offset = NULL;
+		}
+		else if (isset($this->_ion_limit))
+		{
+			$this->db->limit($this->_ion_limit);
+			$this->_ion_limit  = NULL;
+		}
+		// set the order
+		if (isset($this->_ion_order_by) && isset($this->_ion_order))
+		{
+			$this->db->order_by($this->_ion_order_by, $this->_ion_order);
+		}
+		$this->response = $this->db->get($this->tables['groups']);
+		return $this;
+	}
+
+	public function groups()
+	{
+		$this->trigger_events('groups');
+
+		//run each where that was passed
+		/*if (isset($this->_ion_where) && !empty($this->_ion_where))
+		{
+			foreach ($this->_ion_where as $where)
+			{
+				$this->db->where($where);
+			}
+			$this->_ion_where = array();
+		}*/
+
+		$es_where=[];
+		if (isset($this->_ion_where) && !empty($this->_ion_where))
+		{
+			foreach ($this->_ion_where as $where)
+			{
+				$es_where[]=$where;
+			}
+
+			$this->_ion_where = array();
+		}
+
+		$oe_limit=[];
+		if (isset($this->_ion_limit) && isset($this->_ion_offset))
+		{
+			$oe_limit[]= $this->_ion_limit;
+
+			$this->_ion_limit  = NULL;
+			$this->_ion_offset = NULL;
+		}
+		else if (isset($this->_ion_limit))
+		{
+			$oe_limit[]= $this->_ion_limit;
+
+			$this->_ion_limit  = NULL;
+		}
+
+		$os_order_by=[];
+
+		//set the order
+		if (isset($this->_ion_order_by) && isset($this->_ion_order))
+		{
+			$os_order_by[]=[$this->_ion_order_by=> $this->_ion_order];
+
+			$this->_ion_order    = NULL;
+			$this->_ion_order_by = NULL;
+		}
+
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+		];
+
+		if(count($es_where) > 1){
+
+			foreach($es_where as $value){
+				foreach($value as $key=>$val) {
+					$params['body']['query']['filtered']['filter']['and'][]['term'][$key] = $val;
+
+				}
+			}
+		}
+
+		elseif(count($es_where) == 1){
+			$params['body']['query']['match'] = $es_where[0];
+		}
+
+
+		$result = $this->elasticClient->search($params);
+
+		$results=[];
+
+		foreach ($result['hits']['hits'] as $res){
+//			$param[] = (object)$res['_id'];
+//			$param[] = (object)$res['_source'];
+//			$param['id']=$res['_id'];
+//			$param[]=$res['_source'];
+//			$out = array_values($param);
+//
+			$results[]= json_decode(json_encode(['id'=>$res['_id'],$res['_source']]));
+		}
+
+		return $results;
+
+
+		/*if (isset($this->_ion_limit) && isset($this->_ion_offset))
 		{
 			$this->db->limit($this->_ion_limit, $this->_ion_offset);
 
@@ -1434,7 +2725,7 @@ class Ion_auth_model extends CI_Model
 
 		$this->response = $this->db->get($this->tables['groups']);
 
-		return $this;
+		return $this;*/
 	}
 
 	/**
@@ -1443,7 +2734,7 @@ class Ion_auth_model extends CI_Model
 	 * @return object
 	 * @author Ben Edmunds
 	 **/
-	public function group($id = NULL)
+	/*public function group($id = NULL)
 	{
 		$this->trigger_events('group');
 
@@ -1455,19 +2746,39 @@ class Ion_auth_model extends CI_Model
 		$this->limit(1);
 
 		return $this->groups();
-	}
+	}*/
 
+	public function group($id = NULL)
+	{
+		$this->trigger_events('group');
+
+		if (isset($id))
+		{
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'groups',
+					'id' => $id
+			];
+
+			$result = $this->elasticClient->get($params);
+
+		}
+		$result['_source']['id']=$id;
+
+
+		return  json_decode(json_encode($result['_source']), FALSE);
+	}
 	/**
 	 * update
 	 *
 	 * @return bool
 	 * @author Phil Sturgeon
 	 **/
-	public function update($id, array $data)
+	/*public function update($id, array $data)
 	{
 		$this->trigger_events('pre_update_user');
 
-		$user = $this->user($id)->row();
+		//$user = $this->user($id)->row();
 
 		$this->db->trans_begin();
 
@@ -1518,6 +2829,60 @@ class Ion_auth_model extends CI_Model
 		$this->trigger_events(array('post_update_user', 'post_update_user_successful'));
 		$this->set_message('update_successful');
 		return TRUE;
+	}*/
+	public function update($id, array $data)
+	{
+		$this->trigger_events('pre_update_user');
+
+		//$user = $this->user($id);
+
+
+		if (array_key_exists($this->identity_column, $data) && $this->identity_check($data[$this->identity_column]) )
+		{
+
+
+			return FALSE;
+		}
+
+		// Filter the data passed
+		$data = $this->_filter_data($this->tables['users'], $data);
+
+		if (array_key_exists('username', $data) || array_key_exists('password', $data) || array_key_exists('email', $data))
+		{
+			if (array_key_exists('password', $data))
+			{
+				if( ! empty($data['password']))
+				{
+					$data['password'] = $this->hash_password($data['password']);
+				}
+				else
+				{
+					// unset password so it doesn't effect database entry if no password passed
+					unset($data['password']);
+				}
+			}
+		}
+
+		$this->trigger_events('extra_where');
+
+		$params = [
+			'index' => 'telepath-users',
+			'type' => 'users',
+			'id' =>$id,
+			'body' => [
+				'doc' => $data
+
+			]
+		];
+		$this->elasticClient->update($params);
+
+
+
+
+
+		$this->trigger_events(array('post_update_user', 'post_update_user_successful'));
+		$this->set_message('update_successful');
+		return TRUE;
 	}
 
 	/**
@@ -1526,7 +2891,7 @@ class Ion_auth_model extends CI_Model
 	* @return bool
 	* @author Phil Sturgeon
 	**/
-	public function delete_user($id)
+	public function sql_delete_user($id)
 	{
 		$this->trigger_events('pre_delete_user');
 
@@ -1560,6 +2925,29 @@ class Ion_auth_model extends CI_Model
 	}
 
 	/**
+	* delete_user
+	*
+	* @return bool
+	* @author Phil Sturgeon
+	**/
+	public function delete_user($id)
+	{
+		$this->trigger_events('pre_delete_user');
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $id,
+		];
+
+		$this->elasticClient->delete($params);
+
+		$this->trigger_events(array('post_delete_user', 'post_delete_user_successful'));
+		$this->set_message('delete_successful');
+		return TRUE;
+	}
+
+	/**
 	 * update_last_login
 	 *
 	 * @return bool
@@ -1573,9 +2961,24 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$this->db->update($this->tables['users'], array('last_login' => time()), array('id' => $id));
+		//$this->db->update($this->tables['users'], array('last_login' => time()), array('id' => $id));
 
-		return $this->db->affected_rows() == 1;
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $id,
+				'body' => [
+						'doc' =>
+								["last_login"=>time()]
+
+				]
+		];
+
+		$response=$this->elasticClient->update($params);
+
+		//return $this->db->affected_rows() == 1;
+
+		return $response;
 	}
 
 	/**
@@ -1640,6 +3043,8 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Ben Edmunds
 	 **/
+
+	// Not used in this project
 	public function remember_user($id)
 	{
 		$this->trigger_events('pre_remember_user');
@@ -1694,6 +3099,8 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Ben Edmunds
 	 **/
+
+	// Not used in this project
 	public function login_remembered_user()
 	{
 		$this->trigger_events('pre_login_remembered_user');
@@ -1742,7 +3149,7 @@ class Ion_auth_model extends CI_Model
 	 *
 	 * @author aditya menon
 	*/
-	public function create_group($group_name = FALSE, $group_description = '', $additional_data = array())
+	public function sql_create_group($group_name = FALSE, $group_description = '', $additional_data = array())
 	{
 		// bail if the group name was not passed
 		if(!$group_name)
@@ -1771,10 +3178,85 @@ class Ion_auth_model extends CI_Model
 		$this->db->insert($this->tables['groups'], $data);
 		$group_id = $this->db->insert_id();
 
+		$data['extradata']=str_replace('"','',$data['extradata']);
+
+		$new_id = str_replace(' ','_',$data['name']);
+
+		$params = array();
+		$params['body']  =  $data;
+
+		$params['index'] = 'telepath-users';
+		$params['type']  = 'groups';
+		$params['id'] = $new_id;
+
+		$this->elasticClient->index($params);
+
 		// report success
 		$this->set_message('group_creation_successful');
 		// return the brand new group id
 		return $group_id;
+	}
+
+	/**
+	 * create_group
+	 *
+	 * @author aditya menon
+	*/
+	public function create_group($group_name = FALSE, $group_description = '', $additional_data = array())
+	{
+		// bail if the group name was not passed
+		if(!$group_name)
+		{
+			$this->set_error('group_name_required');
+			return FALSE;
+		}
+
+		// bail if the group name already exists
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'body' => [
+						'query' => [
+								'filtered' => [
+										'filter' => [
+												'term' => [ 'name' => $group_name ]
+										]
+								]
+						]
+				]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		if($results['hits']['total']>0)
+		{
+			$this->set_error('group_already_exists');
+			return FALSE;
+		}
+
+		$data = array('name'=>$group_name,'description'=>$group_description,'additional_data'=>$additional_data);
+
+		//filter out any data passed that doesnt have a matching column in the groups table
+		//and merge the set group data and the additional data
+		//if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['groups'], $additional_data), $data);
+
+
+		$this->trigger_events('extra_group_set');
+
+		// insert the new group
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'body' => $data
+		];
+
+// Document will be indexed to my_index/my_type/my_id
+		$response=$this->elasticClient->index($params);
+
+		// report success
+		$this->set_message('group_creation_successful');
+		// return the brand new group id
+		return $response['_id'];
 	}
 
 	/**
@@ -1783,7 +3265,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author aditya menon
 	 **/
-	public function update_group($group_id = FALSE, $group_name = FALSE, $additional_data = array())
+	public function sql_update_group($group_id = FALSE, $group_name = FALSE, $additional_data = array())
 	{
 		if (empty($group_id)) return FALSE;
 
@@ -1823,12 +3305,90 @@ class Ion_auth_model extends CI_Model
 	}
 
 	/**
+	 * update_group
+	 *
+	 * @return bool
+	 * @author aditya menon
+	 **/
+	public function update_group($group_id = FALSE, $group_name = FALSE, $description=FALSE, $additional_data = array())
+	{
+		if (empty($group_id)) return FALSE;
+
+		$data = array();
+
+		if (!empty($group_name))
+		{
+			// we are changing the name, so do some checks
+
+			// bail if the group name already exists
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'groups',
+					'body' => [
+							'query' => [
+									'filtered' => [
+											'filter' => [
+													'term' => [ 'name' => $group_name ]
+											]
+									]
+							]
+					]
+			];
+
+			$results = $this->elasticClient->search($params);
+
+			if($results['hits']['total']>0 && $results['hits']['hits']['_id']!=$group_id)
+
+			{
+				$this->set_error('group_already_exists');
+				return FALSE;
+			}
+
+			$data['name'] = $group_name;
+
+		}
+		if (!empty($description))
+			$data['description']=$description;
+
+
+		// IMPORTANT!! Third parameter was string type $description; this following code is to maintain backward compatibility
+		// New projects should work with 3rd param as array
+	//	if (is_string($additional_data)) $additional_data = array('description' => $additional_data);
+
+
+		//filter out any data passed that doesnt have a matching column in the groups table
+		//and merge the set group data and the additional data
+		//if (!empty($additional_data)) $data = array_merge($this->_filter_data($this->tables['groups'], $additional_data), $data);
+
+		if (!empty($additional_data))
+			$data['additional_data']=$additional_data;
+
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+				'body' => [
+						'doc' =>
+								$data
+
+				]
+		];
+
+		$this->elasticClient->update($params);
+
+		$this->set_message('group_update_successful');
+
+		return TRUE;
+	}
+
+	/**
 	* delete_group
 	*
 	* @return bool
 	* @author aditya menon
 	**/
-	public function delete_group($group_id = FALSE)
+	public function sqldelete_group($group_id = FALSE)
 	{
 		// bail if mandatory param not set
 		if(!$group_id || empty($group_id))
@@ -1854,6 +3414,79 @@ class Ion_auth_model extends CI_Model
 		}
 
 		$this->db->trans_commit();
+
+		$this->trigger_events(array('post_delete_group', 'post_delete_group_successful'));
+		$this->set_message('group_delete_successful');
+		return TRUE;
+	}
+
+	/**
+	* delete_group
+	*
+	* @return bool
+	* @author aditya menon
+	**/
+	public function delete_group($group_id = FALSE)
+	{
+		// bail if mandatory param not set
+		if(!$group_id || empty($group_id))
+		{
+			return FALSE;
+		}
+
+		$this->trigger_events('pre_delete_group');
+
+		// remove all users from this group
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'body' => [
+						'query' => [
+								'match' => [
+										'group_id' => $group_id
+								]
+						]
+				]
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		if($results['hits']['total']>0){
+
+		foreach ( $results['hits']['hits']as $user) {
+			$group_ids=$user['_source']['group_id'];
+			if(is_numeric($group_ids)){
+				$group_ids= new \stdClass();
+			}
+			else{
+				$group_ids=array_values(array_diff ($group_ids,[$group_id]));
+			}
+			$params = [
+					'index' => 'telepath-users',
+					'type' => 'users',
+					'id' => $user['_id'],
+					'body' => [
+							'doc' => [
+									'group_id' => $group_ids
+							]
+					]
+			];
+
+			$this->elasticClient->update($params);
+
+		}
+		}
+
+		// remove the group itself
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+		];
+
+		$this->elasticClient->delete($params);
+
 
 		$this->trigger_events(array('post_delete_group', 'post_delete_group_successful'));
 		$this->set_message('group_delete_successful');
@@ -2071,23 +3704,27 @@ class Ion_auth_model extends CI_Model
 		}
 	}
 
+	//TODO get the mapping of the elastic type
 	protected function _filter_data($table, $data)
 	{
-		$filtered_data = array();
-		$columns = $this->db->list_fields($table);
-
-		if (is_array($data))
-		{
-			foreach ($columns as $column)
-			{
-				if (array_key_exists($column, $data))
-					$filtered_data[$column] = $data[$column];
-			}
-		}
-
-		return $filtered_data;
+//		$filtered_data = array();
+//		$columns = $this->db->list_fields($table);
+//
+//		if (is_array($data))
+//		{
+//			foreach ($columns as $column)
+//			{
+//				if (array_key_exists($column, $data))
+//					$filtered_data[$column] = $data[$column];
+//			}
+//		}
+//
+//		return $filtered_data;
+		return $data;
 	}
 
+
+	//TODO check what about elastic
 	protected function _prepare_ip($ip_address) {
 		if ($this->db->platform() === 'postgre' || $this->db->platform() === 'sqlsrv' || $this->db->platform() === 'mssql')
 		{

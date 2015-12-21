@@ -171,7 +171,6 @@ class Tele_Controller extends CI_Controller {
 		// ElasticSearch Library
 		require 'vendor/autoload.php';
 		// Connect elastic
-		//$params = array('hosts' => array('127.0.0.1:9200'));
 		$this->elasticClient = new Elasticsearch\Client();
 		
 		$this->redisObj = new Redis();

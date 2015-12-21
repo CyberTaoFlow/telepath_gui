@@ -9,12 +9,15 @@ class acl
 	var $user_groups  = array(); //Array : Stores the roles of the current user
 	var $user_extra   = array(); //Array : Additional user access parameters (apps)
 	var $perms 		  = array(); //Array : Stores the permissions for the user
-	
 	var $allowed_apps   = array();
 	var $allowed_ranges = array();
 
 	function __construct() {
 		$this->ci = &get_instance();
+		// ElasticSearch Library
+		require 'vendor/autoload.php';
+		// Connect to elastic
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 	
 	// Determines if user has access to all apps
@@ -185,9 +188,9 @@ class acl
 		$this->user_id    = $this->ci->ion_auth->get_user_id();
 		
 		if($this->user_id) {
-			$this->user       = $this->ci->ion_auth->user($this->user_id)->result();
-			if(!isset($this->user[0])) { return; }
-			$this->user       = (array) $this->user[0];
+			$this->user       = $this->ci->ion_auth->user($this->user_id);
+			if(!isset($this->user)) { return; }
+			$this->user       = (array) $this->user;
 		} else {
 			return;
 		}
@@ -198,7 +201,7 @@ class acl
 		
 		
 		
-		$users_groups = $this->ci->ion_auth->get_users_groups($this->user_id)->result();
+		$users_groups = $this->ci->ion_auth->get_users_groups($this->user_id);
 		
 		foreach ($users_groups as $group) { 
 			$groups_array[] = $group->id; 
@@ -222,7 +225,7 @@ class acl
 		$user_apps   = is_array($this->user_extra) && isset($this->user_extra['apps']) ? $this->user_extra['apps'] : array();
 		$user_ranges = is_array($this->user_extra) && isset($this->user_extra['ranges']) ? $this->user_extra['ranges'] : array();
 		
-		$groups_data = $this->ci->ion_auth->groups($groups_array)->result();
+		$groups_data = $this->ci->ion_auth->groups($groups_array);
 		
 		foreach($groups_data as $group) {
 			if(isset($group->extradata) && $group->extradata != '') {
@@ -268,29 +271,99 @@ class acl
 	}
 	
 	// Get permission name from permID
-	
-	function get_perm_data($perm_id) {
+	function sql_get_perm_data($perm_id) {
 		$this->ci->db->select('class, function');
 		$this->ci->db->where('id', floatval($perm_id));
 		$sql = $this->ci->db->get('ci_perm_data',1);
 		$data = $sql->result();
 		return (array) $data[0];
 	}
+
+	// Get permission name from permID
+	function get_perm_data($perm_id) {
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'permissions',
+				'id' => $perm_id,
+		];
+
+		$response=$this->elasticClient->get($params);
+		return $response['_source']['permissions'];
+	}
 	
 	/* GROUP RELATED */
 	
 	// Clear Group Permissions
-	function clear_group_perm($group_id) {
+	function sql_clear_group_perm($group_id) {
 		$this->ci->db->where('group_id', $group_id)->delete('ci_group_perm');
+
 	}
-	
+
+	// Clear Group Permissions
+	function clear_group_perm($group_id) {
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+				'body' => [
+						'doc' => [
+								'permissions' => new \stdClass()
+						]
+				]
+		];
+
+		$this->elasticClient->update($params);
+	}
+
+
+
+
 	// Set Group Permission
-	function set_group_perm($group_id, $perm_id) {
+	function sql_set_group_perm($group_id, $perm_id) {
 		$this->ci->db->insert('ci_group_perm', array('group_id' => $group_id, 'perm_id' => $perm_id, 'value' => 1));
 	}
+
+	// Set Group Permission
+	function set_group_perm($group_id, $perm_ids) {
+
+		$perms = array();
+		foreach( $perm_ids as $perm_id ) {
+
+			$perm_data  = $this->get_perm_data($perm_id);
+
+			$perm_formatted = array(
+					'id'    => $perm_id,
+					'class' => $perm_data['class'],
+					'function' => $perm_data['function'],
+					'inheritted' => true,
+					'alias'=>$perm_data['alias'],
+					'value' => true
+			);
+
+			$perms[] = $perm_formatted;
+		}
+
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+				'body' => [
+						'doc' => [
+								'permissions' => [
+										$perms
+								]
+						]
+				]
+		];
+
+		$this->elasticClient->update($params);
+	}
+
+
 	
 	// Get Group Permissions
-	function get_group_perm($user_groups) {
+	function sql_get_group_perm($user_groups) {
 	
 		$this->ci->db->where_in('group_id',$user_groups);
 		$sql = $this->ci->db->get('ci_group_perm');
@@ -314,21 +387,102 @@ class acl
 		}
 		return $perms;
 	}
+
+	// Get Group Permissions
+	function get_group_perm($groups_id)
+	{
+
+		$perms = array();
+		foreach ($groups_id as $group_id) {
+
+			$params = [
+				'index' => 'telepath-users',
+				'type' => 'groups',
+				'id' => $group_id,
+			];
+
+			$response = $this->elasticClient->get($params);
+
+
+			$perms = $response['_source']['permissions']['alias'];
+
+			/*foreach ($response['_source']['permissions'] as $perm) {
+				$perms[$perm['alias']] = $perm;
+			}
+		}*/
+			return $perms;
+		}
+	}
 	
 	/* USER RELATED */
 	
 	// Clear User Permissions
-	function clear_user_perm($user_id) {
+	function sql_clear_user_perm($user_id) {
 		$this->ci->db->where('user_id', $user_id)->delete('ci_user_perm');
+	}
+
+	// Clear User Permissions
+	function clear_user_perm($user_id) {
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $user_id,
+				'body' => [
+						'doc' => [
+								'permissions' => new \stdClass()
+						]
+				]
+		];
+
+		$this->elasticClient->update($params);
 	}
 	
 	// Apply User Permission
-	function set_user_perm($user_id, $perm_id) {
+	function sql_set_user_perm($user_id, $perm_id) {
 		$this->ci->db->insert('ci_user_perm', array('user_id' => $user_id, 'perm_id' => $perm_id, 'value' => 1));
+	}
+
+	// Apply User Permission
+	function set_user_perm($user_id, $perm_ids) {
+		$perms = array();
+		foreach( $perm_ids as $perm_id ) {
+
+			$perm_data  = $this->get_perm_data($perm_id);
+
+			$perm_formatted = array(
+					'id'    => $perm_id,
+					'class' => $perm_data['class'],
+					'function' => $perm_data['function'],
+					'inheritted' => true,
+					'alias'=>$perm_data['alias'],
+					'value' => true
+			);
+
+			$perms[] = $perm_formatted;
+		}
+
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $user_id,
+				'body' => [
+						'doc' => [
+								'permissions' => [
+										$perms
+								]
+						]
+				]
+		];
+
+		$this->elasticClient->update($params);
+
+
+
 	}
 	
 	// Get User Permissions
-	function get_user_perm($user_id) {
+	function sql_get_user_perm($user_id) {
 
 		$this->ci->db->where('user_id',floatval($user_id));
 		$sql = $this->ci->db->get('ci_user_perm');
@@ -350,6 +504,26 @@ class acl
 			$perms[$perm_data['class'] . '::' . $perm_data['function']] = $perm_formatted;
 			
 		}
+		return $perms;
+	}
+
+	// Get User Permissions
+	function get_user_perm($user_id) {
+
+		$params = [
+				'index' => 'telepath-users',
+				'type' => 'users',
+				'id' => $user_id,
+		];
+
+		$response=$this->elasticClient->get($params);
+
+		$perms = array();
+
+		$perms =$response['_source']['permissions']['alias'];
+		/*foreach ( $response['_source']['permissions'] as $perm) {
+			$perms[$perm['alias']]=$perm;
+		}*/
 		return $perms;
 	}
 
