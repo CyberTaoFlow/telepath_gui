@@ -272,7 +272,7 @@ telepath.config.system = {
 			var ETH  = $('.tele-network-select', this).val();
 			var MASK = $('.tele-network-filter input', this).val();
 			
-			data.agents.push({ /*idx: IDX,*/ agent_name: NAME, NetworkInterface: ETH, pcap_filter: MASK });
+			data.agents.push({ /*idx: IDX,*/ agent_name: NAME, interface_name: ETH, pcap_filter: MASK });
 
 		});
 
@@ -728,7 +728,7 @@ telepath.config.system = {
 
 			Wrap.append(Name).append(Filter).append(Interface);
 			$.each(telepath.config.system.data.interfaces, function (i, interfaceName) {
-				var selected = interfaceName == value.NetworkInterface ? 'selected="selected"' : '';
+				var selected = interfaceName == value.interface_name ? 'selected="selected"' : '';
 				Interface.append('<option ' + selected + ' value=' + interfaceName + '>' + interfaceName + '</option>');
 			});
 			
@@ -786,7 +786,7 @@ telepath.config.system = {
 		// User Agent Ignore List
 		// -----------------------------------------------------------
 		/* Parse out user agents, little tricky.. */
-		this.c_ua = $('<div>').addClass('tele-config-system-tab tele-config-system-ua_ignore');
+		/*this.c_ua = $('<div>').addClass('tele-config-system-tab tele-config-system-ua_ignore');
 		this.container.append(this.c_ua);
 		
 		
@@ -796,7 +796,7 @@ telepath.config.system = {
 		var parsed  = headers.substr(pos + 2, len - pos - 4).split(')|(');
 		this.useragents = $('<div>').teleMulti({ values: parsed, title: 'User Agent Ignore List', template: function(element, value) {
 			element.teleInput({ value: value });
-		} }).appendTo(this.c_ua);
+		} }).appendTo(this.c_ua);*/
 	
 		// -----------------------------------------------------------
 		// Extension Ignore List
