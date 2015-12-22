@@ -146,7 +146,9 @@ class Cases extends Tele_Controller
         $case = $this->input->post('case_data');
 
         $this->M_Cases->update($name, json_decode($case, true));
-        $this->M_Config->update('case_list_was_changed', 1);
+
+        //not used
+//        $this->M_Config->update('case_list_was_changed', 1);
 
         // Return
         return_success();
@@ -171,7 +173,8 @@ class Cases extends Tele_Controller
 
         // Create
         $cid = $this->M_Cases->create($name, json_decode($case, true));
-        $this->M_Config->update('case_list_was_changed', 1);
+        //not used
+//        $this->M_Config->update('case_list_was_changed', 1);
 
         // Return
         return_success();
@@ -185,7 +188,8 @@ class Cases extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
         $cids = $this->input->post('cids');
         $this->M_Cases->delete($cids);
-        $this->M_Config->update('case_list_was_changed', 1);
+        //not used
+//        $this->M_Config->update('case_list_was_changed', 1);
 
         // Return updated cases list
         $this->get_cases();
