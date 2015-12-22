@@ -222,6 +222,8 @@ class Config extends Tele_Controller
 
         // Handle White list
 
+        $this->M_Config->changed();
+
         if (isset($config['whitelist'])) {
 
             $this->M_Config->whitelist_set_ips($config['whitelist']);
