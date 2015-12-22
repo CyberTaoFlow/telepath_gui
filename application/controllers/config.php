@@ -357,7 +357,11 @@ class Config extends Tele_Controller
 //
 //			if($tmp_old != $tmp_new) {
 //				$this->M_Config->set_agents($config['agents']);
+
+            //not used
 //				$this->M_Config->update('agents_list_was_changed', 1);
+
+
 //				system('/opt/telepath/suricata/af-packet.sh &');
 //			}
             $this->M_Config->set_agents($config['agents']);
