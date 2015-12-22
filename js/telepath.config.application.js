@@ -52,10 +52,10 @@ telepath.config.application = {
 		
 		// IPS
 		app_data.app_ips = [];
-		$('.tele-ip', this.app_ips).each(function () {
-			var ip = $(this).data('tele-ip').getIP();
-			if(ip) {
-				app_data.app_ips.push(ip);
+		$('input', this.app_ips).each(function () {
+			//var ip = $(this).data('tele-ip').getIP();
+			if($(this).val() != '') {
+				app_data.app_ips.push($(this).val());
 			}
 		});
 		// De-Dupe
