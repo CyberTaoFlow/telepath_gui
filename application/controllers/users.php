@@ -148,6 +148,8 @@ class Users extends CI_Controller
             unset($data['login']);
             unset($data['password']);
             unset($data['email']);
+            // The mode parameter makes problem with sqlite. For now the mode information doesn't have any db configuration.
+            unset($data['mode']);
             unset($data['extradata']); // IMPORTANT NOT TO ALLOW THIS
 
             $user_id = $this->ion_auth->register($login, $password, $email, $data, isset($post['items']['groups']) ? $post['items']['groups'] : array());
