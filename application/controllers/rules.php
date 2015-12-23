@@ -47,7 +47,9 @@ class Rules extends Tele_Controller
         $data = $this->M_Rules->set_rule($data);
 
         $this->load->model('M_Config');
-        $this->M_Config->update('rules_table_was_changed_id', 1);
+
+        //not used
+//        $this->M_Config->update('rules_table_was_changed_id', 1);
 
         return_success($data);
 
@@ -61,7 +63,9 @@ class Rules extends Tele_Controller
         $data = $this->M_Rules->add_rule($data);
 
         $this->load->model('M_Config');
-        $this->M_Config->update('rules_table_was_changed_id', 1);
+
+        //not used
+//        $this->M_Config->update('rules_table_was_changed_id', 1);
 
         return_success($data);
 
@@ -85,7 +89,9 @@ class Rules extends Tele_Controller
         $this->M_Rules->del_category($cat);
 
         $this->load->model('M_Config');
-        $this->M_Config->update('rules_table_was_changed_id', 1);
+
+        //not used
+//        $this->M_Config->update('rules_table_was_changed_id', 1);
 
         return_success();
 

@@ -15,6 +15,21 @@ class M_Config extends CI_Model
 
     }
 
+    public function changed(){
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'config',
+            'id' => 'config_was_changed_id',
+            'body' => [
+                'doc' => [
+                    "value"=>"1"
+                ]
+            ]
+        ];
+
+        $this->elasticClient->update($params);
+    }
+
     public function sql_whitelist_get_ips()
     {
 
