@@ -117,19 +117,43 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	function index($search = false) {
 		
 		// Search specific records first
-		
-		$params['body'] = [
+
+		$params = [
+			'index' => 'telepath-domains',
+			'type' => 'domains',
+			'body' => [
+				'query' => [
+					'match_all' => [
+
+					]
+				]
+			]
+		];
+
+		$results = get_elastic_results($this->elasticClient->search($params));
+
+		$ans1 = [];
+		if(!empty($results)) {
+			foreach($results as $result) {
+				if(isset($result['uid'])) {
+					$ans1[$result['uid']] = [ 'key' => $result['name'], 'hits' => 0 ];
+				}
+			}
+		}
+
+		return array_values($ans1);
+	/*	$params['body'] = [
 			'size'  => 999,
 			'query' => [ 'bool' => [ 'must' => [ [ 'term' => [ '_type' => 'application' ] ] ] ] ]
 		];
-		
+
 		if($search) {
 			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => [ "host" ] , "query" => '*' . $search . '*' ] ];
 		}
-		
+
 		$params = append_access_query($params);
 		$results = get_elastic_results($this->elasticClient->search($params));
-		
+
 		$ans1 = [];
 		if(!empty($results)) {
 			foreach($results as $result) {
@@ -139,18 +163,18 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 			}
 		}
 		//sort($ans1);
-		
+
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
 			'query' => [ 'bool' => [ "must" => [ [ 'term' => [ '_type' => 'http' ] ] ] ] ]
 		);
-		
+
 		if($search) {
 			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => [ "host" ] , "query" => '*' . $search . '*' ] ];
-		}		
-		
-		//var_dump(json_encode($params));	
+		}
+
+		//var_dump(json_encode($params));
 		//$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
 		$ans2 = [];
@@ -166,12 +190,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 					$ans2[$bucket['key']] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
 				}
 			}
-			
-		} 
+
+		}
 		sort($ans2);
 	        $ans = array_merge($ans1, $ans2);
 		// Connect to aggregated data
-		return array_values($ans);
+		return array_values($ans);*/
 		
 	}
 	
