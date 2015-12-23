@@ -6,17 +6,17 @@ telepath.search = {
 		'pages': true,
 		'attributes': true,
 		'requests': true,
-		'suspects': true,
-		'alerts': true,
-		'cases': true,
+		//'suspects': true,
+		//'alerts': true,
+		//'cases': true,
 		'request_data': true,
 		'users': false
 	},
 	options: false,
 	searchTypes: [
-		{ id: 'cases', label: 'Request Data', desc: 'Search Cases' },					// Scope
-		{ id: 'alerts', label: 'Applications', desc: 'Search Alerts' },					// Scope
-		{ id: 'suspects', label: 'Request Data', desc: 'Search suspects' },				// Scope
+		//{ id: 'cases', label: 'Request Data', desc: 'Search Cases' },					// Scope
+		//{ id: 'alerts', label: 'Applications', desc: 'Search Alerts' },					// Scope
+		//{ id: 'suspects', label: 'Request Data', desc: 'Search suspects' },				// Scope
 		{ id: 'requests', label: 'Requests', desc: 'Search Requests' },					// Scope
 		{ id: 'request_data', label: 'Request Data', desc: 'Search request data' }, 	// Variant TODO:: See performance cost to have these on by default
 		{ id: 'application', label: 'Applications', desc: 'Search domain names' },		// Variant 
@@ -25,6 +25,11 @@ telepath.search = {
 		{ id: 'users', label: 'Request Data', desc: 'Search web application users' },	// Variant
 		{ id: 'users', label: 'Request Data', desc: 'Search in countries and cities' }	// Variant
 	],
+
+
+
+
+
 	printTypes: function(element) {
 		
 		var that = this;
@@ -32,7 +37,25 @@ telepath.search = {
 		if(this.options === false) {
 			this.options = this.defaults; // USE $.extend
 		}
-		
+
+		if(telepath.access.perm.Cases_get) {
+			that.searchTypes.push({id: 'cases', label: 'Request Data', desc: 'Search Cases' });
+			this.options['cases']=true;
+		}
+
+
+		if (telepath.access.perm.Alerts_get){
+			that.searchTypes.push({ id: 'alerts', label: 'Applications', desc: 'Search Alerts' });
+			this.options['alerts']=true;
+		}
+
+		if (telepath.access.perm.Suspects_get){
+			that.searchTypes.push({ id: 'suspects', label: 'Request Data', desc: 'Search suspects' });
+			this.options['suspects']=true;
+		}
+
+
+
 		$.each(that.searchTypes, function(i, data) {
 			
 			var wrap  = $('<div>').addClass('tele-search-filter').attr('id', 'tele-search-filter-' + data.id);
