@@ -8,35 +8,40 @@ telepath.header = {
 
 		var that = this;
 		// Start Build Header
-		
+
 		// LOGO
 		this.logo = '<div class="tele-logo"><img src="img/logo.png" alt="Hybrid Security Telepath" /></div>';
-		
+
 		// NAV
-		this.nav  = $('<ul>').addClass('tele-nav');
+		this.nav = $('<ul>').addClass('tele-nav');
 		this.navItems = [
-			{ id: 'dashboard', label: 'Dashboard' },
-			{ id: 'cases',     label: 'Cases'     },
-			{ id: 'alerts',    label: 'Alerts'    },
-			{ id: 'suspects',  label: 'Suspects'  }
+			{id: 'dashboard', label: 'Dashboard'},
+			{id: 'cases', label: 'Cases'},
+			{id: 'alerts', label: 'Alerts'},
+			{id: 'suspects', label: 'Suspects'}
 			//{ id: 'reports',   label: 'Reports'   }
 		];
-		$.each(this.navItems, function(i, item) {
-			if (telepath.access.admin || telepath.access.perm[item.label+'_get']){
+		$.each(this.navItems, function (i, item) {
+			if (telepath.access.admin || telepath.access.perm[item.label + '_get']) {
 				var itemEl = $('<li>').addClass('tele-nav-' + item.id).append($('<a>').attr('href', '#').append('<span class="tele-nav-icon">').append(item.label)); //	
-			};
-			
+			}
+			;
+
 			$(that.nav).append(itemEl);
 		});
-		
+
 		// SEARCH -- Perhaps move this code to search panel?
-		
+
 		this.headerRight = $('<div>').addClass('tele-header-right');
+
+		if (telepath.access.perm.Search_get) {
+
+
 		this.search = $('<div>').addClass('tele-search-top');
 		this.searchInput = $('<input>').addClass('tele-search-input');
-		this.searchIcon  = $('<a href="#">').addClass('tele-search-icon').html('Search');
-		this.searchDD    = $('<a href="#">').addClass('tele-search-dropdown').html('');
-		
+		this.searchIcon = $('<a href="#">').addClass('tele-search-icon').html('Search');
+		this.searchDD = $('<a href="#">').addClass('tele-search-dropdown').html('');
+
 		this.search.append(this.searchInput).append(this.searchIcon).append(this.searchDD);
 		this.headerRight.append(this.search);
 
@@ -45,10 +50,10 @@ telepath.header = {
 			telepath.search.init(telepath.header.searchInput.val());
 			telepath.ui.resize();
 		});
-		
+
 		// Hook for enter key
 		$(this.searchInput).keydown(function (e) {
-			if(e.keyCode == 13) {
+			if (e.keyCode == 13) {
 				telepath.search.init(telepath.header.searchInput.val());
 				telepath.ui.resize();
 			}
@@ -56,21 +61,21 @@ telepath.header = {
 
 		// Hook for dropdown arrow
 		this.searchDD.click(function () {
-			
-			if($('.tele-search-filters').size() > 0) {
+
+			if ($('.tele-search-filters').size() > 0) {
 				$('.tele-search-filters').remove();
 				return;
 			}
 
 			that.searchWrap = $('<div>').addClass('tele-search-filters').addClass('tele-popup');
-			
+
 			var title = $('<div>').addClass('tele-title-1').html('What to search');
 			that.searchWrap.append(title);
 			that.headerRight.append(that.searchWrap);
 			telepath.search.printTypes(that.searchWrap);
-		
+
 		});
-	
+	}
 		
 		$('.tele-header').append(this.logo).append(this.nav).append(this.headerRight);
 		// End Build Header
