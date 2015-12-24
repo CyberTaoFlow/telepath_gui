@@ -87,7 +87,7 @@ $active_record = TRUE;
 //$db['default']['stricton'] = FALSE;
 
 
-$db['default']['hostname'] = 'sqlite:'.BASEPATH.'database/drivers/sqlite/telepath_users.db';
+$db['default']['hostname'] = 'sqlite:'.APPPATH.'databases/telepath_users.db';
 $db['default']['username'] = '';
 $db['default']['password'] = '';
 $db['default']['database'] = '';
