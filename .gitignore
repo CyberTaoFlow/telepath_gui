@@ -5,3 +5,4 @@ application/controllers/test.php
 application/models/m_test.php
 tmp/
 system/database/drivers/sqlite/telepath_users.db
+application/databases/telepath_users.db
