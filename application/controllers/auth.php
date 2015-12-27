@@ -176,6 +176,8 @@ class Auth extends CI_Controller
                 // Note the array(1) is setting default group for converted users to admin
                 $user_id = $this->ion_auth->register($username, $password, '', array(), array(1));
 
+                $this->db->delete('registered_users', array('user'=> $username));
+
                 if ($user_id) {
 
                     $this->ion_auth->login($username, $password, $remember);
