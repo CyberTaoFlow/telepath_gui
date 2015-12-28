@@ -33,27 +33,26 @@ telepath.search = {
 	printTypes: function(element) {
 		
 		var that = this;
-		
+
+		if(telepath.access.perm.Cases_get|| telepath.access.admin) {
+			that.searchTypes.push({id: 'cases', label: 'Request Data', desc: 'Search Cases' });
+			this.defaults.cases=true;
+		}
+
+
+		if (telepath.access.perm.Alerts_get|| telepath.access.admin){
+			that.searchTypes.push({ id: 'alerts', label: 'Applications', desc: 'Search Alerts' });
+			this.defaults.alerts=true;
+		}
+
+		if (telepath.access.perm.Suspects_get|| telepath.access.admin){
+			that.searchTypes.push({ id: 'suspects', label: 'Request Data', desc: 'Search suspects' });
+			this.defaults.suspects=true;
+		}
+
 		if(this.options === false) {
 			this.options = this.defaults; // USE $.extend
 		}
-
-		if(telepath.access.perm.Cases_get) {
-			that.searchTypes.push({id: 'cases', label: 'Request Data', desc: 'Search Cases' });
-			this.options['cases']=true;
-		}
-
-
-		if (telepath.access.perm.Alerts_get){
-			that.searchTypes.push({ id: 'alerts', label: 'Applications', desc: 'Search Alerts' });
-			this.options['alerts']=true;
-		}
-
-		if (telepath.access.perm.Suspects_get){
-			that.searchTypes.push({ id: 'suspects', label: 'Request Data', desc: 'Search suspects' });
-			this.options['suspects']=true;
-		}
-
 
 
 		$.each(that.searchTypes, function(i, data) {
@@ -168,15 +167,17 @@ telepath.search = {
 		// Tab Print
 		for(x in tabs) {
 			var tab = tabs[x];
-			var tabEl = $('<div>').attr('id', 'tele-search-' + tab.id);
-			// Show Loading
-			tabEl.append('<img class="loader" src="img/loader.gif">');
-			var tabLi = $('<li>');
-			var tabCount = $('<span>').html('0');
-			var tabA  = $('<a>').attr('href', '#tele-search-' + tab.id).append(tab.text + '&nbsp;(').append(tabCount).append(')').attr('rel', tab.id).addClass('tele-search-tab');
-			tabLi.append(tabA);
-			this.tabsUl.append(tabLi);
-			this.tabsEl.append(tabEl);
+			if (this.options[tab.id]) {
+				var tabEl = $('<div>').attr('id', 'tele-search-' + tab.id);
+				// Show Loading
+				tabEl.append('<img class="loader" src="img/loader.gif">');
+				var tabLi = $('<li>');
+				var tabCount = $('<span>').html('0');
+				var tabA = $('<a>').attr('href', '#tele-search-' + tab.id).append(tab.text + '&nbsp;(').append(tabCount).append(')').attr('rel', tab.id).addClass('tele-search-tab');
+				tabLi.append(tabA);
+				this.tabsUl.append(tabLi);
+				this.tabsEl.append(tabEl);
+			}
 		}
 		
 		// Append our tabs
@@ -311,6 +312,12 @@ telepath.search = {
 				});
 							
 				
+			}
+			else {
+				that.container = $('#tele-search-' + type);
+				that.container.empty();
+				var p = $('<p>').text("No results");
+				that.container.append(p);
 			}
 			
 		});
