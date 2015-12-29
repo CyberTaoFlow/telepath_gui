@@ -34,7 +34,7 @@ telepath.header = {
 
 		this.headerRight = $('<div>').addClass('tele-header-right');
 
-		if (telepath.access.perm.Search_get) {
+		if (telepath.access.perm.Search_get || telepath.access.admin) {
 
 
 		this.search = $('<div>').addClass('tele-search-top');
