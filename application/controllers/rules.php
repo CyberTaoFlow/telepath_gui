@@ -29,7 +29,7 @@ class Rules extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, 'get_rules');
-        $directory = '/opt/telepath/scripts';
+        $directory = ($this->config->item('scripts'));
         $scanned_directory = array_diff(scandir($directory), array('..', '.'));
         $out = [];
         foreach ($scanned_directory as $v) {
@@ -192,6 +192,7 @@ class Rules extends Tele_Controller
 
 
     }
+
 
 
     public function index()
