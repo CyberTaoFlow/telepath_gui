@@ -17,12 +17,12 @@ telepath.config.applications = {
 			var obj  = { children: children, name: row.text, text: row.text, data: row, 'icon': 'tele-icon-' + row.type};
 			
 			if(row.type == 'page') {
-				obj.text = row.host + obj.text;
+				obj.text = row.name + obj.text;
 			}
 			if(row.type == 'param') {
-				obj.data.host = row.host;
+				obj.data.name = row.name;
 				obj.data.uri = row.uri;
-				obj.text = row.host + row.uri + " - " + row.text + "&nbsp;(" + row.param_type + ")";
+				obj.text = row.name + row.uri + " - " + row.text + "&nbsp;(" + row.param_type + ")";
 			}
 			
 			treeData.push(obj);
@@ -39,13 +39,13 @@ telepath.config.applications = {
 		var treeData = [];
 		$.each(data, function(i, row) {
 			var text = row.key + '&nbsp;(' + row.hits + ')';
-			var obj  = { children: false, text: text, data: { type: 'app', host: row.key }, 'icon': 'tele-icon-app'};
+			var obj  = { children: false, text: text, data: { type: 'app', name: row.key }, 'icon': 'tele-icon-app'};
 			treeData.push(obj);
 		});
 		return treeData;
 		
 	},
-	formatDataPages: function(data, i, host) {
+	formatDataPages: function(data, i, name) {
 		
 		if(!data) { return; }
 		
@@ -57,12 +57,12 @@ telepath.config.applications = {
 			if(typeof(row) == 'object') {
 			
 				// EXPAND = LEVEL
-				var obj  = { children: that.formatDataPages(row, i, host), text: i, data: { type: 'dir', text: i }, 'icon': 'tele-icon-dir'};
+				var obj  = { children: that.formatDataPages(row, i, name), text: i, data: { type: 'dir', text: i }, 'icon': 'tele-icon-dir'};
 				treeData.push(obj);
 				
 			} else {
 			
-				var obj  = { children: true, text: i, data: { type: 'page', path: row, host: host }, 'icon': 'tele-icon-page'};
+				var obj  = { children: true, text: i, data: { type: 'page', path: row, name: name }, 'icon': 'tele-icon-page'};
 				treeData.push(obj);
 				// EXPAND = PARAM
 			}
@@ -112,15 +112,19 @@ telepath.config.applications = {
 			columns: [
 				{width: 280 },
 				{value: function (node) {
-					console.log('App Edit Clicked');
-					return $('<div>').btn({ icon: 'edit', callback: function () {
-						telepath.config.application.editApp(node.host);
+					return $('<div>').btn({ icon: 'edit', callback: function (tree) {
+						$nodeParent = tree.element.parents('[role="treeitem"]');
+
+						telepath.config.application.editApp(node.name, $nodeParent);
 					}});
 					
 				}, width: 40 },
 				{value: function (node) {
-					return $('<div>').btn({ icon: 'delete', callback: function () {
-						telepath.config.application.deleteApp(node.host);
+					return $('<div>').btn({ icon: 'delete', callback: function (tree) {
+
+						$nodeParent = tree.element.parents('[role="treeitem"]');
+
+						telepath.config.application.deleteApp(node.name, $nodeParent)
 					}});
 					
 				}, width: 40 }
@@ -131,7 +135,9 @@ telepath.config.applications = {
 			console.log('App Changed');
 			console.log(data);
 			if(data && data.node) {
-				telepath.config.application.editApp(data.node.data.host);
+				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
+				telepath.config.application.editApp(data.node.data.name);
 			}
 		});
 		

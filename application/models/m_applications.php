@@ -11,14 +11,14 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 #$params['logPath'] = '/tmp/elasticsearch.log';
 		$this->elasticClient = new Elasticsearch\Client($params);
 	}
-	
-	function set($data) {
-		
+
+	/*function set($data) {
+
 		// Check
-			
+
 		$params['body'] = [
 			'size'   => 1,
-			
+
 			'query' => [
 				'bool' => [
 					'must' => [
@@ -27,50 +27,108 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 					]
 				]
 			]
-			
+
 		];
-		
+
 		$results = $this->elasticClient->search($params);
 		$exists  = intval($results['hits']['total']) > 0;
 
 		// Prep
-		
+
 		$params = array();
 		$params['index'] = 'telepath-applications';
 		$params['type']  = 'application';
 		$params['id']    = $data['host'];
-		
+
 		// Cleanup certs if ssl was disabled
 		if(intval($data['ssl_flag']) == 0) {
 			$data['app_ssl_certificate'] = '';
 			$data['app_ssl_private'] = '';
 			$data['ssl_data'] = [];
 		}
-		
+
 		if(isset($data['app_ssl_certificate']) && $data['app_ssl_certificate'] != '') {
 			$cert_data = openssl_x509_parse($data['app_ssl_certificate']);
 			$data['ssl_data'] = $cert_data;
 		}
-				
+
 		if(!$exists) {
-		
+
 			// Create
 			$params['body']  = $data;
 			$ret =  $this->elasticClient->index($params);
-		
+
 		} else {
-		
+
 			// Update
 			$params['body']  = [ 'doc' => $data ];
 			$ret =  $this->elasticClient->update($params);
-		
+
 		}
-		
+
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-applications'));
-		
+
+	}*/
+
+
+	function set($data) {
+
+		// Check
+
+		$params['index'] ='telepath-domains';
+		$params['type'] = 'domains';
+		$params['body'] = [
+			'size'   => 1,
+			'query' => [ "match" => [
+				"name" => $data['name']
+			]
+			]
+		];
+
+
+		$results = $this->elasticClient->search($params);
+		$exists  = intval($results['hits']['total']) > 0;
+
+		// Prep
+
+		$params = array();
+		$params['index'] = 'telepath-domains';
+		$params['type']  = 'domains';
+//		$params['id']    = $results['hits']['hits'][0]['_id'];
+
+		// Cleanup certs if ssl was disabled
+		if(intval($data['ssl_flag']) == 0) {
+			$data['app_ssl_certificate'] = '';
+			$data['app_ssl_private'] = '';
+			$data['ssl_data'] = [];
+		}
+
+		if(isset($data['app_ssl_certificate']) && $data['app_ssl_certificate'] != '') {
+			$cert_data = openssl_x509_parse($data['app_ssl_certificate']);
+			$data['ssl_data'] = $cert_data;
+		}
+
+		if(!$exists) {
+
+			// Create
+//			$params['id'] =null;
+			$params['body']  = $data;
+			$ret =  $this->elasticClient->index($params);
+
+		} else {
+
+			// Update
+			$params['id']    = $results['hits']['hits'][0]['_id'];
+			$params['body']  = [ 'doc' => $data ];
+			$ret =  $this->elasticClient->update($params);
+
+		}
+
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-domains'));
+
 	}
 
-	function delete($host) {
+	/*function delete($host) {
 		# Delete host from the application index, Yuli
 		$params['index'] = 'telepath-applications';
 		$params['type'] = 'application';
@@ -82,18 +140,41 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['index'] = '_all';
 		$params['body']['query']['bool']['must']['term']['http.host'] = $host;
 		$results = $this->elasticClient->deleteByQuery($params);
+	}*/
+
+	function delete($host) {
+		# Delete host from the application index, Yuli
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
+		$params['body']['query']['match']['name'] = $host;
+		$results = $this->elasticClient->deleteByQuery($params);
+
+		# Delete all records where HTTP host is used the same ias $host, Yuli
+		$params = array();
+		$params['index'] = '_all';
+		$params['body']['query']['bool']['must']['term']['host'] = $host;
+		$results = get_elastic_results($this->elasticClient->search($params));
+
+		foreach ($results as $res){
+			$params=[];
+			$params['index'] = $res['index'];
+			$params['type'] = $res['type'];
+			$params['id']=$res['uid'];
+			$this->elasticClient->delete($params);
+		}
 	}
 
 	function get($host) {
 		
 		// Check
-			
+		$params['index'] ='telepath-domains';
+		$params['type'] = 'domains';
 		$params['body'] = [
 			'size'   => 1,
-				'query' => [ "bool" => [ "must" => [
-					[ 'term' => [ "host" => $host ] ], 
-					[ 'term' => [ '_type' => 'application' ] ] 
-				] ]	]
+				'query' => [ "match" => [
+					 "name" => $host
+				]
+				]
 		];
 		
 		$results = $this->elasticClient->search($params);
@@ -122,6 +203,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 			'index' => 'telepath-domains',
 			'type' => 'domains',
 			'body' => [
+				'size'=>999,
 				'query' => [
 					'match_all' => [
 
@@ -201,14 +283,15 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	
 	function get_search($search) {
 
+		$params['index']='telepath-domains';
 		$params['body'] = [
 			'partial_fields' => [ 
 				"_src" => [
-					"include" => ["host", "uri", "parameters.name", "parameters.type"]
+					"include" => ["name", "uri", "parameters.name", "parameters.type"]
 				],
 			],
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.name"] , "query" => '*' . $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "name", "uri", "parameters.name"] , "query" => '*' . $search . '*' ] ] ] ],
 		];
 		
 		$params = append_access_query($params);

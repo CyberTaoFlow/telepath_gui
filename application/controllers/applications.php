@@ -84,7 +84,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = $this->input->post('host', true);
+        $host = $this->input->post('name', true);
         $context = $this->input->post('context', true);
 
         $app = $this->M_Applications->get($host);
@@ -119,6 +119,7 @@ class Applications extends Tele_Controller
 
     }
 
+
     // Updates Application
     public function set_app()
     {
@@ -126,13 +127,16 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         $data = $this->input->post();
-        $data['host'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['host']));
+        $data['name'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['name']));
         $this->M_Applications->set($data);
 
         // REWRITE OUR NGINX.CONF
         $this->load->model('M_Nginx');
         $conf = $this->M_Nginx->gen_config();
-        file_put_contents("/opt/telepath/openresty/nginx/conf/nginx.conf", $conf);
+
+        $logfile = $this->config->item('telepath_ui_log');
+
+        file_put_contents($logfile, $conf);
 
         return_success();
 
@@ -274,7 +278,9 @@ class Applications extends Tele_Controller
         // REWRITE OUR NGINX.CONF
         $this->load->model('M_Nginx');
         $conf = $this->M_Nginx->gen_config();
-        file_put_contents("/opt/telepath/openresty/nginx/conf/nginx.conf", $conf);
+        $logfile = $this->config->item('telepath_ui_log');
+
+        file_put_contents($logfile, $conf);
 
         return_success();
 

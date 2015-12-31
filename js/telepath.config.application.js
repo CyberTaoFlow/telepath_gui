@@ -13,14 +13,14 @@ telepath.config.application = {
 		$('#tele-app-details').click();
 		
 		// APP DOMAIN
-		app_data.host = $('input', this.AD_app_domain).val();
+		app_data.name = $('input', this.AD_app_domain).val();
 		$('input', this.AD_app_domain).css({ borderColor: '#555' });
-		if(app_data.host.length > 256) {
+		if(app_data.name.length > 256) {
 			telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application host too long' });
 			$('input', this.AD_app_domain).css({ borderColor: 'red' });
 			return false;
 		}
-		if(app_data.host == '') {
+		if(app_data.name == '') {
 			telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application host cant be empty' });
 			$('input', this.AD_app_domain).css({ borderColor: 'red' });
 			return false;
@@ -131,17 +131,22 @@ telepath.config.application = {
 		// Success Criteria -- Body Value
 	
 		telepath.ds.get('/applications/set_app', app_data, function(data) {
-			that.editApp(app_data.host);
+			telepath.config.applications.reload();
+			//that.editApp(app_data.name);
 		});
 		
 	},
 	createApp: function() {
+
 		this.editApp('new');
 	},
-	editApp: function(app_id) {
+
+
+	editApp: function(app_id, $nodeParent) {
 		
 		var that = this;
-		
+
+		this.nodeParent=$nodeParent;
 		// Containers
 		this.container = telepath.config.applications.contentRight;
 		this.toolbar   = telepath.config.applications.barRight;
@@ -227,7 +232,7 @@ telepath.config.application = {
                                 display_name: '',
                                 // Add default cookies for new app
                                 cookie_suggestion: 'PHPSESSID,PHPSESSIONID,JSESSIONID,ASPSESSIONID,ASP.NET_SessionId,VisitorID,SESS',
-				ip_suggestion: '',
+								ip_suggestion: '',
                                 app_ips: '',
                                 form_param_name: '',
                                 form_param_id: '',
@@ -240,7 +245,7 @@ telepath.config.application = {
                                 form_authentication_cookie_value: '',
                                 ssl_flag: 0,
                                 AppCookieName: '',
-                                form_authentication_redirect_response_range: '',
+                                form_authentication_redirect_response_range: ''
 		};
 	
 		if(app_id == 'new') {
@@ -248,16 +253,17 @@ telepath.config.application = {
 		} else {
 			// Load Application
 			this.loadApp(app_id);
+
 		}
 		
 	},
-	loadApp: function (app_host) {
+	loadApp: function (app_name) {
 		
 		var that = this;
-		this.app_data.app_domain = app_host;
-		this.app_data.host = app_host;
+		this.app_data.app_domain = app_name;
+		this.app_data.name = app_name;
 		var ip_suggestions_str = '';
-                                telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
+                                telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_name }, function(data) {
                                         ip_suggestions_str = '';
                                         if (data.items && data.items[0]) {
                                                 for (c in data.items)
@@ -272,13 +278,13 @@ telepath.config.application = {
                                 });
 
 		// will go inside if this host is really an application	
-		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
+		telepath.dsync.get('/applications/get_app', { name: app_name }, function(data) {
 
 			if(data.items && data.items[0]) {
 				that.app_data = data.items[0];
 
 				// Load cookie suggestions from the backend (Yuli)
-				telepath.dsync.get('/applications/get_cookie_suggestion', { app_id: app_host }, function(data) {
+				telepath.dsync.get('/applications/get_cookie_suggestion', { app_id: app_name }, function(data) {
 					cookie_suggestions_str = '';
 					if (data.items && data.items[0]) {
 						for (c in data.items)
@@ -316,7 +322,7 @@ telepath.config.application = {
 		
 		var title = $('<div>').addClass('tele-title-1').html('Application Details').appendTo('#tele-app-details');
 		
-		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.host });
+		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.name });
 		this.AD_display_name = $('<div>').teleInput({ label: 'Display Name', value: that.app_data.display_name });
 		
 		$('#tele-app-details').append(this.AD_app_domain).append(this.AD_display_name);
@@ -398,7 +404,7 @@ telepath.config.application = {
 			.teleBrowse({ 
 				label: 'Username Parameter', 
 				value: that.app_data.form_param_name, 
-				id: that.app_data.host,
+				id: that.app_data.name,
 				mode: 'param'
 			})
 			.appendTo('#tele-app-auth').hide()
@@ -472,7 +478,7 @@ telepath.config.application = {
 			checked: this.SC_cookie_flag_val,
 			radios: [ 
 				{ key: 'missing', label: 'Value is missing' }, 
-				{ key: 'appears', label: 'Value appears' },
+				{ key: 'appears', label: 'Value appears' }
 			], callback: function(radio) {
 			
 				switch(radio.key) {
@@ -516,7 +522,7 @@ telepath.config.application = {
 				
 		}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
 				
-		this.SC_redirect_browse = $('<div>').teleBrowse({ label: 'Page', value: that.app_data.form_authentication_redirect_page_name, id: that.app_data.host, type: 'page' });
+		this.SC_redirect_browse = $('<div>').teleBrowse({ label: 'Page', value: that.app_data.form_authentication_redirect_page_name, id: that.app_data.name, type: 'page' });
 		this.SC_redirect_range  = $('<div>').teleRange({ options: { range: true, min: 200, max: 600, values: that.app_data.form_authentication_redirect_response_range.split('-') }, label: 'Response status' });
 		
 		SC_wrap.append(this.SC_redirect_toggle).append(this.SC_redirect_browse).append(this.SC_redirect_range);
@@ -607,21 +613,27 @@ telepath.config.application = {
 		app_ssl_wrap.appendTo('#tele-app-ssl');
 		$(app_ssl_wrap).append('<div class="tele-form-hr">');
 
-		if(that.app_data.ssl_data.subject) {
+		if(that.app_data.ssl_data && that.app_data.ssl_data.subject) {
 			$.each(that.app_data.ssl_data.subject, function(key,val) {
 				$('<div style="clear:both;">').html(key + ' = ' + val).appendTo(app_ssl_wrap);
 			});
 		}
-		
-		
-				
+		if (that.nodeParent) {
+			that.nodeParent.parent().find(".jstree-wholerow").css('background-color', '#FFFFFF');
+			that.nodeParent.find('.jstree-wholerow').css("background-color", "rgba(189, 189, 189, 0.85)");
+
+		}
+
 	},
-	deleteApp: function(app_id) {
+	deleteApp: function(app_id, $nodeParent) {
 		
 		context_confirm('Delete Application', 'Are you sure you want to delete this application?', function () {
-			
+
 			telepath.ds.get('/applications/del_app', { app_id: app_id }, function(data) {
-				telepath.config.applications.reload();
+				if(data.success){
+					$nodeParent.remove();
+				}
+				//telepath.config.applications.reload();
 			}, 'Error deleting application');
 			
 		});
