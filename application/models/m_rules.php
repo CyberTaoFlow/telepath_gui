@@ -21,11 +21,69 @@ class M_Rules extends CI_Model {
 		
 		$params['body']['query']['bool']['must'][] = ['match' => ['name' => $name]];
 		$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
-		
-		$res = $this->elasticClient->deleteByQuery($params);
-		
+
+		$results = $this->elasticClient->deleteByQuery($params);
+
+
+
+			// Generic cases query
+			$params = [];
+			$params['body'] = [
+				'size' => 100,
+				'query' => [ 'term' => [ '_id' => 'cases_id' ] ]
+			];
+
+			// Gather data
+			$result = get_elastic_results($this->elasticClient->search($params));
+
+			// No data to delete from?
+			if(empty($result) || !isset($result[0]['All_Cases'])) {
+				return;
+			}
+
+			// Collect new case data, excluding deleted cases
+			$param= $category . '::' . $name;
+			$new_data = array();
+			foreach($result[0]['All_Cases'] as $cases) {
+				$new_case = array('case_name'=>$cases['case_name'],'created'=>$cases['created']);
+				$found = false;
+				foreach ($cases['details'] as $case) {
+					if ($case['value'] == $param ) {
+						continue;
+					}
+					elseif (substr_count($case['value'],  $param)  ) {
+						$new_value = '';
+						$explode = explode(',', $case['value']);
+						foreach ($explode as $c) {
+							if ($c != $param ) {
+								$new_value == '' ? $new_value = $new_value . $c : $new_value = $new_value . ',' . $c;
+							}
+						}
+						$case['value'] = $new_value;
+					}
+						$new_case['details'][] = $case;
+
+					}
+				if ($new_case['details']!=null){
+					$new_data[]=$new_case;
+				}
+			}
+			// Update our document
+			$action_data = [
+				'index'       => 'telepath-config',
+				'type'        => 'cases',
+				'id'          => 'cases_id',
+			];
+
+			$action_data['body'] = array('All_Cases' => $new_data);
+			$this->elasticClient->index($action_data);
+			$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
+
+
+
 		return $results;
-	
+
+
 	}
 	
 	public function add_rule($data) {
