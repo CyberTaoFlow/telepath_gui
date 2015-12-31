@@ -2071,24 +2071,21 @@ class Ion_auth_model extends CI_Model
 		}
 	}
 
-
-	// This function makes problems with sqlite3. In our site we don't need this function, the data provided is checked.
 	protected function _filter_data($table, $data)
 	{
-//		$filtered_data = array();
-//		$columns = $this->db->list_fields($table);
-//
-//		if (is_array($data))
-//		{
-//			foreach ($columns as $column)
-//			{
-//				if (array_key_exists($column, $data))
-//					$filtered_data[$column] = $data[$column];
-//			}
-//		}
-//
-//		return $filtered_data;
-		return $data;
+		$filtered_data = array();
+		$columns = $this->db->list_fields($table);
+
+		if (is_array($data))
+		{
+			foreach ($columns as $column)
+	{
+				if (array_key_exists($column, $data))
+					$filtered_data[$column] = $data[$column];
+			}
+		}
+
+		return $filtered_data;
 	}
 
 	protected function _prepare_ip($ip_address) {
