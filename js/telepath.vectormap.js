@@ -80,7 +80,7 @@ $.widget( "tele.vMap", {
 			normalizeFunction: 'polynomial',
 			onRegionClick: function(x, y) {
 			
-				telepath.alerts.searchString = 'country_code:' + y;
+				telepath.alerts.searchString = 'country_code:' + y.toUpperCase();
 				$('.tele-nav-alerts a').click();
 				setTimeout(function () {
 					$('.tele-panel-alerts .tele-search-input').val(telepath.alerts.searchString);
