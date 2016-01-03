@@ -24,27 +24,26 @@ class M_Rules extends CI_Model {
 
 		$results = $this->elasticClient->deleteByQuery($params);
 
-
-
 			// Generic cases query
-			$params = [];
-			$params['body'] = [
-				'size' => 100,
-				'query' => [ 'term' => [ '_id' => 'cases_id' ] ]
-			];
+		$params = [];
+		$params['index'] = 'telepath-config';
+		$params['type']  = 'cases';
+		$params['id'] = 'cases_id';
 
 			// Gather data
-			$result = get_elastic_results($this->elasticClient->search($params));
+		$results = $this->elasticClient->get($params);
+
+		$result=$results['_source'];
 
 			// No data to delete from?
-			if(empty($result) || !isset($result[0]['All_Cases'])) {
+			if(empty($result) || !isset($result['All_Cases'])) {
 				return;
 			}
 
 			// Collect new case data, excluding deleted cases
 			$param= $category . '::' . $name;
 			$new_data = array();
-			foreach($result[0]['All_Cases'] as $cases) {
+			foreach($result['All_Cases'] as $cases) {
 				$new_case = array('case_name'=>$cases['case_name'],'created'=>$cases['created']);
 				$found = false;
 				foreach ($cases['details'] as $case) {
@@ -69,14 +68,9 @@ class M_Rules extends CI_Model {
 				}
 			}
 			// Update our document
-			$action_data = [
-				'index'       => 'telepath-config',
-				'type'        => 'cases',
-				'id'          => 'cases_id',
-			];
 
-			$action_data['body'] = array('All_Cases' => $new_data);
-			$this->elasticClient->index($action_data);
+		$params['body'] = array('All_Cases' => $new_data);
+			$this->elasticClient->index($params);
 			$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
 
 
@@ -136,7 +130,62 @@ class M_Rules extends CI_Model {
 		$params = ['body' => $data, 'index' => 'telepath-rules', 'type' => 'rules'];
 		$this->elasticClient->index($params);
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-rules'));
-		
+
+
+		$params = [];
+		$params['index'] = 'telepath-config';
+		$params['type']  = 'cases';
+		$params['id'] = 'cases_id';
+
+		$old= $data['category'] . '::' . $result['hits']['hits'][0]['_source']['name'];
+
+		$new=$data['category'] . '::' . $data['name'];
+		// Gather data
+		$results = $this->elasticClient->get($params);
+
+		$result=$results['_source'];
+		// No data to delete from?
+		if(empty($result) || !isset($result['All_Cases'])) {
+			return;
+		}
+
+		// Collect new case data, excluding deleted cases
+
+		$new_data = array();
+		foreach($result['All_Cases'] as $cases) {
+			$new_case = array('case_name'=>$cases['case_name'],'created'=>$cases['created']);
+			$found = false;
+			foreach ($cases['details'] as $case) {
+				if ($case['value'] == $old ) {
+					$case['value'] = $new;
+				}
+				elseif (substr_count($case['value'],  $old)  ) {
+					$new_value = '';
+					$explode = explode(',', $case['value']);
+					foreach ($explode as $c) {
+						if ($c != $old ) {
+							$new_value == '' ? $new_value = $new_value . $c : $new_value = $new_value . ',' . $c;
+						}
+						else
+						{
+							$new_value == '' ? $new_value = $new_value . $new : $new_value = $new_value . ',' . $new;
+						}
+					}
+					$case['value'] = $new_value;
+				}
+				$new_case['details'][] = $case;
+
+			}
+			if ($new_case['details']!=null){
+				$new_data[]=$new_case;
+			}
+		}
+		// Update our document
+
+		$params['body'] = array('All_Cases' => $new_data);
+		$this->elasticClient->index($params);
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
+
 		return $data;
 	
 	}
@@ -200,7 +249,58 @@ class M_Rules extends CI_Model {
 		}
 		
 		$this->__set_categories($new_cats);
-	
+
+		$params = [];
+		$params['index'] = 'telepath-config';
+		$params['type']  = 'cases';
+		$params['id'] = 'cases_id';
+
+		// Gather data
+		$results = $this->elasticClient->get($params);
+
+		$result=$results['_source'];;
+
+		// No data to delete from?
+		if(empty($result) || !isset($result['All_Cases'])) {
+			return;
+		}
+
+		// Collect new case data, excluding deleted cases
+		$param= $cat;
+		$new_data = array();
+		foreach($result['All_Cases'] as $cases) {
+			$new_case = array('case_name'=>$cases['case_name'],'created'=>$cases['created']);
+			$found = false;
+			foreach ($cases['details'] as $case) {
+				if ((explode('::', $case['value'])[0]) == $param ) {
+					continue;
+				}
+				elseif (substr_count($case['value'],  $param)  ) {
+					$new_value = '';
+					$explode = explode(',', $case['value']);
+					foreach ($explode as $c) {
+						$test=explode('::',$c);
+						if ($test[0]!= $param) {
+							$new_value == '' ? $new_value = $new_value . $c : $new_value = $new_value . ',' . $c;
+						}
+					}
+					$case['value'] = $new_value;
+				}
+				$new_case['details'][] = $case;
+
+			}
+			if ($new_case['details']!=null){
+				$new_data[]=$new_case;
+			}
+		}
+		// Update our document
+
+		$params['body'] = array('All_Cases' => $new_data);
+		$this->elasticClient->index($params);
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
+
+
+
 	}
 	
 	private function __get_categories() {
