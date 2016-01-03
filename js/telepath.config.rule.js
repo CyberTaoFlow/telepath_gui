@@ -1,12 +1,15 @@
 telepath.config.rule = {
 
-	delRule: function(rule_name, rule_category) {
+	delRule: function(rule_name, rule_category, $nodeParent) {
 		
 		telepath.dialog({type:'dialog',
 			msg:'This operation will delete the selected rule group. Are you sure?', 
 			callback:function(){
 				telepath.ds.get('/rules/del_rule', { name: rule_name, category: rule_category }, function(data) {
-					telepath.config.rules.init();
+					if(data.success){
+						$nodeParent.remove();
+					}
+					//telepath.config.rules.init();
 				});
 			}});		
 	},

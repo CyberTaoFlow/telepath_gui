@@ -14,11 +14,11 @@ $.widget( "tele.teleTree", {
 					
 				}, width: 40 },*/
 				{value: function (node) {
-					
-					return $('<div>').btn({ icon: 'delete', callback: function () {
-						
+
+					return $('<div>').btn({ icon: 'delete', callback: function (tree) {
+						$nodeParent = tree.element.parent().parent().parent('.jstree-node');
 						if (node.type == 'group'){
-							telepath.config.rule.delRule(node.name, node.category);
+							telepath.config.rule.delRule(node.name, node.category, $nodeParent);
 						}
 						if (node.type == 'category'){
 							telepath.config.rules.delCategory(node.name);
