@@ -1,15 +1,13 @@
 telepath.config.rule = {
 
-	delRule: function(rule_name, rule_category, $nodeParent) {
+	delRule: function(rule_name, rule_category) {
 		
 		telepath.dialog({type:'dialog',
 			msg:'This operation will delete the selected rule group. Are you sure?', 
 			callback:function(){
 				telepath.ds.get('/rules/del_rule', { name: rule_name, category: rule_category }, function(data) {
-					if(data.success){
-						$nodeParent.remove();
-					}
-					//telepath.config.rules.init();
+
+					telepath.config.rules.init();
 				});
 			}});		
 	},
@@ -328,7 +326,7 @@ telepath.config.rule = {
 				telepath.ds.get('/rules/add_rule', { ruleData: ruleData }, function(data) {
 					that.data = data.items;
 					that.showRule(); // Reload
-					
+					telepath.config.rules.init();
 					telepath.dialog({msg:'Successfully created a rule'});
 					
 				});
@@ -340,6 +338,7 @@ telepath.config.rule = {
 				// Update
 				telepath.ds.get('/rules/set_rule', { ruleData: ruleData }, function(data) {
 					that.data = data.items;
+
 					that.showRule(); // Reload
 					
 					telepath.dialog({msg:'Successfully updated a rule'});

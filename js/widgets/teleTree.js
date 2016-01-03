@@ -18,7 +18,7 @@ $.widget( "tele.teleTree", {
 					return $('<div>').btn({ icon: 'delete', callback: function (tree) {
 						$nodeParent = tree.element.parent().parent().parent('.jstree-node');
 						if (node.type == 'group'){
-							telepath.config.rule.delRule(node.name, node.category, $nodeParent);
+							telepath.config.rule.delRule(node.name, node.category);
 						}
 						if (node.type == 'category'){
 							telepath.config.rules.delCategory(node.name);
