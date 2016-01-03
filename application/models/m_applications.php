@@ -212,6 +212,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 			]
 		];
 
+		if ($search){
+			$params['body']=[];
+			$params['body']['size']=999;
+			$params['body']['query']['match']=['host'=>$search];
+		}
+
 		$results = get_elastic_results($this->elasticClient->search($params));
 
 		$ans1 = [];
