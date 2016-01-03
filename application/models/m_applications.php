@@ -152,7 +152,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		# Delete all records where HTTP host is used the same ias $host, Yuli
 		$params = array();
 		$params['index'] = '_all';
-		$params['body']['query']['bool']['must']['term']['host'] = $host;
+		$params['body']['query']['bool']['must']['term']['name'] = $host;
 		$results = get_elastic_results($this->elasticClient->search($params));
 
 		foreach ($results as $res){
@@ -283,6 +283,8 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	
 	function get_search($search) {
 
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
 		$params['index']='telepath-domains';
 		$params['body'] = [
 			'partial_fields' => [ 
@@ -312,12 +314,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 			
 			if(strpos(strtolower($result['uri']), $search) !== false) {
 				
-				$data = array('type' => 'page', 'text' => $result['uri'], 'host' => $result['host']);
+				$data = array('type' => 'page', 'text' => $result['uri'], 'name' => $result['name']);
 				$out[crc32(serialize($data))] = $data;
 				
-			} else if (strpos(strtolower($result['host']), $search) !== false) {
+			} else if (strpos(strtolower($result['name']), $search) !== false) {
 				
-				$data = array('type' => 'app', 'text' => $result['host']);
+				$data = array('type' => 'app', 'text' => $result['name']);
 				$out[crc32(serialize($data))] = $data;
 			
 			} else if (!empty($result['parameters'])) {
@@ -326,7 +328,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 						
 					if(strpos(strtolower($param['name']), $search) !== false) {
 						
-						$data = array('type' => 'param', 'uri' => $result['uri'], 'host' => $result['host'], 'text' => $param['name'], 'param_type' => $param['type']);
+						$data = array('type' => 'param', 'uri' => $result['uri'], 'name' => $result['name'], 'text' => $param['name'], 'param_type' => $param['type']);
 						$out[crc32(serialize($data))] = $data;
 						
 					}
@@ -345,10 +347,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	}
 	
 	function get_page($host, $path, $mode = '') {
-		
+
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
 		$params['body'] = [
 			'size'   => 999,
-			'query' => [ "bool" => [ "must" => [ 'term' => [ "uri" => $path ], 'term' => [ "host" => $host ] ] ] ]
+			'query' => [ "bool" => [ "must" => [ 'term' => [ "uri" => $path ], 'term' => [ "name" => $host ] ] ] ]
 		];
 		
 		$params = append_access_query($params);
@@ -360,7 +364,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 				// Add sanity check that parameters key exists, Yuli
 				if (!empty($result['uri']) && $mode != 'param')
 				{
-					$data = array('type' => 'page', 'name'=>$result['uri'], 'text' => $result['uri'], 'host' => $result['host']);
+					$data = array('type' => 'page', 'name'=>$result['uri'], 'text' => $result['uri'], 'name' => $result['host']);
 					$out[crc32(serialize($data))] = $data;
 				}
 
@@ -388,12 +392,13 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	}
 	
 	function get_host($host) {
-		
-	
+
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
 		$params['body'] = [
 			'size'   => 1,
 			'aggs'   => [ 'uri' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
-			'query' => [ "bool" => [ "must" => [ 'term' => [ "host" => $host ]	] ] ]
+			'query' => [ "bool" => [ "must" => [ 'term' => [ "name" => $host ]	] ] ]
 		];
 		
 		$params = append_access_query($params);
@@ -414,11 +419,14 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	
 	}
 
-	function get_ip_suggestion($host) {
+	function get_ip_suggestion($host)
+	{
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
                 $params['body'] = array(
                         'size'  => 0,
                         'aggs'  => [ 'distinct_ips' => [ "terms" => [ "field" => "http.ip_resp", "size" => 1 ], ], ],
-                        'query' => [ 'bool' => [ "must" => [ /* 'term' => [ '_type' => 'http' ],*/ 'term' => [ 'http.host' => $host ], ] ] ]
+                        'query' => [ 'bool' => [ "must" => [ /* 'term' => [ '_type' => 'http' ],*/ 'term' => [ 'http.name' => $host ], ] ] ]
                 );
                 $results = $this->elasticClient->search($params);
                 $ans = [];
@@ -444,10 +452,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	}
 	
 	function get_index($filter = '') {
-		
+
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
 		$params['body'] = array(
 			'size'  => 0,
-			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
+			'aggs'  => [ 'name' => [ "terms" => [ "field" => "name", "size" => 999 ], ], ],
 			'query' => [ 'bool' => [ "must" => [ 'term' => [ '_type' => 'http' ]  ] ] ]
 		);
 		
@@ -457,7 +467,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		if(!empty($results) && isset($results['aggregations'])) {
 			
 			$ans = array();
-			foreach($results['aggregations']['host']['buckets'] as $bucket) {
+			foreach($results['aggregations']['name']['buckets'] as $bucket) {
 				$ans[] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
 			}
 			return $this->detect_paths($ans);
@@ -469,11 +479,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	}
 	
 	function get_subdomain_autocomplete($filter = '') {
-		
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
 		$params['body'] = array(
 			'size'  => 0,
-			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "host", "query" => $filter . '*' ] ] ] ],
+			'aggs'  => [ 'name' => [ "terms" => [ "field" => "name", "size" => 999 ], ], ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "name", "query" => $filter . '*' ] ] ] ],
 		);
 		
 		$params = append_access_query($params);
@@ -482,7 +493,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	
 		if(!empty($results) && isset($results['aggregations'])) {
 			
-			foreach($results['aggregations']['host']['buckets'] as $bucket) {
+			foreach($results['aggregations']['name']['buckets'] as $bucket) {
 				$ans[] = array('text' => $bucket['key'], 'hits' => $bucket['doc_count']);
 			}
 			
