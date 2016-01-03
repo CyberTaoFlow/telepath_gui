@@ -80,7 +80,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['body'] = [
 			'size'   => 1,
 			'query' => [ "match" => [
-				"name" => $data['name']
+				"host" => $data['host']
 			]
 			]
 		];
@@ -146,13 +146,13 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		# Delete host from the application index, Yuli
 		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';
-		$params['body']['query']['match']['name'] = $host;
+		$params['body']['query']['match']['host'] = $host;
 		$results = $this->elasticClient->deleteByQuery($params);
 
 		# Delete all records where HTTP host is used the same ias $host, Yuli
 		$params = array();
 		$params['index'] = '_all';
-		$params['body']['query']['bool']['must']['term']['name'] = $host;
+		$params['body']['query']['bool']['must']['term']['host'] = $host;
 		$results = get_elastic_results($this->elasticClient->search($params));
 
 		foreach ($results as $res){
@@ -172,7 +172,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['body'] = [
 			'size'   => 1,
 				'query' => [ "match" => [
-					 "name" => $host
+					 "host" => $host
 				]
 				]
 		];
@@ -218,7 +218,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		if(!empty($results)) {
 			foreach($results as $result) {
 				if(isset($result['uid'])) {
-					$ans1[$result['uid']] = [ 'key' => $result['name'], 'hits' => 0 ];
+					$ans1[$result['uid']] = [ 'key' => $result['host'], 'hits' => 0 ];
 				}
 			}
 		}
@@ -289,11 +289,11 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['body'] = [
 			'partial_fields' => [ 
 				"_src" => [
-					"include" => ["name", "uri", "parameters.name", "parameters.type"]
+					"include" => ["host", "uri", "parameters.host", "parameters.type"]
 				],
 			],
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "name", "uri", "parameters.name"] , "query" => '*' . $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.host"] , "query" => '*' . $search . '*' ] ] ] ],
 		];
 		
 		$params = append_access_query($params);
@@ -314,21 +314,21 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 			
 			if(strpos(strtolower($result['uri']), $search) !== false) {
 				
-				$data = array('type' => 'page', 'text' => $result['uri'], 'name' => $result['name']);
+				$data = array('type' => 'page', 'text' => $result['uri'], 'host' => $result['host']);
 				$out[crc32(serialize($data))] = $data;
 				
-			} else if (strpos(strtolower($result['name']), $search) !== false) {
+			} else if (strpos(strtolower($result['host']), $search) !== false) {
 				
-				$data = array('type' => 'app', 'text' => $result['name']);
+				$data = array('type' => 'app', 'text' => $result['host']);
 				$out[crc32(serialize($data))] = $data;
 			
 			} else if (!empty($result['parameters'])) {
 				
 				foreach($result['parameters'] as $param) {
 						
-					if(strpos(strtolower($param['name']), $search) !== false) {
+					if(strpos(strtolower($param['host']), $search) !== false) {
 						
-						$data = array('type' => 'param', 'uri' => $result['uri'], 'name' => $result['name'], 'text' => $param['name'], 'param_type' => $param['type']);
+						$data = array('type' => 'param', 'uri' => $result['uri'], 'host' => $result['host'], 'text' => $param['host'], 'param_type' => $param['type']);
 						$out[crc32(serialize($data))] = $data;
 						
 					}
@@ -352,7 +352,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['type'] = 'domains';
 		$params['body'] = [
 			'size'   => 999,
-			'query' => [ "bool" => [ "must" => [ 'term' => [ "uri" => $path ], 'term' => [ "name" => $host ] ] ] ]
+			'query' => [ "bool" => [ "must" => [ 'term' => [ "uri" => $path ], 'term' => [ "host" => $host ] ] ] ]
 		];
 		
 		$params = append_access_query($params);
@@ -364,7 +364,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 				// Add sanity check that parameters key exists, Yuli
 				if (!empty($result['uri']) && $mode != 'param')
 				{
-					$data = array('type' => 'page', 'name'=>$result['uri'], 'text' => $result['uri'], 'name' => $result['host']);
+					$data = array('type' => 'page', 'host'=>$result['uri'], 'text' => $result['uri'], 'host' => $result['host']);
 					$out[crc32(serialize($data))] = $data;
 				}
 
@@ -374,7 +374,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 					foreach($params as $param) {
 						if(isset($param['type']) && ($param['type'] == 'G' || $param['type'] == 'P')) {
 							
-							$out[crc32($param['type'] . $param['name'])] = array('name' => $param['name'], 'type' => $param['type']);
+							$out[crc32($param['type'] . $param['host'])] = array('host' => $param['host'], 'type' => $param['type']);
 						}
 					}
 				}
@@ -383,7 +383,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		// create fake root, Yuli
 		//if (empty($path))
 		//{
-		//	$data = array('type' => 'dir', 'name' => '/', 'text' => "/", 'host' => $host);
+		//	$data = array('type' => 'dir', 'host' => '/', 'text' => "/", 'host' => $host);
 		//	$out[crc32(serialize($data))] = $data;
 		//}
 		
@@ -398,7 +398,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['body'] = [
 			'size'   => 1,
 			'aggs'   => [ 'uri' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
-			'query' => [ "bool" => [ "must" => [ 'term' => [ "name" => $host ]	] ] ]
+			'query' => [ "bool" => [ "must" => [ 'term' => [ "host" => $host ]	] ] ]
 		];
 		
 		$params = append_access_query($params);
@@ -426,7 +426,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
                 $params['body'] = array(
                         'size'  => 0,
                         'aggs'  => [ 'distinct_ips' => [ "terms" => [ "field" => "http.ip_resp", "size" => 1 ], ], ],
-                        'query' => [ 'bool' => [ "must" => [ /* 'term' => [ '_type' => 'http' ],*/ 'term' => [ 'http.name' => $host ], ] ] ]
+                        'query' => [ 'bool' => [ "must" => [ /* 'term' => [ '_type' => 'http' ],*/ 'term' => [ 'http.host' => $host ], ] ] ]
                 );
                 $results = $this->elasticClient->search($params);
                 $ans = [];
@@ -457,7 +457,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['type'] = 'domains';
 		$params['body'] = array(
 			'size'  => 0,
-			'aggs'  => [ 'name' => [ "terms" => [ "field" => "name", "size" => 999 ], ], ],
+			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
 			'query' => [ 'bool' => [ "must" => [ 'term' => [ '_type' => 'http' ]  ] ] ]
 		);
 		
@@ -467,7 +467,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		if(!empty($results) && isset($results['aggregations'])) {
 			
 			$ans = array();
-			foreach($results['aggregations']['name']['buckets'] as $bucket) {
+			foreach($results['aggregations']['host']['buckets'] as $bucket) {
 				$ans[] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
 			}
 			return $this->detect_paths($ans);
@@ -483,8 +483,8 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['type'] = 'domains';
 		$params['body'] = array(
 			'size'  => 0,
-			'aggs'  => [ 'name' => [ "terms" => [ "field" => "name", "size" => 999 ], ], ],
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "name", "query" => $filter . '*' ] ] ] ],
+			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "host", "query" => $filter . '*' ] ] ] ],
 		);
 		
 		$params = append_access_query($params);
@@ -493,7 +493,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 	
 		if(!empty($results) && isset($results['aggregations'])) {
 			
-			foreach($results['aggregations']['name']['buckets'] as $bucket) {
+			foreach($results['aggregations']['host']['buckets'] as $bucket) {
 				$ans[] = array('text' => $bucket['key'], 'hits' => $bucket['doc_count']);
 			}
 			

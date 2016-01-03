@@ -13,14 +13,14 @@ telepath.config.application = {
 		$('#tele-app-details').click();
 		
 		// APP DOMAIN
-		app_data.name = $('input', this.AD_app_domain).val();
+		app_data.host = $('input', this.AD_app_domain).val();
 		$('input', this.AD_app_domain).css({ borderColor: '#555' });
-		if(app_data.name.length > 256) {
+		if(app_data.host.length > 256) {
 			telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application host too long' });
 			$('input', this.AD_app_domain).css({ borderColor: 'red' });
 			return false;
 		}
-		if(app_data.name == '') {
+		if(app_data.host == '') {
 			telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application host cant be empty' });
 			$('input', this.AD_app_domain).css({ borderColor: 'red' });
 			return false;
@@ -132,7 +132,7 @@ telepath.config.application = {
 	
 		telepath.ds.get('/applications/set_app', app_data, function(data) {
 			telepath.config.applications.reload();
-			//that.editApp(app_data.name);
+			//that.editApp(app_data.host);
 		});
 		
 	},
@@ -257,13 +257,13 @@ telepath.config.application = {
 		}
 		
 	},
-	loadApp: function (app_name) {
+	loadApp: function (app_host) {
 		
 		var that = this;
-		this.app_data.app_domain = app_name;
-		this.app_data.name = app_name;
+		this.app_data.app_domain = app_host;
+		this.app_data.host = app_host;
 		var ip_suggestions_str = '';
-                                telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_name }, function(data) {
+                                telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
                                         ip_suggestions_str = '';
                                         if (data.items && data.items[0]) {
                                                 for (c in data.items)
@@ -278,13 +278,13 @@ telepath.config.application = {
                                 });
 
 		// will go inside if this host is really an application	
-		telepath.dsync.get('/applications/get_app', { name: app_name }, function(data) {
+		telepath.dsync.get('/applications/get_app', { name: app_host }, function(data) {
 
 			if(data.items && data.items[0]) {
 				that.app_data = data.items[0];
 
 				// Load cookie suggestions from the backend (Yuli)
-				telepath.dsync.get('/applications/get_cookie_suggestion', { app_id: app_name }, function(data) {
+				telepath.dsync.get('/applications/get_cookie_suggestion', { app_id: app_host }, function(data) {
 					cookie_suggestions_str = '';
 					if (data.items && data.items[0]) {
 						for (c in data.items)
@@ -322,7 +322,7 @@ telepath.config.application = {
 		
 		var title = $('<div>').addClass('tele-title-1').html('Application Details').appendTo('#tele-app-details');
 		
-		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.name });
+		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.host });
 		this.AD_display_name = $('<div>').teleInput({ label: 'Display Name', value: that.app_data.display_name });
 		
 		$('#tele-app-details').append(this.AD_app_domain).append(this.AD_display_name);
@@ -404,7 +404,7 @@ telepath.config.application = {
 			.teleBrowse({ 
 				label: 'Username Parameter', 
 				value: that.app_data.form_param_name, 
-				id: that.app_data.name,
+				id: that.app_data.host,
 				mode: 'param'
 			})
 			.appendTo('#tele-app-auth').hide()
@@ -522,7 +522,7 @@ telepath.config.application = {
 				
 		}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
 				
-		this.SC_redirect_browse = $('<div>').teleBrowse({ label: 'Page', value: that.app_data.form_authentication_redirect_page_name, id: that.app_data.name, type: 'page' });
+		this.SC_redirect_browse = $('<div>').teleBrowse({ label: 'Page', value: that.app_data.form_authentication_redirect_page_name, id: that.app_data.host, type: 'page' });
 		this.SC_redirect_range  = $('<div>').teleRange({ options: { range: true, min: 200, max: 600, values: that.app_data.form_authentication_redirect_response_range.split('-') }, label: 'Response status' });
 		
 		SC_wrap.append(this.SC_redirect_toggle).append(this.SC_redirect_browse).append(this.SC_redirect_range);

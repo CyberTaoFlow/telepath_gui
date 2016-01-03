@@ -84,7 +84,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = $this->input->post('name', true);
+        $host = $this->input->post('host', true);
         $context = $this->input->post('context', true);
 
         $app = $this->M_Applications->get($host);
@@ -127,7 +127,7 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         $data = $this->input->post();
-        $data['name'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['name']));
+        $data['host'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['host']));
         $this->M_Applications->set($data);
 
         // REWRITE OUR NGINX.CONF
