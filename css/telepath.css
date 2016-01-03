@@ -260,6 +260,9 @@ td {
 	background-color: #333333;
 	height: 45px;
 }
+.tele-panel-subtitle .tele-panel-subtitle-right, .tele-panel-subtitle .tele-panel-subtitle-left{
+	color:white;
+}
 .tele-panel-subtitle-text {
 	float: left;
 	color: white;
