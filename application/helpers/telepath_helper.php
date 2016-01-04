@@ -103,6 +103,7 @@
 				if(isset($row['_id'])) { $new_row['uid'] = $row['_id']; }
 				if(isset($row['_score']) && !isset($new_row['score'])) { $new_row['score'] = $row['_score']; }
 				if(isset($row['_index'])) { $new_row['index'] = $row['_index']; }
+				if(isset($row['_type'])) { $new_row['type'] = $row['_type']; }
 				$result[] = $new_row;
 			}
 		}		
@@ -180,10 +181,13 @@
 		// Rewrites (caution)
 		
 		$rewrite_list = array(
-		
+//		Dashboard
+
 			// Engine Status/Start/Stop == Get / Set Telepath
 			array('from_class' => 'Dashboard', 'from_function' => 'index', 'to_class' => 'Dashboard', 'to_function' => 'get_dashboard'),
-			array('from_class' => 'Alerts', 'from_function' => 'index', 'to_class' => 'Alerts', 'to_function' => 'get_index'),
+			array('from_class' => 'Cases', 'from_function' => 'index', 'to_class' => 'Cases', 'to_function' => 'get_cases'),
+			array('from_class' => 'Suspects', 'from_function' => 'index', 'to_class' => 'Suspects', 'to_function' => 'get_suspects'),
+			array('from_class' => 'Alerts', 'from_function' => 'index', 'to_class' => 'Alerts', 'to_function' => 'get_alerts'),
 
 			// Basic user functions for viewing and updating self user info == Get Telepath
 			array('from_class' => 'Users', 'from_function' => 'get_self', 'to_class' => 'Telepath', 'to_function' => 'get_telepath'),
@@ -237,11 +241,15 @@
 				}
 				
 				// Fail
-				if(!$allowed) {
+				if($allowed) {
+					return true;
+				}
+
+				else{
 					return_json(array('success' => false, 'debug' => 'Auth declined access for ' . $class . ' function ' . $function));
 				}
-				
 			}
+
 		
 		}
 		
