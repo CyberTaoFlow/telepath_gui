@@ -604,18 +604,7 @@ telepath.config.system = {
 		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.write_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
 		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.syslog_ip_id }).addClass('tele-config-syslog-host').appendTo(this.c_reports);
 		
-		// -----------------------------------------------------------
-		// Proxy
-		// -----------------------------------------------------------
-		this.c_network = $('<div>').addClass('tele-config-system-tab tele-config-system-network');
-		this.container.append(this.c_network);
-		
-		$('<div>').addClass('tele-title-1').html('Proxy').appendTo(this.c_reports).addClass('tele-title-proxy');
-		
-		this.proxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.proxy_mode_id == '1' }).appendTo(this.c_reports);
-		this.proxyIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.proxy_ip_id }).addClass('tele-config-proxy-host').appendTo(this.c_reports);
-		this.proxyPort   = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.proxy_port_id }).addClass('tele-config-proxy-port').appendTo(this.c_reports);
-		
+
 		// -----------------------------------------------------------
 		// SMTP
 		// -----------------------------------------------------------
@@ -711,6 +700,9 @@ telepath.config.system = {
 		// Network Interfaces
 		// -----------------------------------------------------------
 
+		this.c_network = $('<div>').addClass('tele-config-system-tab tele-config-system-network');
+		this.container.append(this.c_network);
+
 		this.row = $('<div class="wrap-network-interfaces">').appendTo(this.c_network);
 
 		this.col1 = $('<div class="tele-network-interfaces-wrap">').appendTo(this.row);
@@ -779,6 +771,18 @@ telepath.config.system = {
 		});
 
 		this.col2.append(this.ipToggle).append(headerbalances).append(another_ip_balancesthis).append(this.c_lb);
+
+
+		// -----------------------------------------------------------
+		// Proxy
+		// -----------------------------------------------------------
+
+
+		$('<div>').addClass('tele-title-1').html('Proxy').appendTo(this.row).addClass('tele-title-proxy');
+
+		this.proxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.proxy_mode_id == '1' }).appendTo(this.row);
+		this.proxyIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.proxy_ip_id }).addClass('tele-config-proxy-host').appendTo(this.row);
+		this.proxyPort   = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.proxy_port_id }).addClass('tele-config-proxy-port').appendTo(this.row);
 
 
 	
