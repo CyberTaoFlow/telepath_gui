@@ -133,9 +133,9 @@ telepath.config.system = {
 		// Operation Mode
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
 		switch(selected_opmod) {
-			case 'training':   data.operation_mode_id = 1; break;
-			case 'production': data.operation_mode_id = 2; break;
-			case 'hybrid':     data.operation_mode_id = 3; break;
+			case 'training':   data.operation_mode_id = 0; break;
+			case 'hybrid': data.operation_mode_id = 1; break;
+			case 'production':     data.operation_mode_id = 2; break;
 		}
 
 
@@ -490,9 +490,9 @@ telepath.config.system = {
 
 		var selected_opmod = '';
 		switch(this.data.operation_mode_id) {
-			case '1':	selected_opmod = 'training';   break;
-			case '2':	selected_opmod = 'production'; break;
-			case '3':	selected_opmod = 'hybrid';	   break;
+			case '0':	selected_opmod = 'training';   break;
+			case '1':	selected_opmod = 'hybrid'; break;
+			case '2':	selected_opmod = 'production';	   break;
 		}
 		
 		this.scheduler = $('<div>').addClass('tele-scheduler').appendTo(this.c_mode);
