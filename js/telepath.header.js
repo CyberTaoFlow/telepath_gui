@@ -33,10 +33,6 @@ telepath.header = {
 		// SEARCH -- Perhaps move this code to search panel?
 
 		this.headerRight = $('<div>').addClass('tele-header-right');
-
-		if (telepath.access.perm.Search_get || telepath.access.admin) {
-
-
 		this.search = $('<div>').addClass('tele-search-top');
 		this.searchInput = $('<input>').addClass('tele-search-input');
 		this.searchIcon = $('<a href="#">').addClass('tele-search-icon').html('Search');
@@ -75,7 +71,7 @@ telepath.header = {
 			telepath.search.printTypes(that.searchWrap);
 
 		});
-	}
+
 		
 		$('.tele-header').append(this.logo).append(this.nav).append(this.headerRight);
 		// End Build Header
