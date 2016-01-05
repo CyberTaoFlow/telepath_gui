@@ -226,7 +226,7 @@ class Config extends Tele_Controller
 
         if (isset($config['whitelist'])) {
 
-            $this->M_Config->whitelist_set_ips($config['whitelist']);
+            $whitelist=$this->M_Config->whitelist_set_ips($config['whitelist']);
 
 //			#$whitelist_new = explode(',', $config['ip_whitelist']);
 //			$whitelist_new = $config['whitelist'];
@@ -245,20 +245,21 @@ class Config extends Tele_Controller
 
         if (isset($config['scheduler'])) {
 
-            $this->M_Config->set_scheduler($config['scheduler']);
+             $scheduler=$this->M_Config->set_scheduler($config['scheduler']);
+            //var_dump($scheduler);
 
         }
 
         if (isset($config['ip_balances'])) {
 
-            $this->M_Config->set_ip_balances($config['ip_balances']);
-
+            $ip_balances=$this->M_Config->set_ip_balances($config['ip_balances']);
+            //var_dump($ip_balances);
         }
 
         if (isset($config['header_balances'])) {
 
-            $this->M_Config->set_header_balances($config['header_balances']);
-
+            $header_balances=$this->M_Config->set_header_balances($config['header_balances']);
+            //var_dump($header_balances);
         }
 
         foreach ($config as $key => $value) {
@@ -286,50 +287,59 @@ class Config extends Tele_Controller
                 case 'rep_pass_id':
 
 
-                    $this->M_Config->update($key, $value);
-                    break;
+                    $config_response=$this->M_Config->update($key, $value);
+                //var_dump($config_response);
+
+                break;
             }
         }
 
-/*        foreach ($config as $key => $value) {
+        $config_response=$this->M_Config->update('app_list_was_changed_id', '1');
+        //var_dump($config_response);
 
-            switch ($key) {
 
-                 Operation mode
-                case 'input_mode':
-				case 'operation_mode_id':
-				case 'moveToProductionAfter':
-                     SMTP Config
-                case 'rep_user':
-                case 'rep_pass':
-                case 'smtp':
-                case 'smtp_port':
-                case 'write_to_syslog':
-                case 'remote_syslog_ip':
-                     Proxy Config
-                case 'proxy_flag':
-                case 'proxy_ip':
-                case 'proxy_port':
-                    case 'load_balancer_on':
-                    case 'load_balancer_ip':
-                    case 'load_balancer_header':
-                case 'addUnknownApp':
-                    // serive enable / disable
-                    $this->M_Config->sql_update($key, $value);
-                    break;
 
-				case 'engine_mode':
-				case 'sniffer_mode':
-                case 'reverse_proxy_mode':
-                    $this->M_Config->update($key, $value);
-                    // we need to restart telepath here (Yuli)
-                    break;
+        /*        foreach ($config as $key => $value) {
 
-            }
+                    switch ($key) {
 
-        }*/
+                         Operation mode
+                        case 'input_mode':
+                        case 'operation_mode_id':
+                        case 'moveToProductionAfter':
+                             SMTP Config
+                        case 'rep_user':
+                        case 'rep_pass':
+                        case 'smtp':
+                        case 'smtp_port':
+                        case 'write_to_syslog':
+                        case 'remote_syslog_ip':
+                             Proxy Config
+                        case 'proxy_flag':
+                        case 'proxy_ip':
+                        case 'proxy_port':
+                            case 'load_balancer_on':
+                            case 'load_balancer_ip':
+                            case 'load_balancer_header':
+                        case 'addUnknownApp':
+                            // serive enable / disable
+                            $this->M_Config->sql_update($key, $value);
+                            break;
+
+                        case 'engine_mode':
+                        case 'sniffer_mode':
+                        case 'reverse_proxy_mode':
+                            $this->M_Config->update($key, $value);
+                            // we need to restart telepath here (Yuli)
+                            break;
+
+                    }
+
+                }*/
         // set ignore extensions, Yuli
-        $this->M_Config->set_regex($config['regex']['URL']);
+        $regex =$this->M_Config->set_regex($config['regex']['URL']);
+        //var_dump($regex);
+
         /*
         $config_path     = '/opt/telepath/conf/telepath.json';
         $old_config_data = file_get_contents($config_path);
@@ -366,14 +376,15 @@ class Config extends Tele_Controller
 
 //				system('/opt/telepath/suricata/af-packet.sh &');
 //			}
-            $this->M_Config->set_agents($config['agents']);
+            $agents=$this->M_Config->set_agents($config['agents']);
+            //var_dump($agents);
 
         }
 
-        $this->M_Config->update('app_list_was_changed_id', 1);
 
         // Done, return updated config
         return $this->get_config();
+
 
     }
 
