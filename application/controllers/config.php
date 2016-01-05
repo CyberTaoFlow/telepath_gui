@@ -284,6 +284,7 @@ class Config extends Tele_Controller
                 case 'add_unknown_applications_id':
                 case 'proxy_mode_id':
                 case 'rep_pass_id':
+                case 'app_list_was_changed_id':
 
 
                     $this->M_Config->update($key, $value);
@@ -370,7 +371,7 @@ class Config extends Tele_Controller
 
         }
 
-        $this->M_Config->update('app_list_was_changed_id', 1);
+//        $this->M_Config->update('app_list_was_changed_id', 1);
 
         // Done, return updated config
         return $this->get_config();

@@ -342,6 +342,8 @@ telepath.config.system = {
 
 		});
 
+		data.app_list_was_changed_id= '1';
+
 		telepath.ds.get('/config/set_config', data, function (data) {
 			
 			//that.data = data;
