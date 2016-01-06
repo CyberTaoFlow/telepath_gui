@@ -256,7 +256,9 @@ telepath.ui = {
             $('body').css({ overflow: 'scroll-x' });
         } else {
             $('.tele-content').css({ height: $(window).height() - $('.tele-header').height() - 50 });
-            $('body').css({ overflow: 'hidden' });
+
+            // remove this because scrolling is not enabled in setting (Moshe)
+            //$('body').css({ overflow: 'hidden' });
         }
 
 
