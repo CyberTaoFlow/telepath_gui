@@ -1195,6 +1195,7 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 	
 }
 .tele-anomaly-value {
+	color: #D5D5D5;
 	margin-top: 5px;
 	font-size: 25px;
 	font-weight: bold;
