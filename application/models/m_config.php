@@ -576,7 +576,7 @@ public function get_scheduler()
             ]
             ];
 
-            return $this->elasticClient->update($params);
+            $this->elasticClient->update($params);
 
         }
 

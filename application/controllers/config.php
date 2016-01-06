@@ -245,8 +245,8 @@ class Config extends Tele_Controller
 
         if (isset($config['scheduler'])) {
 
-             $scheduler=$this->M_Config->set_scheduler($config['scheduler']);
-            //var_dump($scheduler);
+             $this->M_Config->set_scheduler($config['scheduler']);
+
 
         }
 
