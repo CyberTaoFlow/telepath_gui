@@ -248,6 +248,10 @@ class Config extends Tele_Controller
             $this->M_Config->set_scheduler($config['scheduler']);
 
         }
+        else
+        {
+            $this->M_Config->set_scheduler(array());
+        }
 
         if (isset($config['ip_balances'])) {
 
