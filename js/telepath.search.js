@@ -285,6 +285,7 @@ telepath.search = {
             is_country: this.countryFlag
         };
 
+        that.boll=false;
 
         // Loop our types and send out search requests for different types of data
         $.each([ 'alerts', 'cases','suspects', 'requests'], function (i, type) {
@@ -304,7 +305,36 @@ telepath.search = {
 
                     that.results[type] = data.items;
                     $('.tele-search-tab[rel="' + type + '"] span').html(data.total);
-                    
+
+                    if (!that.boll) {
+
+                        var select;
+
+                        switch (type) {
+                            case 'alerts':
+                                select = 0;
+                                that.showAlertsTab();
+                                break;
+                            case 'cases':
+                                select = 1;
+                                that.showCasesTab();
+                                break;
+                            case 'suspects':
+                                select = 2;
+                                that.showSuspectsTab();
+                                break;
+                            case 'requests':
+                                select = 3;
+                                that.showRequestsTab();
+                                break;
+
+                        }
+
+                        that.tabsEl.tabs("option", "active", select);
+
+                        that.boll=true
+                    }
+
                 }, function (data) {
                     // error handler
                     that.container = $('#tele-search-' + type);
