@@ -38,7 +38,7 @@ telepath.config.applications = {
 		var that = this;
 		var treeData = [];
 		$.each(data, function(i, row) {
-			var text = row.key + '&nbsp;(' + row.hits + ')';
+			var text = row.key /*+ '&nbsp;(' + row.hits + ')'*/;
 			var obj  = { children: false, text: text, data: { type: 'app', host: row.key }, 'icon': 'tele-icon-app'};
 			treeData.push(obj);
 		});
