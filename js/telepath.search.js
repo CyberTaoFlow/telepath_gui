@@ -6,17 +6,18 @@ telepath.search = {
 		'pages': true,
 		'attributes': true,
 		'requests': true,
-		//'suspects': true,
-		//'alerts': true,
-		//'cases': true,
+		'suspects': true,
+		'alerts': true,
+		'cases': true,
 		'request_data': true,
 		'users': false
 	},
+
 	options: false,
 	searchTypes: [
-		//{ id: 'cases', label: 'Request Data', desc: 'Search Cases' },					// Scope
-		//{ id: 'alerts', label: 'Applications', desc: 'Search Alerts' },					// Scope
-		//{ id: 'suspects', label: 'Request Data', desc: 'Search suspects' },				// Scope
+		{ id: 'cases', label: 'Request Data', desc: 'Search Cases' },					// Scope
+		{ id: 'alerts', label: 'Applications', desc: 'Search Alerts' },					// Scope
+		{ id: 'suspects', label: 'Request Data', desc: 'Search suspects' },				// Scope
 		{ id: 'requests', label: 'Requests', desc: 'Search Requests' },					// Scope
 		{ id: 'request_data', label: 'Request Data', desc: 'Search request data' }, 	// Variant TODO:: See performance cost to have these on by default
 		{ id: 'application', label: 'Applications', desc: 'Search domain names' },		// Variant 
@@ -27,28 +28,25 @@ telepath.search = {
 	],
 
 
-
-
-
 	printTypes: function(element) {
 		
 		var that = this;
 
-		if(telepath.access.perm.Cases_get|| telepath.access.admin) {
+		/*if(!telepath.access.perm.Cases_get|| !telepath.access.admin) {
 			that.searchTypes.push({id: 'cases', label: 'Request Data', desc: 'Search Cases' });
-			this.defaults.cases=true;
+			this.defaults.cases=false;
 		}
 
 
-		if (telepath.access.perm.Alerts_get|| telepath.access.admin){
+		if (!telepath.access.perm.Alerts_get|| !telepath.access.admin){
 			that.searchTypes.push({ id: 'alerts', label: 'Applications', desc: 'Search Alerts' });
-			this.defaults.alerts=true;
+			this.defaults.alerts=false;
 		}
 
-		if (telepath.access.perm.Suspects_get|| telepath.access.admin){
+		if (!telepath.access.perm.Suspects_get|| !telepath.access.admin){
 			that.searchTypes.push({ id: 'suspects', label: 'Request Data', desc: 'Search suspects' });
-			this.defaults.suspects=true;
-		}
+			this.defaults.suspects=false;
+		}*/
 
 		if(this.options === false) {
 			this.options = this.defaults; // USE $.extend
@@ -166,8 +164,8 @@ telepath.search = {
 		
 		// Tab Print
 		for(x in tabs) {
-			var tab = tabs[x];
-			if (this.options[tab.id]) {
+
+				var tab = tabs[x];
 				var tabEl = $('<div>').attr('id', 'tele-search-' + tab.id);
 				// Show Loading
 				tabEl.append('<img class="loader" src="img/loader.gif">');
@@ -177,7 +175,7 @@ telepath.search = {
 				tabLi.append(tabA);
 				this.tabsUl.append(tabLi);
 				this.tabsEl.append(tabEl);
-			}
+
 		}
 		
 		// Append our tabs
@@ -281,7 +279,11 @@ telepath.search = {
 					
 					that.results[type] = data.items;
 					$('.tele-search-tab[rel="' + type + '"] span').html(data.total);
-					
+
+					/*$('.tele-panel-search .ui-tabs-active').removeClass('ui-tabs-active ui-state-active');
+
+					$('.tele-panel-search .tele-panel-subtitle').children().children().attr("aria-controls","tele-search"+type).addClass('ui-tabs-active ui-state-active');
+*/
 					var active = $('.tele-panel-search .ui-tabs-active a.tele-search-tab').attr('rel');
 
 					if(type == active) {
@@ -303,6 +305,7 @@ telepath.search = {
 							
 						}
 					}
+
 				}, function(data) {
 					// error handler
 					that.container = $('#tele-search-' + type);
@@ -311,17 +314,17 @@ telepath.search = {
 					that.container.append(p);
 				});
 							
-				
+
 			}
 			else {
 				that.container = $('#tele-search-' + type);
 				that.container.empty();
-				var p = $('<p>').text("No results");
+				var p = $('<p>').text("No select option "+type);
 				that.container.append(p);
 			}
 			
 		});
-		
+
 		// Seperate formatter from each panel or make it available globally
 		// Properly format the 4 types of data
 		// Mark search terms as a listitem widget input

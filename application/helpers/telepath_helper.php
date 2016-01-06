@@ -246,7 +246,7 @@
 				}
 
 				else{
-					return_json(array('success' => false, 'debug' => 'Auth declined access for ' . $class . ' function ' . $function));
+					return_json(array('success' => false, 'error' =>'you d`ont have permission to see '.$function, 'debug' => 'Auth declined access for ' . $class . ' function ' . $function));
 				}
 			}
 

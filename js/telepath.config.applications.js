@@ -81,7 +81,7 @@ telepath.config.applications = {
 			callback.call(that, treeData);
 			
 		});
-	
+		telepath.config.applications.searchString='';
 	},
 	data: [],
 	reload: function () {

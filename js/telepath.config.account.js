@@ -45,8 +45,12 @@ telepath.config.account = {
 		});
 		
 		this.container.empty().append(this.form);
-		
-		
+
+
+		$(".tele-button-cancel", this.container).click(function () {
+			telepath.config.accounts.getUsers();
+		});
+
 		$(".tele-button-apply", this.container).click(function () {
 		
 			console.log('Saving user');
