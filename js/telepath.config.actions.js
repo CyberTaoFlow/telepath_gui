@@ -135,7 +135,14 @@ telepath.config.actions = {
 		}
 		
 		var that = this;
-							
+
+		$( "input[type='text']" ).bind('input',function() {
+
+			if($( this ).val()==''){
+				that.reload();
+			}
+		});
+
 		that.ruleTree = $('<div>');
 	
 		that.ruleTree.jstree({

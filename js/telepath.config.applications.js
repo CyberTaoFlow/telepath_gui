@@ -87,7 +87,14 @@ telepath.config.applications = {
 	reload: function () {
 		
 		var that = this;
-							
+
+		$( "input[type='text']" ).bind('input',function() {
+
+			if($( this ).val()==''){
+				that.reload();
+			}
+		});
+
 		that.appTree = $('<div>');
 		
 		that.contentLeftWrap = $('<div>').css({ padding: 0, height: $(that.contentLeft).parent().height() - 20 });
@@ -142,6 +149,7 @@ telepath.config.applications = {
 		});
 		
 	},
+
 	init: function () {
 		this.initTools();
 		this.reload();
