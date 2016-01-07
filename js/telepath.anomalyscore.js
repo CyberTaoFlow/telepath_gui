@@ -46,7 +46,7 @@ $.widget( "tele.anomalyScore", {
 			if(value > 25) {
 				typeIcon.addClass('active');
 				typeText.addClass('active');
-				//typeValue.show();
+				typeValue.addClass('active');
 			}
 			
 			that.element.append(typeWrap);

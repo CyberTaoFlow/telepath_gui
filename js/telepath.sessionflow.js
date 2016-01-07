@@ -855,7 +855,7 @@ telepath.sessionflow = {
 		
 		
 		var path = 'http://' + request.host + request.uri;
-		var link = $('<a>').attr('target', '_blank').text(path).attr('href', path);
+		var link = $('<a>').attr('target', '_blank').text(path).attr('href', path).attr('title' ,path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Surfing';
 		container.append(link);
 		container.append('&nbsp;(' + action + ')');
