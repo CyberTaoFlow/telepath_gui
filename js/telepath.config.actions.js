@@ -23,6 +23,7 @@ telepath.config.actions = {
 				url  = '/applications/get_expand';
 				postData.type = 'root';
 				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
+				telepath.config.actions.searchString='';
 			break;
 			case 'app':
 				url = '/actions/get_app_actions';
@@ -134,7 +135,14 @@ telepath.config.actions = {
 		}
 		
 		var that = this;
-							
+
+		$( "input[type='text']" ).bind('input',function() {
+
+			if($( this ).val()==''){
+				that.reload();
+			}
+		});
+
 		that.ruleTree = $('<div>');
 	
 		that.ruleTree.jstree({
