@@ -129,7 +129,7 @@ class M_Config extends CI_Model
             ]
         ];
 
-        return $this->elasticClient->update($params);
+        $this->elasticClient->update($params);
     }
 
     public function get_ip_balances()
@@ -184,7 +184,7 @@ class M_Config extends CI_Model
             ]
         ];
 
-        return $this->elasticClient->update($params);
+        $this->elasticClient->update($params);
 
 
 
@@ -205,7 +205,7 @@ class M_Config extends CI_Model
             ]
         ];
 
-        return $this->elasticClient->update($params);
+        $this->elasticClient->update($params);
 
     }
 
@@ -337,7 +337,7 @@ class M_Config extends CI_Model
             ]
         ];
 
-        return $this->elasticClient->update($params);
+        $this->elasticClient->update($params);
 
     }
 
@@ -431,7 +431,7 @@ class M_Config extends CI_Model
             ]
         ];
 
-        return $this->elasticClient->update($params);
+        $this->elasticClient->update($params);
     }
 
     public function get_agents()
@@ -503,7 +503,7 @@ class M_Config extends CI_Model
             ]
         ];
 
-        return $this->elasticClient->update($params);
+        $this->elasticClient->update($params);
 
     }
 
@@ -576,7 +576,7 @@ public function get_scheduler()
             ]
             ];
 
-            return $this->elasticClient->update($params);
+            $this->elasticClient->update($params);
 
         }
 
