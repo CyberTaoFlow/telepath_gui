@@ -69,12 +69,17 @@ telepath.alerts = {
 			telepath.alerts.refresh();
 			
 		}});
-		panelSubBar.append(searchAlerts);
-		if (telepath.alerts.searchString)
-		{
-			$('.tele-panel-alerts .tele-search-input').val(telepath.alerts.searchString);
-		}
 
+		// reset button in search input
+		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
+			$('.tele-panel-alerts .tele-search-input').val('');
+			telepath.alerts.searchString = '';
+			telepath.alerts.refresh();
+		});
+
+		searchAlerts.append(resetInput);
+
+		panelSubBar.append(searchAlerts);
 		// Top bar items
 		// --------------------------------------
 		
@@ -123,7 +128,12 @@ telepath.alerts = {
 				callback();
 			}
 		});
-		
+
+		// insert the value search to the input box (Moshe)
+		if (telepath.alerts.searchString)
+		{
+			$('.tele-panel-alerts .tele-search-input').prop("value",telepath.alerts.searchString);
+		}
 	},
 	setData: function(data) {
 		

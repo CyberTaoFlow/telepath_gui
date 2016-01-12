@@ -126,7 +126,7 @@ td {
 	border: none;
 	border-radius: 20px;
 	background-color: #ccc;
-	padding: 5px 100px 5px 20px;
+	padding: 5px 75px 5px 20px;
 	font-size: 15px;
 	font-weight: bold;
 	margin: 4px;
@@ -988,7 +988,7 @@ a.tele-panel-dashboard-refresh-value:hover {
 	width: 150px;
 	margin-right: 20px;
 	margin-top: 6px;
-	width: 175px;
+	width: 200px;
 }
 .tele-search-input {
 	padding: 4px 10px;
@@ -996,7 +996,7 @@ a.tele-panel-dashboard-refresh-value:hover {
 	border-radius: 15px;
 	float: left;
 	width: 130px;
-	padding-right: 30px;
+	padding-right: 54px;
 }
 .tele-search-button {
 	height: 28px;
@@ -1009,6 +1009,27 @@ a.tele-panel-dashboard-refresh-value:hover {
 	background-position: -401px -573px;
 }
 
+.icon-delete-input {
+	height: 28px;
+	width: 28px;
+	background: transparent url("../img/icons.png") no-repeat scroll -358px -355px;
+	margin-left: -28px;
+	float: left;
+}
+.icon-delete-input:hover {
+	background-position: -393px -355px;
+}
+
+.icon-delete-input2 {
+	height: 28px;
+	width: 28px;
+	background: transparent url("../img/icons.png") no-repeat scroll -358px -355px;
+	margin-left: -54px;
+	float: left;
+}
+.icon-delete-input2:hover {
+	background-position: -393px -355px;
+}
 /* UI ToolTips */
 
 .ui-tooltip, .arrow:after {

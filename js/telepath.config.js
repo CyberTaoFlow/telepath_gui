@@ -214,5 +214,14 @@ telepath.config = {
 		this.barLeft.width(magic);
 		this.barRight.width(width - magic - 20);
 		
+	},
+	// return if the search value start with the value
+	startsWith2: function(str, prefix) {
+		if (str.length < prefix.length)
+			return false;
+		for (var i = prefix.length - 1; (i >= 0) && (str[i] === prefix[i]); --i) {
+			continue;
+		}
+		return i < 0;
 	}
 }

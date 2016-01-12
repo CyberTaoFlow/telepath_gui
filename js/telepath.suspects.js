@@ -97,13 +97,21 @@ telepath.suspects = {
 			telepath.suspects.searchString = txt;
 			telepath.suspects.refresh(function () {	});
 		}});
-		this.panelSubBar.append(searchSuspects);
+
 
 		if (telepath.suspects.searchString)
 		{
 			$('.tele-panel-suspects .tele-search-input').val(telepath.suspects.searchString);
 		}
-		
+		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
+			$('.tele-panel-suspects .tele-search-input').val('');
+			telepath.suspects.searchString = '';
+			telepath.suspects.refresh();
+			console.log('Delete')
+		});
+		searchSuspects.append(resetInput);
+
+		this.panelSubBar.append(searchSuspects);
 		// Load Data
 		this.refresh();
 		
@@ -132,7 +140,11 @@ telepath.suspects = {
 			}
 			
 		});
-		
+
+		if (telepath.suspects.searchString)
+		{
+			$('.tele-panel-suspects .tele-search-input').prop("value",telepath.suspects.searchString);
+		}
 	},
 	_resize: function () {
 		

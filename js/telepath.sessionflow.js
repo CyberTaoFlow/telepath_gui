@@ -182,13 +182,13 @@ telepath.sessionflow = {
 				}
 		}});
 		
-		//this.similaritiesList.css("height", "300px !important"); // Weird :)
-		//this.similaritiesList.trigger('resize');
-                // Bind resize hooks
-                //setTimeout(function () {
-                //        that._resize();
-                //}, 0);
-                //$(window).resize(function () { that._resize() });
+		this.similaritiesList.css("height", "300px !important"); // Weird :)
+		this.similaritiesList.trigger('resize');
+                 //Bind resize hooks
+                setTimeout(function () {
+                        that._resize();
+                }, 0);
+                $(window).resize(function () { that._resize() });
 	
 	},
 	_resize0: function() {

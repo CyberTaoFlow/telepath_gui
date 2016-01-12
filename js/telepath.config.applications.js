@@ -53,7 +53,6 @@ telepath.config.applications = {
 		var treeData = [];
 		$.each(data, function(i, row) {
 
-			console.log(typeof(row));
 			if(typeof(row) == 'object') {
 
 				// EXPAND = LEVEL
@@ -78,23 +77,65 @@ telepath.config.applications = {
 		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications' }, function(data) {
 
 			var treeData = telepath.config.applications.formatData(data.items);
-			callback.call(that, treeData);
 
+			callback.call(that, treeData);
+			$(".tele-search-input").attr("disabled", false);
+			$('#search-button').click();
 		});
-		telepath.config.applications.searchString='';
+	
 	},
-	data: [],
-	reload: function () {
+
+	input: function(){
+		var that = this;
+
+		var icon= $("#search-button");
+
+		if (that.searchString.length>0)
+			icon.addClass('icon-delete-input').removeClass("tele-search-button");
+		else
+			icon.removeClass('icon-delete-input').addClass("tele-search-button");
+		that.searchData = [];
+		if (!that.actionOriginal)
+			that.actionOriginal = that.appTree.children().children();
+
+		$.each(that.actionOriginal, function (index, element) {
+			var val = element.textContent.trim();
+			if (val == that.searchString || (telepath.config.startsWith2(val, that.searchString)))
+				that.searchData.push({key: val, hits: 0})
+		});
+	},
+
+	reload: function (search) {
 
 		var that = this;
 
-		$( "input[type='text']" ).bind('input',function() {
+		$("#search-button").on("click", function(event) {
+			that.searchString='';
 
-			if($( this ).val()==''){
-				that.reload();
-			}
+			that.input();
+			that.reload(true);
+
 		});
 
+
+		if (typeof that.searchString != 'undefined'){
+			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+			if (that.searchString.length>0)
+			$("#search-button").addClass('icon-delete-input').removeClass("tele-search-button");
+		}
+
+		// add search on client site on key up event
+		if (!search) {
+			$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
+				that.searchString = $(this).val();
+
+				that.input();
+
+				that.reload(true);
+
+			});
+
+		}
 		that.appTree = $('<div>');
 
 		that.contentLeftWrap = $('<div>').css({ padding: 0, height: $(that.contentLeft).parent().height() - 20 });
@@ -111,8 +152,26 @@ telepath.config.applications = {
 
 
 
+
+
+
+
+
+
+
+
+
+        if (!that.data){
+			that.data=telepath.config.applications.expand;
+        }
+		else if(that.searchData){
+			that.data=telepath.config.applications.formatData(that.searchData);
+			$(".tele-config-bar-left .tele-search-input").attr("disabled", false);
+		}
+
+
 		that.appTree.jstree({
-		core : { data : telepath.config.applications.expand, progressive_render: true },
+		core : { data : that.data, progressive_render: true },
 		plugins: ["json_data","wholerow", "theme", "grid", "contextmenu"],
 		contextmenu: { items: telepath.contextMenu },
 		grid: {
@@ -152,6 +211,7 @@ telepath.config.applications = {
 
 	init: function () {
 		this.initTools();
+		$(".tele-config-bar-left .tele-search-input").attr("disabled", true);
 		this.reload();
 	},
 	initTools: function() {
@@ -161,8 +221,10 @@ telepath.config.applications = {
 		// Search
 		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
 			that.searchString = txt;
-			that.reload();
+
 		}});
+
+
 
 		// Create
 		this.create     = $('<div>').btn({ icon: 'plus', text: 'New', callback: function () {
@@ -172,4 +234,5 @@ telepath.config.applications = {
 		this.barLeft.append(this.search).append(this.create);
 
 	}
-}
+};
+
