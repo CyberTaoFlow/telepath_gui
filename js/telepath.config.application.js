@@ -278,7 +278,7 @@ telepath.config.application = {
                                 });
 
 		// will go inside if this host is really an application	
-		telepath.dsync.get('/applications/get_app', { name: app_host }, function(data) {
+		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
 
 			if(data.items && data.items[0]) {
 				that.app_data = data.items[0];

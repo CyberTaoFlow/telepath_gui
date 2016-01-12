@@ -169,7 +169,11 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		// Check
 		$params['index'] ='telepath-domains';
 		$params['type'] = 'domains';
-		$params['body'] = [
+		$params['id']=$host;
+
+
+
+	/*	$params['body'] = [
 			'size'   => 1,
 				'query' => [ "match" => [
 					 "host" => $host
@@ -177,13 +181,23 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 				]
 		];
 		
-		$results = $this->elasticClient->search($params);
-		$exists  = @intval($results['hits']['total']) > 0;
+		$results = $this->elasticClient->search($params);*/
+
+
+
+		$exists = $this->elasticClient->exists($params);
+
+
+
+
+
+		//$exists  = @intval($results['hits']['total']) > 0;
 		if(!$exists) {
 			return false;
 		}
+		$results = $this->elasticClient->get($params);
 		
-		$app = $results['hits']['hits'][0]['_source'];
+		$app = $results['_source'];
 		
 		if(isset($app['app_ssl_certificate'])) { unset($app['app_ssl_certificate']); }
 		if(isset($app['app_ssl_private'])) { unset($app['app_ssl_private']); }
