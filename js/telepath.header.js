@@ -175,8 +175,10 @@ telepath.header = {
 			}
 			
 		} else {
+			$(this.search).css({input:'{padding: 5px 75px 5px 20px}' });
 		
-			$(this.searchInput).css({ width: 200 });
+			$(this.searchInput).css({ width: 140 });
+
 			$('.tele-nav li').css({ margin: '0px 25px' });
 			
 		}
