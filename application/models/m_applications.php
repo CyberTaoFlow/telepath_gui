@@ -172,7 +172,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['id']=$host;
 
 
-
+		// now the hoxt name is the document id, so we don't need to search.
 	/*	$params['body'] = [
 			'size'   => 1,
 				'query' => [ "match" => [
@@ -238,12 +238,12 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		if(!empty($results)) {
 			foreach($results as $result) {
 				if(isset($result['uid'])) {
-					$ans1[$result['uid']] = [ 'key' => $result['host'], 'hits' => 0 ];
+					$ans1[] = [ 'key' => $result['uid'], 'hits' => 0 ];
 				}
 			}
 		}
 
-		return array_values($ans1);
+		return $ans1;
 	/*	$params['body'] = [
 			'size'  => 999,
 			'query' => [ 'bool' => [ 'must' => [ [ 'term' => [ '_type' => 'application' ] ] ] ] ]
