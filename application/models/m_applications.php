@@ -187,10 +187,6 @@ class M_Applications extends CI_Model {
 
 		$exists = $this->elasticClient->exists($params);
 
-
-
-
-
 		//$exists  = @intval($results['hits']['total']) > 0;
 		if(!$exists) {
 			return false;
@@ -202,6 +198,8 @@ class M_Applications extends CI_Model {
 		if(isset($app['app_ssl_certificate'])) { unset($app['app_ssl_certificate']); }
 		if(isset($app['app_ssl_private'])) { unset($app['app_ssl_private']); }
 		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
+		if(!isset($app['AppCookieName'])) { $app['AppCookieName'] = ''; }
+		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
 		$app['ip_suggestion'] = '';	
 		
@@ -220,7 +218,6 @@ class M_Applications extends CI_Model {
 				'size'=>999,
 				'query' => [
 					'match_all' => [
-
 					]
 				]
 			]
@@ -237,8 +234,8 @@ class M_Applications extends CI_Model {
 		$ans1 = [];
 		if(!empty($results)) {
 			foreach($results as $result) {
-				if(isset($result['uid'])) {
-					$ans1[] = [ 'key' => $result['uid'], 'hits' => 0 ];
+				if(isset($result['host'])) {
+					$ans1[] = [ 'key' => $result['host'], 'hits' => 0 ];
 				}
 			}
 		}
