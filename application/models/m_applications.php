@@ -5,11 +5,11 @@ class M_Applications extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		require 'vendor/autoload.php';
-$params = array('hosts' => array('127.0.0.1:9200'));
+//$params = array('hosts' => array('127.0.0.1:9200'));
 #$params = array();
 #$params['logging'] = true;
 #$params['logPath'] = '/tmp/elasticsearch.log';
-		$this->elasticClient = new Elasticsearch\Client($params);
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 
 	/*function set($data) {
@@ -172,7 +172,7 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$params['id']=$host;
 
 
-
+		// now the hoxt name is the document id, so we don't need to search.
 	/*	$params['body'] = [
 			'size'   => 1,
 				'query' => [ "match" => [
@@ -187,10 +187,6 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 
 		$exists = $this->elasticClient->exists($params);
 
-
-
-
-
 		//$exists  = @intval($results['hits']['total']) > 0;
 		if(!$exists) {
 			return false;
@@ -202,6 +198,8 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		if(isset($app['app_ssl_certificate'])) { unset($app['app_ssl_certificate']); }
 		if(isset($app['app_ssl_private'])) { unset($app['app_ssl_private']); }
 		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
+		if(!isset($app['AppCookieName'])) { $app['AppCookieName'] = ''; }
+		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
 		$app['ip_suggestion'] = '';	
 		
@@ -220,7 +218,6 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 				'size'=>999,
 				'query' => [
 					'match_all' => [
-
 					]
 				]
 			]
@@ -237,13 +234,13 @@ $params = array('hosts' => array('127.0.0.1:9200'));
 		$ans1 = [];
 		if(!empty($results)) {
 			foreach($results as $result) {
-				if(isset($result['uid'])) {
-					$ans1[$result['uid']] = [ 'key' => $result['host'], 'hits' => 0 ];
+				if(isset($result['host'])) {
+					$ans1[] = [ 'key' => $result['host'], 'hits' => 0 ];
 				}
 			}
 		}
 
-		return array_values($ans1);
+		return $ans1;
 	/*	$params['body'] = [
 			'size'  => 999,
 			'query' => [ 'bool' => [ 'must' => [ [ 'term' => [ '_type' => 'application' ] ] ] ] ]

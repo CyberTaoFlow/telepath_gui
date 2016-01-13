@@ -1,4 +1,4 @@
-/vendor/elasticsearch/elasticsearch/src/Elasticsearch/Connections/AbstractConnection.php
+vendor/elasticsearch/elasticsearch/src/Elasticsearch/Client.php
 /application/config/config.php
 .idea/
 application/models/m_test.php

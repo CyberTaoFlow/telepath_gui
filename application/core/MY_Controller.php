@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(-1);
-
 class Tele_Controller extends CI_Controller {
 	
 	public function _get_apps() {
@@ -80,9 +76,9 @@ class Tele_Controller extends CI_Controller {
 		
 		// GET ELASTIC MIN/MAX
 		$params = array();
-		$params['hosts'] = array ('127.0.0.1:9200');
-		$this->elasticClient = new Elasticsearch\Client($params);
-		unset($params);
+//		$params['hosts'] = array ('127.0.0.1:9200');
+		$this->elasticClient = new Elasticsearch\Client();
+//		unset($params);
 		
 		$params['body'] = array(
 			'size'  => 0,
