@@ -6,10 +6,10 @@ class M_Rules extends CI_Model {
 		parent::__construct();
 		
 		// Connect elastic
-		$params = array('hosts' => array('127.0.0.1:9200'));
+		//$params = array('hosts' => array('127.0.0.1:9200'));
 #$params['logging'] = true;
 #$params['logPath'] = '/tmp/elasticsearch.log';
-		$this->elasticClient = new Elasticsearch\Client($params);
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 	
 	public function del_rule($name, $category) {

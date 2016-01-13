@@ -5,11 +5,11 @@ class M_Applications extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		require 'vendor/autoload.php';
-$params = array('hosts' => array('127.0.0.1:9200'));
+//$params = array('hosts' => array('127.0.0.1:9200'));
 #$params = array();
 #$params['logging'] = true;
 #$params['logPath'] = '/tmp/elasticsearch.log';
-		$this->elasticClient = new Elasticsearch\Client($params);
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 
 	/*function set($data) {

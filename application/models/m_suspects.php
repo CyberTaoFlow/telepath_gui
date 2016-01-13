@@ -7,11 +7,11 @@ class M_Suspects extends CI_Model {
 		parent::__construct();
 		
 		// Connect elastic
-		$params = array('hosts' => array('127.0.0.1:9200'));
+		//$params = array('hosts' => array('127.0.0.1:9200'));
 #$params = array();
 #$params['logging'] = true;
 #$params['logPath'] = '/tmp/elasticsearch.log';
-		$this->elasticClient = new Elasticsearch\Client($params);
+		$this->elasticClient = new Elasticsearch\Client();
 		
 	}
 	

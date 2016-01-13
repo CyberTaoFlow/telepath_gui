@@ -6,8 +6,8 @@ class M_Nginx extends CI_Model {
 	{
 		parent::__construct();
 		// Connect elastic
-		$params = array('hosts' => array('127.0.0.1:9200'));
-		$this->elasticClient = new Elasticsearch\Client($params);
+		//$params = array('hosts' => array('127.0.0.1:9200'));
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 
 	function gen_config() {
