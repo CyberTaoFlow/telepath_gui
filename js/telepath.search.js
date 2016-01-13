@@ -247,7 +247,6 @@ telepath.search = {
 
         this.panelSubBar.append(this.tabsUl);
 
-
         this.refresh();
 
     },
@@ -285,55 +284,33 @@ telepath.search = {
             is_country: this.countryFlag
         };
 
-        that.boll=false;
 
         // Loop our types and send out search requests for different types of data
-        $.each([ 'alerts', 'cases','suspects', 'requests'], function (i, type) {
+
+        that.count=0;
+
+        $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
 
             if (that.options[type]) {
 
                 telepath.ds.get('/search/' + type, searchSettingsObj, function (data) {
                     // remove loading image, Yuli
-
+                    that.count++;
                     that.container = $('#tele-search-' + type);
                     that.container.empty();
                     if (!data.items || data.items.length == 0) {
                         var p = $('<p>').text("No results");
                         that.container.append(p);
+                        if (that.count==4)
+                            that.selectTab();
                         return;
                     }
 
                     that.results[type] = data.items;
                     $('.tele-search-tab[rel="' + type + '"] span').html(data.total);
 
-                    if (!that.boll) {
-
-                        var select;
-
-                        switch (type) {
-                            case 'alerts':
-                                select = 0;
-                                that.showAlertsTab();
-                                break;
-                            case 'cases':
-                                select = 1;
-                                that.showCasesTab();
-                                break;
-                            case 'suspects':
-                                select = 2;
-                                that.showSuspectsTab();
-                                break;
-                            case 'requests':
-                                select = 3;
-                                that.showRequestsTab();
-                                break;
-
-                        }
-
-                        that.tabsEl.tabs("option", "active", select);
-
-                        that.boll=true
-                    }
+                    if (that.count==4)
+                        that.selectTab();
 
                 }, function (data) {
                     // error handler
@@ -361,6 +338,48 @@ telepath.search = {
         // Profit?
 
     },
+
+    selectTab: function () {
+
+        var that = this;
+
+        var found = false
+
+        $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
+
+            if (!found) {
+
+                if (that.results[type] && that.results[type].length > 0) {
+
+                    var select;
+
+                    switch (type) {
+                        case 'alerts':
+                            select = 0;
+                            that.showAlertsTab();
+                            break;
+                        case 'cases':
+                            select = 1;
+                            that.showCasesTab();
+                            break;
+                        case 'suspects':
+                            select = 2;
+                            that.showSuspectsTab();
+                            break;
+                        case 'requests':
+                            select = 3;
+                            that.showRequestsTab();
+                            break;
+
+                    }
+                    that.tabsEl.tabs("option", "active", select);
+
+                    found = true;
+                }
+            }
+        })
+    },
+
     showCasesTab: function () {
 
         // Create List
