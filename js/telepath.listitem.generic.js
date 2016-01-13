@@ -48,7 +48,7 @@ telepath.listitem.generic = {
 			telepath.sessionflow.init(widget.options.itemID, widget.element.parent().parent(), widget.options.icon, widget.options.raw.searchkey);
 		},
 		hover_in: function(el, item) {
-			
+			$('.popover').remove();
 			telepath.generic_popover_loading = true;
 			setTimeout(function () {
 				telepath.generic_popover_loading = false;
@@ -56,7 +56,7 @@ telepath.listitem.generic = {
 			if(telepath.generic_popover_timer) {
 				clearTimeout(telepath.generic_popover_timer);
 			}
-			$('.popover').remove();
+
 			if(telepath.generic_popover) {
 				telepath.generic_popover.remove();
 			}
@@ -103,16 +103,19 @@ telepath.listitem.generic = {
 				});
                 $(telepath.generic_popover).css({
                     position: 'absolute',
-                    top: $(el).offset().top - 45,
+					top: $(el).offset().top - 25,
                     left: $(el).offset().left + 70
                 }).fadeIn().popover({
                     title: 'Loading anomaly scores..',
                     html: true,
                     content: telepath.loader
                 }).popover('show');
-
                 $('.popover').append(alerts_title).append(alerts_content);
-
+				$(telepath.generic_popover).css({
+					//position: 'absolute',
+					top: $(el).offset().top - ( $('.popover').height()/2-25),
+					left: $(el).offset().left + 70
+				})
 			}
 			if(item.raw.actions_count && item.raw.actions_count > 0 && item.raw.actions_names && item.raw.actions_names.length > 0) {
 
@@ -138,7 +141,11 @@ telepath.listitem.generic = {
 
 				$('.popover-title:first').html('Anomaly Scores');
 				$('.popover-content .tele-loader').after($('<div>').anomalyScore({ request: data.items })).remove();
-
+				$('.popover').css({
+					//position: 'absolute',
+					top: $(el).offset().top - ($('.popover').height()/2-25),
+					left: $(el).offset().left + 70
+				})
 			});
 
 		},
