@@ -38,7 +38,10 @@ telepath.config.applications = {
 		var that = this;
 		var treeData = [];
 		$.each(data, function(i, row) {
-			var text = row.key + '&nbsp;(' + row.doc_count + ')';
+
+			var text = row.key ;
+			if (row.doc_count)
+				text +='&nbsp;(' + row.doc_count + ')';
 			var obj  = { children: false, text: text, data: { type: 'app', host: row.key }, 'icon': 'tele-icon-app'};
 			treeData.push(obj);
 		});
@@ -101,7 +104,7 @@ telepath.config.applications = {
 		$.each(that.actionOriginal, function (index, element) {
 			var val = element.textContent.trim();
 			if (val == that.searchString || (telepath.config.startsWith2(val, that.searchString)))
-				that.searchData.push({key: val, doc_count: 0})
+				that.searchData.push({key: val})
 		});
 	},
 
