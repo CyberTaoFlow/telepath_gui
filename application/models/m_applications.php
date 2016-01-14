@@ -200,6 +200,10 @@ class M_Applications extends CI_Model {
 //		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
 		if(!isset($app['AppCookieName'])) { $app['AppCookieName'] = ''; }
 		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
+		if(!isset($app['operation_mode_id'])) { $app['operation_mode_id'] = ''; }
+		if(!isset($app['move_to_production_id'])) { $app['move_to_production_id'] = ''; }
+		if(!isset($app['eta_id'])) { $app['eta_id'] = ''; }
+		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
 		$app['ip_suggestion'] = '';
 		$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];

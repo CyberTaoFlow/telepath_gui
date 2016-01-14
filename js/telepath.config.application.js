@@ -25,6 +25,16 @@ telepath.config.application = {
 			$('input', this.AD_app_domain).css({ borderColor: 'red' });
 			return false;
 		}
+
+		//Operation Mode ID
+
+		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
+		switch(selected_opmod) {
+			case 'training':   app_data.operation_mode_id = 1; break;
+			case 'production':     app_data.operation_mode_id = 2; break;
+		}
+		
+		app_data.move_to_production_id = $('input', this.move_to_production_id).val();
 		
 		// DISPLAY NAME
 		app_data.display_name = $('input', this.AD_display_name).val();
@@ -326,9 +336,39 @@ telepath.config.application = {
 		this.AD_display_name = $('<div>').teleInput({ label: 'Display Name', value: that.app_data.display_name });
 		
 		$('#tele-app-details').append(this.AD_app_domain).append(this.AD_display_name);
-		
-		
-		
+
+
+		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
+		this.container.append(this.c_mode);
+
+		$('<div>').addClass('tele-title-1').html('Operation Mode ID').appendTo('#tele-app-details');
+
+		var selected_opmod = '';
+		switch(that.app_data.operation_mode_id) {
+			case '1':	selected_opmod = 'training';   break;
+			case '2':	selected_opmod = 'production';	   break;
+		}
+
+		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
+
+		$('<p>').html('ETA: ' + that.app_data.eta_id).appendTo(this.app_operation).css({float:'right'});
+
+		this.opmod = $('<div>').teleRadios({
+			checked: selected_opmod,
+			radios: [
+				{ key: 'training',   label: 'Training' },
+				{ key: 'production', label: 'Production'}
+			]}).addClass('tele-config-opmod').appendTo(this.app_operation);
+
+
+		// MV2Prod after
+		this.move_to_production_id = $('<div>').teleInput({
+			label: 'Move to production after',
+			suffix: 'Requests',
+			width: 70,
+			value: that.app_data.move_to_production_id
+		}).addClass('tele-config-mv2prod').appendTo('#tele-app-details');
+
 		/*
 		this.app_details = $('<div>').teleForm({
 			title: 'Application Details',
