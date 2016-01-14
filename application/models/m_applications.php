@@ -217,17 +217,32 @@ class M_Applications extends CI_Model {
 		
 		// Search specific records first
 
+
 		$params = [
-			'index' => 'telepath-domains',
-			'type' => 'domains',
+			'index' => 'telepath-20*',
 			'body' => [
-				'size'=>999,
-				'query' => [
-					'match_all' => [
-					]
-				]
+				'size'=>0,
+				'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ] ] ]
 			]
 		];
+
+//		$params['body'] = array(
+//			'size'  => 0,
+//			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
+//			'query' => [ 'bool' => [ "must" => [ [ 'term' => [ '_type' => 'http' ] ] ] ] ]
+//		);
+
+//		$params = [
+//			'index' => 'telepath-domains',
+//			'type' => 'domains',
+//			'body' => [
+//				'size'=>999,
+//				'query' => [
+//					'match_all' => [
+//					]
+//				]
+//			]
+//		];
 
 		if ($search){
 			$params['body']=[];
@@ -235,18 +250,18 @@ class M_Applications extends CI_Model {
 			$params['body']['query']['match']=['host'=>$search];
 		}
 
-		$results = get_elastic_results($this->elasticClient->search($params));
+		$results = $this->elasticClient->search($params);
 
 		$ans1 = [];
-		if(!empty($results)) {
-			foreach($results as $result) {
-				if(isset($result['host'])) {
-					$ans1[] = [ 'key' => $result['host'], 'hits' => 0 ];
-				}
-			}
-		}
-
-		return $ans1;
+//		if(!empty($results)) {
+//			foreach($results as $result) {
+//				if(isset($result['host'])) {
+//					$ans1[] = [ 'key' => $result['host'], 'hits' => 0 ];
+//				}
+//			}
+//		}
+//
+//		return $ans1;
 	/*	$params['body'] = [
 			'size'  => 999,
 			'query' => [ 'bool' => [ 'must' => [ [ 'term' => [ '_type' => 'application' ] ] ] ] ]
@@ -283,24 +298,26 @@ class M_Applications extends CI_Model {
 		//$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
 		$ans2 = [];
-
-		if(!empty($results) && isset($results['aggregations'])) {
-
-			foreach($results['aggregations']['host']['buckets'] as $bucket) {
-				// key is a host
-				if (isset($ans1[$bucket['key']]))
-				{
-					$ans1[$bucket['key']] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
-				} else {
-					$ans2[$bucket['key']] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
-				}
-			}
-
-		}
-		sort($ans2);
-	        $ans = array_merge($ans1, $ans2);
-		// Connect to aggregated data
-		return array_values($ans);*/
+*/
+//		if(!empty($results) && isset($results['aggregations'])) {
+//
+//			foreach ($results['aggregations']['host']['buckets'] as $bucket) {
+//				// key is a host
+////				if (isset($ans1[$bucket['key']]))
+////				{
+//				$ans1[] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
+////				} else {
+////					$ans2[$bucket['key']] = array('key' => $bucket['key'], 'hits' => $bucket['doc_count']);
+////				}
+////			}
+//
+//			}
+//			/*sort($ans2);
+//                $ans = array_merge($ans1, $ans2);
+//            // Connect to aggregated data
+//            return array_values($ans);*/
+//		}
+			return $results['aggregations']['host']['buckets'];
 		
 	}
 	
