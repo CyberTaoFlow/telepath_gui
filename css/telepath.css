@@ -220,6 +220,7 @@ td {
 .tele-panel-topbar {
 	background-color: #222222;
 	height: 45px;
+	overflow: hidden;
 }
 .tele-panel-topbar .tele-button {
 	color: white;

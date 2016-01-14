@@ -21,6 +21,7 @@
 .tele-config-bar {
 	background-color: #333333;
 	height: 40px;
+	overflow: hidden;
 }
 .tele-config-bar-left {
 	width: 30%;
