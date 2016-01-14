@@ -280,27 +280,27 @@ telepath.config.application = {
 		// will go inside if this host is really an application	
 		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
 
-			if(data.items && data.items[0]) {
+			if (data.items && data.items[0]) {
 				that.app_data = data.items[0];
 
+
 				// Load cookie suggestions from the backend (Yuli)
-				telepath.dsync.get('/applications/get_cookie_suggestion', { app_id: app_host }, function(data) {
-					cookie_suggestions_str = '';
-					if (data.items && data.items[0]) {
-						for (c in data.items)
-						{
-							if (cookie_suggestions_str != '')
-								cookie_suggestions_str = cookie_suggestions_str + ',';
-							cookie_suggestions_str = cookie_suggestions_str + data.items[c].cookie;
-						}
-					}
-					console.log(cookie_suggestions_str);
-					that.app_data.cookie_suggestion = cookie_suggestions_str;
-				});
-			}
-			if (ip_suggestions_str)
-			{
-				 that.app_data.ip_suggestion = ip_suggestions_str;
+				/*	telepath.dsync.get('/applications/get_cookie_suggestion', {app_id: app_host}, function (data) {
+				 cookie_suggestions_str = '';
+				 if (data.items && data.items[0]) {
+				 for (c in data.items) {
+				 if (cookie_suggestions_str != '')
+				 cookie_suggestions_str = cookie_suggestions_str + ',';
+				 cookie_suggestions_str = cookie_suggestions_str + data.items[c].cookie;
+				 }
+				 }
+				 console.log(cookie_suggestions_str);
+				 that.app_data.cookie_suggestion = cookie_suggestions_str;
+				 });
+				 }*/
+				if (ip_suggestions_str) {
+					that.app_data.ip_suggestion = ip_suggestions_str;
+				}
 			}
 		});
 		// show app edit dialog in any case (i.e. app does not exists) (Yuli)
@@ -350,7 +350,7 @@ telepath.config.application = {
 			
 			$('.tele-input-input', element).autocomplete({ 
 				autoFill: true,
-				source: that.app_data.cookie_suggestion.split(','),
+				source: that.app_data.cookie_suggestion,
 				minLength: 0
 			}).focus(function () {
 				$(this).autocomplete('search', $(this).val());
@@ -489,7 +489,7 @@ telepath.config.application = {
 		
 		$('.tele-input-input', this.SC_cookie_name).autocomplete({ 
 			autoFill: true,
-			source: that.app_data.cookie_suggestion.split(','),
+			source: that.app_data.cookie_suggestion,
 			minLength: 0
 		}).focus(function () {
 			$(this).autocomplete('search', $(this).val());

@@ -197,12 +197,14 @@ class M_Applications extends CI_Model {
 		
 		if(isset($app['app_ssl_certificate'])) { unset($app['app_ssl_certificate']); }
 		if(isset($app['app_ssl_private'])) { unset($app['app_ssl_private']); }
-		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
+//		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
 		if(!isset($app['AppCookieName'])) { $app['AppCookieName'] = ''; }
 		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
-		$app['ip_suggestion'] = '';	
-		
+		$app['ip_suggestion'] = '';
+		$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];
+		if(isset($app['cookie_name'])) {array_push($app['cookie_suggestion'],$app['cookie_name']); }
+
 		return array($app);
 		
 	}
