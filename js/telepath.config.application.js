@@ -341,7 +341,7 @@ telepath.config.application = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 
-		$('<div>').addClass('tele-title-1').html('Operation Mode ID').appendTo('#tele-app-details');
+		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
 		var selected_opmod = '';
 		switch(that.app_data.operation_mode_id) {
