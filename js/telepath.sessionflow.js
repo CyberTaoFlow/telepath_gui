@@ -186,8 +186,8 @@ telepath.sessionflow = {
 		this.similaritiesList.trigger('resize');
                  //Bind resize hooks
                 setTimeout(function () {
-                        that._resize();
-                }, 0);
+					this.similaritiesList.trigger('resize');
+                }, 1000);
                 $(window).resize(function () { that._resize() });
 	
 	},
