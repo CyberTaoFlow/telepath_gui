@@ -50,7 +50,7 @@ telepath.suspects = {
 		// --------------------------------------
 		
 		// Select all cases
-		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
+/*		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
 			$('.tele-suspects-alerts .tele-list li.tele-listitem').listitem("option", "checked", e.options.checked);
 		}});
 		this.panelSubBar.append(checkallEl);
@@ -71,7 +71,7 @@ telepath.suspects = {
 		var archiveBtn = $('<div>').btn({ icon: 'archive', text: 'Archive', callback: function () { console.log('Archive'); }});
 		this.panelSubBar.append(archiveBtn);
 		
-		this.panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
+		this.panelSubBar.append('<div class="tele-navsep"></div>'); // Sep*/
 
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 

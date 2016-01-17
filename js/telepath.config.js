@@ -23,7 +23,7 @@ telepath.config = {
 			this.tabs.push({ icon: 'accounts', text: 'Telepath Users' });
 		}
 		
-		this.tabs.push({ icon: 'notifications', text: 'Notifications' });
+		//this.tabs.push({ icon: 'notifications', text: 'Notifications' });
 		
 		if(telepath.access.admin || telepath.access.perm.Applications_get) {
 			this.tabs.push({ icon: 'applications', text: 'Applications' });
@@ -37,10 +37,10 @@ telepath.config = {
 			this.tabs.push({ icon: 'actions', text: 'Business Actions' });
 		}
 
-		if(telepath.access.admin || telepath.access.perm.WebUsers_get) {
+		/*if(telepath.access.admin || telepath.access.perm.WebUsers_get) {
 			this.tabs.push({ icon: 'users', text: 'Web Users' });
 		}
-
+*/
 		if(telepath.access.admin || telepath.access.perm.Config_get) {
 			this.tabs.push({ icon: 'system', text: 'Advanced' });
 		}

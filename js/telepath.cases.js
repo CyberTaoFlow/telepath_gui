@@ -124,7 +124,7 @@ telepath.cases = {
 		// --------------------------------------
 		
 		// Select all cases
-		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
+/*		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
 			if(that.list) {
 				that.list.data('tele-teleList').toggleAll(e.options.checked);
 			}
@@ -163,7 +163,7 @@ telepath.cases = {
 		}});
 		panelSubBar.append(deleteBtn);
 		
-		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
+		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep*/
 		
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 

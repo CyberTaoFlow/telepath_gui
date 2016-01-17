@@ -22,7 +22,7 @@ $.widget( "tele.notifications", {
         this.element.addClass( "tele-notify" );
 		
 		// Button
-		this.button = $('<a>').attr('href', '#');
+	/*	this.button = $('<a>').attr('href', '#');
 		this.element.append(this.button);
 		
 		// Counter
@@ -34,7 +34,7 @@ $.widget( "tele.notifications", {
 		//}, this.options.interval);
 		
 		this.button.click(function () { that.showNotifications(); });
-		this.count.click(function () { that.showNotifications(); });
+		this.count.click(function () { that.showNotifications(); });*/
 		
         this._update();
 		
