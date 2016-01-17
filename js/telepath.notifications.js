@@ -26,15 +26,15 @@ $.widget( "tele.notifications", {
 		this.element.append(this.button);
 		
 		// Counter
-		/*this.count = $('<div>').addClass('tele-notify-count').html('0');
-		this.element.append(this.count);*/
+		this.count = $('<div>').addClass('tele-notify-count').html('0');
+		this.element.append(this.count);
 		
 		//setInterval(function () {
 		//	that._update();
 		//}, this.options.interval);
 		
 		this.button.click(function () { that.showNotifications(); });
-		//this.count.click(function () { that.showNotifications(); });
+		this.count.click(function () { that.showNotifications(); });
 		
         this._update();
 		
