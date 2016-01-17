@@ -26,7 +26,7 @@ telepath.alerts = {
 		container.append(panelTopBar).append(panelSubBar).append(telepath.loader);
 
 		// Select all cases
-/*		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
+		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
 			$('.tele-panel-alerts .tele-list li.tele-listitem').listitem("option", "checked", e.options.checked);
 		}});
 		panelSubBar.append(checkallEl);
@@ -41,7 +41,7 @@ telepath.alerts = {
 		var deleteBtn = $('<div>').btn({ icon: 'delete', text: 'Delete', callback: function () { console.log('Archive'); }});
 		panelSubBar.append(deleteBtn);
 		
-		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep*/
+		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
 		
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 
