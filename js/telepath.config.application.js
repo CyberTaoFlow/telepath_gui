@@ -288,7 +288,7 @@ telepath.config.application = {
                                 });
 
 		// will go inside if this host is really an application	
-		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
+		telepath.dsync.get('/applications/get_app', { host: app_host.split('(')[0] }, function(data) {
 
 			if (data.items && data.items[0]) {
 				that.app_data = data.items[0];
@@ -332,7 +332,7 @@ telepath.config.application = {
 		
 		var title = $('<div>').addClass('tele-title-1').html('Application Details').appendTo('#tele-app-details');
 		
-		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.host });
+		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.host.split('(')[0] });
 		this.AD_display_name = $('<div>').teleInput({ label: 'Display Name', value: that.app_data.display_name });
 		
 		$('#tele-app-details').append(this.AD_app_domain).append(this.AD_display_name);
