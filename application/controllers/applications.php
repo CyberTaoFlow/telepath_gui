@@ -89,9 +89,11 @@ class Applications extends Tele_Controller
 
         $app = $this->M_Applications->get($host);
 
-        if ($context == 'actions') {
+        if (!$app) $app = array();
 
-            if (!$app) $app = array();
+
+
+        if ($context == 'actions') {
 
             $this->load->model('M_Actions');
             $actions = $this->M_Actions->get_actions($host);
@@ -212,7 +214,7 @@ class Applications extends Tele_Controller
         if (!$app_id) {
             return_fail('No App ID specified');
         }
-        $data = $this->M_Applications->get_ip_suggestion($app_id);
+        $data = $this->M_Applications->new_get_ip_suggestion($app_id);
         return return_success($data);
     }
 

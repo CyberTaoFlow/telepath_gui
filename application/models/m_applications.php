@@ -206,12 +206,46 @@ class M_Applications extends CI_Model {
 		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
 		$app['ip_suggestion'] = '';
-		$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];
-		if(isset($app['cookie_name'])) {array_push($app['cookie_suggestion'],$app['cookie_name']); }
-
+		if(isset($app['cookie_suggestion'])) {
+			array_push($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
+		}
+		else{
+			$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];
+		}
 		return array($app);
 		
 	}
+
+	function new_get_ip_suggestion($host){
+
+		$params = [
+			'index' => 'telepath-20*',
+			'body' => [
+				'size'=>0,
+				'aggs'=>['host'=>["terms"=>["field"=>"host","size"=>999],
+				'aggs'  => [ 'ip_resp' => [ "terms" => [ "field" => "ip_resp"]]]]
+			],
+				'query'=>['match'=>['host'=>$host]]
+		]
+		];
+		$result = $this->elasticClient->search($params);
+
+		if(!empty($result) && isset($result['aggregations'])) {
+			$results = $result['aggregations']['host']['buckets'][0]['ip_resp']['buckets'];
+
+			$ip_suggestion = [];
+
+			foreach ($results as $res) {
+				array_push($ip_suggestion, $res['key_as_string']);
+			}
+
+			return $ip_suggestion;
+		}
+		return false;
+	}
+
+	//new function
+//curl -XGET 'http://localhost:9200/telepath-20*/_search?pretty' -d '{"size":0,"aggs":{"host":{"terms":{"field":"host","size":999},"aggs":{"ip_resp":{"terms":{"field":"ip_resp"}}}}}}'
 	
 	function index($search = false) {
 		

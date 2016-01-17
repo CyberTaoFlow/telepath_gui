@@ -242,7 +242,7 @@ telepath.config.application = {
                                 display_name: '',
                                 // Add default cookies for new app
                                 cookie_suggestion: 'PHPSESSID,PHPSESSIONID,JSESSIONID,ASPSESSIONID,ASP.NET_SessionId,VisitorID,SESS',
-								ip_suggestion: '',
+								//ip_suggestion: '',
                                 app_ips: '',
                                 form_param_name: '',
                                 form_param_id: '',
@@ -272,20 +272,8 @@ telepath.config.application = {
 		var that = this;
 		this.app_data.app_domain = app_host;
 		this.app_data.host = app_host;
-		var ip_suggestions_str = '';
-                                telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
-                                        ip_suggestions_str = '';
-                                        if (data.items && data.items[0]) {
-                                                for (c in data.items)
-                                                {
-                                                        if (ip_suggestions_str != '')
-                                                                ip_suggestions_str = ip_suggestions_str + ',';
-                                                        ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
-                                                }
-                                        }
-                                        console.log(ip_suggestions_str);
-                                        that.app_data.ip_suggestion = ip_suggestions_str;
-                                });
+		//var ip_suggestions_str = '';
+                           
 
 		// will go inside if this host is really an application	
 		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
@@ -308,10 +296,25 @@ telepath.config.application = {
 				 that.app_data.cookie_suggestion = cookie_suggestions_str;
 				 });
 				 }*/
-				if (ip_suggestions_str) {
-					that.app_data.ip_suggestion = ip_suggestions_str;
-				}
+				//if (ip_suggestions_str) {
+				//	that.app_data.ip_suggestion = ip_suggestions_str;
+				//}
 			}
+		});
+
+		telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
+			//ip_suggestions_str = '';
+			//if (data.items && data.items[0]) {
+			//        for (c in data.items)
+			//        {
+			//                if (ip_suggestions_str != '')
+			//                        ip_suggestions_str = ip_suggestions_str + ',';
+			//                ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
+			//        }
+			//}
+			console.log(data);
+			if (data.items)
+				that.app_data.ip_suggestion = data.items;
 		});
 		// show app edit dialog in any case (i.e. app does not exists) (Yuli)
 		that.showApp();
@@ -410,7 +413,7 @@ telepath.config.application = {
 			element.teleInput({ value: value });
 			$('.tele-input-input', element).autocomplete({
 				autoFill: true,
-				source: that.app_data.ip_suggestion.split(','),
+				source: that.app_data.ip_suggestion,
 				minLength: 0
 			}).focus(function () {
 				$(this).autocomplete('search', $(this).val());
