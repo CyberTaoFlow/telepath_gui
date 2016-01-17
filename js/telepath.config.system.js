@@ -488,7 +488,7 @@ telepath.config.system = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 		
-		$('<div>').addClass('tele-title-1').html('Operation Mode ID').appendTo(this.c_mode);
+		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo(this.c_mode);
 
 		var selected_opmod = '';
 		switch(this.data.operation_mode_id) {
@@ -555,7 +555,7 @@ telepath.config.system = {
 			value: this.data.move_to_production_id
 		}).addClass('tele-config-mv2prod').appendTo(this.c_mode); 
 
-		$('<div>').addClass('tele-title-1').html('Learn new apps').appendTo(this.c_mode);
+		$('<div>').addClass('tele-title-1').html('Learn new applications').appendTo(this.c_mode);
                 this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.add_unknown_applications_id
 				== '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
 
