@@ -241,7 +241,8 @@ telepath.config.application = {
                                 app_domain: '',
                                 display_name: '',
                                 // Add default cookies for new app
-                                cookie_suggestion: 'PHPSESSID,PHPSESSIONID,JSESSIONID,ASPSESSIONID,ASP.NET_SessionId,VisitorID,SESS',
+								// Not needed. We get it from server side (Moshe)
+                                //cookie_suggestion: 'PHPSESSID,PHPSESSIONID,JSESSIONID,ASPSESSIONID,ASP.NET_SessionId,VisitorID,SESS',
 								//ip_suggestion: '',
                                 app_ips: '',
                                 form_param_name: '',
@@ -273,7 +274,7 @@ telepath.config.application = {
 		this.app_data.app_domain = app_host;
 		this.app_data.host = app_host;
 		//var ip_suggestions_str = '';
-                           
+
 
 		// will go inside if this host is really an application	
 		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
@@ -281,6 +282,7 @@ telepath.config.application = {
 			if (data.items && data.items[0]) {
 				that.app_data = data.items[0];
 
+				//if (!data.app_data.cookie_suggestions)
 
 				// Load cookie suggestions from the backend (Yuli)
 				/*	telepath.dsync.get('/applications/get_cookie_suggestion', {app_id: app_host}, function (data) {

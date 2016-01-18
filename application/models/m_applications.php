@@ -77,24 +77,10 @@ class M_Applications extends CI_Model {
 
 		$params['index'] ='telepath-domains';
 		$params['type'] = 'domains';
-		$params['body'] = [
-			'size'   => 1,
-			'query' => [ "match" => [
-				"host" => $data['host']
-			]
-			]
-		];
+		$params['id']=$data['host'];
 
 
-		$results = $this->elasticClient->search($params);
-		$exists  = intval($results['hits']['total']) > 0;
-
-		// Prep
-
-		$params = array();
-		$params['index'] = 'telepath-domains';
-		$params['type']  = 'domains';
-//		$params['id']    = $results['hits']['hits'][0]['_id'];
+		$exists = $this->elasticClient->exists($params);
 
 		// Cleanup certs if ssl was disabled
 		if(intval($data['ssl_flag']) == 0) {
@@ -107,6 +93,26 @@ class M_Applications extends CI_Model {
 			$cert_data = openssl_x509_parse($data['app_ssl_certificate']);
 			$data['ssl_data'] = $cert_data;
 		}
+
+
+		// check if document exist to not delete the cookie suggestion added by the engine
+		if ($exists){
+			$params['body']['doc']=$data;
+			$this->elasticClient->update($params);
+		}
+		else{
+			$params['body']=$data;
+			$this->elasticClient->index($params);
+		}
+	// Prep
+
+	/*	$params = array();
+		$params['index'] = 'telepath-domains';
+		$params['type']  = 'domains';
+//		$params['id']    = $results['hits']['hits'][0]['_id'];
+
+		// Cleanup certs if ssl was disabled
+
 
 		if(!$exists) {
 
@@ -122,7 +128,7 @@ class M_Applications extends CI_Model {
 			$params['body']  = [ 'doc' => $data ];
 			$ret =  $this->elasticClient->update($params);
 
-		}
+		}*/
 
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-domains'));
 
@@ -146,8 +152,12 @@ class M_Applications extends CI_Model {
 		# Delete host from the application index, Yuli
 		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';
-		$params['body']['query']['match']['host'] = $host;
-		$results = $this->elasticClient->deleteByQuery($params);
+		$params['id'] = $host;
+		$exists = $this->elasticClient->exists($params);
+
+		if ($exists){
+			$this->elasticClient->delete($params);
+		}
 
 		# Delete all records where HTTP host is used the same ias $host, Yuli
 		$params = array();
@@ -188,8 +198,17 @@ class M_Applications extends CI_Model {
 		$exists = $this->elasticClient->exists($params);
 
 		//$exists  = @intval($results['hits']['total']) > 0;
-		if(!$exists) {
-			return false;
+		if (!$exists) {
+			$app['AppCookieName'] = '';
+			$app['app_ips'] = '';
+			$app['operation_mode_id'] = '';
+			$app['move_to_production_id'] = '';
+			$app['eta_id'] = '';
+			$app['app_ips'] = '';
+			$app['form_authentication_redirect_response_range'] = '';
+			$app['host'] = $host;
+			$app['cookie_suggestion'] = ['PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS'];
+			return array($app);
 		}
 		$results = $this->elasticClient->get($params);
 		
@@ -207,7 +226,11 @@ class M_Applications extends CI_Model {
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
 		$app['ip_suggestion'] = '';
 		if(isset($app['cookie_suggestion'])) {
-			array_push($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
+			if (is_array($app['cookie_suggestion']))
+				array_push($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
+			else
+			$app['cookie_suggestion']=array($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
+
 		}
 		else{
 			$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];
