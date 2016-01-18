@@ -81,7 +81,7 @@ $.widget( "tele.teleBrowser", {
 				
 				// EXPANDING ROOT , SHOW APPS
 				
-				var treeData = telepath.config.applications.formatData(data.items);
+				var treeData = telepath.config.applications.formatData(data.items,false);
 
 				function enable_expand(treeData) {
 					$.each(treeData, function(i, row) {

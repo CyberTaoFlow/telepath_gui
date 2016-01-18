@@ -31,14 +31,18 @@ telepath.config.applications = {
 		return treeData;
 
 	},
-	formatData: function(data, root) {
+	formatData: function(data,count, root) {
 		if(!root) { root = '' }
 		// Recurse for children, use json key as text to display
 		if(!data) return;
+		count = count !== false;
 		var that = this;
 		var treeData = [];
 		$.each(data, function(i, row) {
-			var text = row.key + '&nbsp;' + row.doc_count;
+			var text = row.key;
+			if(count){
+				text+= '&nbsp;' + row.doc_count;
+			}
 			var obj  = { children: false, text: text, data: { type: 'app', host: row.key }, 'icon': 'tele-icon-app'};
 			treeData.push(obj);
 		});
