@@ -216,22 +216,22 @@ class M_Applications extends CI_Model {
 		
 	}
 
-	function new_get_ip_suggestion($host){
+	function get_ip_suggestion($host){
 
 		$params = [
 			'index' => 'telepath-20*',
 			'body' => [
-				'size'=>0,
-				'aggs'=>['host'=>["terms"=>["field"=>"host","size"=>999],
-				'aggs'  => [ 'ip_resp' => [ "terms" => [ "field" => "ip_resp"]]]]
-			],
+				'size'  => 0,
+				'aggs'  => [ 'ip_resp' => [ "terms" => [ "field" => "ip_resp" ], ], ],
 				'query'=>['match'=>['host'=>$host]]
 		]
 		];
+
+
 		$result = $this->elasticClient->search($params);
 
 		if(!empty($result) && isset($result['aggregations'])) {
-			$results = $result['aggregations']['host']['buckets'][0]['ip_resp']['buckets'];
+			$results = $result['aggregations']['ip_resp']['buckets'];
 
 			$ip_suggestion = [];
 
@@ -493,7 +493,7 @@ class M_Applications extends CI_Model {
 	
 	}
 
-	function get_ip_suggestion($host)
+	function old_get_ip_suggestion($host)
 	{
 		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';

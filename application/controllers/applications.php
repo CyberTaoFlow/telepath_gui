@@ -214,7 +214,7 @@ class Applications extends Tele_Controller
         if (!$app_id) {
             return_fail('No App ID specified');
         }
-        $data = $this->M_Applications->new_get_ip_suggestion($app_id);
+        $data = $this->M_Applications->get_ip_suggestion($app_id);
         return return_success($data);
     }
 
