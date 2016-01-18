@@ -137,4 +137,8 @@ class Telepath extends Tele_Controller
 
     }
 
+    public function check_elastic_connection(){
+        return_success($this->elasticClient->ping());
+   }
+
 }
