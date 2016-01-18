@@ -100,7 +100,7 @@ telepath.config.applications = {
 
 		$.each(that.actionOriginal, function (index, element) {
 			var val = element.textContent.split(/\s/g);
-			if (val[1] == that.searchString || (telepath.config.startsWith2(val[1], that.searchString)))
+			if (val[1] == that.searchString || val[1].indexOf(that.searchString) !=-1 )
 				that.searchData.push({key: val[1], doc_count: '('+val[2]+')'})
 		});
 	},
