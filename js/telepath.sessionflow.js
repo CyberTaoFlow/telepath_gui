@@ -186,18 +186,18 @@ telepath.sessionflow = {
 		this.similaritiesList.trigger('resize');
                  //Bind resize hooks
                 setTimeout(function () {
-					this.similaritiesList.trigger('resize');
+					that.similaritiesList.trigger('resize');
                 }, 1000);
                 $(window).resize(function () { that._resize() });
 	
 	},
-	_resize0: function() {
+	_resize: function() {
 		if (this.overlay.contentEl.height())
 		{
-			//var height = this.overlay.contentEl.height() - this.requestScoreEl.outerHeight() - $('.tele-alert-info-table', this.overlay.contentEl).outerHeight() - 2*20 - 55;
-			//$('.tele-similarities-list .tele-block').height(height - 20);
+			var height = this.overlay.contentEl.height() - this.requestScoreEl.outerHeight() - $('.tele-alert-info-table', this.overlay.contentEl).outerHeight() - 2*20 - 55;
+			$('.tele-similarities-list .tele-block').height(height - 20);
 			//$('.tele-block .tele-list').height(offset - 50);
-			//$('.tele-similarities-list .tele-list').mCustomScrollbar("update");
+			$('.tele-similarities-list .tele-list').mCustomScrollbar("update");
 		}
 
 	},
