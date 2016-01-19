@@ -254,7 +254,11 @@
 		}
 		
 	}
-	
+
+
+
+
+
 	function return_json($array) {
 		
 		//function jsonRemoveUnicodeSequences($struct) {
