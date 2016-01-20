@@ -79,6 +79,14 @@ class Applications extends Tele_Controller
 
     }
 
+    public function get_app_pages(){
+        telepath_auth(__CLASS__, __FUNCTION__);
+
+        $host = $this->input->post('host');
+
+        return_success($this->M_Applications->get_app_pages($host));
+    }
+
     public function get_app()
     {
 
