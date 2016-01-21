@@ -52,8 +52,8 @@ telepath.config.actions = {
 				
 					$.each(data, function(i, row) {
 					
-						var text = row.key;
-						var obj = { children: true, text: text, data: {id: row.key, type: 'app', ssl: row.ssl_flag }};
+						var text = row.host;
+						var obj = { children: true, text: text, data: {id: row.host, type: 'app', ssl: row.ssl_flag }};
 						treeData.push(obj);
 						
 					});

@@ -275,13 +275,13 @@ class M_Applications extends CI_Model {
 		// Search specific records first
 
 
-		$params = [
-			'index' => 'telepath-20*',
-			'body' => [
-				'size'=>0,
-				'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ] ] ]
-			]
-		];
+//		$params = [
+//			'index' => 'telepath-20*',
+//			'body' => [
+//				'size'=>0,
+//				'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ] ] ]
+//			]
+//		];
 
 //		$params['body'] = array(
 //			'size'  => 0,
@@ -289,27 +289,27 @@ class M_Applications extends CI_Model {
 //			'query' => [ 'bool' => [ "must" => [ [ 'term' => [ '_type' => 'http' ] ] ] ] ]
 //		);
 
-//		$params = [
-//			'index' => 'telepath-domains',
-//			'type' => 'domains',
-//			'body' => [
-//				'size'=>999,
-//				'query' => [
-//					'match_all' => [
-//					]
-//				]
-//			]
-//		];
+		$params = [
+			'index' => 'telepath-domains',
+			'type' => 'domains',
+			'body' => [
+				'size'=>9999,
+				'query' => [
+					'match_all' => [
+					]
+				]
+			]
+		];
 
 		if ($search){
-			$params['body']=[];
-			$params['body']['size']=999;
+			$params['body']['query']=[];
 			$params['body']['query']['match']=['host'=>$search];
 		}
 
-		$results = $this->elasticClient->search($params);
+		$results = get_only_elastic_results($this->elasticClient->search($params));
 
-		$ans1 = [];
+
+//		$ans1 = [];
 //		if(!empty($results)) {
 //			foreach($results as $result) {
 //				if(isset($result['host'])) {
@@ -374,7 +374,8 @@ class M_Applications extends CI_Model {
 //            // Connect to aggregated data
 //            return array_values($ans);*/
 //		}
-			return $results['aggregations']['host']['buckets'];
+//			return $results['aggregations']['host']['buckets'];
+		return $results;
 		
 	}
 	
