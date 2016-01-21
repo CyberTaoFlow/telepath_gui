@@ -4,8 +4,5 @@ application/models/m_test.php
 tmp/
 application/databases/telepath_users.db
 /application/config/database.php
-<<<<<<< HEAD
 .svn/
-=======
 upload_files/
->>>>>>> fe23331dc1a2b6cb8c498d78076d02a11fcd708e
