@@ -1,17 +1,6 @@
 $(document).ready(function () {
 
-    $('body').append(telepath.loader);
-    var thet = this;
-
-    thet.get_connecetion =setInterval(function(){ telepath.ds.get('/telepath/check_elastic_connection', {}, function(data) {
-        if (data.success) {
-            $('body').empty();
-            console.log('have connection');
-            clearInterval(thet.get_connecetion);
-            telepath.main.init();
-        }
-    })}, 2000);
-
+    telepath.main.init();
 
     $(document).click(function (e) {
 

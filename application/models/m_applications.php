@@ -382,7 +382,6 @@ class M_Applications extends CI_Model {
 
 		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';
-		$params['index']='telepath-domains';
 		$params['body'] = [
 			'partial_fields' => [ 
 				"_src" => [
@@ -445,23 +444,27 @@ class M_Applications extends CI_Model {
 	
 	function get_page($host, $path, $mode = '') {
 
-		$params['index'] = 'telepath-domains';
-		$params['type'] = 'domains';
+		$params	['index'] = 'telepath-20*';
 		$params['body'] = [
-			'size'   => 999,
-			'query' => [ "bool" => [ "must" => [ 'term' => [ "uri" => $path ], 'term' => [ "host" => $host ] ] ] ]
+			'size' => 999,
+			'query' => ["bool" => ["must" => [
+				['term' => ["uri" => $path]],
+				['term' => ["host" => $host]],
+			]
+			]
+			]
 		];
-		
+
 		$params = append_access_query($params);
 		$results = get_elastic_results($this->elasticClient->search($params));
-		
+
 		$out = array();
 		if(!empty($results)) {
 			foreach($results as $result) {
 				// Add sanity check that parameters key exists, Yuli
 				if (!empty($result['uri']) && $mode != 'param')
 				{
-					$data = array('type' => 'page', 'host'=>$result['uri'], 'text' => $result['uri'], 'host' => $result['host']);
+					$data = array('type' => 'page', 'name'=>$result['uri'], 'text' => $result['uri'], 'host' => $result['host']);
 					$out[crc32(serialize($data))] = $data;
 				}
 
@@ -470,8 +473,8 @@ class M_Applications extends CI_Model {
 					$params = $result['parameters'];
 					foreach($params as $param) {
 						if(isset($param['type']) && ($param['type'] == 'G' || $param['type'] == 'P')) {
-							
-							$out[crc32($param['type'] . $param['host'])] = array('host' => $param['host'], 'type' => $param['type']);
+
+							$out[crc32($param['type'] . $param['name'])] = array('name' => $param['name'], 'type' => $param['type']);
 						}
 					}
 				}
@@ -480,18 +483,17 @@ class M_Applications extends CI_Model {
 		// create fake root, Yuli
 		//if (empty($path))
 		//{
-		//	$data = array('type' => 'dir', 'host' => '/', 'text' => "/", 'host' => $host);
+		//	$data = array('type' => 'dir', 'name' => '/', 'text' => "/", 'host' => $host);
 		//	$out[crc32(serialize($data))] = $data;
 		//}
-		
+
 		return array_values($out);
 	
 	}
 	
-	function get_host($host) {
+	function get_app_pages($host) {
 
-		$params['index'] = 'telepath-domains';
-		$params['type'] = 'domains';
+		$params['index'] = 'telepath-20*';
 		$params['body'] = [
 			'size'   => 1,
 			'aggs'   => [ 'uri' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],

@@ -81,7 +81,7 @@ $.widget( "tele.teleBrowser", {
 				
 				// EXPANDING ROOT , SHOW APPS
 				
-				var treeData = telepath.config.applications.formatData(data.items);
+				var treeData = telepath.config.applications.formatData(data.items,false);
 
 				function enable_expand(treeData) {
 					$.each(treeData, function(i, row) {
@@ -117,6 +117,28 @@ $.widget( "tele.teleBrowser", {
 				return;
 			
 			}
+			if(obj.data.type == 'app') {
+				telepath.ds.get('/applications/get_app_pages', { host: obj.data.host }, function(data) {
+
+
+
+					var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host);
+
+					function enable_expand(treeData) {
+						$.each(treeData, function(i, row) {
+							if(row.children && row.children.length > 0) {
+								enable_expand(row.children);
+							} else {
+								row.children = true;
+							}
+						});
+					}
+					enable_expand(treeData);
+
+					callback.call(that, treeData);
+
+				});
+			}
 			
 			if(obj.data.type == 'page') {
 				
@@ -124,7 +146,7 @@ $.widget( "tele.teleBrowser", {
 			
 				console.log('NEED TO EXPAND A PAGE');
 				
-				telepath.ds.get('/applications/get_page', { host: obj.data.host, path: obj.data.path }, function(data) {
+				telepath.ds.get('/applications/get_page', { host: obj.data.host, path: obj.data.path, mode: that.options.mode }, function(data) {
 				
 					var treeData = [];
 					
@@ -136,7 +158,7 @@ $.widget( "tele.teleBrowser", {
 					if(data.items) {
 						$.each(data.items, function(i, item) {
 							item.type = 'param';
-							treeData.push({ children: false, text: item.name + " (" + item.type + ")" , icon: 'tele-icon-param', data: item });
+							treeData.push({ children: false, text: item.name , icon: 'tele-icon-param', data: item });
 						});
 					}
 					
@@ -145,41 +167,43 @@ $.widget( "tele.teleBrowser", {
 				});
 
 				
-			} else {
-				
-				// EXPANDING APP , SHOW PAGES
-				// fixing bug Yuli
-				if (!obj.data.host) {
-					obj.data.host = obj.data.text;
-				}
-
-				// Trying to fix bug. get_pages instead of get_app. Yuli
-				telepath.ds.get('/applications/get_page', { host: obj.data.host, path: "", mode: that.options.mode }, function(data) {
-				
-					//var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host);
-					//callback.call(that, treeData);
-					var treeData = [];
-
-					if(data.items.length == 0) {
-						callback.call(that, []);
-						return;
-					}
-
-					if(data.items) {
-						$.each(data.items, function(i, item) {
-							if (item.type != 'page' && item.type != 'dir')
-							{
-								item.type = 'param';
-							}
-							treeData.push({ children: false, text: item.name, icon: 'tele-icon-' + item.type, data: item });
-						});
-					}
-
-                                        callback.call(that, treeData);
-				
-				});
-				
 			}
+
+			//else {
+			//
+			//	// EXPANDING APP , SHOW PAGES
+			//	// fixing bug Yuli
+			//	if (!obj.data.host) {
+			//		obj.data.host = obj.data.text;
+			//	}
+            //
+			//	// Trying to fix bug. get_pages instead of get_app. Yuli
+			//	telepath.ds.get('/applications/get_page', { host: obj.data.host, path: "", mode: that.options.mode }, function(data) {
+			//
+			//		//var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host);
+			//		//callback.call(that, treeData);
+			//		var treeData = [];
+            //
+			//		if(data.items.length == 0) {
+			//			callback.call(that, []);
+			//			return;
+			//		}
+            //
+			//		if(data.items) {
+			//			$.each(data.items, function(i, item) {
+			//				if (item.type != 'page' && item.type != 'dir')
+			//				{
+			//					item.type = 'param';
+			//				}
+			//				treeData.push({ children: false, text: item.name, icon: 'tele-icon-' + item.type, data: item });
+			//			});
+			//		}
+            //
+             //                           callback.call(that, treeData);
+			//
+			//	});
+			//
+			//}
 			
 			
 		
