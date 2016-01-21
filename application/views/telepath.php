@@ -88,6 +88,9 @@ if($logged_in && $can_access) {
 		
 		
 		$autoload = array(
+			"js/lib/jquery.fileupload.js",
+			"js/lib/jquery.iframe-transport.js",
+
 			"js/lib/jquery.flot.min.js", 
 			"js/lib/jquery.flot.resize.min.js", 
 			"js/lib/jquery.flot.pie.min.js",

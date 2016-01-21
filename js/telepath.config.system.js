@@ -586,10 +586,181 @@ telepath.config.system = {
 		// Sniffer
 		$('<div>').addClass('tele-title-2').html('Webservice').appendTo(this.engineControls).css({ opacity: 0.3 });
 		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
-		
-				
-		// TODO:: Scheduler
-		
+
+
+		this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
+
+		$('<div>').attr('id','dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
+
+		$('<input>').attr('id','input').attr('type','file').attr('multiple','true').css({width: '0px', height: '0px',overflow: 'hidden'}).appendTo(this.file_upload);
+
+
+
+		$(document).ready(function()
+		{
+			var obj = $("#dragandrophandler");
+
+			$('#input').change(function(e){
+				var files = e.currentTarget.files;
+
+				//We need to send dropped files to Server
+				handleFileUpload(files,obj);
+			})
+
+			obj.on('click', function(e){
+			$('#input').click();
+
+			});
+			obj.on('dragenter', function (e)
+			{
+				e.stopPropagation();
+				e.preventDefault();
+				$(this).css('border', '2px solid #0B85A1');
+			});
+			obj.on('dragover', function (e)
+			{
+				e.stopPropagation();
+				e.preventDefault();
+			});
+			obj.on('drop', function (e)
+			{
+
+				$(this).css('border', '2px dotted #0B85A1');
+				e.preventDefault();
+				var files = e.originalEvent.dataTransfer.files;
+
+				//We need to send dropped files to Server
+				handleFileUpload(files,obj);
+			});
+			$(document).on('dragenter', function (e)
+			{
+				e.stopPropagation();
+				e.preventDefault();
+			});
+			$(document).on('dragover', function (e)
+			{
+				e.stopPropagation();
+				e.preventDefault();
+				obj.css('border', '2px dotted #0B85A1');
+			});
+			$(document).on('drop', function (e)
+			{
+				e.stopPropagation();
+				e.preventDefault();
+			});
+
+		});
+
+		//Read the file contents using HTML5 FormData() when the files are dropped.
+		function handleFileUpload(files,obj)
+		{
+			for (var i = 0; i < files.length; i++)
+			{
+				var fd = new FormData();
+				fd.append('file', files[i]);
+
+				var status = new createStatusbar(obj); //Using this we can set progress.
+				status.setFileNameSize(files[i].name,files[i].size);
+				sendFileToServer(fd,status);
+
+			}
+		}
+
+		//Send FormData() to Server using jQuery AJAX API
+		function sendFileToServer(formData,status)
+		{
+			var uploadURL ="http://localhost/telepath/index.php/upload/do_upload"; //Upload URL
+			var extraData ={}; //Extra Data.
+			var jqXHR=$.ajax({
+				xhr: function() {
+					var xhrobj = $.ajaxSettings.xhr();
+					if (xhrobj.upload) {
+						xhrobj.upload.addEventListener('progress', function(event) {
+							var percent = 0;
+							var position = event.loaded || event.position;
+							var total = event.total;
+							if (event.lengthComputable) {
+								percent = Math.ceil(position / total * 100);
+							}
+							//Set progress
+							status.setProgress(percent);
+						}, false);
+					}
+					return xhrobj;
+				},
+				url: uploadURL,
+				type: "POST",
+				contentType:false,
+				processData: false,
+				cache: false,
+				data: formData,
+				success: function(data){
+					status.setProgress(100);
+
+					$("#status1").append("File upload Done<br>");
+				}
+			});
+
+			status.setAbort(jqXHR);
+		}
+
+
+		that.rowCount=0;
+
+		function createStatusbar(obj)
+		{
+			that.rowCount++;
+			var row="odd";
+			if(that.rowCount %2 ==0) row ="even";
+			this.statusbar = $("<div class='statusbar "+row+"'></div>");
+			this.filename = $("<div class='filename'></div>").appendTo(this.statusbar);
+			this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
+			this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
+			this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
+			obj.after(this.statusbar);
+
+			this.setFileNameSize = function(name,size)
+			{
+				var sizeStr="";
+				var sizeKB = size/1024;
+				if(parseInt(sizeKB) > 1024)
+				{
+					var sizeMB = sizeKB/1024;
+					sizeStr = sizeMB.toFixed(2)+" MB";
+				}
+				else
+				{
+					sizeStr = sizeKB.toFixed(2)+" KB";
+				}
+
+				this.filename.html(name);
+				this.size.html(sizeStr);
+			}
+			this.setProgress = function(progress)
+			{
+				var progressBarWidth =progress*this.progressBar.width()/ 100;
+				this.progressBar.find('div').animate({ width: progressBarWidth }, 10).html(progress + "% ");
+				if(parseInt(progress) >= 100)
+				{
+					this.abort.hide();
+				}
+			}
+			this.setAbort = function(jqxhr)
+			{
+				var sb = this.statusbar;
+				this.abort.click(function()
+				{
+					jqxhr.abort();
+					sb.hide();
+				});
+			}
+		}
+
+
+                // TODO:: Scheduler
+
+
+
 		// -----------------------------------------------------------
 		// Reports
 		// -----------------------------------------------------------
@@ -848,5 +1019,5 @@ telepath.config.system = {
 		//telepath.config.system.engineTimer = setInterval(function () { that.updateEngineStatus(); }, 5000);
 		//this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true } });	
 	}
-	
+
 }
