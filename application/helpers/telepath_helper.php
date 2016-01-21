@@ -109,8 +109,19 @@
 		}		
 		return $result;
 	}
-	
-	function get_gap($range) {
+
+function get_only_elastic_results($results) {
+	$result  = array();
+	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
+		foreach($results['hits']['hits'] as $row) {
+			$result[] = $row['_source'];
+		}
+	}
+	return $result;
+}
+
+
+function get_gap($range) {
 	
 		$difference	= $range['end'] - $range['start'];
 
@@ -254,11 +265,7 @@
 		}
 		
 	}
-
-
-
-
-
+	
 	function return_json($array) {
 		
 		//function jsonRemoveUnicodeSequences($struct) {

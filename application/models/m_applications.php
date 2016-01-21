@@ -275,13 +275,13 @@ class M_Applications extends CI_Model {
 		// Search specific records first
 
 
-		$params = [
-			'index' => 'telepath-20*',
-			'body' => [
-				'size'=>0,
-				'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ] ] ]
-			]
-		];
+//		$params = [
+//			'index' => 'telepath-20*',
+//			'body' => [
+//				'size'=>0,
+//				'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ] ] ]
+//			]
+//		];
 
 //		$params['body'] = array(
 //			'size'  => 0,
@@ -289,27 +289,27 @@ class M_Applications extends CI_Model {
 //			'query' => [ 'bool' => [ "must" => [ [ 'term' => [ '_type' => 'http' ] ] ] ] ]
 //		);
 
-//		$params = [
-//			'index' => 'telepath-domains',
-//			'type' => 'domains',
-//			'body' => [
-//				'size'=>999,
-//				'query' => [
-//					'match_all' => [
-//					]
-//				]
-//			]
-//		];
+		$params = [
+			'index' => 'telepath-domains',
+			'type' => 'domains',
+			'body' => [
+				'size'=>9999,
+				'query' => [
+					'match_all' => [
+					]
+				]
+			]
+		];
 
 		if ($search){
-			$params['body']=[];
-			$params['body']['size']=999;
+			$params['body']['query']=[];
 			$params['body']['query']['match']=['host'=>$search];
 		}
 
-		$results = $this->elasticClient->search($params);
+		$results = get_only_elastic_results($this->elasticClient->search($params));
 
-		$ans1 = [];
+
+//		$ans1 = [];
 //		if(!empty($results)) {
 //			foreach($results as $result) {
 //				if(isset($result['host'])) {
@@ -374,68 +374,68 @@ class M_Applications extends CI_Model {
 //            // Connect to aggregated data
 //            return array_values($ans);*/
 //		}
-			return $results['aggregations']['host']['buckets'];
+//			return $results['aggregations']['host']['buckets'];
+		return $results;
 		
 	}
 	
 	function get_search($search) {
 
-		$params['index'] = 'telepath-domains';
-		$params['type'] = 'domains';
+		$params['index'] = 'telepath-20*';
 		$params['body'] = [
-			'partial_fields' => [ 
+			'partial_fields' => [
 				"_src" => [
-					"include" => ["host", "uri", "parameters.host", "parameters.type"]
+					"include" => ["host", "uri", "parameters.name", "parameters.type"]
 				],
 			],
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.host"] , "query" => '*' . $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.name"] , "query" => $search . '*' ] ] ] ],
 		];
-		
+
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
-		
+
 		if(empty($results['hits']['hits'])) {
 			return array();
 		}
-		
+
 		$out = array();
 		$search = strtolower($search);
-		
+
 		foreach($results['hits']['hits'] as $res) {
 			$result = $res['fields']['_src'][0];
-			
+
 			$hash = crc32(serialize($result));
 			if(isset($out[$hash])) { continue; }
-			
+
 			if(strpos(strtolower($result['uri']), $search) !== false) {
-				
+
 				$data = array('type' => 'page', 'text' => $result['uri'], 'host' => $result['host']);
 				$out[crc32(serialize($data))] = $data;
-				
+
 			} else if (strpos(strtolower($result['host']), $search) !== false) {
-				
+
 				$data = array('type' => 'app', 'text' => $result['host']);
 				$out[crc32(serialize($data))] = $data;
-			
+
 			} else if (!empty($result['parameters'])) {
-				
+
 				foreach($result['parameters'] as $param) {
-						
-					if(strpos(strtolower($param['host']), $search) !== false) {
-						
-						$data = array('type' => 'param', 'uri' => $result['uri'], 'host' => $result['host'], 'text' => $param['host'], 'param_type' => $param['type']);
+
+					if(strpos(strtolower($param['name']), $search) !== false) {
+
+						$data = array('type' => 'param', 'uri' => $result['uri'], 'host' => $result['host'], 'text' => $param['name'], 'param_type' => $param['type']);
 						$out[crc32(serialize($data))] = $data;
-						
+						break;
+
 					}
-					
-					break;
-					
+
+
 				}
-				
+
 			}
-			
-			
+
+
 		}
 
 		return array_values($out);

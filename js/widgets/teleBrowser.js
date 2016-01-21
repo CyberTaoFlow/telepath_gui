@@ -118,8 +118,11 @@ $.widget( "tele.teleBrowser", {
 			
 			}
 			if(obj.data.type == 'app') {
-				telepath.ds.get('/applications/get_app_pages', { host: obj.data.host }, function(data) {
 
+				if (!obj.data.host) {
+					obj.data.host = obj.data.text;
+				}
+				telepath.ds.get('/applications/get_app_pages', { host: obj.data.host }, function(data) {
 
 
 					var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host);
