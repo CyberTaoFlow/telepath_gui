@@ -396,7 +396,7 @@ class Config extends Tele_Controller
     {
 
 
-        $target_file = "upload_files/" . basename($_FILES["file"]["name"]);
+        $target_file = basename($_FILES["file"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
         // Check if image file is a actual image or fake image
@@ -434,6 +434,8 @@ class Config extends Tele_Controller
                } else {*/
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $this->config->item('upload_path').$target_file)) {
+
+//            telepath -r /opt/telepath/tmp
             echo "The file " . basename($_FILES["file"]["name"]) . " has been uploaded.";
         } else {
             echo "Sorry, there was an error uploading your file.";
