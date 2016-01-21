@@ -488,18 +488,18 @@ telepath.config.system = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 		
-		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo(this.c_mode);
-
-		var selected_opmod = '';
-		switch(this.data.operation_mode_id) {
-			case '1':	selected_opmod = 'training';   break;
-			case '2':	selected_opmod = 'production';	   break;
-			case '3':	selected_opmod = 'hybrid';	   break;
-		}
+		//$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo(this.c_mode);
+        //
+		//var selected_opmod = '';
+		//switch(this.data.operation_mode_id) {
+		//	case '1':	selected_opmod = 'training';   break;
+		//	case '2':	selected_opmod = 'production';	   break;
+		//	case '3':	selected_opmod = 'hybrid';	   break;
+		//}
 		
 		this.scheduler = $('<div>').addClass('tele-scheduler').appendTo(this.c_mode);
 		
-		this.opmod = $('<div>').teleRadios({ 
+		/*this.opmod = $('<div>').teleRadios({
 		checked: selected_opmod,
 		radios: [ 
 			{ key: 'training',   label: 'Training' },
@@ -513,7 +513,7 @@ telepath.config.system = {
 				that.scheduler.hide();
 			}
 			
-		}}).addClass('tele-config-opmod').appendTo(this.c_mode);
+		}}).addClass('tele-config-opmod').appendTo(this.c_mode);*/
 		
 		telepath.ds.get('/config/get_scheduler', { mode: "get_schedule" }, function(data) {
 			
@@ -548,18 +548,18 @@ telepath.config.system = {
 		}, 'Error while trying to get the scheduler.');
 
 		// MV2Prod after
-		this.move_to_production_id = $('<div>').teleInput({
+/*		this.move_to_production_id = $('<div>').teleInput({
 			label: 'Move to production after', 
 			suffix: 'Requests', 
 			width: 70, 
 			value: this.data.move_to_production_id
-		}).addClass('tele-config-mv2prod').appendTo(this.c_mode); 
+		}).addClass('tele-config-mv2prod').appendTo(this.c_mode); */
 
 		$('<div>').addClass('tele-title-1').html('Learn new applications').appendTo(this.c_mode);
                 this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.add_unknown_applications_id
 				== '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
 
-                $('<p>').html('ETA: ' + this.data.eta_id ).appendTo(this.c_mode);
+                //$('<p>').html('ETA: ' + this.data.eta_id ).appendTo(this.c_mode);
 
 		// Wrapper
 		this.engineControls = $('<div>').addClass('tele-engine-controls').appendTo(this.c_mode);

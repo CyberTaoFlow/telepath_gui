@@ -30,8 +30,11 @@ telepath.config.application = {
 
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
 		switch(selected_opmod) {
-			case 'training':   app_data.operation_mode_id = 1; break;
-			case 'production':     app_data.operation_mode_id = 2; break;
+			case 'training':   app_data.operation_mode = 1; break;
+			case 'hybrid':     app_data.operation_mode = 2; break;
+			case 'production':     app_data.operation_mode = 3; break;
+
+
 		}
 		
 		app_data.move_to_production_id = $('input', this.move_to_production_id).val();
@@ -349,21 +352,31 @@ telepath.config.application = {
 		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
 		var selected_opmod = '';
-		switch(that.app_data.operation_mode_id) {
+		switch(that.app_data.operation_mode) {
 			case '1':	selected_opmod = 'training';   break;
-			case '2':	selected_opmod = 'production';	   break;
+			case '2':	selected_opmod = 'hybrid';	   break;
+			case '3':	selected_opmod = 'production';	   break;
 		}
 
 		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
 
-		$('<p>').html('ETA: ' + that.app_data.eta_id).appendTo(this.app_operation).css({float:'right'});
-
+		this.eta=$('<p>').html('ETA: ' + that.app_data.eta).appendTo(this.app_operation).css({'margin-bottom':'10px'});
+		
 		this.opmod = $('<div>').teleRadios({
 			checked: selected_opmod,
 			radios: [
 				{ key: 'training',   label: 'Training' },
+				{ key: 'hybrid',   label: 'hybrid' },
 				{ key: 'production', label: 'Production'}
-			]}).addClass('tele-config-opmod').appendTo(this.app_operation);
+
+			],callback: function(radio){
+				if(radio.key == 'hybrid') {
+					that.eta.show();
+				} else {
+					that.eta.hide();
+				}
+			}}).addClass('tele-config-opmod').appendTo(this.app_operation);
+
 
 
 		// MV2Prod after
