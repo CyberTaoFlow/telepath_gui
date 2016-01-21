@@ -380,8 +380,7 @@ class M_Applications extends CI_Model {
 	
 	function get_search($search) {
 
-		$params['index'] = 'telepath-domains';
-		$params['type'] = 'domains';
+		$params['index'] = 'telepath-20*';
 		$params['body'] = [
 			'partial_fields' => [ 
 				"_src" => [
@@ -389,7 +388,7 @@ class M_Applications extends CI_Model {
 				],
 			],
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.host"] , "query" => '*' . $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.host"] , "query" => $search . '*' ] ] ] ],
 		];
 		
 		$params = append_access_query($params);
