@@ -588,7 +588,7 @@ telepath.config.system = {
 		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
 
 		// File upload
-		/*this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
+		this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
 
 		$('<div>').attr('id','dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
 
@@ -669,7 +669,7 @@ telepath.config.system = {
 		//Send FormData() to Server using jQuery AJAX API
 		function sendFileToServer(formData,status)
 		{
-			var uploadURL ="http://localhost/telepath/index.php/upload/do_upload"; //Upload URL
+			var uploadURL ="http://localhost/telepath/index.php/config/do_upload"; //Upload URL
 			var extraData ={}; //Extra Data.
 			var jqXHR=$.ajax({
 				xhr: function() {
@@ -754,7 +754,7 @@ telepath.config.system = {
 					sb.hide();
 				});
 			}
-		}*/
+		}
 
 
                 // TODO:: Scheduler
