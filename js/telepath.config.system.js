@@ -488,7 +488,7 @@ telepath.config.system = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 		
-		//$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo(this.c_mode);
+		$('<div>').addClass('tele-title-1').html('Hybrid mode schedule').appendTo(this.c_mode);
         //
 		//var selected_opmod = '';
 		//switch(this.data.operation_mode_id) {
