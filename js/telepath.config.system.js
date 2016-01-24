@@ -131,15 +131,15 @@ telepath.config.system = {
 		}
 		
 		// Operation Mode
-		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
-		switch(selected_opmod) {
-			case 'training':   data.operation_mode_id = 1; break;
-			case 'production':     data.operation_mode_id = 2; break;
-			case 'hybrid':     data.operation_mode_id = 3; break;
-		}
+		//var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
+		//switch(selected_opmod) {
+		//	case 'training':   data.operation_mode_id = 1; break;
+		//	case 'production':     data.operation_mode_id = 2; break;
+		//	case 'hybrid':     data.operation_mode_id = 3; break;
+		//}
 
 
-		data.move_to_production_id = $('input', this.move_to_production_id).val();
+	//	data.move_to_production_id = $('input', this.move_to_production_id).val();
 		
 		// Reports
 	
