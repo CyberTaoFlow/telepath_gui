@@ -587,8 +587,8 @@ telepath.config.system = {
 		$('<div>').addClass('tele-title-2').html('Webservice').appendTo(this.engineControls).css({ opacity: 0.3 });
 		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
 
-
-		this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
+		// File upload
+		/*this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
 
 		$('<div>').attr('id','dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
 
@@ -754,7 +754,7 @@ telepath.config.system = {
 					sb.hide();
 				});
 			}
-		}
+		}*/
 
 
                 // TODO:: Scheduler
