@@ -361,16 +361,16 @@ telepath.config.application = {
 		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
 
 		this.eta=$('<p>').html('ETA: ' + that.app_data.eta).appendTo(this.app_operation).css({'margin-bottom':'10px'});
-		
+
 		this.opmod = $('<div>').teleRadios({
 			checked: selected_opmod,
 			radios: [
 				{ key: 'training',   label: 'Training' },
-				{ key: 'hybrid',   label: 'hybrid' },
+				{ key: 'hybrid',   label: 'Hybrid' },
 				{ key: 'production', label: 'Production'}
 
 			],callback: function(radio){
-				if(radio.key == 'hybrid') {
+				if(radio.key == 'training') {
 					that.eta.show();
 				} else {
 					that.eta.hide();
