@@ -245,6 +245,9 @@ telepath.search = {
 
         });
 
+
+        this.tabsEl.tabs({collapsible: true, active: false });
+
         this.panelSubBar.append(this.tabsUl);
 
         this.refresh();
@@ -255,6 +258,8 @@ telepath.search = {
     refresh: function () {
 
         console.log('Starting Search..');
+
+        $('.ui-tabs').append(telepath.loader);
 
         // Cleanup
         var that = this;
@@ -343,7 +348,10 @@ telepath.search = {
 
         var that = this;
 
-        var found = false
+        //telepath.loader.remove();
+        that.tabsEl.children('.tele-loader').remove();
+
+        var found = false;
 
         $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
 
@@ -441,6 +449,7 @@ telepath.search = {
         this.list = $('<div>').addClass('tele-alerts-block');
         this.container.append(this.list);
 
+        //this.list.teleList({data: this.results.alerts, searchkey: this.searchStr});
         // Init List
         this.list.teleList({
             data: this.results.alerts,
