@@ -381,8 +381,8 @@ telepath.config.application = {
 
 		// MV2Prod after
 		this.move_to_production_id = $('<div>').teleInput({
-			label: 'Move to production after',
-			suffix: 'Requests',
+			label: 'Move to production per application after',
+			suffix: 'requests',
 			width: 70,
 			value: that.app_data.move_to_production_id
 		}).addClass('tele-config-mv2prod').appendTo('#tele-app-details');
