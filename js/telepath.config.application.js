@@ -307,20 +307,20 @@ telepath.config.application = {
 			}
 		});
 
-		telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
-			//ip_suggestions_str = '';
-			//if (data.items && data.items[0]) {
-			//        for (c in data.items)
-			//        {
-			//                if (ip_suggestions_str != '')
-			//                        ip_suggestions_str = ip_suggestions_str + ',';
-			//                ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
-			//        }
-			//}
-			console.log(data);
-			if (data.items)
-				that.app_data.ip_suggestion = data.items;
-		});
+		//telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
+		//	//ip_suggestions_str = '';
+		//	//if (data.items && data.items[0]) {
+		//	//        for (c in data.items)
+		//	//        {
+		//	//                if (ip_suggestions_str != '')
+		//	//                        ip_suggestions_str = ip_suggestions_str + ',';
+		//	//                ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
+		//	//        }
+		//	//}
+		//	console.log(data);
+		//	if (data.items)
+		//		that.app_data.ip_suggestion = data.items;
+		//});
 		// show app edit dialog in any case (i.e. app does not exists) (Yuli)
 		that.showApp();
 		

@@ -224,7 +224,6 @@ class M_Applications extends CI_Model {
 		if(!isset($app['eta_id'])) { $app['eta_id'] = ''; }
 		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
 		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
-		$app['ip_suggestion'] = '';
 		if(isset($app['cookie_suggestion'])) {
 			if (is_array($app['cookie_suggestion']))
 				array_push($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
@@ -235,6 +234,11 @@ class M_Applications extends CI_Model {
 		else{
 			$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];
 		}
+
+
+		$app['ip_suggestion'] = $this->get_ip_suggestion($host);
+
+
 		return array($app);
 		
 	}
