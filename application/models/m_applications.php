@@ -310,7 +310,7 @@ class M_Applications extends CI_Model {
 			$params['body']['query']['match']=['host'=>$search];
 		}
 
-		$results = get_only_elastic_results($this->elasticClient->search($params));
+		$results = prepare_elastic_results($this->elasticClient->search($params));
 
 
 //		$ans1 = [];
