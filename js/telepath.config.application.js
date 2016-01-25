@@ -307,20 +307,20 @@ telepath.config.application = {
 			}
 		});
 
-		telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
-			//ip_suggestions_str = '';
-			//if (data.items && data.items[0]) {
-			//        for (c in data.items)
-			//        {
-			//                if (ip_suggestions_str != '')
-			//                        ip_suggestions_str = ip_suggestions_str + ',';
-			//                ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
-			//        }
-			//}
-			console.log(data);
-			if (data.items)
-				that.app_data.ip_suggestion = data.items;
-		});
+		//telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
+		//	//ip_suggestions_str = '';
+		//	//if (data.items && data.items[0]) {
+		//	//        for (c in data.items)
+		//	//        {
+		//	//                if (ip_suggestions_str != '')
+		//	//                        ip_suggestions_str = ip_suggestions_str + ',';
+		//	//                ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
+		//	//        }
+		//	//}
+		//	console.log(data);
+		//	if (data.items)
+		//		that.app_data.ip_suggestion = data.items;
+		//});
 		// show app edit dialog in any case (i.e. app does not exists) (Yuli)
 		that.showApp();
 		
@@ -381,8 +381,8 @@ telepath.config.application = {
 
 		// MV2Prod after
 		this.move_to_production_id = $('<div>').teleInput({
-			label: 'Move to production after',
-			suffix: 'Requests',
+			label: 'Move to production per application after',
+			suffix: 'requests',
 			width: 70,
 			value: that.app_data.move_to_production_id
 		}).addClass('tele-config-mv2prod').appendTo('#tele-app-details');

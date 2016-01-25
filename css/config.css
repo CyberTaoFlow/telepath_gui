@@ -1004,11 +1004,15 @@ body .jstree .tele-button {
 	padding-top: 10px;
 }
 
+.tele-config-system-tab.tele-config-system-mode{
+	overflow: hidden;
+}
 .tele-config-mv2prod {
-	width: 400px;
+	width: 405px;
 }
 .tele-config-mv2prod .tele-input-label {
-	width: 190px;
+	width: 278px;
+	margin-right: 3px;
 }
 .tele-config-mv2prod .tele-input-input {
 	float: left;

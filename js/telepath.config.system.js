@@ -131,12 +131,12 @@ telepath.config.system = {
 		}
 		
 		// Operation Mode
-		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
-		switch(selected_opmod) {
-			case 'training':   data.operation_mode_id = 1; break;
-			case 'production':     data.operation_mode_id = 2; break;
-			case 'hybrid':     data.operation_mode_id = 3; break;
-		}
+		//var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
+		//switch(selected_opmod) {
+		//	case 'training':   data.operation_mode_id = 1; break;
+		//	case 'production':     data.operation_mode_id = 2; break;
+		//	case 'hybrid':     data.operation_mode_id = 3; break;
+		//}
 
 
 		data.move_to_production_id = $('input', this.move_to_production_id).val();
@@ -488,7 +488,7 @@ telepath.config.system = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 		
-		//$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo(this.c_mode);
+		$('<div>').addClass('tele-title-1').html('Hybrid Mode Schedule').appendTo(this.c_mode);
         //
 		//var selected_opmod = '';
 		//switch(this.data.operation_mode_id) {
@@ -548,14 +548,14 @@ telepath.config.system = {
 		}, 'Error while trying to get the scheduler.');
 
 		// MV2Prod after
-/*		this.move_to_production_id = $('<div>').teleInput({
-			label: 'Move to production after', 
+		this.move_to_production_id = $('<div>').teleInput({
+			label: 'Default learning threshold per application',
 			suffix: 'Requests', 
 			width: 70, 
 			value: this.data.move_to_production_id
-		}).addClass('tele-config-mv2prod').appendTo(this.c_mode); */
+		}).addClass('tele-config-mv2prod').appendTo(this.c_mode);
 
-		$('<div>').addClass('tele-title-1').html('Learn new applications').appendTo(this.c_mode);
+		$('<div>').addClass('tele-title-1 ').html('Learn New Applications').appendTo(this.c_mode);
                 this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.add_unknown_applications_id
 				== '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
 
@@ -587,7 +587,7 @@ telepath.config.system = {
 		$('<div>').addClass('tele-title-2').html('Webservice').appendTo(this.engineControls).css({ opacity: 0.3 });
 		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
 
-
+		// File upload
 		this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
 
 		$('<div>').attr('id','dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
@@ -669,7 +669,7 @@ telepath.config.system = {
 		//Send FormData() to Server using jQuery AJAX API
 		function sendFileToServer(formData,status)
 		{
-			var uploadURL ="http://localhost/telepath/index.php/upload/do_upload"; //Upload URL
+			var uploadURL ="http://localhost/telepath/index.php/config/do_upload"; //Upload URL
 			var extraData ={}; //Extra Data.
 			var jqXHR=$.ajax({
 				xhr: function() {
