@@ -263,7 +263,7 @@ telepath.search = {
             $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
                 var container = $('#tele-search-'+type);
                 container.empty();
-                container.append($('<p>').text("'No search string defined'"));
+                container.append($('<p>').text("No search string defined"));
 
             });
             this.tabsEl.tabs({collapsible: false} );

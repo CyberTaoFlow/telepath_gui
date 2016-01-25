@@ -354,8 +354,8 @@ telepath.config.application = {
 		var selected_opmod = '';
 		switch(that.app_data.operation_mode) {
 			case '1':	selected_opmod = 'training';   break;
-			case '2':	selected_opmod = 'hybrid';	   break;
-			case '3':	selected_opmod = 'production';	   break;
+			case '2':	selected_opmod = 'production';	   break;
+			case '3':	selected_opmod = 'hybrid';	   break;
 		}
 
 		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
