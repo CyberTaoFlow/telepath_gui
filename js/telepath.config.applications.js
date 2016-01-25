@@ -155,16 +155,6 @@ telepath.config.applications = {
 		});
 
 
-
-
-
-
-
-
-
-
-
-
         if (!that.data){
 			that.data=telepath.config.applications.expand;
         }
@@ -214,6 +204,7 @@ telepath.config.applications = {
 	},
 
 	init: function () {
+		this.data=null;
 		this.initTools();
 		$(".tele-config-bar-left .tele-search-input").attr("disabled", true);
 		this.reload();
