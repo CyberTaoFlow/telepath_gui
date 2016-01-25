@@ -259,6 +259,17 @@ telepath.search = {
 
         console.log('Starting Search..');
 
+        if (!this.searchStr){
+            $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
+                var container = $('#tele-search-'+type);
+                container.empty();
+                container.append($('<p>').text("'No search string defined'"));
+
+            });
+            this.tabsEl.tabs({collapsible: false} );
+            return false;
+        }
+
         $('.ui-tabs').append(telepath.loader);
 
         // Cleanup
@@ -380,12 +391,13 @@ telepath.search = {
                             break;
 
                     }
-                    that.tabsEl.tabs("option", "active", select);
+                    that.tabsEl.tabs({active: select});
 
                     found = true;
                 }
             }
-        })
+        });
+        that.tabsEl.tabs({collapsible: false});
     },
 
     showCasesTab: function () {
