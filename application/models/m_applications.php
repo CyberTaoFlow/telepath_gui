@@ -174,25 +174,25 @@ class M_Applications extends CI_Model {
 		}
 	}
 
-	function get($host) {
-		
+	function get($host)
+	{
+
 		// Check
-		$params['index'] ='telepath-domains';
+		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';
-		$params['id']=$host;
+		$params['id'] = $host;
 
 
 		// now the hoxt name is the document id, so we don't need to search.
-	/*	$params['body'] = [
-			'size'   => 1,
-				'query' => [ "match" => [
-					 "host" => $host
-				]
-				]
-		];
-		
-		$results = $this->elasticClient->search($params);*/
+		/*	$params['body'] = [
+                'size'   => 1,
+                    'query' => [ "match" => [
+                         "host" => $host
+                    ]
+                    ]
+            ];
 
+            $results = $this->elasticClient->search($params);*/
 
 
 		$exists = $this->elasticClient->exists($params);
@@ -208,39 +208,57 @@ class M_Applications extends CI_Model {
 			$app['form_authentication_redirect_response_range'] = '';
 			$app['host'] = $host;
 			$app['cookie_suggestion'] = ['PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS'];
-			return array($app);
-		}
-		$results = $this->elasticClient->get($params);
-		
-		$app = $results['_source'];
-		
-		if(isset($app['app_ssl_certificate'])) { unset($app['app_ssl_certificate']); }
-		if(isset($app['app_ssl_private'])) { unset($app['app_ssl_private']); }
+		} else {
+
+			$results = $this->elasticClient->get($params);
+
+			$app = $results['_source'];
+
+			if (isset($app['app_ssl_certificate'])) {
+				unset($app['app_ssl_certificate']);
+			}
+			if (isset($app['app_ssl_private'])) {
+				unset($app['app_ssl_private']);
+			}
 //		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
-		if(!isset($app['AppCookieName'])) { $app['AppCookieName'] = ''; }
-		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
-		if(!isset($app['operation_mode_id'])) { $app['operation_mode_id'] = ''; }
-		if(!isset($app['move_to_production_id'])) { $app['move_to_production_id'] = ''; }
-		if(!isset($app['eta_id'])) { $app['eta_id'] = ''; }
-		if(!isset($app['app_ips'])) { $app['app_ips'] = ''; }
-		if(!isset($app['form_authentication_redirect_response_range'])) { $app['form_authentication_redirect_response_range'] = ''; }
-		if(isset($app['cookie_suggestion'])) {
-			if (is_array($app['cookie_suggestion']))
-				array_push($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
-			else
-			$app['cookie_suggestion']=array($app['cookie_suggestion'],'PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS');
+			if (!isset($app['AppCookieName'])) {
+				$app['AppCookieName'] = '';
+			}
+			if (!isset($app['app_ips'])) {
+				$app['app_ips'] = '';
+			}
+			if (!isset($app['operation_mode_id'])) {
+				$app['operation_mode_id'] = '';
+			}
+			if (!isset($app['move_to_production_id'])) {
+				$app['move_to_production_id'] = '';
+			}
+			if (!isset($app['eta_id'])) {
+				$app['eta_id'] = '';
+			}
+			if (!isset($app['app_ips'])) {
+				$app['app_ips'] = '';
+			}
+			if (!isset($app['form_authentication_redirect_response_range'])) {
+				$app['form_authentication_redirect_response_range'] = '';
+			}
+			if (isset($app['cookie_suggestion'])) {
+				if (is_array($app['cookie_suggestion']))
+					array_push($app['cookie_suggestion'], 'PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS');
+				else
+					$app['cookie_suggestion'] = array($app['cookie_suggestion'], 'PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS');
+
+			} else {
+				$app['cookie_suggestion'] = ['PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS'];
+			}
 
 		}
-		else{
-			$app['cookie_suggestion']=['PHPSESSID','PHPSESSIONID','JSESSIONID','ASPSESSIONID','ASP.NET_SessionId','VisitorID','SESS'];
-		}
-
 
 		$app['ip_suggestion'] = $this->get_ip_suggestion($host);
 
 
 		return array($app);
-		
+
 	}
 
 	function get_ip_suggestion($host){
@@ -553,7 +571,9 @@ class M_Applications extends CI_Model {
                 // Connect to aggregated data
                 return array_values( $ans2 );
 	}
-	
+
+
+	// not used
 	function get_index($filter = '') {
 
 		$params['index'] = 'telepath-domains';
@@ -648,7 +668,9 @@ class M_Applications extends CI_Model {
 		}
 		return $returnArr;
 	}
-	
+
+
+	//not used
 	function detect_subdomains($hosts) {
 		
 		$ans = array();
