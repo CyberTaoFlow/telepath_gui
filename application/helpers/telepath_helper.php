@@ -110,7 +110,7 @@
 		return $result;
 	}
 
-function get_only_elastic_results($results) {
+function prepare_elastic_results($results) {
 	$result  = array();
 	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
 		foreach($results['hits']['hits'] as $row) {
