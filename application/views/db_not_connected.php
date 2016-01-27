@@ -250,7 +250,7 @@
 
         #logo {
             position: relative;
-            margin: 0px 085px;
+            margin: 0px 100px;
         }
 
         #loader {
