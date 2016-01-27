@@ -110,6 +110,10 @@
 	margin: 15px 0px;
 }
 
+.tele-config-content-right #tele-app-auth{
+	position: relative;
+}
+
 #tele-app-auth .tele-checkbox {
 	min-height: 60px;
 }
