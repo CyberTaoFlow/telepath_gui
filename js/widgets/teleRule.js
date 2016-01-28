@@ -986,7 +986,7 @@ $.widget( "tele.teleRule", {
 			break;
 			case 'pattern':
 				
-				var patTitle  = $('<div>').addClass('tele-title-1').html('Anchor').hide();
+				var patTitle  = $('<div>').addClass('tele-title-1').html('Anchor');
 				
 				var changingWindow = $('<div>').addClass('tele-pattern-changing');
 				
@@ -1007,7 +1007,7 @@ $.widget( "tele.teleRule", {
 				
 				// PAGE BROWSE
 				
-				var browseOpt = { mode: 'page' , label: 'Changing page', type: 'page' };
+				var browseOpt = { mode: 'page' , label: 'Repeating Page', type: 'page' };
 				
 				if(data.subtype == 'page' && data.pagename && data.domain) {
 					browseOpt.pagename = data.pagename;
