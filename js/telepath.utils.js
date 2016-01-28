@@ -139,7 +139,7 @@ function getRangeLB(data, container) {
       .addClass('tele-icon-plus')
       .hover(function () { $(this).addClass('hover'); },
       function () { $(this).removeClass('hover'); })
-      .click(function () { container.append(getRangeUI()); });
+      .click(function () { container.append(getRangeLB()); });
 
   var ipRemove = $('<div>').addClass('tele-ip-remove')
       .addClass('tele-icon')
