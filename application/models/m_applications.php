@@ -411,7 +411,7 @@ class M_Applications extends CI_Model {
 				],
 			],
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.name"] , "query" => $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.name"] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
 
 		$params = append_access_query($params);
@@ -607,7 +607,7 @@ class M_Applications extends CI_Model {
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "host", "query" => $filter . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "host", "query" =>'*'. $filter . '*' ] ] ] ],
 		);
 		
 		$params = append_access_query($params);
