@@ -55,6 +55,12 @@ telepath.sessionflow = {
 		//console.log(height);
 		
 		this.similaritiesList.css({ width: 380, 'height': height /* + " !important" */ }); // Weird :)
+
+		this.similaritiesList.on('teleList.afterUpdate', function (){
+
+			$(this).trigger('resize');
+		});
+
 		this.similaritiesList.teleList({
 			data: data.hits.hits,
 			title: 'Similar Requests', 
@@ -185,9 +191,7 @@ telepath.sessionflow = {
 		this.similaritiesList.css("height", "300px !important"); // Weird :)
 		this.similaritiesList.trigger('resize');
                  //Bind resize hooks
-                setTimeout(function () {
-					that.similaritiesList.trigger('resize');
-                }, 1000);
+
                 $(window).resize(function () { that._resize() });
 	
 	},
