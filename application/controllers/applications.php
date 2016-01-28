@@ -22,6 +22,8 @@ class Applications extends Tele_Controller
 
     }
 
+
+    //not_used
     public function get_index()
     {
 

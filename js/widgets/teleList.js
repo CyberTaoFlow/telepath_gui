@@ -150,8 +150,8 @@ $.widget( "tele.teleList", {
 			item.searchkey = this.options.searchkey;
 			this.appendItem(item);
 		}
-			
-		$(this.list).mCustomScrollbar({	
+
+		$(this.list).mCustomScrollbar({
 	
 			callbacks:{
 				onTotalScroll:function(){
@@ -184,6 +184,8 @@ $.widget( "tele.teleList", {
 			advanced:{ updateOnContentResize:true }
 
 		});
+
+		$(this.list).trigger('teleList.afterUpdate');
 		
     }
 
