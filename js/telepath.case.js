@@ -223,8 +223,8 @@ telepath.casePanel = {
 		this.data = data;
 		
 		$('.loader', this.container).remove();
-		$(".tele-case-graph, .tele-case-alerts-block, .tele-panel-subtitle, .tele-infoblock", this.container).remove();
-		
+		$(".tele-case-graph, .tele-case-alerts-block, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar", this.container).remove();
+
 		this.panelTopBar.empty();
 
 		// Case Title
