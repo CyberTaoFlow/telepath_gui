@@ -100,8 +100,11 @@ telepath.config.application = {
 				app_data.form_flag = 1;
 				
 				// Username parameter is required here
-				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'value');
-				app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
+				var test = $('.tele-browse input', '#tele-app-auth').data('selected');
+				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
+
+				// unknown
+				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
 
 				$('input', this.usernameParameter).css({ borderColor: '#555' });
 				if(app_data.form_param_name == '' || app_data.form_param_name.length > 64 || parseInt(app_data.form_param_id) == 0) {
