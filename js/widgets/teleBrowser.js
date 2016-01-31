@@ -132,7 +132,10 @@ $.widget( "tele.teleBrowser", {
 							if(row.children && row.children.length > 0) {
 								enable_expand(row.children);
 							} else {
-								row.children = true;
+								if (that.options.mode == 'page')
+									row.children = false;
+								else
+									row.children = true;
 							}
 						});
 					}
@@ -143,33 +146,35 @@ $.widget( "tele.teleBrowser", {
 				});
 			}
 			
-			if(obj.data.type == 'page') {
-				
+			if(obj.data.type == 'page' && that.options.mode != 'page') {
+
+
+
 				// EXPANDING PAGE , SHOW PARAMS
-			
+
 				console.log('NEED TO EXPAND A PAGE');
-				
+
 				telepath.ds.get('/applications/get_page', { host: obj.data.host, path: obj.data.path, mode: that.options.mode }, function(data) {
-				
+
 					var treeData = [];
-					
+
 					if(data.items.length == 0) {
 						callback.call(that, []);
 						return;
 					}
-					
+
 					if(data.items) {
 						$.each(data.items, function(i, item) {
 							item.type = 'param';
 							treeData.push({ children: false, text: item.name , icon: 'tele-icon-param', data: item });
 						});
 					}
-					
+
 					callback.call(that, treeData);
-				
+
 				});
 
-				
+
 			}
 
 			//else {
