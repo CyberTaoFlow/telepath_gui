@@ -5,7 +5,7 @@ telepath.countries = {
 	},
 	n2a: function (name) {
 		for(x in this.map) {
-			if(this.map[x] == name) {
+			if(this.map[x] == name || this.map[x].toLowerCase()== name) {
 				return x;
 			}
 		}
