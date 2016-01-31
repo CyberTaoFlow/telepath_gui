@@ -655,7 +655,7 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 }
 
 .tele-rule-dropdown {
-	clear: both;
+	/*clear: both;*/
 	float: left;
 	background-color: #CECECE;
 	border: 1px solid #CECECE;
