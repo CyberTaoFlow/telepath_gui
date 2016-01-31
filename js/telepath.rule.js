@@ -31,8 +31,8 @@ telepath.ruleOverlay = {
 		telepath.overlay.contentEl.append(ruleName);
 		
 		// Rule Owner
-		var ruleOwner = $('<div>').teleInput({ label: 'Owner', value: data.id == '' ? '' : data.owner });
-		telepath.overlay.contentEl.append(ruleOwner);
+		/*var ruleOwner = $('<div>').teleInput({ label: 'Owner', value: data.id == '' ? '' : data.owner });
+		telepath.overlay.contentEl.append(ruleOwner);*/
 		
 		// Rule Desc
 		var ruleDesc = $('<div>').teleInput({ label: 'Description', value: data.id == '' ? '' : data.desc });

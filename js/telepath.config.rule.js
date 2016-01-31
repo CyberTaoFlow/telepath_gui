@@ -65,8 +65,8 @@ telepath.config.rule = {
 		this.container.append(ruleName);
 		
 		// Rule Owner
-		var ruleOwner = $('<div>').teleInput({ label: 'Owner', value: this.data['owner']  == '' ? '' : this.data['owner'] }).addClass('tele-rule-owner');
-		this.container.append(ruleOwner);
+		/*var ruleOwner = $('<div>').teleInput({ label: 'Owner', value: this.data['owner']  == '' ? '' : this.data['owner'] }).addClass('tele-rule-owner');
+		this.container.append(ruleOwner);*/
 		
 		// Rule Desc
 		var ruleDesc = $('<div>').teleInput({ label: 'Description', value: this.data['desc'] == '' ? '' : this.data['desc'] }).addClass('tele-rule-desc');
@@ -269,7 +269,7 @@ telepath.config.rule = {
 			var ruleData = {
 				name: $('.tele-rule-name input').val(),
 				desc: $('.tele-rule-desc input').val(),
-				owner: $('.tele-rule-owner input').val(),
+				//owner: $('.tele-rule-owner input').val(),
 				//enable: that.ruleToggle.data('tele-toggleFlip').options.flipped,
 				score: parseInt($('.tele-rule-score input').val()),
 				category: that.data.category
