@@ -318,10 +318,21 @@ telepath.config.rule = {
 				
 			// Spinning thingy..
 			$('.tele-icon-rule-edit').append(telepath.loader).css({ backgroundColor: 'white' });
-			
+
 			// Drop to console.
 			if(that.data.new_rule) {
-				
+
+				var found=false;
+				$.each(telepath.config.rules.categories,function(i,val){
+					if(ruleData.category==val.category && ruleData.name== val.name){
+						telepath.dialog({ title: 'Case Editor', msg: 'rule name is already exists' });
+						found=true
+					}
+				});
+
+				if (found){
+					return
+				}
 				// Create
 				telepath.ds.get('/rules/add_rule', { ruleData: ruleData }, function(data) {
 					that.data = data.items;
@@ -340,9 +351,12 @@ telepath.config.rule = {
 					that.data = data.items;
 
 					that.showRule(); // Reload
-					
-					telepath.dialog({msg:'Successfully updated a rule'});
-					
+
+					if(data.success){
+						$('.jstree-clicked').text(ruleData.name);
+						telepath.dialog({msg:'Successfully updated a rule'});
+						telepath.config.rule.editRule(ruleData.name, ruleData.category);
+					}
 				});
 			
 			}
