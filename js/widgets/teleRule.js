@@ -526,7 +526,16 @@ $.widget( "tele.teleRule", {
 						
 						var range = $('.tele-geo-ts').val();
 						var count = $('.tele-geo-ts-count input').val();
-						
+						var distance= $('.rule-slider-length input').val();
+
+						if(distance < 1) {
+							telepath.dialog({ title: 'Rule Editor', msg: 'You must specify valid distance' });
+							$('.rule-slider-length input').addClass('error');
+							return false;
+						}
+
+						json.dkm=parseInt(distance);
+
 						if(count < 1) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must specify valid count' });
 							$('.tele-geo-ts-count input').addClass('error');
@@ -1155,27 +1164,42 @@ $.widget( "tele.teleRule", {
 				var geoTitle     = $('<div>').addClass('tele-title-2').html('Select geographic type');
 				var geoCountries = $('<div>').teleCountry().hide();
 				var geoVelocity  = $('<div>').addClass('tele-velocity-wrap');
-				
-				var velocityTimeScopes  = [ 
+
+				var velocityTimeScopes  = [
 					{ k:'s', v:'Seconds' },
 					{ k:'m', v:'Minutes' }, 
 					{ k:'h', v:'Hours' }
 				];
 				var velocityTimeSelect = $('<select>').addClass('tele-geo-ts');
 				$.each(velocityTimeScopes, function(i, opt) { velocityTimeSelect.append('<option value="' + opt.k + '">' + opt.v + '</option>'); });
-				
-				if(!data.time) {
-					data.time = 60;
+
+				if(!data.ts) {
+					data.ts = 60;
 				}
-				
-				var g_time_input = $('<div>').teleInput({ value: data.time }).addClass('tele-geo-ts-count');
-				$('input', g_time_input).css({ width: 50 });
-				
+
+				if (data.ts%60==0){
+					if (data.ts%3600==0){
+						velocityTimeSelect.val('h');
+						data.ts=data.ts/3600
+					}
+					else {
+						velocityTimeSelect.val('m');
+						data.ts=data.ts/60
+					}
+				}
+
+				var g_time_input = $('<div>').teleInput({label:'KM in', width: 30, value: data.ts }).addClass('tele-geo-ts-count').css({'margin-right':'5px'});
+				$('input', g_time_input);
+
+				if(!data.dkm){data.dkm=1}
+
+
 				var g_radius_slider_div = $('<div>');
-				var g_radius_slider = $('<b>0</b><input id="rule-slider-length" type="text" style="width:200px" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0"/> <b>100</b>');
+				var g_radius_slider =  $('<div>').teleInput({width: 30, value:data.dkm}).addClass('rule-slider-length');
+				$('input', g_radius_slider);
 				g_radius_slider_div.append(g_radius_slider);
-				
-				geoVelocity.append(velocityTimeSelect).append(g_time_input).append(g_radius_slider_div);
+
+				geoVelocity.append(g_radius_slider_div).append(g_time_input).append(velocityTimeSelect);
 				
 				var geoType = $('<div>');
 				

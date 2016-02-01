@@ -661,6 +661,26 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 	border: 1px solid #CECECE;
 }
 
+.tele-velocity-wrap{
+	display: inline-flex;
+	float: left;
+	clear: both;
+}
+
+.tele-geo-type{
+	clear: both;
+}
+
+
+.tele-geo-ts{
+
+	border: 1px solid #999;
+	border-radius: 20px;
+	height: 26px;
+	margin: 5px;
+	padding-left: 10px;
+}
+
 .tele-country-letters {
 	width: 310px;
 }

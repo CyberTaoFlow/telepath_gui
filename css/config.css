@@ -610,6 +610,19 @@ body .jstree .tele-button {
 	float: left;
 }
 
+.tele-velocity-wrap .tele-input-label {
+	width: auto;
+	margin-right: 5px;
+	font-size: 15px;
+	margin-left: 12px;
+}
+
+.tele-velocity-wrap .tele-input {
+	width: auto;
+	clear: none;
+	float: left;
+}
+
 .tele-string-inspection {
 	float: left;
     margin-left: 20px;
