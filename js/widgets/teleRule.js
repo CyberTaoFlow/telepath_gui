@@ -556,7 +556,7 @@ $.widget( "tele.teleRule", {
 							return false;
 						}
 
-						json.dkm=parseInt(distance);
+						json.distance=parseInt(distance);
 
 						if(count < 1) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must specify valid count' });
@@ -1213,11 +1213,11 @@ $.widget( "tele.teleRule", {
 				var g_time_input = $('<div>').teleInput({label:'KM in', width: 30, value: data.ts }).addClass('tele-geo-ts-count').css({'margin-right':'5px'});
 				$('input', g_time_input);
 
-				if(!data.dkm){data.dkm=1}
+				if(!data.distance){data.distance=1}
 
 
 				var g_radius_slider_div = $('<div>');
-				var g_radius_slider =  $('<div>').teleInput({width: 30, value:data.dkm}).addClass('rule-slider-length');
+				var g_radius_slider =  $('<div>').teleInput({width: 30, value:data.distance}).addClass('rule-slider-length');
 				$('input', g_radius_slider);
 				g_radius_slider_div.append(g_radius_slider);
 
