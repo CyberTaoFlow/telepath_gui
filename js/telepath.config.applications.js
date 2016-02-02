@@ -1,5 +1,5 @@
 telepath.config.applications = {
-	searchString: '',
+
 	formatSearchData: function(data) {
 
 		var treeData = [];
@@ -84,62 +84,47 @@ telepath.config.applications = {
 
 			callback.call(that, treeData);
 			$(".tele-search-input").attr("disabled", false);
-			$('#search-button').click();
 		});
 	
 	},
 
+	//change search icon and get result
 	input: function(){
 		var that = this;
-
 		var icon= $("#search-button");
-
 		if (that.searchString.length>0)
 			icon.addClass('icon-delete-input').removeClass("tele-search-button");
 		else
 			icon.removeClass('icon-delete-input').addClass("tele-search-button");
-		that.searchData = [];
-		if (!that.actionOriginal)
-			that.actionOriginal = that.appTree.children().children();
 
-		$.each(that.actionOriginal, function (index, element) {
-			var val = element.textContent.split(/\s/g);
-			if (val[1] == that.searchString || val[1].indexOf(that.searchString) !=-1 )
-				that.searchData.push({host: val[1], learning_so_far: '('+val[2]+')'})
-		});
+		that.appTree.jstree('search', that.searchString);
+
 	},
-
-	reload: function (search) {
+	data:[],
+	reload: function () {
 
 		var that = this;
 
-		$("#search-button").on("click", function(event) {
-			that.searchString='';
-
+		$("#search-button").on("click", function (event) {
+			that.searchString = '';
+			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
 			that.input();
-			that.reload(true);
 
-		});
+			});
 
 
 		if (typeof that.searchString != 'undefined'){
 			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
-			if (that.searchString.length>0)
-			$("#search-button").addClass('icon-delete-input').removeClass("tele-search-button");
+			that.input();
 		}
+
 
 		// add search on client site on key up event
-		if (!search) {
-			$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
-				that.searchString = $(this).val();
-
-				that.input();
-
-				that.reload(true);
-
+		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
+			that.searchString = $(this).val();
+			that.input();
 			});
 
-		}
 		that.appTree = $('<div>');
 
 		that.contentLeftWrap = $('<div>').css({ padding: 0, height: $(that.contentLeft).parent().height() - 20 });
@@ -154,19 +139,11 @@ telepath.config.applications = {
 			}
 		});
 
-
-        if (!that.data){
-			that.data=telepath.config.applications.expand;
-        }
-		else if(that.searchData){
-			that.data=telepath.config.applications.formatData(that.searchData);
-			$(".tele-config-bar-left .tele-search-input").attr("disabled", false);
-		}
-
+		that.data=telepath.config.applications.expand;
 
 		that.appTree.jstree({
 		core : { data : that.data, progressive_render: true },
-		plugins: ["json_data","wholerow", "theme", "grid", "contextmenu"],
+		plugins: ["json_data","wholerow", "theme", "grid", "contextmenu", "search"],
 		contextmenu: { items: telepath.contextMenu },
 		grid: {
 			columns: [
@@ -190,7 +167,15 @@ telepath.config.applications = {
 				}, width: 40 }
 			],
 			resizable:true
-		}
+		},
+			search: {
+				"fuzzy":false,
+				"case_insensitive": true,
+				"show_only_matches" : true,
+				search_callback : function (str, node) {
+					if(node.text === str) { return true; }
+				}
+			}
 		}).on('changed.jstree', function (e, data) {
 			console.log('App Changed');
 			console.log(data);
@@ -199,6 +184,8 @@ telepath.config.applications = {
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 				telepath.config.application.editApp(data.node.data.host);
 			}
+		}).on('ready.jstree', function(e, data) {
+			data.instance.search(that.searchString);
 		});
 
 	},
