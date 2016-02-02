@@ -518,7 +518,7 @@ class M_Applications extends CI_Model {
 		$params['index'] = 'telepath-20*';
 		$params['body'] = [
 			'size'   => 1,
-			'aggs'   => [ 'uri' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
+			'aggs'   => [ 'canonical_url' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
 			'query' => [ "bool" => [ "must" => [ 'term' => [ "host" => $host ]	] ] ]
 		];
 		
@@ -528,7 +528,7 @@ class M_Applications extends CI_Model {
 		if(!empty($results) && isset($results['aggregations'])) {
 			
 			$ans = array();
-			foreach($results['aggregations']['uri']['buckets'] as $bucket) {
+			foreach($results['aggregations']['canonical_url']['buckets'] as $bucket) {
 				$ans[$bucket['key']] = $bucket['key'];
 			}
 			
