@@ -315,7 +315,7 @@ class M_Applications extends CI_Model {
 			'index' => 'telepath-domains',
 			'type' => 'domains',
 			'body' => [
-				'size'=>9999,
+				'size'=>999,
 				'query' => [
 					'match_all' => [
 					]
