@@ -329,7 +329,7 @@ telepath.config.rule = {
 
 				var found=false;
 				$.each(telepath.config.rules.categories,function(i,val){
-					if(ruleData.category==val.category && ruleData.name== val.name){
+					if(ruleData.name== val.name){
 						telepath.dialog({ title: 'Case Editor', msg: 'Rule name already exists' });
 						found=true
 					}
@@ -350,7 +350,18 @@ telepath.config.rule = {
 			} else {
 				
 				ruleData.uid = that.data.uid;
-				
+
+				var found=false;
+				$.each(telepath.config.rules.categories,function(i,val){
+					if(ruleData.name== val.name && ruleData.id != val.id){
+						telepath.dialog({ title: 'Case Editor', msg: 'Rule name already exists' });
+						found=true
+					}
+				});
+
+				if (found){
+					return
+				}
 				// Update
 				telepath.ds.get('/rules/set_rule', { ruleData: ruleData }, function(data) {
 					that.data = data.items;
@@ -361,6 +372,7 @@ telepath.config.rule = {
 						$('.jstree-clicked').text(ruleData.name);
 						telepath.dialog({msg:'Successfully updated a rule'});
 						telepath.config.rule.editRule(ruleData.name, ruleData.category);
+						telepath.config.rules.init();
 					}
 				});
 			

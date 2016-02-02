@@ -147,7 +147,7 @@ class Rules extends Tele_Controller
             foreach ($rules as $rule) {
 
                 $ans['items'][] = array(
-                    'id' => $rule['name'],
+                    'id' => $rule['uid'],
                     'category' => $rule['category'],
                     'name' => $rule['name']
                 );
