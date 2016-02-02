@@ -1199,7 +1199,7 @@ $.widget( "tele.teleRule", {
 					data.ts = 60;
 				}
 
-				if (data.ts%60==0){
+				if (data.ts%60==0&&data.ts!=60){
 					if (data.ts%3600==0){
 						velocityTimeSelect.val('h');
 						data.ts=data.ts/3600
