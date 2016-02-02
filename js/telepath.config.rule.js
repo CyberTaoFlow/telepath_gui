@@ -330,7 +330,7 @@ telepath.config.rule = {
 				var found=false;
 				$.each(telepath.config.rules.categories,function(i,val){
 					if(ruleData.category==val.category && ruleData.name== val.name){
-						telepath.dialog({ title: 'Case Editor', msg: 'rule name is already exists' });
+						telepath.dialog({ title: 'Case Editor', msg: 'Rule name already exists' });
 						found=true
 					}
 				});
