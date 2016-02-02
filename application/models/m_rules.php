@@ -82,9 +82,9 @@ class M_Rules extends CI_Model {
 	
 	public function add_rule($data) {
 		
-		foreach($data['criteria'] as $i => $val) {
-			$data['criteria'][$i] = json_decode($val, true);
-		}
+//		foreach($data['criteria'] as $i => $val) {
+//			$data['criteria'][$i] = json_decode($val, true);
+//		}
 		
 		$params = ['body' => $data, 'index' => 'telepath-rules', 'type' => 'rules'];
 		$this->elasticClient->index($params);
