@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Loading</title>
 
-<!--    <meta http-equiv="refresh" content="4">-->
+    <meta http-equiv="refresh" content="4">
 
     <style>
 

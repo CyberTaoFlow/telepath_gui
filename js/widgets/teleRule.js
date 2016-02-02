@@ -28,8 +28,12 @@ $.widget( "tele.teleRule", {
 		
 		// Quickly expand and collapse all tabs to propogate data and trigger errors if any
 		$('.tele-ruletype-accordion').data('uiAccordion').headers.each(function () {
-			$(this).trigger('click');
-			$(this).trigger('click');
+			///open
+			$(this).triggerHandler('click');
+
+			//close
+			$(this).triggerHandler('click');
+
 		});
 		
 		// Collect data from all
@@ -37,7 +41,10 @@ $.widget( "tele.teleRule", {
 			var data = false;
 			data = $(this).data('ruleData');
 			if(data) {
-				ruleData.push(data);
+				var json = JSON.parse(data);
+				if (json.length > 0) {
+					ruleData.push(data);
+				}
 			}
 		});
 		
@@ -261,16 +268,25 @@ $.widget( "tele.teleRule", {
 						// 1. Collect param
 						$('.tele-browse input', c).removeClass('error');
 						var param = $('.tele-browse input', c).data('selected');
-						
-						if(!param) {
-							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for a parameter.' });
-							$('.tele-browse input', c).addClass('error');
-							return false;
-						}
-						
+
 						if(typeof(param) == 'string') {
 							param = JSON.parse(param);
 						}
+
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
+
+
+						if(!param.paramname) {
+							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for a parameter.' });
+							$('.tele-browse input', c).addClass('error');
+
+							return false;
+						}
+						
+
 						// 2. Collect app + uri
 						
 						if(param.type == 'page') {
@@ -376,16 +392,18 @@ $.widget( "tele.teleRule", {
 					
 						// 1. Collect param
 						var param = $('.tele-browse-other input', c).data('selected');
+
+						if(typeof(param) == 'string') {
+							param = JSON.parse(param);
+						}
 						
-						if(!param) {
+						if(!param.paramname) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must select anchor parameter for type: Other' });
 							$('.tele-browse-other input', c).addClass('error');
 							return false;
 						}
 						
-						if(typeof(param) == 'string') {
-							param = JSON.parse(param);
-						}
+
 						// 2. Collect app + uri
 						
 						if(param.type == 'page') {
@@ -445,16 +463,18 @@ $.widget( "tele.teleRule", {
 						
 						// 1. Collect param
 						var param = $('.tele-browse-page input', c).data('selected');
+
+						if(typeof(param) == 'string') {
+							param = JSON.parse(param);
+						}
 						
-						if(!param) {
+						if(!param.pagename) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for changing page' });
 							$('.tele-browse-page input', c).addClass('error');
 							return false;
 						}
 						
-						if(typeof(param) == 'string') {
-							param = JSON.parse(param);
-						}
+
 						// 2. Collect app + uri
 						
 						if(param.type == 'page') {
@@ -469,16 +489,18 @@ $.widget( "tele.teleRule", {
 						
 						// 1. Collect param
 						var param = $('.tele-browse-param input', c).data('selected');
+
+						if(typeof(param) == 'string') {
+							param = JSON.parse(param);
+						}
 						
-						if(!param) {
+						if(!param.paramname) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for changing parameter' });
 							$('.tele-browse-param input', c).addClass('error');
 							return false;
 						}
 						
-						if(typeof(param) == 'string') {
-							param = JSON.parse(param);
-						}
+
 						// 2. Collect app + uri
 						
 						if(param.type == 'page') {
@@ -534,7 +556,7 @@ $.widget( "tele.teleRule", {
 							return false;
 						}
 
-						json.dkm=parseInt(distance);
+						json.distance=parseInt(distance);
 
 						if(count < 1) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must specify valid count' });
@@ -1191,11 +1213,11 @@ $.widget( "tele.teleRule", {
 				var g_time_input = $('<div>').teleInput({label:'KM in', width: 30, value: data.ts }).addClass('tele-geo-ts-count').css({'margin-right':'5px'});
 				$('input', g_time_input);
 
-				if(!data.dkm){data.dkm=1}
+				if(!data.distance){data.distance=1}
 
 
 				var g_radius_slider_div = $('<div>');
-				var g_radius_slider =  $('<div>').teleInput({width: 30, value:data.dkm}).addClass('rule-slider-length');
+				var g_radius_slider =  $('<div>').teleInput({width: 30, value:data.distance}).addClass('rule-slider-length');
 				$('input', g_radius_slider);
 				g_radius_slider_div.append(g_radius_slider);
 
