@@ -43,7 +43,7 @@ $.widget( "tele.teleRule", {
 			if(data) {
 				var json = JSON.parse(data);
 				if (!$.isEmptyObject(json)) {
-					ruleData.push(json);
+					ruleData.push(data);
 				}
 			}
 		});
