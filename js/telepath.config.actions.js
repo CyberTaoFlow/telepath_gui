@@ -22,8 +22,7 @@ telepath.config.actions = {
 			case 'root':
 				url  = '/applications/get_expand';
 				postData.type = 'root';
-				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
-				telepath.config.actions.searchString='';
+				//if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;
 			case 'app':
 				url = '/actions/get_app_actions';
@@ -52,8 +51,8 @@ telepath.config.actions = {
 				
 					$.each(data, function(i, row) {
 					
-						var text = row.key;
-						var obj = { children: true, text: text, data: {id: row.key, type: 'app', ssl: row.ssl_flag }};
+						var text = row.host;
+						var obj = { children: true, text: text, data: {id: row.host, type: 'app', ssl: row.ssl_flag }};
 						treeData.push(obj);
 						
 					});
@@ -128,26 +127,53 @@ telepath.config.actions = {
 		});
 				
 	},
+
+	input: function(){
+		var that = this;
+		var icon= $("#search-button");
+		if (that.searchString.length>0)
+			icon.addClass('icon-delete-input').removeClass("tele-search-button");
+		else
+			icon.removeClass('icon-delete-input').addClass("tele-search-button");
+
+		that.ruleTree.jstree('search', that.searchString);
+
+	},
+
 	reload: function () {
 		
 		if(telepath.action.recorder.timer) {
 			clearTimeout(telepath.action.recorder.timer);
 		}
-		
+
 		var that = this;
 
-		$( "input[type='text']" ).bind('input',function() {
+		$("#search-button").on("click", function (event) {
+			that.searchString = '';
+			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+			that.input();
 
-			if($( this ).val()==''){
-				that.reload();
-			}
+		});
+
+
+		if (typeof that.searchString != 'undefined'){
+			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+			that.input();
+		}
+
+
+		// add search on client site on key up event
+		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
+			that.searchString = $(this).val();
+			console.log(that.searchString);
+			that.input();
 		});
 
 		that.ruleTree = $('<div>');
 	
 		that.ruleTree.jstree({
 		core : { data : telepath.config.actions.expand },
-		plugins: ["json_data","wholerow", "theme", "grid"],
+		plugins: ["json_data","wholerow", "theme", "grid", "search"],
 		grid: {
 			columns: [
 				{width: 280 },
@@ -170,8 +196,16 @@ telepath.config.actions = {
 					
 				}, width: 40 }
 			],
-			resizable:true
-		}
+			resizable:true,
+		},
+			search: {
+				"fuzzy":false,
+				"case_insensitive": true,
+				"show_only_matches" : true,
+				search_callback : function (str, node) {
+					if(node.text === str) { return true; }
+				}
+			}
 		}).on('changed.jstree', function (e, data) {
 			
 			telepath.config.actions.contentRight.empty();
@@ -187,6 +221,8 @@ telepath.config.actions = {
 				telepath.config.actions.createCat.show();
 			}
 
+		}).on('ready.jstree', function(e, data) {
+			data.instance.search(that.searchString);
 		});
 		
 		//that.contentLeftWrap = $('<div>');
@@ -202,11 +238,11 @@ telepath.config.actions = {
 				updateOnContentResize: true
 			}
 		});
-		
-		that.initTools();
 				
 	},
 	init: function () {
+		this.data=null;
+		this.initTools();
 		this.reload();
 	},
 	initTools: function() {	
@@ -216,7 +252,7 @@ telepath.config.actions = {
 		// Search
 		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
 			that.searchString = txt;
-			that.reload();
+			//that.reload();
 		}});
 		
 		// Create
