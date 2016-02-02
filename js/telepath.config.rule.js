@@ -289,9 +289,14 @@ telepath.config.rule = {
 			
 			// Collect criteria
 			ruleData.criteria = $('.tele-ruletype-select').data('teleTeleRule').getValues();
-			
+
+			//if the `getValues` above opened a dialog, stop now
+			if($('.tele-overlay-dialog').is(':visible')){
+				return;
+			}
+
 			// Validate criteria
-			if(ruleData.criteria.length == 0) {
+			if(ruleData.criteria.length == 0 ) {
 				telepath.dialog({ title: 'Case Editor', msg: 'Must have at least one condition' });
 				return;
 			}
