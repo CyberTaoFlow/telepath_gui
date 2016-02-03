@@ -382,7 +382,7 @@ body .jstree .tele-button {
 }
 
 .tele-ruletype-accordion .ui-accordion-content.ui-accordion-content-active {
-	min-height: 370px;
+	min-height: 326px;
 }
 
 .tele-ruletype-accordion .ui-accordion-header,
@@ -648,13 +648,13 @@ body .jstree .tele-button {
 .tele-rule-bind {
 	margin-left: 20px;
 	border-right: 2px solid #555;
-	height: 130px;
+	/* height: 130px; */
 }
 
 .tele-rule-anchor {
 	float: left;
 	width: 165px;
-	height: 130px;
+	/* height: 130px; */
 	border-right: 2px solid #555;
 }
 
@@ -703,7 +703,7 @@ body .jstree .tele-button {
 	padding-top: 10px;
 }
 
-.tele-rule-anchor {
+.tele-rule-anchor, .tele-rule-bind{
 	width: 250px;
 }
 

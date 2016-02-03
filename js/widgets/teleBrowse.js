@@ -144,7 +144,8 @@ $.widget( "tele.teleBrowse", {
 			
 				that.maskEl.remove();
 				that.overlayEl.remove();
-				$('input', that.input).val(data.node.text).data('selected', JSON.stringify(output));
+				var selected_value = (that.options.mode == 'page') ? data.node.data.path : data.node.text;
+				$('input', that.input).val(selected_value).data('selected', JSON.stringify(output));
 				that.options.dataID = data.node.data.id;
 				that.options.callback(data.node.data.id);
 				that.options.text   = data.node.text;

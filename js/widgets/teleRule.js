@@ -1104,7 +1104,7 @@ $.widget( "tele.teleRule", {
 					radios: [ 
 						{ key: 'page', label: 'Page' }, 
 						{ key: 'parameter', label: 'Changing Parameter' },
-						{ key: 'action', label: 'Repeating Business Flow' },
+						{ key: 'action', label: 'Repeating Business Action' },
 						{ key: 'user', label: 'Changing Username' },
 					], callback: function(radio) {
 						
