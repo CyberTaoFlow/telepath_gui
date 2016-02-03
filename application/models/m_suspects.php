@@ -193,6 +193,9 @@ class M_Suspects extends CI_Model {
 									"score" => [
 										"avg" => [ "field" => "score_average" ]
 									],
+									"business_action" => [
+										"terms" => [ "field" => "business_action", "size"=> 100 ]
+									],
 									"date" => [
 										"max" => [ "field" => "ts" ]
 									]
@@ -218,7 +221,7 @@ class M_Suspects extends CI_Model {
 								"ip_orig" => long2ip($sid['ip_orig']['value']),
 								"host"    => $sid['host']['buckets'],
 								"count"   => $doc_count,
-								"score_average"  => $sid['score']['value'],
+								"business_action" => $sid['business_action']['buckets'],
 								"date"  => $sid['date']['value']
 							);
 							$count_insert++;

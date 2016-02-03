@@ -256,12 +256,16 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 /* List icons */
 .tele-icon-user { background-position: -415px -116px; }
 .tele-icon-case { background-position: -300px -0px; }
+
 .tele-icon-request { background-position: -270px 0px; }
 .tele-icon-alert { background-position: -360px 0px; }
 .tele-icon-alert2 { background-position: -438px -16px; }
 
 /*Checked*/
 .tele-icon-suspect { background-position: -330px 0px; }
+.tele-icon-case2 {
+	background-position: -300px -0px;
+	margin-left: 550px;}
 
 .tele-icon-suspect_red { 
 	background-position: -363px -16px; 

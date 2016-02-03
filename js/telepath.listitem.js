@@ -160,7 +160,12 @@ $.widget( "tele.listitem", {
 			var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-' + this.options.icon);
 			el.append(iconEl);
 		}
-		
+
+		if(this.options.icon =='suspect') {
+			var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-case2');
+			el.append(iconEl);
+		}
+
 		if(this.options.count) {
 			var countEl = $('<div>').addClass('tele-listitem-count').html(this.options.count);
 			el.append(countEl);

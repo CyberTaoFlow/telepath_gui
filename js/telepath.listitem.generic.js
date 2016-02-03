@@ -27,8 +27,12 @@ telepath.listitem.generic = {
 					{ key: 'alerts', value: item.alerts_count },
 					{ key: 'actions', value: item.actions_count }
 				]
-				
 		}
+
+		if (item.business_action.length>0){
+			result.details.push({key: 'business_actions', value: item.business_actions[0].key})
+		}
+
 		if(mode == 'dashboard') {
 			findAndRemove(result.details, 'key', 'city');
 		}
