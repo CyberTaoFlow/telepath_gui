@@ -669,7 +669,7 @@ telepath.config.system = {
 		//Send FormData() to Server using jQuery AJAX API
 		function sendFileToServer(formData,status)
 		{
-			var uploadURL ="http://localhost/telepath/index.php/config/do_upload"; //Upload URL
+			var uploadURL = telepath.controllerPath+ "/config/do_upload"; //Upload URL
 			var extraData ={}; //Extra Data.
 			var jqXHR=$.ajax({
 				xhr: function() {
