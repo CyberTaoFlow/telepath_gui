@@ -612,18 +612,20 @@ class M_Applications extends CI_Model {
 		
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
-		$ans = array();
-	
-		if(!empty($results) && isset($results['aggregations'])) {
-			
-			foreach($results['aggregations']['host']['buckets'] as $bucket) {
-				$ans[] = array('text' => $bucket['key'], 'hits' => $bucket['doc_count']);
-			}
-			
-		}
+//		$ans = array();
+//
+//		if(!empty($results) && isset($results['aggregations'])) {
+//
+//			foreach($results['aggregations']['host']['buckets'] as $bucket) {
+//				$ans[] = array('text' => $bucket['key'], 'hits' => $bucket['doc_count']);
+//			}
+//
+//		}
+
+		$ans=$results['aggregations']['host']['buckets'];
 		sort($ans);
 		return $ans;
-		
+
 	}
 	
 	

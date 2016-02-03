@@ -30,10 +30,11 @@ telepath.autocomplete = {
 		
 		var url = '';
 		switch(type) {
-			
+			//not used
 			case 'page':
 				url = '/applications/get_autocomplete_page';
 			break;
+			//not used
 			case 'application':
 				url = '/applications/get_autocomplete';
 			break;
@@ -74,7 +75,7 @@ telepath.autocomplete = {
 		$.each(items, function(i, item) {
 		
 			var resultEl = $('<div>').addClass('tele-autocomplete-item')
-									 .text(item.text)
+									 .text(item.key)
 									 .data('tele-select', item)
 									 .hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });			
 		
@@ -86,7 +87,7 @@ telepath.autocomplete = {
 		
 			resultEl.click(function () {
 				telepath.autocomplete.disabled = true;
-				element.val(item.text);
+				element.val(item.key);
 				element.data('tele-select', item);
 				$('.tele-autocomplete-select', 'body').remove();
 				setTimeout(function () { telepath.autocomplete.disabled = false; }, 1500);
