@@ -250,6 +250,10 @@
 	height: 32px;
 }
 
+.tele-input.tele-pattern-count{
+	margin-top: 10px;
+}
+
 .tele-group-wrap-left,
 .tele-group-wrap-right {
 	float: left;
@@ -280,7 +284,7 @@
 }
 .tele-radio-label {
 	margin-top: 2px;
-	width: 130px;
+	width: 156px;
 }
 
 .tele-input-suffix {
