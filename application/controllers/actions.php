@@ -75,7 +75,7 @@ class Actions extends Tele_Controller
         if (!empty($results['hits']['hits'])) {
             foreach ($results['hits']['hits'] as $hit) {
                 $fields = $hit['fields']['_src'][0];
-                $ans[] = array('text' => $fields['application'] . ' :: ' . $fields['action_name'], 'raw' => $fields);
+                $ans[] = array('key' => $fields['application'] . ' :: ' . $fields['action_name'], 'raw' => $fields);
             }
         }
         return_success($ans);
