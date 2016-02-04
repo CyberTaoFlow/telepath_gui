@@ -130,7 +130,7 @@ $.widget( "tele.conditionList", {
 		var that = this;
 		this.element.empty();
 		
-		this.conditionTypes = ['application', 'rules', 'IP', 'user', 'country', 'time', 'parameter', /* 'advanced' */];
+		this.conditionTypes = ['application', 'rules', 'IP', /*'user',*/ 'country', 'time', 'parameter', /* 'advanced' */];
 		
 		// NEW
 		
