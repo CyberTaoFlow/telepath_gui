@@ -8,6 +8,7 @@ telepath.dashboard = {
 	refreshInterval: 5,
 	reloadFlag: Date.now(),
 	loading: false,
+	map_mode:false,
 	getData: function() {
 		
 		this.loading = true;
@@ -27,6 +28,8 @@ telepath.dashboard = {
 				// date filter was changed !
 				return;
 			}
+			telepath.dashboard.map_mode=data.items.map_mode;
+			$('.tele-panel-dashboard .tele-panel-subtitle-right .tele-mini-toggle').toggleFlip({flipped:data.items.map_mode=='traffic'}) ;
 			telepath.dashboard.data.items.map = data.items.map;
 			telepath.dashboard.map.vMap({ data: telepath.dashboard.data.items.map, title: 'Alerts over time' });
 			$(window).trigger('resize');
@@ -220,7 +223,7 @@ telepath.dashboard = {
 			container.append('<div class="tele-panel-subtitle"><div class="tele-panel-subtitle-text">Traffic and Alerts Trends</div><div class="tele-panel-subtitle-right"></div></div>');
 			
 			// Dashboard Toggle
-			var trafficToggle = $('<div>').toggleFlip({ left_value: 'Alerts', right_value: 'Traffic', flip: function (x,y) {
+			var trafficToggle = $('<div>').toggleFlip({ left_value: 'Alerts', right_value: 'Traffic',flipped: that.map_mode=='traffic',  flip: function (x,y) {
 				that.map.empty();
 				that.map.append(telepath.loader);
 				if(x) {
