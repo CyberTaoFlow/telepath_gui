@@ -124,18 +124,18 @@ telepath.cases = {
 		// --------------------------------------
 		
 		// Select all cases
-/*		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
+		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
 			if(that.list) {
 				that.list.data('tele-teleList').toggleAll(e.options.checked);
 			}
 		}});
 		panelSubBar.append(checkallEl);
 		
-		// Archive cases
+/*		// Archive cases
 		var archiveBtn = $('<div>').btn({ icon: 'archive', text: 'Archive Cases', callback: function () { console.log('Archive'); }});
 		panelSubBar.append(archiveBtn);
 		
-		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
+		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep*/
 		
 		// Delete cases
 		var deleteBtn = $('<div>').btn({ icon: 'delete', text: 'Delete', callback: function () { 
@@ -163,7 +163,7 @@ telepath.cases = {
 		}});
 		panelSubBar.append(deleteBtn);
 		
-		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep*/
+		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
 		
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 
