@@ -152,6 +152,10 @@ telepath.cases = {
 					callback: function () {
 						telepath.ds.get('/cases/del_cases', { cids: selected }, function (data) {
 							that.setData(data.items);
+
+							telepath.ds.get('/cases/flag_requests_by_cases', { case: selected, range: false, method: 'delete', repeat: false  }, function (data) {
+								console.log('Delete the case:' + data);
+							});
 						});
 					}
 					});

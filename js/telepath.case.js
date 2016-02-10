@@ -132,7 +132,11 @@ telepath.caseOverlay = {
 					
 					telepath.overlay.destroy();
 					telepath.casePanel.init(name);
-					
+
+
+					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'add', repeat: false }, function (data) {
+						console.log('New case was flagged' + data);
+					});
 						
 				});
 				
@@ -149,6 +153,10 @@ telepath.caseOverlay = {
 					
 					telepath.overlay.destroy();
 					telepath.casePanel.init(name);
+
+					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'update', repeat: false  }, function (data) {
+						console.log('Update the case:' + data);
+					});
 					
 				});
 			
@@ -205,6 +213,7 @@ telepath.casePanel = {
 			sort: this.sort,
 			dir: this.dir,
 			cid : this.caseID
+			//case_data: this.data.case.case_data
 		}, function (data) {
 			telepath.casePanel.loadData(data);
 			if(typeof(callback) == 'function') {

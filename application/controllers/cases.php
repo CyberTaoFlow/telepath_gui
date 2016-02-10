@@ -93,6 +93,7 @@ class Cases extends Tele_Controller
         $cid = $this->input->post('cid');
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
+       // $case_data= $this->input->post('case_data');
 
         if (!$sort || !in_array($sort, array('date', 'type', 'counter'))) {
             $sort = 'date';
@@ -110,6 +111,7 @@ class Cases extends Tele_Controller
         $ans = array();
 
         $requests = $this->M_Cases->get_case_sessions(100, $range, $apps, $cid);
+       // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
 
         $ans = array_merge($ans, $requests);
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
@@ -194,6 +196,35 @@ class Cases extends Tele_Controller
         // Return updated cases list
         $this->get_cases();
 
+    }
+
+    public function flag_requests_by_cases(){
+
+        if ($this->input->post('case')) {
+            $cases = $this->input->post('case');
+        } else {
+            $cases = 'all';
+        }
+
+        if ($this->input->post('range')) {
+            $range = filter_var($this->input->post('range'), FILTER_VALIDATE_BOOLEAN);
+        } else {
+            $range = true;
+        }
+
+        if ($this->input->post('method')) {
+            $method = $this->input->post('method');
+        } else {
+            $method = 'add';
+        }
+
+        if ($this->input->post('repeat')) {
+            $repeat =filter_var($this->input->post('repeat'), FILTER_VALIDATE_BOOLEAN);
+        } else {
+            $repeat = 300;
+        }
+
+        $this->M_Cases->flag_requests_by_cases($cases,$range, $method,$repeat);
     }
 
 }
