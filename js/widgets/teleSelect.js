@@ -122,7 +122,8 @@ $.widget( "tele.teleSelect", {
 			var that  = this;
 			var input = $('<input>');
 			
-			input.val(value.text);
+			//input.val(value.text);
+			input.attr("placeholder",value.text);
 			input.data('tele-select', value);
 			
 			var dd_arrow = $('<div>');
