@@ -39,7 +39,7 @@ class Actions extends Tele_Controller
         $this->client->indices()->refresh(array('index' => 'telepath-actions'));
 
         $this->load->model('M_Config');
-        $this->M_Config->update('business_flow_was_changed', 1);
+        $this->M_Config->update('business_flow_was_changed', '1');
 
         return_success($uid);
 
@@ -142,7 +142,7 @@ class Actions extends Tele_Controller
         $this->client->indices()->refresh(array('index' => 'telepath-actions'));
 
         $this->load->model('M_Config');
-        $this->M_Config->update('business_flow_was_changed', 1);
+        $this->M_Config->update('business_flow_was_changed', '1');
 
         return_success();
 
