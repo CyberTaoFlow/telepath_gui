@@ -349,11 +349,10 @@ telepath.config.rule = {
 			
 			} else {
 				
-				ruleData.uid = that.data.uid;
 
 				var found=false;
 				$.each(telepath.config.rules.categories,function(i,val){
-					if(ruleData.name== val.name && ruleData.id != val.id){
+					if(ruleData.name== val.name && that.data.uid != val.id){
 						telepath.dialog({ title: 'Case Editor', msg: 'Rule name already exists' });
 						found=true
 					}
