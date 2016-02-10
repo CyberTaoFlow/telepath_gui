@@ -482,9 +482,10 @@ body .jstree .tele-button {
 
 .tele-config-content-right.tele-stacked .tele-config-container .tele-button-container{
 	position: relative;
-	top: 450px;
+	/*top: 450px;*/
+	clear: both;
 	text-align: center;
-	margin-right: 20%;
+	/*margin-right: 20%;*/
 }
 
 .tele-button-container-group{
