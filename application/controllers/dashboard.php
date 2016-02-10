@@ -17,10 +17,11 @@ class Dashboard extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
         $range = $this->_get_range();
         $apps = $this->_get_apps();
+        $map_mode = $this->M_Dashboard->get_map_mode(true);
 
-        $map = $this->M_Dashboard->get_map($range, $apps);
+        $map = $this->M_Dashboard->get_map($range, $apps, $map_mode);
 
-        $data = array('map' => $map);
+        $data = array('map' => $map, 'map_mode'=>$map_mode);
 
         return_success($data);
 
@@ -109,13 +110,15 @@ class Dashboard extends Tele_Controller
 
                 case 'map_alerts':
 
-                    $map = $this->M_Dashboard->get_map($range, $apps);
+                    $this->M_Dashboard->set_map_mode('alerts', $range);
+                    $map = $this->M_Dashboard->get_map($range, $apps, 'alerts');
                     return_success(array('map' => $map));
 
                     break;
                 case 'map_traffic':
 
-                    $traffic = $this->M_Dashboard->get_map($range, $apps, false);
+                    $this->M_Dashboard->set_map_mode('traffic',$range);
+                    $traffic = $this->M_Dashboard->get_map($range, $apps, 'traffic');
                     return_success(array('traffic' => $traffic));
 
                     break;

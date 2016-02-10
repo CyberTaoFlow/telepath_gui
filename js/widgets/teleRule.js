@@ -795,8 +795,8 @@ $.widget( "tele.teleRule", {
 						{ key: 'distance', label: 'String appear similar by' },
 					], callback: function(radio) {
 						
-					//r_regex_input.hide();
-					//r_regex_check.hide();
+					r_regex_input.hide();
+					r_regex_check.hide();
 					r_contains_input.hide();
 					r_contains_check.hide();
 					r_fuzzy_list.hide();
@@ -806,6 +806,8 @@ $.widget( "tele.teleRule", {
 						
 						switch(radio.key) {
 							case 'heuristic':
+								r_regex_input.show();
+								r_regex_check.show();
 							break;
 							case 'regex':
 								
@@ -816,8 +818,8 @@ $.widget( "tele.teleRule", {
 							
 							case 'stringmatch': 
 							
-								//r_contains_input.show();
-								//r_contains_check.show();
+								r_contains_input.show();
+								r_contains_check.show();
 								
 							break;
 							

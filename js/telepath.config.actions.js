@@ -207,7 +207,10 @@ telepath.config.actions = {
 				}
 			}
 		}).on('changed.jstree', function (e, data) {
-			
+
+			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+			data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
+
 			telepath.config.actions.contentRight.empty();
 			telepath.config.actions.barRight.empty();
 			telepath.config.actions.createCat.hide();
