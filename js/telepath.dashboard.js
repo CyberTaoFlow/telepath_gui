@@ -172,11 +172,11 @@ telepath.dashboard = {
 		//}
 		
 		var that = this;
-		
+
+		this.getData();
 		this.resetContainer();
 		this.showFilters();
 		this.resize();
-		this.getData();
 	
 		if($('.tele-panel-dashboard').size() > 0) {
 			$(window).resize(function () { that.resize(); });
@@ -212,7 +212,7 @@ telepath.dashboard = {
 	resetContainer: function (loading) {
 		this.divs = 0;
 		var that = this;
-		
+		$('.tele-panel-dashboard .tele-panel-subtitle-right .tele-mini-toggle').toggleFlip({flipped:telepath.dashboard.data.items.map =='traffic'}) ;
 		var container = $('.tele-panel-dashboard');
 		container.empty();
 		
