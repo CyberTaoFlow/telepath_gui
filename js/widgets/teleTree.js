@@ -110,6 +110,8 @@ $.widget( "tele.teleTree", {
 			plugins: ["json_data","wholerow", "theme", "grid"],
 			grid: that.options.grid,
 		}).on('changed.jstree', function (e, data) {
+				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 			that.options.callback(e, data);
 		});
 
