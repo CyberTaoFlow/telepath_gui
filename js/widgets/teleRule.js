@@ -231,9 +231,10 @@ $.widget( "tele.teleRule", {
 						json.method = json.method.substr(0, json.method.length - 1);
 					
 						json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked').size() > 0;
-						json.str_match = $('.tele-rule-string-inspection input').val();
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
-						
+						json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
+
+
 						if(json.str_match == '') {
 									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
 									$('.tele-rule-string-inspection input').addClass('error');
@@ -248,9 +249,10 @@ $.widget( "tele.teleRule", {
 					case 'Title':
 					
 						json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked').size() > 0;
-						json.str_match = $('.tele-rule-string-inspection input').val();
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
-						
+						json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
+
+
 						if(json.str_match == '') {
 									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
 									$('.tele-rule-string-inspection input').addClass('error');
