@@ -215,7 +215,13 @@ class M_Cases extends CI_Model {
 		];
 
 		$response = $this->elasticClient->get($params);
-		return $response['_source']['last_update'];
+
+		if (isset($response['_source']['last_update']) && !empty($response['_source']['last_update']))
+			$last_update= $response['_source']['last_update'];
+		else
+			$last_update=0;
+
+		return $last_update;
 	}
 
 	public function set_last_case_update($update_time)
@@ -369,34 +375,32 @@ class M_Cases extends CI_Model {
 
 		foreach ($results as $result) {
 
-			//	TODO  - migrate the update case_name and case_count from php to elastic, with groovy script
-			if (isset ($result['_source']['cases.name']) && !empty($result['_source']['cases.name'])) {
-				if (!$delete && !in_array($case_name, $result['_source']['cases.name'])) {
-					array_push($result['_source']['cases.name'], $case_name);
-					$db_case_name = $result['_source']['cases.name'];
-				} elseif ($delete && in_array($case_name, $result['_source']['cases.name']))
-					$db_case_name = array_diff($result['_source']['cases.name'], [$case_name]);
-			} else
-				$db_case_name = [$case_name];
+			if (isset ($result['_source']['cases.name']) && !empty($result['_source']['cases.name']))
+				$db_case_name = $result['_source']['cases.name'];
+			else
+				$db_case_name = [];
 
-			if (isset ($result['_source']['cases_count']) && !empty($result['_source']['cases_count'])) {
-				if ($delete)
-					$db_case_count = $result['_source']['cases_count'] - 1;
-				else
-					$db_case_count = $result['_source']['cases_count'] + 1;
-			} else
-				$db_case_count = 1;
+			if (isset ($result['_source']['cases_count']) && !empty($result['_source']['cases_count']))
+				$db_case_count = $result['_source']['cases_count'];
+			else
+				$db_case_count = 0;
+
+			// check id case_name already exists before adding it
+			if (!$delete && !in_array($case_name, $db_case_name)) {
+				array_push($db_case_name, $case_name);
+				$db_case_count++;
+			}
+			// check that case_name exists before delete it
+			elseif ($delete && in_array($case_name, $db_case_name)) {
+				$db_case_name = array_diff($db_case_name, [$case_name]);
+				$db_case_count--;
+			}
+
 
 			$params = [
 				'index' => $result['_index'],
 				'type' => 'http',
 				'id' => $result['_id'],
-//					'body' => [
-//						"file" => "case_flag", //if (ctx._source.containsKey("cases.name")) { ctx._source.cases.name += case_name }
-//					'params' => [
-//						'case_name' => $case['case_name']
-//					]
-//				]
 				'body' => [
 					'doc' => [
 						'cases.name' => $db_case_name,

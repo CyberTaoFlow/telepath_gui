@@ -130,7 +130,8 @@ class Cases extends Tele_Controller
         $cid = $this->input->post('cid');
         $fav = $this->input->post('favorite') == 'true';
         $this->M_Cases->update($cid, array('favorite' => $fav));
-        $res = $this->M_Cases->get(array('id' => $cid));
+       // $res = $this->M_Cases->get(array('id' => $cid));
+        $res = $this->M_Cases->get_case_data($cid);
         return_success($res);
 
     }
@@ -207,7 +208,7 @@ class Cases extends Tele_Controller
         }
 
         if ($this->input->post('range')) {
-            $range = filter_var($this->input->post('range'), FILTER_VALIDATE_BOOLEAN);
+            $range = $this->input->post('range')=='true';
         } else {
             $range = true;
         }
@@ -219,7 +220,7 @@ class Cases extends Tele_Controller
         }
 
         if ($this->input->post('repeat')) {
-            $repeat =filter_var($this->input->post('repeat'), FILTER_VALIDATE_BOOLEAN);
+            $repeat =$this->input->post('repeat')=='true';
         } else {
             $repeat = 300;
         }
