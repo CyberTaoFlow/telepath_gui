@@ -129,7 +129,7 @@ class Rules extends Tele_Controller
         $category = $this->input->post('id', true);
         if ($category == "Brute-Force") {
             $rules[] = array('name' => "Login Brute-Force",
-                'id' => "Login Brute-Force",
+                'uid' => "Login Brute-Force",
                 'category' => "Brute-Force");
         } else {
             $rules = $this->M_Rules->get_rules($category);
