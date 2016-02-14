@@ -328,7 +328,7 @@ $.widget( "tele.condition", {
 			
 			case 'parameter':
 				
-				var paramBrowse = $('<div>').teleBrowse({ label: 'Select Parameter', mode: 'parameter' });
+				var paramBrowse = $('<div>').teleBrowse({ label: 'Select Parameter', mode: 'param' });
 				this.element.append(paramBrowse);
 				
 			break;
