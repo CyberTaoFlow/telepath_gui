@@ -378,7 +378,7 @@ class M_Cases extends CI_Model {
 			}
 			// if it's not the script, we need to inform the user that the updating process is finish
 			else{
-//				$this->update($case['case_name'],$case['details'],false);
+				$this->update($case['case_name'],$case['details'],false);
 			}
 		}
 
@@ -691,7 +691,7 @@ class M_Cases extends CI_Model {
 		   'id'          => 'cases_id',
 		];
 
-		$result[0]['All_Cases'][] = array('case_name' => $name, 'created' => time(), 'details' => $details);
+		$result[0]['All_Cases'][] = array('case_name' => $name, 'created' => time(), 'details' => $details, 'updating'=>true);
 		
 		$action_data['body'] = array('All_Cases' => $result[0]['All_Cases']);
 
@@ -712,7 +712,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function update($name, $data) {
+	public function update($name, $data, $updating=true) {
 		
 		$params = [];
 		$params['body'] = [
@@ -732,9 +732,13 @@ class M_Cases extends CI_Model {
 		   'id'          => 'cases_id',
 		];
 
+
+
 		foreach($result[0]['All_Cases'] as $key => $value) {
 			if($result[0]['All_Cases'][$key]['case_name'] == $name) {
 				$result[0]['All_Cases'][$key]['details'] = $data;
+				// we need to flag the requests, the user has to know about this
+				$result[0]['All_Cases'][$key]['updating']=$updating;
 			}
 		}
 

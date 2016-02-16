@@ -98,6 +98,10 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-loader {
 	background: transparent url("../img/loader_small.gif") no-repeat scroll 0px 7px;
 }
+
+.tele-icon-ring{
+	background: transparent url("../img/ring.gif") no-repeat scroll 148px -2px;
+}
 .tele-icon-search {
 	background-position: -315px -573px;
 }

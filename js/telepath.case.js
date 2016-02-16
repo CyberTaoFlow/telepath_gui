@@ -41,6 +41,7 @@ telepath['case'] = {
 				title: item.name /* + (('empty' in item.case_data ) ? ' ***deleted***': '') */,
 				time: item.created,
 				count: item.count,
+				updating: item.case_data.updating,
 				details: details
 			};
 		}
