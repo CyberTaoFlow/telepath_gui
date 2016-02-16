@@ -92,11 +92,12 @@ class Tele_Controller extends CI_Controller
         $this->elasticClient = new Elasticsearch\Client();
 //		unset($params);
 
+        // Change to the new query instead of the deprecated Statistical Facet (MOSHE)
         $params['body'] = array(
             'size' => 0,
-            'facets' => [
-                'ts' => [
-                    'statistical' => [
+            'aggs' => [
+                'grades_stats' => [
+                    'extended_stats' => [
                         'field' => 'ts'
                     ]
                 ]
