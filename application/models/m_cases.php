@@ -255,7 +255,7 @@ class M_Cases extends CI_Model {
 
 		$params = [
 			"search_type" => "scan",    // use search_type=scan
-			"scroll" => "1m",          // how long between scroll requests. should be small!
+			"scroll" => "1m",          // h ow long between scroll requests. should be small!
 			"size" => 9999,               // how many results *per shard* you want back
 			"index" => 'telepath-20*',
 			"_source" => ['cases.name', 'cases_count']
@@ -372,16 +372,24 @@ class M_Cases extends CI_Model {
 			}
 
 
-			if ($repeat) {
+			if ($range) {
 				$this->set_last_case_update($update_time);
-				sleep($repeat);
-				$this->flag_requests_by_cases($cases_name, $range, $method, $repeat);
+				return;
+			}
+			// if it's not the script, we need to inform the user that the updating process is finish
+			else{
+//				$this->update($case['case_name'],$case['details'],false);
 			}
 		}
 
 		return_success();
 	}
 
+	/**
+	 * @param $results
+	 * @param $case_name
+	 * @param $delete boolean - if true we delete the case, if false we add the case
+     */
 	public function update_requests($results, $case_name, $delete)
 	{
 
