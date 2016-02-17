@@ -129,7 +129,7 @@ class Cases extends Tele_Controller
 
         $cid = $this->input->post('cid');
         $fav = $this->input->post('favorite') == 'true';
-        $this->M_Cases->update($cid, array('favorite' => $fav));
+        $this->M_Cases->update($cid,false,false,$fav);
        // $res = $this->M_Cases->get(array('id' => $cid));
         $res = $this->M_Cases->get_case_data($cid);
         return_success($res);

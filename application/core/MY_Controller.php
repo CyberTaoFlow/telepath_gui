@@ -212,6 +212,14 @@ class Tele_Controller extends CI_Controller
 
 
     }
-}
 
-?>
+//    function __call($method_name, $arguments ){
+//        if(method_exists($this, $method_name)){
+//
+//            Logger::logActivity($this, $method_name, $arguments);
+//
+//            $this->{$method_name}($arguments);
+//        }
+//
+//    }
+}

@@ -248,7 +248,7 @@ telepath.listitem.generic = {
 		favorite: function(widget) {
 				
 			telepath.ds.get('/cases/set_case_fav', {
-				cid: widget.options.name,
+				cid: widget.options.title,
 				favorite: widget.options.favorite
 			}, function (data) {});
 				
