@@ -144,7 +144,9 @@ telepath.main = {
             }
 
         });
-        telepath.ds.get('/telepath/get_time_range', {}, function(data)       { telepath.range      = data.items;     console.log('TIME RANGE::');     console.log(telepath.range); });
+        telepath.ds.get('/telepath/get_time_range', {}, function(data){
+            telepath.range= data.items;
+            console.log('TIME RANGE::'+telepath.range); });
 
         // Load resources
         telepath.main.loadResources(function () {

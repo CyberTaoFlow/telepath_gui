@@ -71,7 +71,7 @@ class Tele_Controller extends CI_Controller
 
     }
 
-    public function _set_full_time_range()
+    public function _set_full_time_range($local=false)
     {
 
         $this->user_id = $this->ion_auth->get_user_id();
@@ -108,6 +108,9 @@ class Tele_Controller extends CI_Controller
 
         $parsed['time_range'] = array('start' => $results['facets']['ts']['min'], 'end' => $results['facets']['ts']['max']);
 
+        if ($local){
+            return $parsed['time_range'];
+        }
         $user = $this->ion_auth->update($this->user_id, array('extradata' => json_encode($parsed)));
         if (!$user) {
             return_fail($this->ion_auth->errors());
@@ -120,11 +123,15 @@ class Tele_Controller extends CI_Controller
     public function _set_time_range()
     {
 
-        $start = intval($this->input->post('start'));
-        $end = intval($this->input->post('end'));
+        $state=$this->input->post('state');
 
-        if (!$start || !$end || $start > $end) {
-            return_json(array('success' => false));
+        if ($state=='range'){
+            $start = intval($this->input->post('start'));
+            $end = intval($this->input->post('end'));
+
+            if (!$start || !$end || $start > $end) {
+                return_json(array('success' => false));
+            }
         }
 
         $this->user_id = $this->ion_auth->get_user_id();
@@ -140,7 +147,11 @@ class Tele_Controller extends CI_Controller
         }
 
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
-        $parsed['time_range'] = array('start' => $start, 'end' => $end);
+        if ($state=='range'){
+            $parsed['time_range'] = array('state'=>$state, 'start' => $start, 'end' => $end);
+        }
+        else
+            $parsed['time_range'] = array('state'=>$state);
 
         $user = $this->ion_auth->update($this->user_id, array('extradata' => json_encode($parsed)));
         if (!$user) {
@@ -167,8 +178,44 @@ class Tele_Controller extends CI_Controller
         }
 
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
+//        $data = isset($parsed['time_range']) ? $parsed['time_range'] : array( 'end'=> time(), 'start' => strtotime('-7 day'));
 
-        $data = isset($parsed['time_range']) ? $parsed['time_range'] : array('start' => time(), 'end' => strtotime('-7 day'));
+        switch($parsed['time_range']['state']){
+            case 'year':
+
+                $data = array('state'=>'year', 'start' =>strtotime('-1 year') , 'end' =>time());
+                break;
+
+            case 'month':
+
+                $data = array('state'=>'month', 'start' =>strtotime('-1 month') , 'end' => time());
+
+                break;
+            case 'week':
+
+                $data = array('state'=>'week', 'start' => strtotime('-1 week'), 'end' => time());
+
+                break;
+            case 'day':
+
+                $data = array('state'=>'day', 'start' => strtotime('-1 day'), 'end' => time());
+
+                break;
+
+            case 'data':
+
+                $time=$this->_set_full_time_range(true);
+
+                $data = array('state'=>'data', 'start' =>$time['start'], 'end' => $time['end']);
+
+                break;
+
+            default:
+                $data =  array('state'=>'range', 'start' => $parsed['time_range']['start'], 'end' =>$parsed['time_range']['end'] );
+                break;
+        }
+
+
 
         if ($local) {
             return $data;
