@@ -4,8 +4,7 @@ $.widget( "tele.daterange", {
     options: {
 		'start': new Date().getTime(),
 		'end': new Date().getTime(),
-		'change': false,
-		'state':''
+		'change': false
     },
  
     _create: function() {
@@ -80,9 +79,9 @@ $.widget( "tele.daterange", {
 		$(".tele-daterange-period a").click(function () {
 			console.log('HERE!');
 			$(".tele-daterange-period a.active").removeClass('active');
-			that.options.state = $(this).attr('class').split('-')[3]; // .split(' ')[0]
+			var period = $(this).attr('class').split('-')[3]; // .split(' ')[0]
 			$(this).addClass('active');
-			that.setPeriod();
+			that.setPeriod(period);
 		});
 
 		function get_hour_value(element) {
@@ -107,40 +106,23 @@ $.widget( "tele.daterange", {
 		$(".tele-daterange-buttons .tele-button-apply").click(function () {
 			$(".tele-daterange-popup").fadeOut();
 			if(typeof(that.options.change) == 'function') {
-
-				if ($(".tele-daterange-period a.active").length )
-					telepath.range.state = $(".tele-daterange-period a.active").attr('class').split(/-| /)[3];
-
-				if (telepath.range.state  == 'range') {
-					var from_date = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-from").val());
-					var to_date = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-to").val());
-
-					var from_date_hour = get_hour_value($(".tele-daterange-from-hour"));
-					var to_date_hour = get_hour_value($(".tele-daterange-to-hour"));
-
-					telepath.range.start = (from_date.getTime() + from_date_hour) / 1000;
-					telepath.range.end = (to_date.getTime() + to_date_hour) / 1000;
-
-					telepath.ds.get('/telepath/set_time_range', {
-						state: telepath.range.state,
-						start: telepath.range.start,
-						end: telepath.range.end
-					}, function (data) {
-						that.options.change(telepath.range.start, telepath.range.end);
-						that.options.state = telepath.range.state;
-						that.options.start = telepath.range.start;
-						that.options.end = telepath.range.end;
-						that._update();
-					});
-
-				}
-				else
-					telepath.ds.get('/telepath/set_time_range', {
-						state: telepath.range.state
-					}, function (data) {
-						that.options.state = telepath.range.state;
-						that._update();
-					});
+				
+				var from_date = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-from").val());
+				var to_date  = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-to").val());
+				
+				var from_date_hour = get_hour_value($(".tele-daterange-from-hour"));
+				var to_date_hour   = get_hour_value($(".tele-daterange-to-hour"));
+									
+				telepath.range.start = (from_date.getTime() + from_date_hour) / 1000;
+				telepath.range.end   = (to_date.getTime() + to_date_hour) / 1000;
+				
+				telepath.ds.get('/telepath/set_time_range', { start: telepath.range.start, end: telepath.range.end }, function(data) { 
+					that.options.change(telepath.range.start, telepath.range.end);
+					that.options.start = telepath.range.start;
+					that.options.end   = telepath.range.end;
+					that._update();
+				});
+				
 			}
 		});
 		$(".tele-daterange-buttons .tele-button-cancel").click(function () {
@@ -153,14 +135,13 @@ $.widget( "tele.daterange", {
     _update: function() {
 		this.updateUI();
 	},
-	setPeriod: function() {
+	setPeriod: function(period) {
 		
 		var that = this;		
 		var from_date = new Date();
-		$('.tele-darerange-container').hide();
-		switch(that.options.state) {
-			/*case 'data':
-				from_date.setTime(60);
+	
+		switch(period) {
+		
 			case 'year':
 				from_date.setFullYear(from_date.getFullYear() - 1);
 			break;
@@ -175,18 +156,16 @@ $.widget( "tele.daterange", {
 			break;
 			case 'hour':
 				from_date.setHours(from_date.getHours() - 1);
-			break;*/
-			case 'range':
-				$('.tele-darerange-container').show();
+			break;
+			case 'data':
+				
 				telepath.ds.get('/telepath/set_full_time_range', { }, function(data) { 
 				
 					// Globally
-					telepath.range.state = data.items.state;
 					telepath.range.start = data.items.start;
 					telepath.range.end   = data.items.end;
 				
 					// Locally
-					that.options.state = telepath.range.state;
 					that.options.start = telepath.range.start;
 					that.options.end   = telepath.range.end;
 					that.updateUI();
@@ -196,12 +175,7 @@ $.widget( "tele.daterange", {
 			break;
 			
 		}
-
-		$(".tele-daterange .tele-button .tele-button-text").text('last ' + that.options.state);
-
-		if (that.options.state=='data')
-			$(".tele-daterange .tele-button .tele-button-text").text('all data');
-
+		
 		$(".tele-daterange-to").val(date_format('d/m/Y'));
 		$(".tele-daterange-to-hour").val(date_format('H:i'));
 		$(".tele-daterange-from").val(date_format('d/m/Y', from_date));
@@ -215,19 +189,10 @@ $.widget( "tele.daterange", {
 		if(this.button) {
 			this.button.remove();
 		}
-		if ($(".tele-daterange-period a.active").length )
-			telepath.range.state = $(".tele-daterange-period a.active").attr('class').split(/-| /)[3];
-
-		if (telepath.range.state=='range')
-			var text =date_format('d/m/Y', this.options.start) + ' - ' + date_format('d/m/Y', this.options.end);
-		else if (telepath.range.state=='data')
-			var text='all data' ;
-		else
-			var text='last '+ telepath.range.state ;
-
-		this.button = $('<a>').attr('href', '#').btn({
-			icon: 'daterange',
-			text: text,
+		
+		this.button = $('<a>').attr('href', '#').btn({ 
+			icon: 'daterange', 
+			text: date_format('d/m/Y', this.options.start) + ' - ' + date_format('d/m/Y', this.options.end), 
 			callback: function () {
 				that._displayPopup(this);
 			}
