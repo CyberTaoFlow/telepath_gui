@@ -41,6 +41,7 @@ telepath['case'] = {
 				title: item.name /* + (('empty' in item.case_data ) ? ' ***deleted***': '') */,
 				time: item.created,
 				count: item.count,
+				updating: item.case_data.updating,
 				details: details
 			};
 		}
@@ -131,11 +132,14 @@ telepath.caseOverlay = {
 					}					
 					
 					telepath.overlay.destroy();
-					telepath.casePanel.init(name);
+					//telepath.casePanel.init(name);
+					telepath.cases.refresh(function () {});
 
 
-					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'add', repeat: false }, function (data) {
+
+					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'add' }, function (data) {
 						console.log('New case was flagged' + data);
+						telepath.cases.refresh(function () {});
 					});
 						
 				});
@@ -152,10 +156,13 @@ telepath.caseOverlay = {
 					}
 					
 					telepath.overlay.destroy();
-					telepath.casePanel.init(name);
+					//telepath.casePanel.init(name);
+					telepath.cases.refresh(function () {});
 
-					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'update', repeat: false  }, function (data) {
+
+					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'update'  }, function (data) {
 						console.log('Update the case:' + data);
+						telepath.cases.refresh(function () {});
 					});
 					
 				});

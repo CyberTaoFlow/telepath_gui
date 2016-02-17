@@ -205,6 +205,7 @@ class M_Cases extends CI_Model {
 		
 	}
 
+	// Get the time of the last flagged requests by cases
 	public function get_last_case_update()
 	{
 		$params = [
@@ -224,6 +225,7 @@ class M_Cases extends CI_Model {
 		return $last_update;
 	}
 
+	// Set the time of the last flagged requests by cases
 	public function set_last_case_update($update_time)
 	{
 		$params = [
@@ -241,25 +243,34 @@ class M_Cases extends CI_Model {
 		return $response;
 	}
 
-	public function flag_requests_by_cases($cases_name, $range, $method, $repeat)
+	/**
+	 * @param $cases_name array of strings (cases name) or "all"
+	 * @param $range boolean - if true update only from the last update
+	 * @param $method string - "add" ,"delete" or "update" case
+     */
+	public function flag_requests_by_cases($cases_name, $range, $method)
 	{
+
+		ini_set('MAX_EXECUTION_TIME', -1);
 
 		$params = [
 			"search_type" => "scan",    // use search_type=scan
-			"scroll" => "1m",          // how long between scroll requests. should be small!
-			"size" => 999,               // how many results *per shard* you want back
+			"scroll" => "1m",          // h ow long between scroll requests. should be small!
+			"size" => 9999,               // how many results *per shard* you want back
 			"index" => 'telepath-20*',
 			"_source" => ['cases.name', 'cases_count']
 		];
 
-
-		if ($repeat)
+		// If it's a script that always run, we take the time before the iterations
+		if ($range)
 			$update_time = time();
 
+		// Delete all the flags of the cases, if method = delete or update
 		if ($method != 'add') {
 
 			foreach ($cases_name as $case) {
 				$params['body']['query']['bool']['must'][] = ['term' => ["cases.name" => $case]];
+				$params['body']["sort"] = ["_doc"];
 				$docs = $this->elasticClient->search($params);
 
 				$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
@@ -269,8 +280,8 @@ class M_Cases extends CI_Model {
 
 					// Execute a Scroll request
 					$response = $this->elasticClient->scroll([
-							"scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
-							"scroll" => "1m"           // and the same timeout window
+							"scroll_id" => $scroll_id,  //using our previously obtained _scroll_id
+							"scroll" => "1m"          // and the same timeout window
 						]
 					);
 
@@ -280,7 +291,7 @@ class M_Cases extends CI_Model {
 						// Get new scroll_id
 						$scroll_id = $response['_scroll_id'];
 					} else {
-						// No results, scroll cursor is empty.  You've exported all the data
+						// No results, scroll cursor is empty.  We've exported all the data
 						break;
 					}
 				}
@@ -289,6 +300,7 @@ class M_Cases extends CI_Model {
 
 		}
 
+		// Add new flags if method = add or update
 		if ($method != 'delete') {
 			if ($cases_name == 'all')
 				$cases = $this->get_case_data('all');
@@ -321,11 +333,13 @@ class M_Cases extends CI_Model {
 							$term = "parameters.name";
 							break;
 					}
+					// The query to find the requests that match the case details
 					$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => str_replace(',', ' OR ', $condition['value'])]];
-
+					$params['body']["sort"] = ["_doc"];
 
 				}
 
+				// If it's a script that always run, we have to query only the latest requests
 				if ($range)
 					$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($update_time), 'lte' => intval($this->get_last_case_update())]]];
 
@@ -339,20 +353,18 @@ class M_Cases extends CI_Model {
 
 					// Execute a Scroll request
 					$response = $this->elasticClient->scroll([
-							"scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
-							"scroll" => "1m"           // and the same timeout window
+							"scroll_id" => $scroll_id,  // using our previously obtained _scroll_id
+							"scroll" => "1m"         // and the same timeout window
 						]
 					);
 
 					// Check to see if we got any search hits from the scroll
 					if (count($response['hits']['hits']) > 0) {
-						// If yes, Do Work Here
 						$this->update_requests($response['hits']['hits'], $case['case_name'], false);
 						// Get new scroll_id
-						// Must always refresh your _scroll_id!  It can change sometimes
 						$scroll_id = $response['_scroll_id'];
 					} else {
-						// No results, scroll cursor is empty.  You've exported all the data
+						// No results, scroll cursor is empty.  We've exported all the data
 						break;
 					}
 				}
@@ -360,16 +372,24 @@ class M_Cases extends CI_Model {
 			}
 
 
-			if ($repeat) {
+			if ($range) {
 				$this->set_last_case_update($update_time);
-				sleep($repeat);
-				$this->flag_requests_by_cases($cases_name, $range, $method, $repeat);
+				return;
+			}
+			// if it's not the script, we need to inform the user that the updating process is finish
+			else{
+				$this->update($case['case_name'],$case['details'],false);
 			}
 		}
 
 		return_success();
 	}
 
+	/**
+	 * @param $results
+	 * @param $case_name
+	 * @param $delete boolean - if true we delete the case, if false we add the case
+     */
 	public function update_requests($results, $case_name, $delete)
 	{
 
@@ -385,7 +405,7 @@ class M_Cases extends CI_Model {
 			else
 				$db_case_count = 0;
 
-			// check id case_name already exists before adding it
+			// check if case_name already exists before adding it
 			if (!$delete && !in_array($case_name, $db_case_name)) {
 				array_push($db_case_name, $case_name);
 				$db_case_count++;
@@ -671,7 +691,7 @@ class M_Cases extends CI_Model {
 		   'id'          => 'cases_id',
 		];
 
-		$result[0]['All_Cases'][] = array('case_name' => $name, 'created' => time(), 'details' => $details);
+		$result[0]['All_Cases'][] = array('case_name' => $name, 'created' => time(), 'details' => $details, 'updating'=>true);
 		
 		$action_data['body'] = array('All_Cases' => $result[0]['All_Cases']);
 
@@ -692,7 +712,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function update($name, $data) {
+	public function update($name, $data, $updating=true) {
 		
 		$params = [];
 		$params['body'] = [
@@ -712,9 +732,13 @@ class M_Cases extends CI_Model {
 		   'id'          => 'cases_id',
 		];
 
+
+
 		foreach($result[0]['All_Cases'] as $key => $value) {
 			if($result[0]['All_Cases'][$key]['case_name'] == $name) {
 				$result[0]['All_Cases'][$key]['details'] = $data;
+				// we need to flag the requests, the user has to know about this
+				$result[0]['All_Cases'][$key]['updating']=$updating;
 			}
 		}
 

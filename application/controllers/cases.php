@@ -170,7 +170,7 @@ class Cases extends Tele_Controller
 
         // Validate
         $tmp = $this->M_Cases->get_case_data($name);
-        if (!isset($tmp['empty'])) {
+        if (isset($tmp['empty']) && !$tmp['empty'] ) {
             return_success(array('existing' => true));
         }
 
@@ -219,13 +219,8 @@ class Cases extends Tele_Controller
             $method = 'add';
         }
 
-        if ($this->input->post('repeat')) {
-            $repeat =$this->input->post('repeat')=='true';
-        } else {
-            $repeat = 300;
-        }
 
-        $this->M_Cases->flag_requests_by_cases($cases,$range, $method,$repeat);
+        $this->M_Cases->flag_requests_by_cases($cases,$range, $method);
     }
 
 }

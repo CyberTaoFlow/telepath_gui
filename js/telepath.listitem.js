@@ -207,6 +207,10 @@ $.widget( "tele.listitem", {
 			var titleEl = $('<div>').addClass('tele-listitem-title').html(this.options.title).attr('title', this.options.title);
 			el.append(titleEl);
 		}
+		if(this.options.updating) {
+			var updatingEl = $('<div>').addClass('tele-listitem-updating tele-icon-ring').html('Update in progress!').attr('title', 'Update in progress!');
+			el.append(updatingEl);
+		}
 		if(this.options.description) {
 			var descEl = $('<div>').addClass('tele-title-2').html(this.options.description);
 			el.append(descEl);

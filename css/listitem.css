@@ -93,6 +93,19 @@
 	height: 20px;
 	font-family: 'Roboto Condensed Regular';
 }
+.tele-listitem-updating {
+	float: right;
+	/* margin-left: 34px; */
+	min-width: 60%;
+	max-width: 60%;
+	font-size: 18px;
+	margin-bottom: 10px;
+	margin-top: -4px;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	height: 20px;
+	font-family: 'Roboto Condensed Regular';
+}
 .tele-listitem-info {
 	float: left;
 	margin-left: 22px;

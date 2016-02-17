@@ -159,11 +159,12 @@ $.widget( "tele.teleBrowser", {
 					var treeData = [];
 
 					if(data.items.length == 0) {
-						callback.call(that, []);
-						return;
-					}
+						//callback.call(that, []);
+						//return;
+						treeData.push({ children: false, text: "No parameters" , icon: 'tele-icon-param' });
 
-					if(data.items) {
+					}
+					else if(data.items) {
 						$.each(data.items, function(i, item) {
 							item.type = 'param';
 							treeData.push({ children: false, text: item.name , icon: 'tele-icon-param', data: item });
