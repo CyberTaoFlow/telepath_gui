@@ -6,7 +6,8 @@ $.widget( "tele.teleInput", {
 		'value': '',
 		'pass': false,
 		'labelCSS' : {},
-		'link': false
+		'link': false,
+		'disabled':false
     },
     _create: function() {
         this.element.addClass( "tele-input" );
@@ -36,6 +37,8 @@ $.widget( "tele.teleInput", {
 			this.element.append(this.link);
 		} else {
 			this.input = $('<input' + tpl + '>').addClass('tele-input-input').val(this.options.value);
+			if(this.options.disabled)
+				this.input.attr('disabled', 'disabled');
 			this.element.append(this.input);
 		}
 		

@@ -72,11 +72,11 @@ telepath.caseOverlay = {
 		$('.tele-overlay').height(860).trigger('resize');
 		
 		// Case Name
-		var caseName = $('<div>').teleInput({ label: 'Name', value: data.id == 'new' ? '' : data.case_data.case_name });
+		var caseName = $('<div>').teleInput({ label: 'Name', value: data.id == 'new' ? '' : data.case_data.case_name, disabled: data.id == 'new' ? false : true });
 		
-		if(data.id != 'new') {
-			caseName.attr('disabled', 'disabled');
-		}
+		//if(data.id != 'new') {
+		//	caseName.attr('disabled', 'disabled');
+		//}
 		
 		telepath.overlay.contentEl.append(caseName);
 		

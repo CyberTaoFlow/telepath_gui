@@ -54,7 +54,7 @@ telepath.cases = {
 			
 			item.checkable = true;
 			item.favorites = true;
-			item.favorite  = item.favorite == '1';
+			item.favorite  = item.case_data.favorite == '1';
 			
 			return telepath['case'].rowFormatter(item);
 			
@@ -69,7 +69,7 @@ telepath.cases = {
 			that._resize();
 		}, 0);
 		$(window).resize(function () { that._resize() });
-		
+
 	},
 	_resize: function () {
 		
