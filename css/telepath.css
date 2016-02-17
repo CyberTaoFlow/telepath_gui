@@ -681,6 +681,12 @@ a.tele-panel-dashboard-refresh-value:hover {
 	padding-bottom: 15px;
 }
 
+.disabled{
+	pointer-events: none;
+	cursor: default;
+	opacity: 0.5;
+}
+
 .tele-daterange-period {
 	padding: 10px 0px;
 	height: 30px;
@@ -689,7 +695,11 @@ a.tele-panel-dashboard-refresh-value:hover {
 .tele-daterange-period li {
 	float: left;
 	list-style: none;
-	margin-right: 14px;
+	margin-right: 8px;
+}
+
+.tele-daterange-period li:last-child{
+	margin-right:0px;
 }
 
 .tele-daterange-period li a {
@@ -699,7 +709,7 @@ a.tele-panel-dashboard-refresh-value:hover {
 	text-decoration: none;
 	font-size: 18px;
 	border-radius: 20px;
-	width: 50px;
+	width: 47px;
 	display: block;
 	text-align: center;
 }

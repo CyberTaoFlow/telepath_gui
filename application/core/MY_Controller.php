@@ -92,11 +92,12 @@ class Tele_Controller extends CI_Controller
         $this->elasticClient = new Elasticsearch\Client();
 //		unset($params);
 
+        // Change to the new query instead of the deprecated Statistical Facet (MOSHE)
         $params['body'] = array(
             'size' => 0,
-            'facets' => [
-                'ts' => [
-                    'statistical' => [
+            'aggs' => [
+                'grades_stats' => [
+                    'extended_stats' => [
                         'field' => 'ts'
                     ]
                 ]
@@ -106,8 +107,10 @@ class Tele_Controller extends CI_Controller
         $results = $this->elasticClient->search($params);
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
 
-        $parsed['time_range'] = array('start' => $results['facets']['ts']['min'], 'end' => $results['facets']['ts']['max']);
+        $parsed['time_range'] = array( 'start' => $results['aggregations']['grades_stats']['min'], 'end' => $results['aggregations']['grades_stats']['max']);
 
+
+        $parsed['time_range']['state']='range';
         $user = $this->ion_auth->update($this->user_id, array('extradata' => json_encode($parsed)));
         if (!$user) {
             return_fail($this->ion_auth->errors());
@@ -167,8 +170,58 @@ class Tele_Controller extends CI_Controller
         }
 
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
+        if (array_key_exists("state",$parsed['time_range'])) {
+            switch ($parsed['time_range']['state']) {
+                case 'year':
 
-        $data = isset($parsed['time_range']) ? $parsed['time_range'] : array('start' => time(), 'end' => strtotime('-7 day'));
+                    $data = array('state' => 'year', 'start' => strtotime('-1 year'), 'end' => time());
+                    break;
+
+                case 'month':
+
+                    $data = array('state' => 'month', 'start' => strtotime('-1 month'), 'end' => time());
+
+                    break;
+                case 'week':
+
+                    $data = array('state' => 'week', 'start' => strtotime('-1 week'), 'end' => time());
+
+                    break;
+                case 'day':
+
+                    $data = array('state' => 'day', 'start' => strtotime('-1 day'), 'end' => time());
+
+                    break;
+
+                case 'hour':
+
+                    $data = array('state' => 'hour', 'start' => strtotime('-1 hour'), 'end' => time());
+
+                    break;
+
+                case 'data':
+
+                    $time = $this->_set_full_time_range(true);
+
+                    $data = array('state' => 'data', 'start' => $time['start'], 'end' => $time['end']);
+
+                    break;
+
+                case 'range':
+                    $data = array('state' => 'range', 'start' => $parsed['time_range']['start'], 'end' => $parsed['time_range']['end']);
+                    break;
+
+                default:
+                    $data = array('state' => 'week', 'start' => strtotime('-1 week'), 'end' => time());
+                    break;
+
+            }
+        }
+        else
+            $data = array('state' => 'week', 'start' => strtotime('-1 week'), 'end' => time());
+
+
+
 
         if ($local) {
             return $data;

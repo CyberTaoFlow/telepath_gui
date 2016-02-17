@@ -129,7 +129,8 @@ class M_Suspects extends CI_Model {
 		{
 			$params['body']["aggs"]["sid"]["aggs"] = [ "alerts_count" => [ "sum" => [ "field" => "alerts_count" ] ] ];
 		}
-		
+//		$params['body']["aggs"]["sid"]["aggs"] = [ "cases_count" => [ "sum" => [ "field" => "cases_count" ] ] ];
+
 		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 		$params['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 		
@@ -190,6 +191,9 @@ class M_Suspects extends CI_Model {
 									"alerts_count" => [
 										"sum" => [ "field" => "alerts_count" ]
 									],
+									"cases_count" => [
+										"sum" => [ "field" => "cases_count" ]
+									],
 									"score" => [
 										"avg" => [ "field" => "score_average" ]
 									],
@@ -216,7 +220,8 @@ class M_Suspects extends CI_Model {
 							$results['items'][] = array(
 								"sid"     => $sid_key,
 								"city"    => $sid['city']['buckets'][0]['key'], 
-								"alerts_count"  => $sid['alerts_count']['value'], 
+								"alerts_count"  => $sid['alerts_count']['value'],
+								"cases_count"=> $sid['cases_count']['value'],
 								"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 								"ip_orig" => long2ip($sid['ip_orig']['value']),
 								"host"    => $sid['host']['buckets'],
