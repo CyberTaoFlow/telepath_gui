@@ -139,6 +139,31 @@ $.widget( "tele.daterange", {
 						state: telepath.range.state
 					}, function (data) {
 						that.options.state = telepath.range.state;
+						var from_date = new Date();
+						switch(that.options.state) {
+							case 'data':
+								from_date.setTime(60);
+							case 'year':
+								from_date.setFullYear(from_date.getFullYear() - 1);
+								break;
+							case 'month':
+								from_date.setMonth(from_date.getMonth() - 1);
+								break;
+							case 'week':
+								from_date.setDate(from_date.getDate() - 7);
+								break;
+							case 'day':
+								from_date.setDate(from_date.getDate() - 1);
+								break;
+							case 'hour':
+								from_date.setHours(from_date.getHours() - 1);
+								break;
+						}
+						telepath.range.start = from_date/*.getTime();*/
+						telepath.range.end = new Date()/*.getTime();*/
+						that.options.start = telepath.range.start;
+						that.options.end   = telepath.range.end;
+						that.options.change(telepath.range.start, telepath.range.end);
 						that._update();
 					});
 			}
@@ -157,50 +182,29 @@ $.widget( "tele.daterange", {
 		
 		var that = this;		
 		var from_date = new Date();
-		$('.tele-darerange-container').hide();
+		$('.tele-darerange-container').addClass('disabled');
 		switch(that.options.state) {
-			/*case 'data':
-				from_date.setTime(60);
-			case 'year':
-				from_date.setFullYear(from_date.getFullYear() - 1);
-			break;
-			case 'month':
-				from_date.setMonth(from_date.getMonth() - 1);
-			break;
-			case 'week':
-				from_date.setDate(from_date.getDate() - 7);
-			break;
-			case 'day':
-				from_date.setDate(from_date.getDate() - 1);
-			break;
-			case 'hour':
-				from_date.setHours(from_date.getHours() - 1);
-			break;*/
+
 			case 'range':
-				$('.tele-darerange-container').show();
+				$('.tele-darerange-container').removeClass('disabled');
 				telepath.ds.get('/telepath/set_full_time_range', { }, function(data) { 
 				
 					// Globally
-					telepath.range.state = data.items.state;
+
 					telepath.range.start = data.items.start;
 					telepath.range.end   = data.items.end;
 				
 					// Locally
-					that.options.state = telepath.range.state;
+
 					that.options.start = telepath.range.start;
 					that.options.end   = telepath.range.end;
-					that.updateUI();
+
 					
 				});
 				
 			break;
 			
 		}
-
-		$(".tele-daterange .tele-button .tele-button-text").text('last ' + that.options.state);
-
-		if (that.options.state=='data')
-			$(".tele-daterange .tele-button .tele-button-text").text('all data');
 
 		$(".tele-daterange-to").val(date_format('d/m/Y'));
 		$(".tele-daterange-to-hour").val(date_format('H:i'));
@@ -215,15 +219,26 @@ $.widget( "tele.daterange", {
 		if(this.button) {
 			this.button.remove();
 		}
-		if ($(".tele-daterange-period a.active").length )
-			telepath.range.state = $(".tele-daterange-period a.active").attr('class').split(/-| /)[3];
 
-		if (telepath.range.state=='range')
+		$(".tele-daterange-period a.active").removeClass('active')
+
+
+		$(".tele-daterange-period a").each(function(){
+			if($(this).attr('class').split('-')[3]== telepath.range.state )
+				$(this).addClass("active");
+		});
+
+		$('.tele-darerange-container').addClass('disabled');
+
+
+		if (telepath.range.state=='range'){
 			var text =date_format('d/m/Y', this.options.start) + ' - ' + date_format('d/m/Y', this.options.end);
+			$('.tele-darerange-container').removeClass('disabled');
+		}
 		else if (telepath.range.state=='data')
-			var text='all data' ;
+			var text='All Data' ;
 		else
-			var text='last '+ telepath.range.state ;
+			var text='Last '+ telepath.range.state[0].toUpperCase() + telepath.range.state.slice(1);
 
 		this.button = $('<a>').attr('href', '#').btn({
 			icon: 'daterange',
