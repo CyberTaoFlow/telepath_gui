@@ -1,29 +1,30 @@
 $.widget( "tele.daterange", {
- 
-    // Default options.
-    options: {
+
+	// Default options.
+	options: {
 		'start': new Date().getTime(),
 		'end': new Date().getTime(),
-		'change': false
-    },
- 
-    _create: function() {
-		
-        this.element.addClass( "tele-daterange" );
-        this._update();
-		
-    },
- 
-    _setOption: function( key, value ) {
-        this.options[ key ] = value;
-        this._update();
-    },
+		'change': false,
+		'state':''
+	},
+
+	_create: function() {
+
+		this.element.addClass( "tele-daterange" );
+		this._update();
+
+	},
+
+	_setOption: function( key, value ) {
+		this.options[ key ] = value;
+		this._update();
+	},
 	_displayPopup: function () {
-		
+
 		var that = this;
-		
+
 		var el = '.tele-daterange:last';
-		
+
 		if($(".tele-daterange-popup").size() == 0) {
 			$('body').append(telepath.templates['popup-daterange']);
 		}
@@ -32,18 +33,18 @@ $.widget( "tele.daterange", {
 			$(".tele-daterange-popup").fadeOut();
 			return;
 		}
-			
+
 		var top  = $(el).offset().top + $(el).height() + 20;
 		var left = ($(el).offset().left + ($(el).width() / 2)) - ($(".tele-daterange-popup").width() / 2);
 
 		$(".tele-daterange-popup").css({ top: top , left: left });
-		
+
 		$(".tele-daterange-popup").fadeIn();
-		
-		
+
+
 
 		$.datepicker._defaults.dateFormat = "dd/mm/yy";
-		
+
 		$(".tele-daterange-calendar").datepicker({
 			//minDate: 0,
 			numberOfMonths: [1,2],
@@ -75,19 +76,19 @@ $.widget( "tele.daterange", {
 				}
 			}
 		});
-		
+
 		$(".tele-daterange-period a").click(function () {
 			console.log('HERE!');
 			$(".tele-daterange-period a.active").removeClass('active');
-			var period = $(this).attr('class').split('-')[3]; // .split(' ')[0]
+			that.options.state = $(this).attr('class').split('-')[3]; // .split(' ')[0]
 			$(this).addClass('active');
-			that.setPeriod(period);
+			that.setPeriod();
 		});
 
 		function get_hour_value(element) {
-			
+
 			var str = element.val();
-			
+
 			if(str == '') {
 				element.val('');
 				return 0;
@@ -100,9 +101,9 @@ $.widget( "tele.daterange", {
 					return 0;
 				}
 			}
-			
+
 		}
-		
+
 		$(".tele-daterange-buttons .tele-button-apply").click(function () {
 			$(".tele-daterange-popup").fadeOut();
 			if(typeof(that.options.change) == 'function') {
@@ -170,51 +171,51 @@ $.widget( "tele.daterange", {
 		$(".tele-daterange-buttons .tele-button-cancel").click(function () {
 			$(".tele-daterange-popup").fadeOut();
 		});
-		
+
 		this.updateUI();
-	
+
 	},
-    _update: function() {
+	_update: function() {
 		this.updateUI();
 	},
-	setPeriod: function(period) {
-		
-		var that = this;		
+	setPeriod: function() {
+
+		var that = this;
 		var from_date = new Date();
 		$('.tele-darerange-container').addClass('disabled');
 		switch(that.options.state) {
 
 			case 'range':
 				$('.tele-darerange-container').removeClass('disabled');
-				telepath.ds.get('/telepath/set_full_time_range', { }, function(data) { 
-				
+				telepath.ds.get('/telepath/set_full_time_range', { }, function(data) {
+
 					// Globally
 
 					telepath.range.start = data.items.start;
 					telepath.range.end   = data.items.end;
-				
+
 					// Locally
 
 					that.options.start = telepath.range.start;
 					that.options.end   = telepath.range.end;
 
-					
+
 				});
-				
-			break;
-			
+
+				break;
+
 		}
 
 		$(".tele-daterange-to").val(date_format('d/m/Y'));
 		$(".tele-daterange-to-hour").val(date_format('H:i'));
 		$(".tele-daterange-from").val(date_format('d/m/Y', from_date));
 		$(".tele-daterange-from-hour").val(date_format('H:i', from_date));
-		
+
 	},
 	updateUI: function() {
-		
+
 		var that = this;
-		
+
 		if(this.button) {
 			this.button.remove();
 		}
@@ -246,16 +247,16 @@ $.widget( "tele.daterange", {
 				that._displayPopup(this);
 			}
 		});
-		
+
 		this.element.append(this.button);
-		
+
 		// Load default values to display in textboxes
 		$(".tele-daterange-from").val(date_format('d/m/Y', this.options.start));
 		$(".tele-daterange-from-hour").val(date_format('H:i', this.options.start));
 		$(".tele-daterange-to").val(date_format('d/m/Y', this.options.end));
 		$(".tele-daterange-to-hour").val(date_format('H:i', this.options.end));
-		
-		
-	
+
+
+
 	}
 });
