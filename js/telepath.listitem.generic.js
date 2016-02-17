@@ -52,7 +52,7 @@ telepath.listitem.generic = {
 			telepath.sessionflow.init(widget.options.itemID, widget.element.parent().parent(), widget.options.icon, widget.options.raw.searchkey);
 		},
 		hover_in: function(el, item) {
-			$('.popover').remove();
+			
 			telepath.generic_popover_loading = true;
 			setTimeout(function () {
 				telepath.generic_popover_loading = false;
@@ -60,7 +60,7 @@ telepath.listitem.generic = {
 			if(telepath.generic_popover_timer) {
 				clearTimeout(telepath.generic_popover_timer);
 			}
-
+			$('.popover').remove();
 			if(telepath.generic_popover) {
 				telepath.generic_popover.remove();
 			}
@@ -84,42 +84,45 @@ telepath.listitem.generic = {
 
 			if(item.raw.alerts_count && item.raw.alerts_count > 0 && item.raw.alerts_names && item.raw.alerts_names.length > 0) {
 
-                $('.popover').remove();
+				$('.popover').remove();
 
-                telepath.generic_popover.remove();
+				telepath.generic_popover.remove();
 
-                telepath.generic_popover = $('<div>');
+				telepath.generic_popover = $('<div>');
 
-                $('body').append(telepath.generic_popover);
+				$('body').append(telepath.generic_popover);
 
-                var alerts_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Alerts');
-                var alerts_content = $('<div>').addClass('popover-content');
+				var alerts_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Alerts');
+				var alerts_content = $('<div>').addClass('popover-content');
 
 				$.each(item.raw.alerts_names, function (i, x) {
-					
+
 					var row = $('<div>').addClass('tele-popover-row')
-										.append($('<div>').addClass('tele-icon').addClass('tele-icon-alert'))
-										.append($('<div>').addClass('tele-count').text(x.doc_count))
-										.append($('<div>').addClass('tele-popover-subtitle').html(x.key));
-										
+						.append($('<div>').addClass('tele-icon').addClass('tele-icon-alert'))
+						.append($('<div>').addClass('tele-count').text(x.doc_count))
+						.append($('<div>').addClass('tele-popover-subtitle').html(x.key));
+
 					alerts_content.append(row);
-					
+
 				});
-                $(telepath.generic_popover).css({
-                    position: 'absolute',
-					top: $(el).offset().top - 25,
-                    left: $(el).offset().left + 70
-                }).fadeIn().popover({
-                    title: 'Loading anomaly scores..',
-                    html: true,
-                    content: telepath.loader
-                }).popover('show');
-                $('.popover').append(alerts_title).append(alerts_content);
 				$(telepath.generic_popover).css({
-					//position: 'absolute',
-					top: $(el).offset().top - ( $('.popover').height()/2-25),
+					position: 'absolute',
+					top: $(el).offset().top - 45,
 					left: $(el).offset().left + 70
-				})
+				}).fadeIn().popover({
+					title: 'Loading anomaly scores..',
+					html: true,
+					content: telepath.loader
+				}).popover('show');
+				$('.popover').append(alerts_title).append(alerts_content);
+				var top = ( $('.popover').height() / 2 - 25);
+				if (top) {
+					$('.popover').css({
+						position: 'absolute',
+						top: $(el).offset().top - top,
+						left: $(el).offset().left + 70
+					})
+				}
 			}
 			if(item.raw.actions_count && item.raw.actions_count > 0 && item.raw.actions_names && item.raw.actions_names.length > 0) {
 
@@ -146,7 +149,7 @@ telepath.listitem.generic = {
 				$('.popover-title:first').html('Anomaly Scores');
 				$('.popover-content .tele-loader').after($('<div>').anomalyScore({ request: data.items })).remove();
 				$('.popover').css({
-					//position: 'absolute',
+					position: 'absolute',
 					top: $(el).offset().top - ($('.popover').height()/2-25),
 					left: $(el).offset().left + 70
 				})
