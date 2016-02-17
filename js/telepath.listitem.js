@@ -164,8 +164,15 @@ $.widget( "tele.listitem", {
 		if(this.options.icon =='suspect') {
 			var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-case2');
 			el.append(iconEl);
-		}
 
+		}
+		if(this.options.raw.cases_count) {
+			var countEl = $('<div>').addClass('tele-listitem-count2').html(this.options.raw.cases_count);
+			el.append(countEl);
+			if(parseInt(this.options.raw.cases_count) > 999) {
+				countEl.css({ "fontSize" : '12px', "left" : '30px' });
+			}
+		}
 		if(this.options.count) {
 			var countEl = $('<div>').addClass('tele-listitem-count').html(this.options.count);
 			el.append(countEl);
