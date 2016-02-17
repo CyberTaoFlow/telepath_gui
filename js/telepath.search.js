@@ -177,7 +177,7 @@ telepath.search = {
             var tab = tabs[x];
             var tabEl = $('<div>').attr('id', 'tele-search-' + tab.id);
             // Show Loading
-            tabEl.append('<img class="loader" src="img/loader.gif">');
+            //tabEl.append('<img class="loader" src="img/loader.gif">');
             var tabLi = $('<li>');
             var tabCount = $('<span>').html('0');
             var tabA = $('<a>').attr('href', '#tele-search-' + tab.id).append(tab.text + '&nbsp;(').append(tabCount).append(')').attr('rel', tab.id).addClass('tele-search-tab');
