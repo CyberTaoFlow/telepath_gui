@@ -142,7 +142,20 @@ $.widget( "tele.daterange", {
 						var from_date = new Date();
 						switch(that.options.state) {
 							case 'data':
-								from_date.setTime(60);
+								telepath.ds.get('/telepath/set_full_time_range', { }, function(data) {
+
+									// Globally
+
+									telepath.range.start = data.items.start;
+									telepath.range.end   = data.items.end;
+
+									// Locally
+
+									that.options.start = telepath.range.start;
+									that.options.end   = telepath.range.end;
+
+								});
+
 							case 'year':
 								from_date.setFullYear(from_date.getFullYear() - 1);
 								break;
@@ -159,8 +172,12 @@ $.widget( "tele.daterange", {
 								from_date.setHours(from_date.getHours() - 1);
 								break;
 						}
-						telepath.range.start = from_date/*.getTime();*/
-						telepath.range.end = new Date()/*.getTime();*/
+
+						if (that.options.state!="data"){
+							telepath.range.start = from_date.getTime() / 1000;
+							telepath.range.end = new Date().getTime() / 1000;
+						}
+
 						that.options.start = telepath.range.start;
 						that.options.end   = telepath.range.end;
 						that.options.change(telepath.range.start, telepath.range.end);
@@ -183,9 +200,7 @@ $.widget( "tele.daterange", {
 		var that = this;
 		var from_date = new Date();
 		$('.tele-darerange-container').addClass('disabled');
-		switch(that.options.state) {
-
-			case 'range':
+		if (that.options.state =='range'){
 				$('.tele-darerange-container').removeClass('disabled');
 				telepath.ds.get('/telepath/set_full_time_range', { }, function(data) {
 
@@ -202,14 +217,12 @@ $.widget( "tele.daterange", {
 
 				});
 
-				break;
-
 		}
 
-		$(".tele-daterange-to").val(date_format('d/m/Y'));
-		$(".tele-daterange-to-hour").val(date_format('H:i'));
-		$(".tele-daterange-from").val(date_format('d/m/Y', from_date));
-		$(".tele-daterange-from-hour").val(date_format('H:i', from_date));
+		$(".tele-daterange-to").val(date_format('d/m/Y',telepath.range.end));
+		$(".tele-daterange-to-hour").val(date_format('H:i',telepath.range.end));
+		$(".tele-daterange-from").val(date_format('d/m/Y', telepath.range.start));
+		$(".tele-daterange-from-hour").val(date_format('H:i', telepath.range.start));
 
 	},
 	updateUI: function() {
