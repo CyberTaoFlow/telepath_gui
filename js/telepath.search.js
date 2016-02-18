@@ -330,6 +330,9 @@ telepath.search = {
 
                 }, function (data) {
                     // error handler
+                    that.count++;
+                    if (that.count==4)
+                        that.selectTab();
                     that.container = $('#tele-search-' + type);
                     that.container.empty();
                     var p = $('<p>').text(data['error']);
@@ -339,6 +342,9 @@ telepath.search = {
 
             }
             else {
+                that.count++;
+                if (that.count==4)
+                    that.selectTab();
                 that.container = $('#tele-search-' + type);
                 that.container.empty();
                 var p = $('<p>').text("No select option " + type);
