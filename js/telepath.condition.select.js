@@ -42,6 +42,12 @@ telepath.formatConditionBrief = function(container, data) {
 			
 		case 'time':
 		break;
+
+		case 'parameter':
+
+			result = data.value.replace(',', ', ');
+
+			break;
 		
 	}
 	

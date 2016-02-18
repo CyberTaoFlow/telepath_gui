@@ -248,10 +248,14 @@ class M_Cases extends CI_Model {
 	 * @param $range boolean - if true update only from the last update
 	 * @param $method string - "add" ,"delete" or "update" case
      */
+
 	public function flag_requests_by_cases($cases_name, $range, $method)
 	{
 
+		$this->logger('start');
+
 		ini_set('MAX_EXECUTION_TIME', -1);
+		ignore_user_abort(true);
 
 		$params = [
 			"search_type" => "scan",    // use search_type=scan
@@ -296,6 +300,8 @@ class M_Cases extends CI_Model {
 					}
 				}
 
+				$this->logger('delete old case: ' . $case);
+
 			}
 
 		}
@@ -329,7 +335,7 @@ class M_Cases extends CI_Model {
 						case "rules":
 							$term = "alerts.name";
 							break;
-						case "parameters":
+						case "parameter":
 							$term = "parameters.name";
 							break;
 					}
@@ -369,6 +375,8 @@ class M_Cases extends CI_Model {
 					}
 				}
 
+				$this->logger($method .' case: ' . $case['case_name']);
+
 			}
 
 
@@ -383,6 +391,15 @@ class M_Cases extends CI_Model {
 		}
 
 		return_success();
+	}
+
+	public function logger($message){
+
+
+		if(!$this->input->is_cli_request())
+			return;
+
+		echo date('Y-m-d H:i') . ' ' . $message . "\n";
 	}
 
 	/**
@@ -702,7 +719,7 @@ class M_Cases extends CI_Model {
 		$deleteParams['id'] = 'cases_id';
 		$retDelete = $this->elasticClient->delete($deleteParams);
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
-		
+
 		// Index new data
 		// Sample:: 
 		// {"index":"telepath-config","type":"cases","id":"cases_id","body":{"All_Cases":[{"case_name":"Locals","details":[{"type":"country","negate":false,"value":"00"},{"type":"IP","negate":false,"value":"192.168.1.1-192.168.1.254"},{"type":"application","negate":true,"value":"www.hybridsec.com"}]},{"case_name":"Hackers","details":[{"type":"country","negate":false,"value":"CN"}]},{"case_name":"Americans","details":[{"type":"country","negate":false,"value":"US"}]},{"case_name":"Israelis","details":[{"type":"country","negate":false,"value":"IL"}]},{"case_name":"Trololo","created":1428320346,"details":[{"type":"rules","negate":false,"value":[{"type":"group","id":"Known Bad IP","category":"Hybrid"},{"type":"group","id":"ShellShock","category":"Hybrid"}]},{"type":"application","negate":false,"value":"ie.rempel.net"},{"type":"IP","negate":false,"value":"111.111.111.111,222.222.222.222,33.33.33.33-33.33.33.34"}]}]}}
