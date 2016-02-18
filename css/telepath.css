@@ -6,6 +6,11 @@
 	  height: 55px;
 }
 
+.tele-panel-search .tele-loader{
+	position: absolute;
+	top: 130px;
+}
+
 body {
 	background-color: rgb(214,214,214);
 }
