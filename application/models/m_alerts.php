@@ -317,6 +317,9 @@ class M_Alerts extends CI_Model {
 								"alerts_count" => [
 									"sum" => [ "field" => "alerts_count" ]
 								],
+								"cases_count" => [
+									"sum" => [ "field" => "cases_count" ]
+								],
 								"country_code" => [
 									"terms" => [ "field" => "country_code", "size" => 1 ]
 								],
@@ -361,8 +364,9 @@ class M_Alerts extends CI_Model {
 							"sid"     => $sid_key,
 							"city"    => $sid['city']['buckets'][0]['key'], 
 							"alerts_count"  => $sid['alerts_count']['value'], 
-							"alerts_names"  => $sid['alerts_names']['buckets'], 
-							"actions_count"  => $sid['actions_count']['value'], 
+							"alerts_names"  => $sid['alerts_names']['buckets'],
+							"actions_count"  => $sid['actions_count']['value'],
+							"cases_count" => $sid['cases_count']['value'],
 							"actions_names"  => $sid['actions_names']['buckets'], 
 							"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 							"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),

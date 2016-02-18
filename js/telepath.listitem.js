@@ -161,12 +161,12 @@ $.widget( "tele.listitem", {
 			el.append(iconEl);
 		}
 
-		if(this.options.icon =='suspect') {
+		if(this.options.icon =='suspect'|| this.options.icon =='alert') {
 			var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-case2');
 			el.append(iconEl);
 
 		}
-		if(this.options.raw.cases_count) {
+		if((this.options.icon =='suspect' || this.options.icon =='alert') &&this.options.raw.cases_count) {
 			var countEl = $('<div>').addClass('tele-listitem-count2').html(this.options.raw.cases_count);
 			el.append(countEl);
 			if(parseInt(this.options.raw.cases_count) > 999) {
@@ -303,9 +303,10 @@ $.widget( "tele.listitem", {
 								if(parseInt(detail.value) > 0) {
 								
 									var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-alert');
+									var iconEl2 = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-case');
 									var countEl = $('<div>').addClass('tele-listitem-count').html(detail.value);
 									li.addClass('tele-listitem-alerts-count');
-									li.append(iconEl).append(countEl);
+									li.append(iconEl).append(iconEl2).append(countEl);
 								
 								} else {
 								
