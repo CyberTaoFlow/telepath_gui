@@ -162,7 +162,7 @@ $.widget( "tele.listitem", {
 		}
 
 		if(this.options.icon =='suspect'|| this.options.icon =='alert') {
-			var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-case2');
+			var iconEl = $('<div>').addClass('tele-listitem-icon tele-icon-case2');
 			el.append(iconEl);
 
 		}
@@ -170,7 +170,7 @@ $.widget( "tele.listitem", {
 			var countEl = $('<div>').addClass('tele-listitem-count2').html(this.options.raw.cases_count);
 			el.append(countEl);
 			if(parseInt(this.options.raw.cases_count) > 999) {
-				countEl.css({ "fontSize" : '12px', "left" : '30px' });
+				countEl.css({ "fontSize" : '12px', /*"left" : '30px' */});
 			}
 		}
 		if(this.options.count) {
