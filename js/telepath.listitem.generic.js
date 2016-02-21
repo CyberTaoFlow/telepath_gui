@@ -29,7 +29,7 @@ telepath.listitem.generic = {
 				]
 		}
 
-		if (item.business_action.length>0){
+		if (item.business_action && item.business_action.length>0){
 			result.details.push({key: 'business_actions', value: item.business_actions[0].key})
 		}
 
