@@ -386,9 +386,9 @@ class M_Cases extends CI_Model {
 			}
 			// if it's not the script, we need to inform the user that the updating process is finish
 			else{
-				$this->update($case['case_name'],false,false);
+				$this->update($case,false,false);
 			}
-		}
+
 
 		return_success();
 	}
