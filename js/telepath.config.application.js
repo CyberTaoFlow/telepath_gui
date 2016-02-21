@@ -37,7 +37,7 @@ telepath.config.application = {
 
 		}
 		
-		app_data.move_to_production_id = $('input', this.move_to_production_id).val();
+		app_data.move_to_production = $('input', this.move_to_production).val();
 		
 		// DISPLAY NAME
 		app_data.display_name = $('input', this.AD_display_name).val();
@@ -382,11 +382,11 @@ telepath.config.application = {
 
 
 		// MV2Prod after
-		this.move_to_production_id = $('<div>').teleInput({
+		this.move_to_production = $('<div>').teleInput({
 			label: 'Move to production per application after',
 			suffix: 'requests',
 			width: 70,
-			value: that.app_data.move_to_production_id
+			value: that.app_data.move_to_production
 		}).addClass('tele-config-mv2prod').appendTo('#tele-app-details');
 
 		/*

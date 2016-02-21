@@ -202,7 +202,7 @@ class M_Applications extends CI_Model {
 			$app['AppCookieName'] = '';
 			$app['app_ips'] = '';
 			$app['operation_mode_id'] = '';
-			$app['move_to_production_id'] = '';
+			$app['move_to_production'] = '';
 			$app['eta_id'] = '';
 			$app['app_ips'] = '';
 			$app['form_authentication_redirect_response_range'] = '';
@@ -230,8 +230,8 @@ class M_Applications extends CI_Model {
 			if (!isset($app['operation_mode_id'])) {
 				$app['operation_mode_id'] = '';
 			}
-			if (!isset($app['move_to_production_id'])) {
-				$app['move_to_production_id'] = '';
+			if (!isset($app['move_to_production'])) {
+				$app['move_to_production'] = '';
 			}
 			if (!isset($app['eta_id'])) {
 				$app['eta_id'] = '';
