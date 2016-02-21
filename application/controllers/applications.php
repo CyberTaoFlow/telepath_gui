@@ -142,6 +142,9 @@ class Applications extends Tele_Controller
         $data['host'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['host']));
         $this->M_Applications->set($data);
 
+        $this->load->model('M_Config');
+        $this->M_Config->update('app_list_was_changed_id',$data['host']);
+
         // REWRITE OUR NGINX.CONF
         $this->load->model('M_Nginx');
         $conf = $this->M_Nginx->gen_config();
