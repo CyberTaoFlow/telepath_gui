@@ -265,7 +265,7 @@
 .tele-alert-params-table-wrap {
 	max-height: 250px;
 	max-width: auto;
-	overflow-y: scroll;
+	/*overflow-y: scroll;*/
 	padding: 10px;
 }
 .tele-alert-params-table {
@@ -412,6 +412,7 @@
 }
 
 .tele-similarities-list {
+	overflow-y: scroll;
 	margin-top: 10px;
 }
 

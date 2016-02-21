@@ -205,6 +205,10 @@ function get_gap($range) {
 			array('from_class' => 'Users', 'from_function' => 'set_self', 'to_class' => 'Telepath', 'to_function' => 'get_telepath'),
 			
 		);
+
+		if ($class=='Search'){
+			$function='get';
+		}
 		
 		foreach($rewrite_list as $rewrite_item) {
 			if($class == $rewrite_item['from_class'] && $function == $rewrite_item['from_function']) {
@@ -257,7 +261,7 @@ function get_gap($range) {
 				}
 
 				else{
-					return_json(array('success' => false, 'error' =>'you d`ont have permission to see '.$function, 'debug' => 'Auth declined access for ' . $class . ' function ' . $function));
+					return_json(array('success' => false, 'error' =>'you d`ont have permission to see '.$class, 'debug' => 'Auth declined access for ' . $class . ' function ' . $function));
 				}
 			}
 
