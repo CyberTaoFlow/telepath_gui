@@ -277,6 +277,7 @@ class M_Cases extends CI_Model {
 			if ($method != 'add') {
 
 				foreach ($cases_name as $case) {
+					register_shutdown_function([$this, 'flag_shutdown'],$case,$method, $range);
 					$params['body']['query']['bool']['must'][] = ['term' => ["cases.name" => $case]];
 					$params['body']["sort"] = ["_doc"];
 					$docs = $this->elasticClient->search($params);
@@ -318,6 +319,8 @@ class M_Cases extends CI_Model {
 					$cases = [$this->get_case_data($cases_name[0])];
 
 				foreach ($cases as $case) {
+					register_shutdown_function([$this, 'flag_shutdown'],$case['case_name'],$method, $range);
+
 					$params['body'] = [];
 					foreach ($case['details'] as $condition) {
 
@@ -394,15 +397,19 @@ class M_Cases extends CI_Model {
 		if ($range) {
 			$this->set_last_case_update($update_time);
 			return;
-		} // if it's not the script and we added or updated a case, we need to inform the user that the updating process is finish
-		else {
-			if ($method != 'delete') {
-				$this->update($case['case_name'], false, false);
-			}
 		}
 
 
 		return_success();
+	}
+
+
+	// if it's not the script and we added or updated a case, we need to inform the user that the updating process is finish
+	public function flag_shutdown($case_name,$method, $range)
+	{
+		if ($method != 'delete' && !$range) {
+			$this->update($case_name, false, false);
+		}
 	}
 
 	public function logger($message)
