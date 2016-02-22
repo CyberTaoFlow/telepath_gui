@@ -248,148 +248,178 @@ class M_Cases extends CI_Model {
 	 * @param $range boolean - if true update only from the last update
 	 * @param $method string - "add" ,"delete" or "update" case
      */
+
 	public function flag_requests_by_cases($cases_name, $range, $method)
 	{
 
-		ini_set('MAX_EXECUTION_TIME', -1);
+		$this->logger('start');
 
-		$params = [
-			"search_type" => "scan",    // use search_type=scan
-			"scroll" => "1m",          // h ow long between scroll requests. should be small!
-			"size" => 9999,               // how many results *per shard* you want back
-			"index" => 'telepath-20*',
-			"_source" => ['cases.name', 'cases_count']
-		];
+		@set_time_limit(-1);
 
-		// If it's a script that always run, we take the time before the iterations
-		if ($range)
-			$update_time = time();
+		ignore_user_abort(true);
 
-		// Delete all the flags of the cases, if method = delete or update
-		if ($method != 'add') {
+		$status = $this->elasticClient->indices()->status(['index' => 'telepath-20*']);
+		foreach ($status['indices'] as $index_name => $index_status) {
 
-			foreach ($cases_name as $case) {
-				$params['body']['query']['bool']['must'][] = ['term' => ["cases.name" => $case]];
-				$params['body']["sort"] = ["_doc"];
-				$docs = $this->elasticClient->search($params);
+			$params = [
+				"search_type" => "scan",    // use search_type=scan
+				"scroll" => "1m",          // h ow long between scroll requests. should be small!
+				"size" => 9999,               // how many results *per shard* you want back
+				"index" => $index_name,
+				"_source" => ['cases.name', 'cases_count']
+			];
 
-				$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
+			// If it's a script that always run, we take the time before the iterations
+			if ($range)
+				$update_time = time();
 
-				// Now we loop until the scroll "cursors" are exhausted
-				while (\true) {
+			// Delete all the flags of the cases, if method = delete or update
+			if ($method != 'add') {
 
-					// Execute a Scroll request
-					$response = $this->elasticClient->scroll([
-							"scroll_id" => $scroll_id,  //using our previously obtained _scroll_id
-							"scroll" => "1m"          // and the same timeout window
-						]
-					);
-
-					// Check to see if we got any search hits from the scroll
-					if (count($response['hits']['hits']) > 0) {
-						$this->update_requests($response['hits']['hits'], $case, true);
-						// Get new scroll_id
-						$scroll_id = $response['_scroll_id'];
-					} else {
-						// No results, scroll cursor is empty.  We've exported all the data
-						break;
-					}
-				}
-
-			}
-
-		}
-
-		// Add new flags if method = add or update
-		if ($method != 'delete') {
-			if ($cases_name == 'all')
-				$cases = $this->get_case_data('all');
-			else
-				$cases = [$this->get_case_data($cases_name[0])];
-
-			foreach ($cases as $case) {
-				$params['body'] = [];
-				foreach ($case['details'] as $condition) {
-
-					if (!$condition['negate'])
-						$appear = 'must';
-					else
-						$appear = 'must_not';
-
-					switch ($condition['type']) {
-						case "application":
-							$term = "host";
-							break;
-						case "country":
-							$term = "country_code";
-							break;
-						case "IP":
-							$term = "ip_orig";
-							break;
-						case "rules":
-							$term = "alerts.name";
-							break;
-						case "parameters":
-							$term = "parameters.name";
-							break;
-					}
-					// The query to find the requests that match the case details
-					$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => str_replace(',', ' OR ', $condition['value'])]];
+				foreach ($cases_name as $case) {
+					$params['body']['query']['bool']['must'][] = ['term' => ["cases.name" => $case]];
 					$params['body']["sort"] = ["_doc"];
+					$docs = $this->elasticClient->search($params);
 
-				}
+					$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
 
-				// If it's a script that always run, we have to query only the latest requests
-				if ($range)
-					$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($update_time), 'lte' => intval($this->get_last_case_update())]]];
+					// Now we loop until the scroll "cursors" are exhausted
+					while (\true) {
 
+						// Execute a Scroll request
+						$response = $this->elasticClient->scroll([
+								"scroll_id" => $scroll_id,  //using our previously obtained _scroll_id
+								"scroll" => "1m"          // and the same timeout window
+							]
+						);
 
-				$docs = $this->elasticClient->search($params);
-
-				$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
-
-			// Now we loop until the scroll "cursors" are exhausted
-				while (\true) {
-
-					// Execute a Scroll request
-					$response = $this->elasticClient->scroll([
-							"scroll_id" => $scroll_id,  // using our previously obtained _scroll_id
-							"scroll" => "1m"         // and the same timeout window
-						]
-					);
-
-					// Check to see if we got any search hits from the scroll
-					if (count($response['hits']['hits']) > 0) {
-						$this->update_requests($response['hits']['hits'], $case['case_name'], false);
-						// Get new scroll_id
-						$scroll_id = $response['_scroll_id'];
-					} else {
-						// No results, scroll cursor is empty.  We've exported all the data
-						break;
+						// Check to see if we got any search hits from the scroll
+						if (count($response['hits']['hits']) > 0) {
+							$this->update_requests($response['hits']['hits'], $case, true);
+							// Get new scroll_id
+							$scroll_id = $response['_scroll_id'];
+						} else {
+							// No results, scroll cursor is empty.  We've exported all the data
+							break;
+						}
 					}
+
+					$this->logger('delete old case: ' . $case);
+
 				}
 
 			}
 
+			// Add new flags if method = add or update
+			if ($method != 'delete') {
+				if ($cases_name == 'all')
+					$cases = $this->get_case_data('all');
+				else
+					$cases = [$this->get_case_data($cases_name[0])];
 
-			if ($range) {
-				$this->set_last_case_update($update_time);
-				return;
+				foreach ($cases as $case) {
+					$params['body'] = [];
+					foreach ($case['details'] as $condition) {
+
+						if (!$condition['negate'])
+							$appear = 'must';
+						else
+							$appear = 'must_not';
+
+						switch ($condition['type']) {
+							case "application":
+								$term = "host";
+								break;
+							case "country":
+								$term = "country_code";
+								break;
+							case "IP":
+								$term = "ip_orig";
+								break;
+							case "rules":
+								$term = "alerts.name";
+								break;
+							case "parameter":
+								$term = "parameters.name";
+								break;
+//						case "time":
+//							$term= "ts";
+//							break;
+						}
+						// The query to find the requests that match the case details
+						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => str_replace(',', ' OR ', $condition['value'])]];
+						// If the request has already this case name, we don't need to flag it
+						$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
+						$params['body']["sort"] = ["_doc"];
+
+					}
+
+					// If it's a script that always run, we have to query only the latest requests
+					if ($range)
+						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($update_time), 'lte' => intval($this->get_last_case_update())]]];
+
+
+					$docs = $this->elasticClient->search($params);
+
+					$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
+
+					// Now we loop until the scroll "cursors" are exhausted
+					while (\true) {
+
+						// Execute a Scroll request
+						$response = $this->elasticClient->scroll([
+								"scroll_id" => $scroll_id,  // using our previously obtained _scroll_id
+								"scroll" => "1m"         // and the same timeout window
+							]
+						);
+
+						// Check to see if we got any search hits from the scroll
+						if (count($response['hits']['hits']) > 0) {
+							$this->update_requests($response['hits']['hits'], $case['case_name'], false);
+							// Get new scroll_id
+							$scroll_id = $response['_scroll_id'];
+						} else {
+							// No results, scroll cursor is empty.  We've exported all the data
+							break;
+						}
+					}
+
+					$this->logger($method . ' case: ' . $case['case_name']);
+
+				}
 			}
-			// if it's not the script, we need to inform the user that the updating process is finish
-			else{
-				$this->update($case['case_name'],false,false);
+
+		}
+
+		if ($range) {
+			$this->set_last_case_update($update_time);
+			return;
+		} // if it's not the script and we added or updated a case, we need to inform the user that the updating process is finish
+		else {
+			if ($method != 'delete') {
+				$this->update($case['case_name'], false, false);
 			}
 		}
+
 
 		return_success();
+	}
+
+	public function logger($message)
+	{
+
+
+		if (!$this->input->is_cli_request())
+			return;
+
+		echo date('Y-m-d H:i') . ' ' . $message . "\n";
 	}
 
 	/**
 	 * @param $results
 	 * @param $case_name
 	 * @param $delete boolean - if true we delete the case, if false we add the case
-     */
+	 */
 	public function update_requests($results, $case_name, $delete)
 	{
 
@@ -409,8 +439,7 @@ class M_Cases extends CI_Model {
 			if (!$delete && !in_array($case_name, $db_case_name)) {
 				array_push($db_case_name, $case_name);
 				$db_case_count++;
-			}
-			// check that case_name exists before delete it
+			} // check that case_name exists before delete it
 			elseif ($delete && in_array($case_name, $db_case_name)) {
 				$db_case_name = array_diff($db_case_name, [$case_name]);
 				$db_case_count--;
@@ -702,7 +731,7 @@ class M_Cases extends CI_Model {
 		$deleteParams['id'] = 'cases_id';
 		$retDelete = $this->elasticClient->delete($deleteParams);
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
-		
+
 		// Index new data
 		// Sample:: 
 		// {"index":"telepath-config","type":"cases","id":"cases_id","body":{"All_Cases":[{"case_name":"Locals","details":[{"type":"country","negate":false,"value":"00"},{"type":"IP","negate":false,"value":"192.168.1.1-192.168.1.254"},{"type":"application","negate":true,"value":"www.hybridsec.com"}]},{"case_name":"Hackers","details":[{"type":"country","negate":false,"value":"CN"}]},{"case_name":"Americans","details":[{"type":"country","negate":false,"value":"US"}]},{"case_name":"Israelis","details":[{"type":"country","negate":false,"value":"IL"}]},{"case_name":"Trololo","created":1428320346,"details":[{"type":"rules","negate":false,"value":[{"type":"group","id":"Known Bad IP","category":"Hybrid"},{"type":"group","id":"ShellShock","category":"Hybrid"}]},{"type":"application","negate":false,"value":"ie.rempel.net"},{"type":"IP","negate":false,"value":"111.111.111.111,222.222.222.222,33.33.33.33-33.33.33.34"}]}]}}
@@ -712,7 +741,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function update($name, $data, $updating=true, $favorite=false) {
+	public function update($name, $data=false, $updating=true, $favorite=false) {
 		
 		$params = [];
 		$params['body'] = [

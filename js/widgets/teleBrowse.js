@@ -53,9 +53,10 @@ $.widget( "tele.teleBrowse", {
 		if(this.options.global) {
 			output.global   = this.options.global;
 		}
-		
+
+		if(output.paramname || output.pagename ){
 		$('input', this.input).val(output.paramname != '' ? output.paramname : output.pagename).data('selected', JSON.stringify(output));
-		
+		}
 	
     },
 	openBrowser: function() {

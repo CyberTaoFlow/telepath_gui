@@ -106,6 +106,17 @@ $.widget( "tele.condition", {
 				result = result.substr(0, result.length - 1);
 			
 			break;
+
+			case 'parameter':
+
+				result = '';
+				$('input', this.element).each(function () {
+					result = result + $(this).val().trim() + ',';
+				});
+				result = result.substr(0, result.length - 1);
+
+
+				break;
 			
 		}
 		
@@ -255,7 +266,7 @@ $.widget( "tele.condition", {
 									}
 								});
 								return cb;
-								
+
 								
 							}, width: 50 }
 						],
@@ -273,15 +284,34 @@ $.widget( "tele.condition", {
 			break;
 			
 			case 'application':
-			
-				var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: [{ text: 'All', id: '-1', sub_id: '-1', root: true }], click: function () { } });
-				this.element.append(filterApps);
+
+				var values = that.options.data.value.split(',');
+
+				if(values.length){
+
+					for(var x in values ){
+
+						var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: [{ text: values[x], id: '-1', sub_id: '-1', root: true }], click: function () { } });
+						this.element.append(filterApps);
+					}
+				}
+				else{
+
+					var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: [{ text: 'All', id: '-1', sub_id: '-1', root: true }], click: function () { } });
+					this.element.append(filterApps);
+				}
+
+
+				//var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: this.options.data.value, click: function () { } });
+
 				
 			break;
 			
 			case 'country':
-				
-				var cList  = $('<ul>').addClass('tele-country-list').teleCountry();
+
+				var values = that.options.data.value.split(',');
+
+				var cList  = $('<ul>').addClass('tele-country-list').teleCountry({values:values});
 
 				this.element.append(cList);
 				
@@ -289,8 +319,8 @@ $.widget( "tele.condition", {
 			
 			case 'IP':
 
-				$.each(this.options.data.value.split(','), function (i, ip) {
-					that.element.append(getRangeUI(ip, that.element));
+				$.each(that.options.data.value.split(','), function (i, ip) {
+					that.element.append(old_getRangeUI(ip, that.element));
 				});
 				
 				// Another blank
@@ -328,7 +358,7 @@ $.widget( "tele.condition", {
 			
 			case 'parameter':
 				
-				var paramBrowse = $('<div>').teleBrowse({ label: 'Select Parameter', mode: 'param' });
+				var paramBrowse = $('<div>').teleBrowse({ label: 'Select Parameter', mode: 'param',value: that.options.data.value });
 				this.element.append(paramBrowse);
 				
 			break;

@@ -11,7 +11,8 @@ $.widget( "tele.teleCountry", {
 		this._update();
     },
     _setOption: function( key, value ) {
-		
+		this.options[ key ] = value;
+		this._update();
     },
 	getSelected: function () {
 		
@@ -88,8 +89,8 @@ $.widget( "tele.teleCountry", {
 		
 		$.each(telepath.countries.map, function(code, text) {
 			var checked = false;
-			for(x in that.options.data.value) {
-				if(that.options.data.value[x] == code) {
+			for(x in that.options.values) {
+				if(that.options.values[x] == code) {
 					checked = true;
 				}
 			}
@@ -99,8 +100,8 @@ $.widget( "tele.teleCountry", {
 		$.each(telepath.countries.map, function (code, text) {
 			
 			var checked = false;
-			for(x in that.options.data.value) {
-				if(that.options.data.value[x] == code) {
+			for(x in that.options.values) {
+				if(that.options.values[x] == code) {
 					checked = true;
 				}
 			}
