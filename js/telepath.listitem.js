@@ -208,7 +208,7 @@ $.widget( "tele.listitem", {
 			el.append(titleEl);
 		}
 		if(this.options.updating) {
-			var updatingEl = $('<div>').addClass('tele-listitem-updating tele-icon-ring').html('Update in progress!').attr('title', 'Update in progress!');
+			var updatingEl = $('<div>').addClass('tele-listitem-updating tele-icon-ring').html('Update in progress').attr('title', 'Update in progress');
 			el.append(updatingEl);
 		}
 		if(this.options.description) {
