@@ -31,7 +31,7 @@ class M_Dashboard extends CI_Model {
 						"size" => 200
 					),
 					"aggs" => [
-						"sid" => [ "cardinality" => [ "field" => "sid" ] ]
+						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200] ]
 					]
 				)				
 			),
