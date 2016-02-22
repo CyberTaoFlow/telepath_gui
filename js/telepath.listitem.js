@@ -161,12 +161,12 @@ $.widget( "tele.listitem", {
 			el.append(iconEl);
 		}
 
-		if(this.options.icon =='suspect'|| this.options.icon =='alert') {
+		if((this.options.icon =='suspect'|| this.options.icon =='alert')&&this.options.details.length) {
 			var iconEl = $('<div>').addClass('tele-listitem-icon tele-icon-case2');
 			el.append(iconEl);
 
 		}
-		if((this.options.icon =='suspect' || this.options.icon =='alert') &&this.options.raw.cases_count) {
+		if((this.options.icon =='suspect' || this.options.icon =='alert') &&this.options.raw.cases_count &&this.options.details.length ) {
 			var countEl = $('<div>').addClass('tele-listitem-count2').html(this.options.raw.cases_count);
 			el.append(countEl);
 			if(parseInt(this.options.raw.cases_count) > 999) {
