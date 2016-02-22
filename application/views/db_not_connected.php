@@ -68,6 +68,7 @@
             text-align: center;
             margin: 150px 0 0 0;
             font-size: 250%;
+            color: #656568;
         }
 
         #loading span {
