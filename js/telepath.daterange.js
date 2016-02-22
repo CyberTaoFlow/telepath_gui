@@ -142,7 +142,7 @@ $.widget( "tele.daterange", {
 						var from_date = new Date();
 						switch(that.options.state) {
 							case 'data':
-								telepath.ds.get('/telepath/set_full_time_range', { }, function(data) {
+								telepath.ds.get('/telepath/get_time_range', { }, function(data) {
 
 									// Globally
 
