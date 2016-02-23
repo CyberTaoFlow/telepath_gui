@@ -57,6 +57,7 @@ class SmartSerializer implements SerializerInterface
     {
         if (isset($headers['content_type']) === true) {
             if (strpos($headers['content_type'], 'json') !== false) {
+                ini_set('memory_limit', '512M');
                 return json_decode($data, true);
             } else {
                 //Not json, return as string
