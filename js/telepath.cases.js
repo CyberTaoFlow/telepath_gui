@@ -34,6 +34,11 @@ telepath.cases = {
 			}
 		});
 
+		if (telepath.cases.searchString)
+		{
+			$('.tele-panel-cases .tele-search-input').prop("value",telepath.cases.searchString);
+		}
+
 	},
 	setData: function(data) {
 		
