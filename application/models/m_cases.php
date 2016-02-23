@@ -87,7 +87,7 @@ class M_Cases extends CI_Model {
 			foreach($results['aggregations']['cases']['buckets'] as $bucket) {
 				
 				$case_data = '{}';
-				$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'],'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $this->get_case_data($bucket['key']));
+				$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $this->get_case_data($bucket['key']));
 				
 			}
 			return $ans;

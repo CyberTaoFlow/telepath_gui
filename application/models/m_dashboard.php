@@ -31,7 +31,8 @@ class M_Dashboard extends CI_Model {
 						"size" => 200
 					),
 					"aggs" => [
-						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200] ]
+						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200] ],
+						'date'=>  ['max'=>['field'=>'ts']]
 					]
 				)				
 			),
@@ -65,7 +66,7 @@ class M_Dashboard extends CI_Model {
 				$case_data = $this->M_Cases->get_case_data($bucket['key']);
 				if ($case_data['empty'] == false)
 				{
-					$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'checkable' => false, 'case_data' => $case_data);
+					$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $case_data);
 				}
 				
 			}
