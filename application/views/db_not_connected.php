@@ -64,12 +64,6 @@
             100% { opacity: 0; }
         }
 
-        #loading {
-            text-align: center;
-            margin: 150px 0 0 0;
-            font-size: 250%;
-            color: #656568;
-        }
 
         #loading span {
             -webkit-animation-name: opacity;
@@ -108,7 +102,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            height: 200px;
+            height: 80px;
             width: 390px;
         }
 
@@ -117,12 +111,6 @@
             margin: 0px 100px;
         }
 
-
-        #text-loader {
-            position: absolute;
-            width: 100%;
-
-        }
         .loader {
             position: absolute;
             margin: 4% auto;
@@ -149,14 +137,6 @@
             <div class="inner three"></div>
         </div>
             <img src="img/loading-logo.png">
-
-    </div>
-
-
-
-
-    <div id="text-loader">
-        <p id="loading">Loading<span>.</span><span>.</span><span>.</span></p>
     </div>
 
 </div>
