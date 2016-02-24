@@ -39,11 +39,11 @@ class M_Cases extends CI_Model {
 		}
 		
 
-		return array('case_name' => $cid, 'details' => array(), 'empty' => true);
+		return array(array('case_name' => $cid, 'details' => array(), 'empty' => true));
 		
 	}
 	
-	public function get($limit = 100, $range = false, $apps = array()) {
+	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 		
 		$params['body'] = array(
 			'size'  => 0,
@@ -54,9 +54,10 @@ class M_Cases extends CI_Model {
 						"size" => $limit
 					),
 					"aggs" => [
-						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200 ] ]
+						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200 ] ],
+						'date'=>  ['max'=>['field'=>'ts']]
 					]
-				)				
+				)
 			),
 			'query' => array(
 				'bool' => array(
@@ -73,7 +74,9 @@ class M_Cases extends CI_Model {
 				)
 			)
 		);
-		
+		if($search && strlen($search) > 1) {
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search  ] ];
+		}
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
@@ -84,7 +87,7 @@ class M_Cases extends CI_Model {
 			foreach($results['aggregations']['cases']['buckets'] as $bucket) {
 				
 				$case_data = '{}';
-				$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'checkable' => false, 'case_data' => $this->get_case_data($bucket['key']));
+				$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $this->get_case_data($bucket['key']));
 				
 			}
 			return $ans;

@@ -34,6 +34,11 @@ telepath.cases = {
 			}
 		});
 
+		if (telepath.cases.searchString)
+		{
+			$('.tele-panel-cases .tele-search-input').prop("value",telepath.cases.searchString);
+		}
+
 	},
 	setData: function(data) {
 		
@@ -116,7 +121,25 @@ telepath.cases = {
 			};
 		}});
 		this.panelTitle.after(addBtn);
-		
+
+		var searchCases = $('<div>').teleSearch({ callback: function (e, txt) {
+			// Search
+			telepath.cases.searchString = txt;
+			telepath.cases.refresh();
+
+		}});
+
+		// reset button in search input
+		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
+			$('.tele-panel-cases .tele-search-input').val('');
+			telepath.cases.searchString = '';
+			telepath.cases.refresh();
+		});
+
+		searchCases.append(resetInput);
+
+		panelSubBar.append(searchCases);
+
 		container.append(panelTopBar);
 		container.append(panelSubBar);
 				

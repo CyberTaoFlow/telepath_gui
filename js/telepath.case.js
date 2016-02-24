@@ -27,8 +27,9 @@ telepath['case'] = {
 				dataID:  item.name,
 				icon: 'case',
 				title: item.name,
-				time: item.created,
+				//time: item.created,
 				count: item.count,
+				time: item.last_time
 				};
 		}else{
 				var result = {
@@ -39,10 +40,11 @@ telepath['case'] = {
 				icon: 'case',
 				// mark deleted cases (Yuli)
 				title: item.name /* + (('empty' in item.case_data ) ? ' ***deleted***': '') */,
-				time: item.created,
+				//time: item.created,
 				count: item.count,
 				updating: item.case_data.updating,
-				details: details
+				details: details,
+				time: item.last_time
 			};
 		}
 		
