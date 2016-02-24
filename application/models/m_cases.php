@@ -218,11 +218,9 @@ class M_Cases extends CI_Model {
 		$response = $this->elasticClient->get($params);
 
 		if (isset($response['_source']['last_update']) && !empty($response['_source']['last_update']))
-			$last_update= $response['_source']['last_update'];
+			return $response['_source']['last_update'];
 		else
-			$last_update=0;
-
-		return $last_update;
+			return false;
 	}
 
 	// Set the time of the last flagged requests by cases
@@ -341,6 +339,8 @@ class M_Cases extends CI_Model {
 								break;
 							case "rules":
 								$term = "alerts.name";
+								// the case.name contain only the rule name, so we need to delete the category rule name from the value string
+								$condition['value']=preg_replace('/,[\s\S]+?::/', ',', substr($condition['value'], strpos($condition['value'], "::") + 2));
 								break;
 							case "parameter":
 								$term = "parameters.name";
@@ -350,7 +350,7 @@ class M_Cases extends CI_Model {
 //							break;
 						}
 						// The query to find the requests that match the case details
-						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => str_replace(',', ' OR ', $condition['value'])]];
+						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => '"'.str_replace(',', '" OR "', $condition['value']).'"']];
 						// If the request has already this case name, we don't need to flag it
 						$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
 						$params['body']["sort"] = ["_doc"];
@@ -358,8 +358,9 @@ class M_Cases extends CI_Model {
 					}
 
 					// If it's a script that always run, we have to query only the latest requests
-					if ($range)
-						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($update_time), 'lte' => intval($this->get_last_case_update())]]];
+
+					if ($range && $last_update=$this->get_last_case_update())
+						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $update_time, 'lte' => $last_update]]];
 
 
 					$docs = $this->elasticClient->search($params);

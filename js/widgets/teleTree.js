@@ -78,7 +78,7 @@ $.widget( "tele.teleTree", {
 			var treeData = [];
 			$.each(data.items, function(i, row) {
 			
-				var obj = { children: true, text: row.name, data: { id: row.id, type: postData.type, name: row.name, category: row.category }};
+				var obj = { children: true, text: row.name, data: { id: row.name, type: postData.type, name: row.name, category: row.category }};
 				
 				if(that.options.type == "rules") {
 					telepath.config.rules.categories = data.items;
