@@ -64,7 +64,8 @@ class M_Dashboard extends CI_Model {
 				
 				$this->load->model('M_Cases');
 				$case_data = $this->M_Cases->get_case_data($bucket['key']);
-				if ($case_data['empty'] == false)
+
+				if (isset($case_data['empty']) && $case_data['empty'] == false)
 				{
 					$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $case_data);
 				}

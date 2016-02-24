@@ -1163,7 +1163,9 @@ $.widget( "tele.teleRule", {
 					{ k:'query',   v:'Query'   }, 
 					{ k:'landing', v:'Speed' },
 					{ k:'geo',     v:'Location'     },
-					{ k:'flow',    v:'Direction'    }
+					{ k:'flow',    v:'Direction'    },
+					{ k:'presence',v:'Presence'    }
+
 				];
 				
 				var behavSelect = $('<select>').addClass('tele-rule-dropdown').addClass('tele-behavior-type');
