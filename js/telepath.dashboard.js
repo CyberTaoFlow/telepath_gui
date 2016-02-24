@@ -157,7 +157,11 @@ telepath.dashboard = {
 			titleCallback: function () {
 				$(".tele-nav-suspects a").click();
 			},
-			data: this.data.items.suspects.items
+			data: this.data.items.suspects.items,
+			formatter: function(item) {
+				item.checkable = false;
+				return telepath.suspects.rowFormatter(item,'dashboard');
+				}
 			});
 		}
 	},

@@ -239,13 +239,25 @@ ul.tele-listitem-info .flag {
 }
 
 ul.tele-listitem-info li.tele-listitem-alerts-count,
-ul.tele-listitem-info li.tele-listitem-actions-count {
+ul.tele-listitem-info li.tele-listitem-actions-count,
+ul.tele-listitem-info li.tele-listitem-cases-count{
 	position: relative;
 	float: right;
-	margin-right: 65px;
+	padding-right: 15%;
 	top: -22px;
+	border-right: none;
 }
-ul.tele-listitem-info li.tele-listitem-alerts-count .tele-listitem-count {
+
+.tele-panel-suspects ul.tele-listitem-info li.tele-listitem-alerts-count,
+.tele-panel-suspects ul.tele-listitem-info li.tele-listitem-actions-count,
+.tele-panel-suspects ul.tele-listitem-info li.tele-listitem-cases-count{
+	top: -9px;
+}
+
+
+ul.tele-listitem-info li.tele-listitem-alerts-count .tele-listitem-count,
+ul.tele-listitem-info li.tele-listitem-actions-count .tele-listitem-count,
+ul.tele-listitem-info li.tele-listitem-cases-count .tele-listitem-count{
 	top: 0px;
 	left: 25px;
 }

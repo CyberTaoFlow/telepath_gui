@@ -5,6 +5,65 @@ telepath.suspects = {
 	data: [],
 	total: 0,
 	searchString: '',
+
+	rowFormatter: function(item,mode) {
+
+		if (mode=='dashboard') {
+			result = {
+				raw: item,
+				icon: 'suspect',
+				time: item.ts,
+				progbar: true,
+				itemID: item.sid,
+				progbarBig: item.progbarBig,
+				checkable: item.checkable,
+				checked: item.checked,
+				count: item.count,
+				progbarValue: item.ip_score,
+				time: item.date,
+				details: [
+					{ key: 'country', value: item.country },
+					{ key: 'IP', value: item.ip_orig },
+					{ key: 'city', value: item.city },
+					{ key: 'host', value: grabNames(item.host) },
+
+				]
+			}
+		}
+		else {
+			result = {
+				raw: item,
+				icon: 'suspect',
+				time: item.ts,
+				progbar: true,
+				itemID: item.sid,
+				progbarBig: item.progbarBig,
+				checkable: item.checkable,
+				checked: item.checked,
+				count: item.count,
+				progbarValue: item.ip_score,
+				time: item.date,
+				details: [
+					{key: 'country', value: item.country},
+					{key: 'IP', value: item.ip_orig},
+					{key: 'city', value: item.city},
+					{key: 'host', value: grabNames(item.host)},
+					{key: 'alerts', value: 1/*item.alerts_count*/},
+					{key: 'actions', value: 1/*item.actions_count*/},
+					{ key: 'cases', value: 1/*row.cases_count*/ }
+				]
+			}
+		}
+
+		/*if (item.business_action && item.business_action.length>0){
+		 result.details.push({key: 'business_actions', value: item.business_actions[0].key})
+		 }*/
+
+		if(mode == 'dashboard') {
+			findAndRemove(result.details, 'key', 'city');
+		}
+		return result;
+	},
 	init: function () {
 		
 		var that = this;
@@ -172,10 +231,18 @@ telepath.suspects = {
 		$('.tele-block, .tele-loader', this.container).remove();
 		this.suspectsList = $('<div>');
 		this.container.append(this.suspectsList);
-		
+
+
+
 		// Init Suspects
-		this.suspectsList.teleList({ context: "panel", data: this.data, searchkey: telepath.suspects.searchString, callbacks: { scroll: function (offset, callback) {
-		
+		this.suspectsList.teleList({ context: "panel", data: this.data, searchkey: telepath.suspects.searchString,
+			formatter: function(item) {
+
+			item.checkable = true;
+			return telepath.suspects.rowFormatter(item);
+
+		}, callbacks: { scroll: function (offset, callback) {
+
 				telepath.ds.get('/suspects/index', {
 					sort:   telepath.suspects.sort,
 					dir:    telepath.suspects.dir,

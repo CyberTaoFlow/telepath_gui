@@ -42,7 +42,7 @@ $.widget( "tele.listitem", {
 			if(this.options.progbarBig) {
 				offset = offset + $('.tele-listitem-bigprogbar', this.element).outerWidth() + 55;
 			} else {
-				offset = offset + $('.tele-listitem-progbar', this.element).outerWidth();
+				offset = offset + $('.tele-listitem-progbar', this.element).outerWidth()+25;
 			}
 		}
 		
@@ -161,18 +161,7 @@ $.widget( "tele.listitem", {
 			el.append(iconEl);
 		}
 
-		if((this.options.icon =='suspect'|| this.options.icon =='alert')&&this.options.details.length) {
-			var iconEl = $('<div>').addClass('tele-listitem-icon tele-icon-case2');
-			el.append(iconEl);
 
-		}
-		if((this.options.icon =='suspect' || this.options.icon =='alert') &&this.options.raw.cases_count &&this.options.details.length ) {
-			var countEl = $('<div>').addClass('tele-listitem-count2').html(this.options.raw.cases_count);
-			el.append(countEl);
-			if(parseInt(this.options.raw.cases_count) > 999) {
-				countEl.css({ "fontSize" : '12px', /*"left" : '30px' */});
-			}
-		}
 		if(this.options.count) {
 			var countEl = $('<div>').addClass('tele-listitem-count').html(this.options.count);
 			el.append(countEl);
@@ -303,10 +292,9 @@ $.widget( "tele.listitem", {
 								if(parseInt(detail.value) > 0) {
 								
 									var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-alert');
-									var iconEl2 = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-case');
 									var countEl = $('<div>').addClass('tele-listitem-count').html(detail.value);
 									li.addClass('tele-listitem-alerts-count');
-									li.append(iconEl).append(iconEl2).append(countEl);
+									li.append(iconEl).append(countEl);
 								
 								} else {
 								
@@ -332,7 +320,22 @@ $.widget( "tele.listitem", {
 								}
 								
 							break;
-							
+
+							case 'cases':
+								if (parseInt(detail.value)>0){
+
+									var iconEl = $('<div>').addClass('tele-listitem-icon tele-icon-case');
+									var countEl = $('<div>').addClass('tele-listitem-count').html(detail.value);
+									li.addClass('tele-listitem-cases-count');
+									li.append(iconEl).append(countEl);
+
+								} else {
+
+									li = false;
+
+								}
+								break;
+
 							// case 'host': 
 								
 							// 	if(detail.value) {

@@ -29,7 +29,8 @@ telepath['case'] = {
 				title: item.name,
 				//time: item.created,
 				count: item.count,
-				time: item.last_time
+				time: item.last_time,
+				favorite: item.favorite
 				};
 		}else{
 				var result = {
