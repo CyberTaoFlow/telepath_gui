@@ -56,17 +56,27 @@ $.widget( "tele.listitem", {
 		
 		var that = this;
 		var total = 30;
-		
+		if ($('.tele-listitem-info').width()<800){
+			$( "ul li" ).filter( '[class*=tele-listitem-]').css({ 'padding-right':'5%' });
+		}
+		else {
+			$( "ul li" ).filter( '[class*=tele-listitem-]').css({ 'padding-right':'10%' });
+		}
+
 		$('.tele-listitem-info li', this.element).each(function () {
 			
 			$(this).show();
 			$(this).prev().css({ borderRightWidth: 1 });
 		
 			total = total + $(this).outerWidth();
-	
+
+
+
 			
 			if(total > infoWidth) {
-			
+
+
+
 				if($(this).hasClass('tele-list-hosts')) {
 					
 					//

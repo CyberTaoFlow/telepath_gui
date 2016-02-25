@@ -6,10 +6,10 @@ telepath.listitem.generic = {
 		return telepath.listitem.generic.formatter(item, 'dashboard');
 	},
 	formatter: function(item, mode) {
-		
-		result = { 
+		if (mode=='dashbord') {
+			result = {
 				raw: item,
-				icon: 'suspect', 
+				icon: 'suspect',
 				time: item.ts,
 				progbar: true,
 				itemID: item.sid,
@@ -17,21 +17,46 @@ telepath.listitem.generic = {
 				checkable: item.checkable,
 				checked: item.checked,
 				count: item.count,
-				progbarValue: item.score_average,
+				progbarValue: item.ip_score,
 				time: item.date,
 				details: [
 					{ key: 'country', value: item.country },
 					{ key: 'IP', value: item.ip_orig },
 					{ key: 'city', value: item.city },
 					{ key: 'host', value: grabNames(item.host) },
-					{ key: 'alerts', value: item.alerts_count },
-					{ key: 'actions', value: item.actions_count }
+					//{ key: 'alerts', value: item.alerts_count },
+					//{ key: 'actions', value: item.actions_count }
 				]
+			}
+		}
+		else {
+			result = {
+				raw: item,
+				icon: 'suspect',
+				time: item.ts,
+				progbar: true,
+				itemID: item.sid,
+				progbarBig: item.progbarBig,
+				checkable: item.checkable,
+				checked: item.checked,
+				count: item.count,
+				progbarValue: item.ip_score,
+				time: item.date,
+				details: [
+					{key: 'country', value: item.country},
+					{key: 'IP', value: item.ip_orig},
+					{key: 'city', value: item.city},
+					{key: 'host', value: grabNames(item.host)},
+					{key: 'alerts', value: 1/*item.alerts_count*/},
+					{key: 'actions', value: 2/*item.actions_count*/},
+					{ key: 'cases', value: 3/*row.cases_count*/ }
+				]
+			}
 		}
 
-		if (item.business_action && item.business_action.length>0){
+		/*if (item.business_action && item.business_action.length>0){
 			result.details.push({key: 'business_actions', value: item.business_actions[0].key})
-		}
+		}*/
 
 		if(mode == 'dashboard') {
 			findAndRemove(result.details, 'key', 'city');
