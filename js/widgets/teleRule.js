@@ -1164,7 +1164,7 @@ $.widget( "tele.teleRule", {
 					{ k:'landing', v:'Speed' },
 					{ k:'geo',     v:'Location'     },
 					{ k:'flow',    v:'Direction'    },
-					{ k:'presence',v:'Presence'    }
+					{ k:'presence',v:'Structure'    }
 
 				];
 				

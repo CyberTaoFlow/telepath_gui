@@ -663,6 +663,7 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 	float: left;
 	background-color: #CECECE;
 	border: 1px solid #CECECE;
+	margin: 12px 10px;
 }
 
 .tele-velocity-wrap{
