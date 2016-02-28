@@ -93,7 +93,7 @@ class Dashboard extends Tele_Controller
                 $result[]=$case;
             }
         }
-        if (count($result)<5){
+        if (count($result)<5&& count($result)>0){
             foreach ($cases as $case){
                 foreach ($result as $res) {
                     if ($case['name'] != $res['name'] && count($result) < 5) {
@@ -101,6 +101,9 @@ class Dashboard extends Tele_Controller
                     }
                 }
             }
+        }
+        elseif (count($result)==0){
+            $result= array_slice($cases,0,5);
         }
         else{
             $result= array_slice($result,0,5);
