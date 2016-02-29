@@ -410,7 +410,7 @@ class M_Cases extends CI_Model {
 						}
 					}
 
-					$this->logger($method . ' case: ' . $case['case_name']);
+					$this->logger('FInish to '.$method . ' case: ' . $case['case_name']);
 
 				}
 			}
@@ -419,6 +419,7 @@ class M_Cases extends CI_Model {
 
 		if ($range) {
 			$this->set_last_case_update($update_time);
+			$this->logger('Update the time to: '. $update_time);
 			return;
 		}
 
