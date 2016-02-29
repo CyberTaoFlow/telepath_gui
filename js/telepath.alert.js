@@ -23,7 +23,7 @@ telepath.alert = {
 				checkable: row.checkable,
 				count: row.alerts_count,
 				progbar: true,
-				progbarValue: parseInt(row.score),
+				progbarValue: row.ip_score,
 				time: row.date,
 				title:  telepath.alert.grabNames(row.alerts_names),
 				details: [ 
@@ -40,7 +40,7 @@ telepath.alert = {
 				checkable: row.checkable,
 				count: row.alerts_count,
 				progbar: true,
-				progbarValue: parseInt(row.score),
+				progbarValue: row.ip_score,
 				time: row.date,
 				title:  telepath.alert.grabNames(row.alerts_names),
 				details: [ 
@@ -48,7 +48,8 @@ telepath.alert = {
 					{ key: 'country', value: row.country },
 					{ key: 'city', value: row.city },
 					{ key: 'host', value: telepath.alert.grabNames(row.host) },
-					{ key: 'actions', value: row.actions_count }
+					{ key: 'actions', value: row.actions_count },
+					{ key: 'cases', value: row.cases_count }
 				]
 			}
 		};	
@@ -260,14 +261,15 @@ telepath.alert = {
 			}
 		});
 		
-		var avg = parseInt(
+		/*var avg = parseInt(
 			(parseInt(item.flow_score) + 
 			 parseInt(item.geo_normal) + 
 			 parseInt(item.landing_normal) + 
 			 parseInt(item.query_score)) / 4);
 		
-		result.progbarValue = avg;
-		
+		result.progbarValue = avg;*/
+
+		result.progbarValue=item.ip_score;
 		result.callback = function (widget, el) {
 			$('.selected', that.actionsContainer).removeClass('selected');
 			$('.tele-listitem-inner', widget.element).addClass('selected');
@@ -457,7 +459,7 @@ telepath.alert = {
 					time: item.date, 
 					itemID: item.RID,
 					progbar: true, 
-					progbarValue: parseInt(item.score * 100),
+					progbarValue: parseInt(item.ip_score * 100),
 					details: [
 						{ key: 'country', value: item.country },
 						{ key: 'IP', value: item.IP }

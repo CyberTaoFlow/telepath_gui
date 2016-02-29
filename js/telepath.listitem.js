@@ -192,8 +192,13 @@ $.widget( "tele.listitem", {
 			
 			this.options.progbarValue = parseFloat(this.options.progbarValue);
 			
-			if(this.options.progbarValue > 0 && this.options.progbarValue <= 1) {
-				this.options.progbarValue = this.options.progbarValue * 100;
+			if(this.options.progbarValue > 0 ) {
+				if (this.options.progbarValue <= 1){
+					this.options.progbarValue = this.options.progbarValue * 100;
+				}
+				else{
+					this.options.progbarValue = parseInt(this.options.progbarValue);
+				}
 			}
 			
 			var progbarInner = $('<div>').addClass('tele-listitem-progbar-inner').css({ width: this.options.progbarValue + '%' });

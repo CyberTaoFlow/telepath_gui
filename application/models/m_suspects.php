@@ -202,6 +202,17 @@ class M_Suspects extends CI_Model {
 									],
 									"date" => [
 										"max" => [ "field" => "ts" ]
+									],
+									"last_score" => [
+										"terms" => [
+												"field" => "ip_score",
+											"order"=>["max_ts" => "desc" ]
+											],
+										'aggs'=>[
+											'max_ts'=>[
+													"max" => [ "field" => "ts"]
+											]
+										]
 									]
 								]
 							];
@@ -227,34 +238,35 @@ class M_Suspects extends CI_Model {
 								"host"    => $sid['host']['buckets'],
 								"count"   => $doc_count,
 								"business_action" => $sid['business_action']['buckets'],
-								"date"  => $sid['date']['value']
+								"date"  => $sid['date']['value'],
+								"last_score" =>$sid['last_score']['buckets'][0]['key']
 							);
 							$count_insert++;
 							if($count_insert >= $limit) {
 								break;
-							}			
+							}
 						} else {
 							// can not return record details here !!!
 						}
-					
+
 					} else {
 						$count_offset++;
 					}
 
 				}
-			
+
 			$count = $result["aggregations"]["sid_count"]["value"];
-			
+
 		}
-		
+
 		$results['success'] = true;
 		$results['count']   = $count;
 		$results['query']   = $params;
 		$results['std']     = $suspect_threshold;
 		return $results;
-		
-		
-				
+
+
+
 	}
 	
 	// public function get_suspect_score($key, $value) {
