@@ -244,14 +244,14 @@ ul.tele-listitem-info li.tele-listitem-cases-count{
 	position: relative;
 	float: right;
 	padding-right: 15%;
-	top: -22px;
+	top: -9px;
 	border-right: none;
 }
 
-.tele-panel-suspects ul.tele-listitem-info li.tele-listitem-alerts-count,
-.tele-panel-suspects ul.tele-listitem-info li.tele-listitem-actions-count,
-.tele-panel-suspects ul.tele-listitem-info li.tele-listitem-cases-count{
-	top: -9px;
+.tele-panel-alerts ul.tele-listitem-info li.tele-listitem-alerts-count,
+.tele-panel-alerts ul.tele-listitem-info li.tele-listitem-actions-count,
+.tele-panel-alerts ul.tele-listitem-info li.tele-listitem-cases-count{
+	top: -22px;
 }
 
 

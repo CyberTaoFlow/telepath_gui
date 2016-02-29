@@ -71,10 +71,40 @@ class M_Requests extends CI_Model {
 						[ "term" => [ "ip_orig" => $req['ip_orig'] ] ]
 					]
 				]
-			]
+			]/*,
+			'aggs'=>[
+				"last_score" => [
+					"terms" => [
+						"field" => "ip_score",
+						"order"=>["max_ts" => "desc" ]
+					],
+					'aggs'=>[
+						'max_ts'=>[
+							"max" => [ "field" => "ts"]
+						]
+					]
+				]
+			]*/
 		];
 		
 		$results = $this->elasticClient->search($params);
+
+		foreach ($results['hits']['hits'] as $key =>$value) {
+
+			$params['body'] = [
+				'size' => 1,
+				'sort' => [
+					'ts' => ['order' => 'desc']],
+				'query' => [
+					'filtered' => ['filter' => ['term' => ['sid' => $value['_source']['sid']]]]]];
+
+			$results2 = get_elastic_results($this->elasticClient->search($params));
+
+			$results['hits']['hits'][$key]['_source']['ip_score'] = $results2[0]['ip_score'];
+
+
+		}
+
 		return $results;
 		
 	}	

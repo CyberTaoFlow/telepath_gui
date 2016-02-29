@@ -349,6 +349,17 @@ class M_Alerts extends CI_Model {
 								],
 								"date" => [
 									"max" => [ "field" => "ts" ]
+								],
+								"last_score" => [
+									"terms" => [
+										"field" => "ip_score",
+										"order"=>["max_ts" => "desc" ]
+									],
+									'aggs'=>[
+										'max_ts'=>[
+											"max" => [ "field" => "ts"]
+										]
+									]
 								]
 							]
 						];
@@ -373,7 +384,8 @@ class M_Alerts extends CI_Model {
 							"host"    => $sid['host']['buckets'],
 							"count"   => $doc_count,
 							"score"  => $sid['score']['value'],
-							"date"  => $sid['date']['value']
+							"date"  => $sid['date']['value'],
+							'ip_score'=>$sid['last_score']['buckets'][0]['key']
 						);
 						$count_insert++;
 						if($count_insert >= $limit) {

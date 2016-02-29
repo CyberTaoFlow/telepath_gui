@@ -56,17 +56,27 @@ $.widget( "tele.listitem", {
 		
 		var that = this;
 		var total = 30;
-		
+		if ($('.tele-listitem-info').width()<800){
+			$( "ul li" ).filter( '[class*=tele-listitem-]').css({ 'padding-right':'5%' });
+		}
+		else {
+			$( "ul li" ).filter( '[class*=tele-listitem-]').css({ 'padding-right':'10%' });
+		}
+
 		$('.tele-listitem-info li', this.element).each(function () {
 			
 			$(this).show();
 			$(this).prev().css({ borderRightWidth: 1 });
 		
 			total = total + $(this).outerWidth();
-	
+
+
+
 			
 			if(total > infoWidth) {
-			
+
+
+
 				if($(this).hasClass('tele-list-hosts')) {
 					
 					//
@@ -182,8 +192,13 @@ $.widget( "tele.listitem", {
 			
 			this.options.progbarValue = parseFloat(this.options.progbarValue);
 			
-			if(this.options.progbarValue > 0 && this.options.progbarValue <= 1) {
-				this.options.progbarValue = this.options.progbarValue * 100;
+			if(this.options.progbarValue > 0 ) {
+				if (this.options.progbarValue <= 1){
+					this.options.progbarValue = this.options.progbarValue * 100;
+				}
+				else{
+					this.options.progbarValue = parseInt(this.options.progbarValue);
+				}
 			}
 			
 			var progbarInner = $('<div>').addClass('tele-listitem-progbar-inner').css({ width: this.options.progbarValue + '%' });

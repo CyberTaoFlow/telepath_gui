@@ -19,14 +19,12 @@ telepath.suspects = {
 				checkable: item.checkable,
 				checked: item.checked,
 				count: item.count,
-				progbarValue: item.ip_score,
+				progbarValue: item.last_score,
 				time: item.date,
 				details: [
 					{ key: 'country', value: item.country },
 					{ key: 'IP', value: item.ip_orig },
-					{ key: 'city', value: item.city },
-					{ key: 'host', value: grabNames(item.host) },
-
+					{ key: 'host', value: grabNames(item.host) }
 				]
 			}
 		}
@@ -41,16 +39,16 @@ telepath.suspects = {
 				checkable: item.checkable,
 				checked: item.checked,
 				count: item.count,
-				progbarValue: item.ip_score,
+				progbarValue: item.last_score,
 				time: item.date,
 				details: [
 					{key: 'country', value: item.country},
 					{key: 'IP', value: item.ip_orig},
 					{key: 'city', value: item.city},
 					{key: 'host', value: grabNames(item.host)},
-					{key: 'alerts', value: 1/*item.alerts_count*/},
-					{key: 'actions', value: 1/*item.actions_count*/},
-					{ key: 'cases', value: 1/*row.cases_count*/ }
+					{key: 'alerts', value: item.alerts_count},
+					{key: 'actions', value: item.actions_count},
+					{ key: 'cases', value: row.cases_count }
 				]
 			}
 		}
@@ -59,9 +57,6 @@ telepath.suspects = {
 		 result.details.push({key: 'business_actions', value: item.business_actions[0].key})
 		 }*/
 
-		if(mode == 'dashboard') {
-			findAndRemove(result.details, 'key', 'city');
-		}
 		return result;
 	},
 	init: function () {

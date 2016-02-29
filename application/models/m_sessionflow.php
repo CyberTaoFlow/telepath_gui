@@ -40,6 +40,28 @@ class M_Sessionflow extends CI_Model {
 			}
 			$results[0]['parameters'] = $params;
 		}
+
+		$params=[];
+		$params['body']=[
+			'size'=>1,
+			"sort"=>[
+				"ts"=>[
+				"order"=>"desc"
+				]
+			],
+			'query'=>[
+				'filtered'=> [
+				'filter'=>[
+					'term'=>[
+						'sid'=>$results[0]['sid']
+						]
+					]
+				]
+			]
+		];
+		$results2 = $this->elasticClient->search($params);
+		$results2 = get_elastic_results($results2);
+		$results[0]['ip_score']=$results2[0]['ip_score'];
 		return $results[0];
 	
 	}
@@ -176,8 +198,24 @@ class M_Sessionflow extends CI_Model {
 
 		
 		$params = append_access_query($params);
-		$results = $this->elasticClient->search($params);
-		return get_elastic_results($results);
+		$results = get_elastic_results($this->elasticClient->search($params));
+
+
+		$params2['body']=[
+			'size'=>1,
+			'sort'=>[
+				'ts'=>['order'=>'desc']],
+			'query'=>[
+				'filtered'=>['filter'=>['term'=>['sid' => $sid]]]]];
+
+		$results2 = $this->elasticClient->search($params2);
+
+		$results2 = get_elastic_results($results2);
+
+		foreach ($results as $key => $value){
+			$results[$key]['ip_score']= $results2[0]['ip_score'];
+		}
+		return $results;
 
 	}
 	
