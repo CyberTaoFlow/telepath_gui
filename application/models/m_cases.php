@@ -30,7 +30,7 @@ class M_Cases extends CI_Model {
 		if($cid == 'all') {
 			return $results;
 		}
-		
+
 		foreach($results as $row) {
 			if(strtolower($row['case_name']) == strtolower($cid)) {
 				$row['empty'] = false;
@@ -42,7 +42,7 @@ class M_Cases extends CI_Model {
 		return array(array('case_name' => $cid, 'details' => array(), 'empty' => true));
 		
 	}
-	
+
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 		
 		$params['body'] = array(
@@ -253,7 +253,7 @@ class M_Cases extends CI_Model {
 	public function flag_requests_by_cases($cases_name, $range, $method)
 	{
 
-		$this->logger('start');
+		$this->logger('Start');
 
 		@set_time_limit(-1);
 
@@ -261,6 +261,8 @@ class M_Cases extends CI_Model {
 
 		$status = $this->elasticClient->indices()->status(['index' => 'telepath-20*']);
 		foreach ($status['indices'] as $index_name => $index_status) {
+
+			$this->logger('Start index: ' . $index_name );
 
 			$params = [
 				"search_type" => "scan",    // use search_type=scan
@@ -330,6 +332,7 @@ class M_Cases extends CI_Model {
 						else
 							$appear = 'must_not';
 
+						$query_string='';
 						switch ($condition['type']) {
 							case "application":
 								$term = "host";
@@ -340,7 +343,6 @@ class M_Cases extends CI_Model {
 							case "IP":
 								$term = "ip_orig";
 								$conditions=explode(',',$condition['value']);
-								$query_string='';
 								foreach ($conditions as $cond){
 									if ($query_string!=''){
 										$query_string.=' OR ';
@@ -365,7 +367,7 @@ class M_Cases extends CI_Model {
 //							$term= "ts";
 //							break;
 						}
-						if(!isset($query_string)){
+						if($query_string==''){
 							$query_string=str_replace(',', ' OR ', $condition['value']);
 						}
 						// The query to find the requests that match the case details
@@ -373,9 +375,9 @@ class M_Cases extends CI_Model {
 
 					}
 
-						// If the request has already this case name, we don't need to flag it
-						$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
-						$params['body']["sort"] = ["_doc"];
+					// If the request has already this case name, we don't need to flag it
+					$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
+					$params['body']["sort"] = ["_doc"];
 
 					// If it's a script that always run, we have to query only the latest requests
 
