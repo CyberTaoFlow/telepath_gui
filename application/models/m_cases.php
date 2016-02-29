@@ -410,7 +410,7 @@ class M_Cases extends CI_Model {
 						}
 					}
 
-					$this->logger('FInish to '.$method . ' case: ' . $case['case_name']);
+					$this->logger('Finish to '.$method . ' case: ' . $case['case_name']);
 
 				}
 			}
