@@ -102,10 +102,10 @@ telepath.config.rule = {
 			checked: this.data.action_syslog
 		}).appendTo(this.container);
 		
-		this.headerInjection = $('<div>').teleCheckbox({ 
+		/*this.headerInjection = $('<div>').teleCheckbox({
 			label: 'Header Injection', 
 			checked: this.data.action_injection
-		}).appendTo(this.container);
+		}).appendTo(this.container);*/
 		
 		this.email = $('<div>').teleCheckbox({ 
 			label: 'Email', 
