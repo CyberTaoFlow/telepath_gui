@@ -481,7 +481,7 @@ a.tele-input-input {
 
 .tele-browser {
 	height: 370px;
-	overflow: hidden;
+	/*overflow: hidden;*/
 	clear: both;
 	padding: 10px;
 }
