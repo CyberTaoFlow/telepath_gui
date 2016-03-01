@@ -89,7 +89,7 @@ class Dashboard extends Tele_Controller
         # Make sure we have only 5 cases in the dashboard report, Yulli
         $result=[];
         foreach ($cases as $case){
-            if ($case['case_data']['favorite']){
+            if (isset ($case['case_data']['favorite']) && $case['case_data']['favorite']){
                 $result[]=$case;
             }
         }
