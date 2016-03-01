@@ -168,8 +168,29 @@ telepath.listitem.generic = {
 				$('.popover').append(actions_title).append(actions_content);
 
 			}
+			if(item.raw.cases_count && item.raw.cases_count > 0 && item.raw.cases_names && item.raw.cases_names.length > 0) {
+
+				var cases_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Cases');
+				var cases_content = $('<div>').addClass('popover-content');
+
+				$.each(item.raw.cases_names, function (i, x) {
+
+					var row = $('<div>').addClass('tele-popover-row')
+						.append($('<div>').addClass('tele-icon').addClass('tele-icon-case'))
+						.append($('<div>').addClass('tele-count').text(x.doc_count))
+						.append($('<div>').addClass('tele-popover-subtitle').html(x.key));
+
+				cases_content.append(row);
+
+				});
+
+				$('.popover').append(cases_title).append(cases_content);
+
+			}
 
 			telepath.ds.get('/sessionflow/get_session_stats', { sid: item.itemID }, function (data) {
+
+
 
 				$('.popover-title:first').html('Anomaly Scores');
 				$('.popover-content .tele-loader').after($('<div>').anomalyScore({ request: data.items })).remove();
