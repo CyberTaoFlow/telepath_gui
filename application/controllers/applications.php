@@ -63,8 +63,9 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $search = $this->input->post('search');
+        $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_search($search));
+        return_success($this->M_Applications->get_search($search,$mode));
 
     }
 

@@ -401,9 +401,15 @@ class M_Applications extends CI_Model {
 		
 	}
 	
-	function get_search($search) {
+	function get_search($search, $mode) {
 
 		$params['index'] = 'telepath-20*';
+
+		if ($mode == 'page')
+			$field = "uri";
+		if ($mode == 'param')
+			$field = "parameters.name";
+
 		$params['body'] = [
 			'partial_fields' => [
 				"_src" => [
@@ -411,7 +417,7 @@ class M_Applications extends CI_Model {
 				],
 			],
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", "uri", "parameters.name"] , "query" =>'*'. $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
 
 		$params = append_access_query($params);
@@ -430,17 +436,17 @@ class M_Applications extends CI_Model {
 			$hash = crc32(serialize($result));
 			if(isset($out[$hash])) { continue; }
 
-			if(strpos(strtolower($result['uri']), $search) !== false) {
-
-				$data = array('type' => 'page', 'text' => $result['uri'], 'host' => $result['host']);
-				$out[crc32(serialize($data))] = $data;
-
-			} else if (strpos(strtolower($result['host']), $search) !== false) {
+			if (strpos(strtolower($result['host']), $search) !== false) {
 
 				$data = array('type' => 'app', 'text' => $result['host']);
 				$out[crc32(serialize($data))] = $data;
 
-			} else if (!empty($result['parameters'])) {
+			} else if($mode == 'page' && strpos(strtolower($result['uri']), $search) !== false) {
+
+				 $data = array('type' => 'page', 'text' => $result['uri'], 'host' => $result['host']);
+				 $out[crc32(serialize($data))] = $data;
+
+			 } else if ($mode == 'param' && !empty($result['parameters'])) {
 
 				foreach($result['parameters'] as $param) {
 

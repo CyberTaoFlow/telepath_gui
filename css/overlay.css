@@ -290,6 +290,9 @@
 	width: 380px;
 	margin-top: 20px;
 	margin-left: 20px;
+	position: relative;
+	max-height: 100%;
+	overflow: hidden;
 }
 
 .tele-requests-list {
@@ -406,6 +409,10 @@
 	padding-top: 5px;
 }
 
+.tele-overlay-content{
+	overflow: hidden;
+}
+
 .tele-overlay-rule-edit .tele-overlay-content,
 .tele-overlay-case-edit .tele-overlay-content {
 	padding: 20px;
@@ -422,4 +429,8 @@
 }
 .tele-similarities-list .tele-block-title {
 	margin-bottom: 10px;
+}
+
+.tele-similarities-list .tele-list{
+	max-height: 600px;
 }
