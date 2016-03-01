@@ -302,9 +302,9 @@ telepath.alert = {
 		
 		// Sort out stats
 		var reqStats = {
+			'All': data.requests.length,
 			'Alerts': data.alerts.length,
-			'Actions': 0,
-			'All': data.requests.length
+			'Actions': 0
 		}
 		// Find requests with completed business action
 		$.each(data.requests, function(i, request) {
