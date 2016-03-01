@@ -351,13 +351,13 @@ telepath.dashboard = {
 		cmdRefresh.append(cmdRefreshText).append(this.cmdRefreshValue).append(cmdRefreshButton);
 		
 		cmdRefreshButton.click(function () {
-		
+		if (!telepath.dashboard.loading){
 			$(this).addClass('loader');
 			var that = this;
 			telepath.dashboard.refresh(function () {
 				$(that).removeClass('loader');
 			});
-			
+		}
 		});
 		
 		// DateRange
