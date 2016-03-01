@@ -30,7 +30,7 @@ class M_Cases extends CI_Model {
 		if($cid == 'all') {
 			return $results;
 		}
-		
+
 		foreach($results as $row) {
 			if(strtolower($row['case_name']) == strtolower($cid)) {
 				$row['empty'] = false;
@@ -42,7 +42,7 @@ class M_Cases extends CI_Model {
 		return array(array('case_name' => $cid, 'details' => array(), 'empty' => true));
 		
 	}
-	
+
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 		
 		$params['body'] = array(
@@ -253,7 +253,7 @@ class M_Cases extends CI_Model {
 	public function flag_requests_by_cases($cases_name, $range, $method)
 	{
 
-		$this->logger('start');
+		$this->logger('Start');
 
 		@set_time_limit(-1);
 
@@ -261,6 +261,8 @@ class M_Cases extends CI_Model {
 
 		$status = $this->elasticClient->indices()->status(['index' => 'telepath-20*']);
 		foreach ($status['indices'] as $index_name => $index_status) {
+
+			$this->logger('Start index: ' . $index_name );
 
 			$params = [
 				"search_type" => "scan",    // use search_type=scan
@@ -330,6 +332,7 @@ class M_Cases extends CI_Model {
 						else
 							$appear = 'must_not';
 
+						$query_string='';
 						switch ($condition['type']) {
 							case "application":
 								$term = "host";
@@ -339,11 +342,23 @@ class M_Cases extends CI_Model {
 								break;
 							case "IP":
 								$term = "ip_orig";
+								$conditions=explode(',',$condition['value']);
+								foreach ($conditions as $cond){
+									if ($query_string!=''){
+										$query_string.=' OR ';
+									}
+									if (strpos($cond,'-')){
+										$query_string.='['.str_replace('-',' TO ',$cond).']';
+									}
+									else{
+										$query_string.=$cond;
+									}
+								}
 								break;
 							case "rules":
 								$term = "alerts.name";
 								// the case.name contain only the rule name, so we need to delete the category rule name from the value string
-								$condition['value']=preg_replace('/,[\s\S]+?::/', ',', substr($condition['value'], strpos($condition['value'], "::") + 2));
+								$query_string='"'.preg_replace('/,[\s\S]+?::/', '" OR "', substr($condition['value'], strpos($condition['value'], "::") + 2)).'"';
 								break;
 							case "parameter":
 								$term = "parameters.name";
@@ -352,13 +367,17 @@ class M_Cases extends CI_Model {
 //							$term= "ts";
 //							break;
 						}
+						if($query_string==''){
+							$query_string=str_replace(',', ' OR ', $condition['value']);
+						}
 						// The query to find the requests that match the case details
-						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => '"'.str_replace(',', '" OR "', $condition['value']).'"']];
-						// If the request has already this case name, we don't need to flag it
-						$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
-						$params['body']["sort"] = ["_doc"];
+						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => $query_string ]];
 
 					}
+
+					// If the request has already this case name, we don't need to flag it
+					$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
+					$params['body']["sort"] = ["_doc"];
 
 					// If it's a script that always run, we have to query only the latest requests
 
@@ -391,15 +410,18 @@ class M_Cases extends CI_Model {
 						}
 					}
 
-					$this->logger($method . ' case: ' . $case['case_name']);
+					$this->logger('Finish to '.$method . ' case: ' . $case['case_name']);
 
 				}
 			}
+
+			$this->elasticClient->indices()->refresh(array('index' => $index_name));
 
 		}
 
 		if ($range) {
 			$this->set_last_case_update($update_time);
+			$this->logger('Update the time to: '. $update_time);
 			return;
 		}
 
