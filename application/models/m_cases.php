@@ -415,6 +415,8 @@ class M_Cases extends CI_Model {
 				}
 			}
 
+			$this->elasticClient->indices()->refresh(array('index' => $index_name));
+
 		}
 
 		if ($range) {
