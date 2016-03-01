@@ -21,6 +21,11 @@ class Sessionflow extends Tele_Controller
         $key = $this->input->post('searchkey');
         $range = $this->_get_range();
 
+        if (substr($key, -1) != '*')
+        {
+            $key = '*'. $key . '*';
+        }
+
         $stats = $this->M_Sessionflow->get_session_stats($SID, $key, $range);
         return_success($stats);
 
