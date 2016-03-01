@@ -348,7 +348,7 @@ telepath.sessionflow = {
 		var search_count  = this.session.stats.search_count;
 		
 		var statsEl = $('<div>').addClass('tele-alert-stats');
-		$.each({ 'Search': search_count, 'Alerts': count_alerts, 'Actions': count_actions, 'All': count_all }, function(key, stat) {
+		$.each({'All': count_all, 'Search': search_count, 'Alerts': count_alerts, 'Actions': count_actions }, function(key, stat) {
 			
 			// Add filter if we have numeric vaue only, Yuli
 			if (stat > 0)
