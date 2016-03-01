@@ -41,10 +41,10 @@ class Sessionflow extends Tele_Controller
         $SID = $this->input->post('sid');
         $filter = $this->input->post('filter');
         $key = $this->input->post('searchkey');
-//        if (!empty($key) && substr($key, -1) != '*')
-//        {
-//            $key = '*'. $key . '*';
-//        }
+        if (!empty($key) && substr($key, -1) != '*')
+        {
+            $key = '*'. $key . '*';
+        }
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
         $range = $this->_get_range();
         $sessionflow = $this->M_Sessionflow->get_sessionflow($SID, $offset, 100, $filter, $key, $range);
