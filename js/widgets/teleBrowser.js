@@ -60,7 +60,7 @@ $.widget( "tele.teleBrowser", {
 		// Perform search
 		if(searchTerm != '' && $('input', window.teleBrowseSearch).attr('complete') != 'true') {
 		
-			telepath.ds.get('/applications/get_search', { search: searchTerm, context: 'applications' }, function(data) {
+			telepath.ds.get('/applications/get_search', { search: searchTerm, /*context: 'applications',*/ mode: that.options.mode  }, function(data) {
 					
 					// EXPANDING SEARCH , SHOW MIXED
 					
