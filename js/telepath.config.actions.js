@@ -22,7 +22,7 @@ telepath.config.actions = {
 			case 'root':
 				url  = '/applications/get_expand';
 				postData.type = 'root';
-				//if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
+				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;
 			case 'app':
 				url = '/actions/get_app_actions';
@@ -198,7 +198,7 @@ telepath.config.actions = {
 				}, width: 40 }
 			],
 			resizable:true,
-		},
+		}/*,
 			search: {
 				"fuzzy":false,
 				"case_insensitive": true,
@@ -206,7 +206,7 @@ telepath.config.actions = {
 				search_callback : function (str, node) {
 					if(node.text === str) { return true; }
 				}
-			}
+			}*/
 		}).on('changed.jstree', function (e, data) {
 
 			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
@@ -225,9 +225,9 @@ telepath.config.actions = {
 				telepath.config.actions.createCat.show();
 			}
 
-		}).on('ready.jstree', function(e, data) {
+		})/*.on('ready.jstree', function(e, data) {
 			data.instance.search(that.searchString);
-		});
+		});*/
 		
 		//that.contentLeftWrap = $('<div>');
 		//that.contentLeft.empty().append(that.contentLeftWrap);

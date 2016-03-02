@@ -78,7 +78,7 @@ telepath.config.applications = {
 
 		var that = this;
 
-		telepath.ds.get('/applications/get_expand', {  context: 'applications' }, function(data) {
+		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications' }, function(data) {
 
 			var treeData = telepath.config.applications.formatData(data.items);
 
