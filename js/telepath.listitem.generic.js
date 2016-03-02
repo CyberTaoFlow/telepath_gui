@@ -47,9 +47,9 @@ telepath.listitem.generic = {
 					{key: 'IP', value: item.ip_orig},
 					{key: 'city', value: item.city},
 					{key: 'host', value: grabNames(item.host)},
-					{key: 'alerts', value: 1/*item.alerts_count*/},
-					{key: 'actions', value: 2/*item.actions_count*/},
-					{ key: 'cases', value: 3/*row.cases_count*/ }
+					{key: 'alerts', value: item.alerts_count},
+					{key: 'actions', value: item.actions_count},
+					{ key: 'cases', value: row.cases_count }
 				]
 			}
 		}

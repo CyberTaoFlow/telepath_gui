@@ -19,7 +19,7 @@ telepath.suspects = {
 				checkable: item.checkable,
 				checked: item.checked,
 				count: item.count,
-				progbarValue: item.last_score,
+				progbarValue: item.ip_score,
 				time: item.date,
 				details: [
 					{ key: 'country', value: item.country },
@@ -39,7 +39,7 @@ telepath.suspects = {
 				checkable: item.checkable,
 				checked: item.checked,
 				count: item.count,
-				progbarValue: item.last_score,
+				progbarValue: item.ip_score,
 				time: item.date,
 				details: [
 					{key: 'country', value: item.country},
