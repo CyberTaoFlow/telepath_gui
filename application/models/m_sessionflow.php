@@ -157,7 +157,7 @@ class M_Sessionflow extends CI_Model {
 			
 	}
 	
-	public function get_sessionflow($sid, $start, $limit, $filter, $key = null, $range = null) {
+	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = null) {
 		
 		$params['body'] = array(
 			'size'  => $limit,
@@ -165,7 +165,7 @@ class M_Sessionflow extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						['term' => ['sid' => $sid]],
+						['term' => [$anchor_field => $anchor_value]],
 					]
 				]
 			],
@@ -206,7 +206,7 @@ class M_Sessionflow extends CI_Model {
 			'sort'=>[
 				'ts'=>['order'=>'desc']],
 			'query'=>[
-				'filtered'=>['filter'=>['term'=>['sid' => $sid]]]]];
+				'filtered'=>['filter'=>['term'=>[$anchor_field => $anchor_value]]]]];
 
 		$results2 = $this->elasticClient->search($params2);
 

@@ -38,16 +38,33 @@ class Sessionflow extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         // Read input
-        $SID = $this->input->post('sid');
+        $anchor_field='sid';
+        $anchor_value=$this->input->post('sid');
         $filter = $this->input->post('filter');
+        if($filter=="Alerts"){
+            $this->load->model('M_Rules');
+            $alerts = $this->input->post('alerts');
+            foreach($alerts as $alert){
+                $rule = $this->M_Rules->get_rule($alert['key']);
+                if ($rule[0]['criteria'][0]['type']=="IP") {
+                    $anchor_field='ip_orig';
+                    $anchor_value=$this->input->post('ip');
+                    break;
+                }
+            }
+        }
+
         $key = $this->input->post('searchkey');
         if (!empty($key) && substr($key, -1) != '*')
         {
             $key = '*'. $key . '*';
         }
+
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+
         $range = $this->_get_range();
-        $sessionflow = $this->M_Sessionflow->get_sessionflow($SID, $offset, 100, $filter, $key, $range);
+
+        $sessionflow = $this->M_Sessionflow->get_sessionflow($anchor_field, $anchor_value, $offset, 100, $filter, $key, $range);
         return_success($sessionflow);
 
     }
