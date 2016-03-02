@@ -89,10 +89,11 @@ class Tele_Controller extends CI_Controller
         // GET ELASTIC MIN/MAX
         $params = array();
 //		$params['hosts'] = array ('127.0.0.1:9200');
-        $this->elasticClient = new Elasticsearch\Client();
+//        $this->elasticClient = new Elasticsearch\Client();
 //		unset($params);
 
         // Change to the new query instead of the deprecated Statistical Facet (MOSHE)
+        $params['index']='telepath-20*';
         $params['body'] = array(
             'size' => 0,
             'aggs' => [
