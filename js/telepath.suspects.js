@@ -149,7 +149,7 @@ telepath.suspects = {
 		// Search
 		var searchSuspects = $('<div>').teleSearch({ callback: function (e, txt) {
 			telepath.suspects.searchString = txt;
-			telepath.suspects.refresh(function () {	});
+			//telepath.suspects.refresh(function () {	});
 		}});
 
 
@@ -163,14 +163,39 @@ telepath.suspects = {
 			telepath.suspects.refresh();
 			console.log('Delete')
 		});
-		searchSuspects.append(resetInput);
+		//searchSuspects.append(resetInput);
 
 		this.panelSubBar.append(searchSuspects);
 		// Load Data
 		this.refresh();
-		
+
+
+		$(".tele-panel-suspects .tele-search-input").keyup('input', function () {
+			that.searchString = $(this).val();
+			that.input();
+		});
+
+		$("#search-button").on("click", function (event) {
+			that.searchString = '';
+			$(".tele-panel-suspects .tele-search-input").prop("value", that.searchString);
+			that.input();
+
+		});
 		
 	},
+
+	input: function(){
+		var that = this;
+		var icon= $("#search-button");
+		if (that.searchString.length>0)
+			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
+		else
+			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
+
+		that.refresh()
+
+	},
+
 	refresh: function (callback) {
 		
 		$('.tele-block, .tele-loader', this.container).remove();
@@ -195,9 +220,9 @@ telepath.suspects = {
 			
 		});
 
-		if (telepath.suspects.searchString)
+		if (that.searchString)
 		{
-			$('.tele-panel-suspects .tele-search-input').prop("value",telepath.suspects.searchString);
+			$('.tele-panel-suspects .tele-search-input').prop("value",that.searchString);
 		}
 	},
 	_resize: function () {

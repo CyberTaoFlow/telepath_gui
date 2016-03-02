@@ -1037,14 +1037,16 @@ a.tele-panel-dashboard-refresh-value:hover {
 }
 
 .icon-delete-input2 {
-	height: 28px;
-	width: 28px;
-	background: transparent url("../img/icons.png") no-repeat scroll -358px -355px;
-	margin-left: -54px;
+	height: 15px;
+	width: 17px;
+	background: transparent url("../img/cross-out-mark-2.png") no-repeat;
+	margin-left: -31px;
+	margin-top: 6px;
 	float: left;
+	zoom: 90%;
 }
 .icon-delete-input2:hover {
-	background-position: -393px -355px;
+	background: transparent url("../img/cross-out-mark.png") no-repeat;
 }
 /* UI ToolTips */
 
