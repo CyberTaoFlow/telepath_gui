@@ -66,7 +66,7 @@ telepath.alerts = {
 		var searchAlerts = $('<div>').teleSearch({ callback: function (e, txt) {
 			// Search
 			telepath.alerts.searchString = txt;
-			telepath.alerts.refresh();
+			//telepath.alerts.refresh();
 			
 		}});
 
@@ -77,7 +77,7 @@ telepath.alerts = {
 			telepath.alerts.refresh();
 		});
 
-		searchAlerts.append(resetInput);
+		//searchAlerts.append(resetInput);
 
 		panelSubBar.append(searchAlerts);
 		// Top bar items
@@ -113,9 +113,38 @@ telepath.alerts = {
 		container.append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
 		
 		telepath.alerts.refresh();
-		
-		
+
+		$(".tele-panel-alerts .tele-search-input").keyup('input', function () {
+			telepath.alerts.searchString = $(this).val();
+			that.input();
+		});
+
+		$("#search-button").on("click", function (event) {
+			that.searchString = '';
+			$(".tele-panel-alerts .tele-search-input").prop("value", telepath.alerts.searchString);
+			that.input();
+		});
+
+		// insert the value search to the input box (Moshe)
+		if (telepath.alerts.searchString)
+		{
+			$('.tele-panel-alerts .tele-search-input').prop("value",telepath.alerts.searchString);
+			that.input();
+		}
 	},
+
+	input: function(){
+		var that = this;
+		var icon= $("#search-button");
+		if (telepath.alerts.searchString.length>0)
+			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
+		else
+			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
+
+		that.refresh()
+
+	},
+
 	refresh: function (callback) {
 
 		telepath.ds.get('/alerts/index', {
@@ -129,11 +158,6 @@ telepath.alerts = {
 			}
 		});
 
-		// insert the value search to the input box (Moshe)
-		if (telepath.alerts.searchString)
-		{
-			$('.tele-panel-alerts .tele-search-input').prop("value",telepath.alerts.searchString);
-		}
 	},
 	setData: function(data) {
 		

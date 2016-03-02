@@ -239,7 +239,7 @@ class M_Suspects extends CI_Model {
 								"count"   => $doc_count,
 								"business_action" => $sid['business_action']['buckets'],
 								"date"  => $sid['date']['value'],
-								"last_score" =>$sid['last_score']['buckets'][0]['key']
+								"ip_score" =>$sid['last_score']['buckets'][0]['key']
 							);
 							$count_insert++;
 							if($count_insert >= $limit) {

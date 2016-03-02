@@ -413,6 +413,10 @@
 	overflow: hidden;
 }
 
+.tele-overlay-dialog .tele-overlay-content{
+	overflow: inherit;
+}
+
 .tele-overlay-rule-edit .tele-overlay-content,
 .tele-overlay-case-edit .tele-overlay-content {
 	padding: 20px;

@@ -155,7 +155,19 @@ class M_Search extends CI_Model {
 				],
 				"date" => [
 					"max" => [ "field" => "ts" ]
+				],
+				"last_score" => [
+					"terms" => [
+						"field" => "ip_score",
+						"order"=>["max_ts" => "desc" ]
+					],
+					'aggs'=>[
+						'max_ts'=>[
+							"max" => [ "field" => "ts"]
+						]
+					]
 				]
+
 			]
 		];
 
@@ -202,7 +214,8 @@ class M_Search extends CI_Model {
 						"host"    => $sid['host']['buckets'],
 						"count"   => $doc_count,
 						"score_average" => $sid['score']['value'],
-						"date"  => $sid['date']['value']
+						"date"  => $sid['date']['value'],
+						"ip_score"=>$sid['last_score']['buckets'][0]['key']
 					);
 					if($scope == 'cases') {
 						$item["cases_count"] = $cases_count_;

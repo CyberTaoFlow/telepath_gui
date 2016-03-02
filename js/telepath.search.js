@@ -489,7 +489,11 @@ telepath.search = {
         this.container.append(this.list);
 
         // Init Suspects
-        this.list.teleList({data: this.results.suspects, searchkey: this.searchStr});
+        this.list.teleList({data: this.results.suspects, searchkey: this.searchStr,
+        formatter: function(item){
+            item.checkable = true;
+            return telepath.suspects.rowFormatter(item);
+        }});
 
     },
     showRequestsTab: function () {
@@ -500,7 +504,11 @@ telepath.search = {
         this.container.append(this.list);
 
         // Init Suspects
-        this.list.teleList({data: this.results.requests, searchkey: this.searchStr});
+        this.list.teleList({data: this.results.requests, searchkey: this.searchStr,
+            formatter: function(item){
+                item.checkable = true;
+                return telepath.suspects.rowFormatter(item);
+            }});
 
     }
 

@@ -93,11 +93,13 @@ telepath.config.applications = {
 		var that = this;
 		var icon= $("#search-button");
 		if (that.searchString.length>0)
-			icon.addClass('icon-delete-input').removeClass("tele-search-button");
+			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
 		else
-			icon.removeClass('icon-delete-input').addClass("tele-search-button");
+			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
 
-		that.appTree.jstree('search', that.searchString);
+		that.reload();
+
+		//that.appTree.jstree('search', that.searchString);
 
 	},
 	data:[],
@@ -105,25 +107,6 @@ telepath.config.applications = {
 
 		var that = this;
 
-		$("#search-button").on("click", function (event) {
-			that.searchString = '';
-			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
-			that.input();
-
-			});
-
-
-		if (typeof that.searchString != 'undefined'){
-			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
-			that.input();
-		}
-
-
-		// add search on client site on key up event
-		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
-			that.searchString = $(this).val();
-			that.input();
-			});
 
 		that.appTree = $('<div>');
 
@@ -167,7 +150,7 @@ telepath.config.applications = {
 				}, width: 40 }
 			],
 			resizable:true
-		},
+		}/*,
 			search: {
 				"fuzzy":false,
 				"case_insensitive": true,
@@ -175,7 +158,7 @@ telepath.config.applications = {
 				search_callback : function (str, node) {
 					if(node.text === str) { return true; }
 				}
-			}
+			}*/
 		}).on('changed.jstree', function (e, data) {
 			console.log('App Changed');
 			console.log(data);
@@ -184,9 +167,9 @@ telepath.config.applications = {
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 				telepath.config.application.editApp(data.node.data.host);
 			}
-		}).on('ready.jstree', function(e, data) {
+		})/*.on('ready.jstree', function(e, data) {
 			data.instance.search(that.searchString);
-		});
+		});*/
 
 	},
 
@@ -215,6 +198,22 @@ telepath.config.applications = {
 
 		this.barLeft.append(this.search).append(this.create);
 
+		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
+			that.searchString = $(this).val();
+			that.input();
+		});
+
+		$("#search-button").on("click", function (event) {
+			that.searchString = '';
+			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+			that.input();
+
+		});
+
+		if (typeof that.searchString != 'undefined'){
+			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+			that.input();
+		}
 	}
 };
 
