@@ -1074,7 +1074,7 @@ $.widget( "tele.teleRule", {
 				if(!data.action_name) { data.action_name = ''; }
 				if(!data.domain) { data.domain = ''; }
 				var action_data = [ { text: data.domain + ' :: ' + data.action_name, raw: { application: data.domain, action_name: data.action_name } } ];
-				
+				if (!data.action_name&&!data.domain){ action_data[0].text= ''};
 				var actionSelect = $('<div>').teleSelect({ type: 'action', values: action_data, click: function () { } }).hide();
 				$('input', actionSelect).css({ width: 300 });
 				$('.tele-multi-control', actionSelect).hide();
