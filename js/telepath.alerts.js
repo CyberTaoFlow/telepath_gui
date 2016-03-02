@@ -123,8 +123,14 @@ telepath.alerts = {
 			that.searchString = '';
 			$(".tele-panel-alerts .tele-search-input").prop("value", telepath.alerts.searchString);
 			that.input();
-
 		});
+
+		// insert the value search to the input box (Moshe)
+		if (telepath.alerts.searchString)
+		{
+			$('.tele-panel-alerts .tele-search-input').prop("value",telepath.alerts.searchString);
+			that.input();
+		}
 	},
 
 	input: function(){
@@ -152,11 +158,6 @@ telepath.alerts = {
 			}
 		});
 
-		// insert the value search to the input box (Moshe)
-		if (telepath.alerts.searchString)
-		{
-			$('.tele-panel-alerts .tele-search-input').prop("value",telepath.alerts.searchString);
-		}
 	},
 	setData: function(data) {
 		

@@ -152,11 +152,7 @@ telepath.suspects = {
 			//telepath.suspects.refresh(function () {	});
 		}});
 
-
-		if (telepath.suspects.searchString)
-		{
-			$('.tele-panel-suspects .tele-search-input').val(telepath.suspects.searchString);
-		}
+		
 		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
 			$('.tele-panel-suspects .tele-search-input').val('');
 			telepath.suspects.searchString = '';
@@ -181,6 +177,13 @@ telepath.suspects = {
 			that.input();
 
 		});
+
+		if (that.searchString)
+		{
+			$('.tele-panel-suspects .tele-search-input').prop("value",that.searchString);
+
+			that.input();
+		}
 		
 	},
 
@@ -220,10 +223,6 @@ telepath.suspects = {
 			
 		});
 
-		if (that.searchString)
-		{
-			$('.tele-panel-suspects .tele-search-input').prop("value",that.searchString);
-		}
 	},
 	_resize: function () {
 		
