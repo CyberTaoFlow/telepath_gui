@@ -325,7 +325,7 @@ class M_Applications extends CI_Model {
 
 		if ($search){
 			$params['body']['query']=[];
-			$params['body']['query']['match']=['host'=>$search];
+			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => [ "host" ] , "query" => '*' . $search . '*' ] ];
 		}
 
 		$results = prepare_elastic_results($this->elasticClient->search($params));
