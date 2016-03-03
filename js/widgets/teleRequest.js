@@ -27,7 +27,7 @@ $.widget( "tele.teleRequest", {
 		}
 				
 		// Path
-		this.pagePath  = $('<div>').addClass('tele-request-page-path').html(this.options.data.uri);
+		this.pagePath  = $('<div title='+this.options.data.uri+'>').addClass('tele-request-page-path').html(this.options.data.uri);
 		
 		// Edit
 		/*this.requestEdit  = $('<div>').btn({ icon: 'edit', callback: function () {}});*/
