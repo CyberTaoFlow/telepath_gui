@@ -105,8 +105,8 @@ $.widget( "tele.teleRequest", {
 					var paramName_value = param.name;				
 					var paramName = $('<div>').addClass('tele-request-param-name').html(paramName_value);
 					
-					var menu1 = [ {'Option 1':function(menuItem,menu) { alert("You clicked Option 1!"); } }, $.contextMenu.separator, {'Option 2':function(menuItem,menu) { alert("You clicked Option 2!"); } } ];
-					paramName.contextMenu(menu1,{theme:'osx'});
+					/*var menu1 = [ {'Option 1':function(menuItem,menu) { alert("You clicked Option 1!"); } }, $.contextMenu.separator, {'Option 2':function(menuItem,menu) { alert("You clicked Option 2!"); } } ];
+					paramName.contextMenu(menu1,{theme:'osx'});*/
 					
 					if(param.value) {
 						param.data = param.value;
