@@ -250,7 +250,8 @@ ul.tele-listitem-info li.tele-listitem-cases-count{
 
 .tele-panel-alerts ul.tele-listitem-info li.tele-listitem-alerts-count,
 .tele-panel-alerts ul.tele-listitem-info li.tele-listitem-actions-count,
-.tele-panel-alerts ul.tele-listitem-info li.tele-listitem-cases-count{
+.tele-panel-alerts ul.tele-listitem-info li.tele-listitem-cases-count,
+.tele-cases-block ul.tele-listitem-info li.tele-listitem-alerts-count{
 	top: -22px;
 }
 
