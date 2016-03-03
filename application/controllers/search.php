@@ -25,7 +25,7 @@ class Search extends Tele_Controller
         $key = $this->input->post('search');
         if (substr($key, -1) != '*')
         {
-            $key = '*'. $key . '*';
+            $key = $key . '*';
         }
         return array(
             'search' => $key,

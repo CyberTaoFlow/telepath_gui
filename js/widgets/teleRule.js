@@ -281,7 +281,7 @@ $.widget( "tele.teleRule", {
 						}
 
 
-						if(!param.paramname) {
+						if(!param) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for a parameter.' });
 							$('.tele-browse input', c).addClass('error');
 
@@ -326,7 +326,7 @@ $.widget( "tele.teleRule", {
 							case 'stringmatch': 							
 								json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked',c).size() > 0;
 								json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
-								
+
 								if(json.str_match == '') {
 									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
 									$('.tele-rule-string-inspection input').addClass('error');
@@ -371,7 +371,7 @@ $.widget( "tele.teleRule", {
 				json.type = $('.tele-rule-anchor', c).data('tele-tele-radios').options.checked;
 				json.time  = parseInt($('.tele-pattern-time input', c).val());
 				json.count = parseInt($('.tele-pattern-count input', c).val());
-				
+
 				if(json.time < 1) {
 					telepath.dialog({ title: 'Rule Editor', msg: 'Invalid time window' });
 					$('.tele-pattern-time input', c).addClass('error');
@@ -443,22 +443,26 @@ $.widget( "tele.teleRule", {
 					break;
 					case 'action':
 					
-						if($('.tele-pattern-changing .tele-multi input').size() > 0 &&
-						   $('.tele-pattern-changing .tele-multi input').data('teleSelect') &&
-						   $('.tele-pattern-changing .tele-multi input').data('teleSelect').raw) {
-						   
-						   var action_data = $('.tele-pattern-changing .tele-multi input').data('teleSelect').raw;
-						   
-						   json.domain      = action_data.application;
-						   json.action_name = action_data.action_name;
-						 
-						 } else {
-						 
-							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for repeating business action' });
+						//if($('.tele-pattern-changing .tele-multi input').size() > 0 &&
+						//   $('.tele-pattern-changing .tele-multi input').data('teleSelect') &&
+						//   $('.tele-pattern-changing .tele-multi input').data('teleSelect').raw) {
+						var action_data = $('.tele-pattern-changing .tele-multi input').data('teleSelect');
+
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
+						if ($.isEmptyObject(action_data)) {
+							telepath.dialog({
+								title: 'Rule Editor',
+								msg: 'You must browse for repeating business action'
+							});
 							$('.tele-pattern-changing .tele-multi input', c).addClass('error');
 							return false;
-							
-						 }
+						} else {
+							json.domain = action_data.raw.application;
+							json.action_name = action_data.raw.action_name;
+						}
 					
 					break;
 					case 'page':
@@ -470,7 +474,7 @@ $.widget( "tele.teleRule", {
 							param = JSON.parse(param);
 						}
 						
-						if(!param.pagename) {
+						else {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for changing page' });
 							$('.tele-browse-page input', c).addClass('error');
 							return false;
@@ -496,7 +500,7 @@ $.widget( "tele.teleRule", {
 							param = JSON.parse(param);
 						}
 						
-						if(!param.paramname) {
+						else {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for changing parameter' });
 							$('.tele-browse-param input', c).addClass('error');
 							return false;
@@ -1070,11 +1074,14 @@ $.widget( "tele.teleRule", {
 				var paramBrowse  = $('<div>').teleBrowse(browseOpt).hide().addClass('tele-browse-param');
 				
 				// Business Action Select
-				
-				if(!data.action_name) { data.action_name = ''; }
-				if(!data.domain) { data.domain = ''; }
-				var action_data = [ { text: data.domain + ' :: ' + data.action_name, raw: { application: data.domain, action_name: data.action_name } } ];
-				if (!data.action_name&&!data.domain){ action_data[0].text= ''};
+
+				if (!data.action_name&&!data.domain){
+					var action_data=[{}];
+				}
+				else{
+					var action_data = [ { text: data.domain + ' :: ' + data.action_name, raw: { application: data.domain, action_name: data.action_name } } ];
+
+				}
 				var actionSelect = $('<div>').teleSelect({ type: 'action', values: action_data, click: function () { } }).hide();
 				$('input', actionSelect).css({ width: 300 });
 				$('.tele-multi-control', actionSelect).hide();
