@@ -30,13 +30,7 @@ class Actions extends Tele_Controller
         $action = $this->input->post('action');
         $uid = $this->input->post('uid');
 
-        $deleteParams = array();
-        $deleteParams['index'] = 'telepath-actions';
-        $deleteParams['type'] = 'actions';
-        $deleteParams['id'] = $uid;
-        $retDelete = $this->client->delete($deleteParams);
-
-        $this->client->indices()->refresh(array('index' => 'telepath-actions'));
+       $this->M_Actions->set_delete_action($uid);
 
         $this->load->model('M_Config');
         $this->M_Config->update('business_flow_was_changed', '1');
@@ -54,29 +48,8 @@ class Actions extends Tele_Controller
         $text = str_replace(":", "", $text);
         $text = trim($text);
 
-        $params['index'] = 'telepath-actions';
-        $params['type'] = 'actions';
-        $params['body']['size'] = 999;
-        $params['body'] = [
-            'partial_fields' => [
-                "_src" => [
-                    "include" => ["application", "action_name"]
-                ],
-            ],
-            'size' => 9999,
-            'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["application", "action_name"], "query" => '*' . $text . '*']]]],
-        ];
+        return_success($this->M_Actions->get_action_autocomplete($text));
 
-        $results = $this->client->search($params);
-
-        $ans = [];
-        if (!empty($results['hits']['hits'])) {
-            foreach ($results['hits']['hits'] as $hit) {
-                $fields = $hit['fields']['_src'][0];
-                $ans[] = array('key' => $fields['application'] . ' :: ' . $fields['action_name'], 'raw' => $fields);
-            }
-        }
-        return_success($ans);
 
     }
 
@@ -85,10 +58,6 @@ class Actions extends Tele_Controller
 
         telepath_auth(__CLASS__, 'set_action');
 
-        $params['index'] = 'telepath-actions';
-        $params['type'] = 'actions';
-        $params['body']['query']['match']['domain'] = '192.168.1.111';
-        $res = $this->client->deleteByQuery($params);
 
     }
 
@@ -100,13 +69,7 @@ class Actions extends Tele_Controller
         $ret = array();
         $host = $this->input->post('host');
 
-        $params['index'] = 'telepath-actions';
-        $params['type'] = 'actions';
-        $params['body']['size'] = 999;
-        $params['body']['query']['match']['application'] = $host;
-
-        $results = get_elastic_results($this->client->search($params));
-        return_success($results);
+        return_success($this->M_Actions->get_actions($host));
 
     }
 
@@ -121,25 +84,7 @@ class Actions extends Tele_Controller
         $data = $this->input->post('json');
         $data = json_decode($data);
 
-        $new_json = array('action_name' => $name, 'application' => $app, 'business' => $data);
-        // Make sure we have an index
-        $indexParams['index'] = 'telepath-actions';
-        // Create index if it does not exists only (Yuli)
-        $settings = $this->client->indices()->getSettings($indexParams);
-        if (!$settings) {
-            $this->client->indices()->create($indexParams);
-        }
-        // Delete old
-        $params['index'] = 'telepath-actions';
-        $params['type'] = 'actions';
-        $params['body']['query']['bool']['must'][] = ['term' => ['action_name' => $name]];
-        $params['body']['query']['bool']['must'][] = ['term' => ['application' => $app]];
-        $res = $this->client->deleteByQuery($params);
-
-        // Insert new
-        $params = ['body' => $new_json, 'index' => 'telepath-actions', 'type' => 'actions'];
-        $this->client->index($params);
-        $this->client->indices()->refresh(array('index' => 'telepath-actions'));
+        $this->M_Actions->set_flow($name,$app,$data);
 
         $this->load->model('M_Config');
         $this->M_Config->update('business_flow_was_changed', '1');
@@ -151,41 +96,7 @@ class Actions extends Tele_Controller
     public function _hybridrecord_to_sid($value, $host)
     {
 
-        $scope = 300; // in last 5 minutes
-
-        $params['body'] = [
-            'size' => 100,
-            'query' => ['bool' =>
-                ['must' => [
-                    ['term' => ['_type' => 'http']],
-                    ['term' => ['parameters.name' => 'hybridrecord']],
-                    ['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
-                ],
-                ]]
-        ];
-
-        $results = array();
-        $result = get_elastic_results($this->client->search($params));
-        if (!empty($result)) {
-
-            foreach ($result as $row) {
-                if (!empty($row['parameters'])) {
-                    foreach ($row['parameters'] as $param) {
-                        // We got our session, return its SID and offset timestamp
-                        if ($param['name'] == 'hybridrecord' && $param['value'] == $value) {
-                            return_success(array('sid' => $row['sid'], 'ts' => $row['ts']));
-                        }
-                    }
-                }
-            }
-
-        } else {
-            // Return empty array to UI, nothing found (yet)
-            return_success();
-        }
-
-        // Something went wrong
-        return_success();
+        return $this->M_Actions->_hybridrecord_to_sid($value,$host);
 
     }
 
@@ -207,98 +118,7 @@ class Actions extends Tele_Controller
         // When this flag is set only return TS of last request
         $lockon = ($this->input->post('lockon') == 'true') ? true : false;
 
-        // empty array (Yuli)
-        $params = array();
-        // Base query
-        $params['body'] = [
-            'size' => 100,
-            'query' => ['bool' => ['must' => [['term' => ['_type' => 'http']]]]],
-            'sort' => [["ts" => ["order" => "desc"]]]
-        ];
-
-        if ($offset) {
-            $params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $offset]]];
-        }
-        if ($host) {
-            $params['body']['query']['bool']['must'][] = ['term' => ['host' => $host]];
-        }
-
-        // sanity check (Yuli)
-        if ($mode == 'IP') {
-            // we need to check if IP hass correct format
-            // we will silently ignore this request returning empty result
-            if (filter_var($value, FILTER_VALIDATE_IP) === false) {
-                $empty_result = array();
-                return_success($empty_result);
-            }
-        }
-
-        switch ($mode) {
-
-            case 'IP':
-
-                $params['body']['query']['bool']['must'][] = ['term' => ['ip_orig' => $value]];
-
-                break;
-
-            case 'URL':
-
-                $value = $this->_hybridrecord_to_sid($value, $host);
-
-            // No break, continue as SID
-            // break;
-
-            case 'SID':
-
-                $params['body']['query']['bool']['must'][] = ['term' => ['sid' => $value]];
-
-                break;
-        }
-
-        $results = array();
-        $result = get_elastic_results($this->client->search($params));
-
-        // Strip headers
-        $clean = array();
-        if (!empty($result)) {
-
-            if ($lockon) {
-
-                $max_ts = 0;
-                foreach ($result as $request) {
-                    if (intval($request['ts']) > $max_ts) {
-                        $max_ts = $request['ts'];
-                    }
-                }
-                return_success(array('ts' => $max_ts));
-
-            } else {
-
-                foreach ($result as $request) {
-
-                    // Copy aside, remove, initialize blank
-                    $r_params = $request['parameters'];
-                    unset($request['parameters']);
-                    $request['parameters'] = array();
-
-                    // Append only params of GET/POST
-                    if (!empty($r_params)) {
-                        foreach ($r_params as $param) {
-                            if ($param['type'] == 'P' || $param['type'] == 'G') {
-                                $request['parameters'][] = $param;
-                            }
-                        }
-                    }
-
-                    $clean[] = $request;
-
-                }
-
-            }
-        }
-
-
-        return_success($clean);
+        return $this->M_Actions->get_requests($mode, $value, $host, $offset, $lockon);
 
     }
 
@@ -310,7 +130,7 @@ class Actions extends Tele_Controller
         $host = $this->input->post('host');
         $mode = $this->input->post('mode');
 
-        $sessions = $this->__get_active_sessions($host);
+        $sessions = $this->M_Actions->__get_active_sessions($host);
         $res = array();
 
         switch ($mode) {
@@ -340,51 +160,6 @@ class Actions extends Tele_Controller
         }
 
         return_success($res);
-
-    }
-
-    public function __get_active_sessions($host)
-    {
-
-        $scope = 300; // in last 5 minutes
-
-        $params['body'] = [
-            'size' => 0,
-            "aggs" => [
-                "sid" => [
-                    "terms" => ["field" => "sid", "size" => 100, "order" => ['date' => 'desc']],
-                    "aggs" => [
-                        "date" => ["max" => ["field" => "ts"]],
-                        "ip_orig" => [
-                            "min" => ["field" => "ip_orig"]
-                        ],
-                    ],
-                ],
-            ],
-            'query' => ['bool' =>
-                ['must' => [['term' => ['_type' => 'http']],
-                    ['term' => ['host' => $host]],
-                    ['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
-                ],
-                ]]
-        ];
-
-        $results = array();
-        $result = $this->client->search($params);
-
-        if (isset($result["aggregations"]) &&
-            isset($result["aggregations"]["sid"]) &&
-            isset($result["aggregations"]["sid"]["buckets"]) &&
-            !empty($result["aggregations"]["sid"]["buckets"])
-        ) {
-
-            $sid_buckets = $result["aggregations"]["sid"]["buckets"];
-            foreach ($sid_buckets as $sid) {
-                $results[] = array("sid" => $sid['key'], "ts" => $sid['date']['value'], "ip_orig" => long2ip($sid['ip_orig']['value']));
-            }
-        }
-
-        return $results;
 
     }
 
