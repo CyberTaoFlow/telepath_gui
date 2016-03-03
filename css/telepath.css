@@ -1040,10 +1040,10 @@ a.tele-panel-dashboard-refresh-value:hover {
 	height: 15px;
 	width: 17px;
 	background: transparent url("../img/cross-out-mark-2.png") no-repeat;
-	margin-left: -31px;
-	margin-top: 6px;
+	margin-left: -29px;
+	margin-top: 9px;
 	float: left;
-	zoom: 90%;
+	zoom: 80%;
 }
 .icon-delete-input2:hover {
 	background: transparent url("../img/cross-out-mark.png") no-repeat;
