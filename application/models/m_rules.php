@@ -208,7 +208,7 @@ class M_Rules extends CI_Model {
 			
 	}
 	
-	public function get_rule($name, $category) {
+	public function get_rule($name, $category=false) {
 		
 		$ret = array();
 	
@@ -216,8 +216,10 @@ class M_Rules extends CI_Model {
 		$params['type']  = 'rules';
 		
 		$params['body']['query']['bool']['must'][] = ['match' => ['name' => $name]];
-		$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
-		
+		if($category){
+			$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
+		}
+
 		$results   = get_elastic_results($this->elasticClient->search($params));
 		
 		return $results;

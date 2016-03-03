@@ -205,10 +205,11 @@ telepath.sessionflow = {
 		}
 
 	},
-	init: function(SID, list, is_alert, searchkey) {
+	init: function(SID, IP, list, is_alert, alerts_names, searchkey) {
 	
 		this.session = false;	
 		this.SID  = SID;
+		this.IP  = IP;
 		this.list = list;
 		this.searchkey = searchkey;
 		if (searchkey)
@@ -217,6 +218,7 @@ telepath.sessionflow = {
 		}
 		else if(is_alert && is_alert == 'alert') {
 			this.filter = 'Alerts';
+			this.alerts_names = alerts_names;
 		} else {
 			this.filter = 'All';
 		}
@@ -244,7 +246,7 @@ telepath.sessionflow = {
 			
 			that.session.stats = data.items;
 			
-			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey }, function (data) {
+			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP }, function (data) {
 				that.session.items = data.items;
 				that.showSession();
 			});

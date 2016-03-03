@@ -74,7 +74,7 @@ telepath.listitem.generic = {
 				$('.popover').remove();
 			}, 1000);
 			
-			telepath.sessionflow.init(widget.options.itemID, widget.element.parent().parent(), widget.options.icon, widget.options.raw.searchkey);
+			telepath.sessionflow.init(widget.options.itemID, widget.options.raw.ip_orig, widget.element.parent().parent(), widget.options.icon, widget.options.raw.alerts_names, widget.options.raw.searchkey);
 		},
 		hover_in: function(el, item) {
 			
