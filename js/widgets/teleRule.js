@@ -474,7 +474,7 @@ $.widget( "tele.teleRule", {
 							param = JSON.parse(param);
 						}
 						
-						if(!param.pagename) {
+						else {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for changing page' });
 							$('.tele-browse-page input', c).addClass('error');
 							return false;
@@ -500,7 +500,7 @@ $.widget( "tele.teleRule", {
 							param = JSON.parse(param);
 						}
 						
-						if(!param.paramname) {
+						else {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for changing parameter' });
 							$('.tele-browse-param input', c).addClass('error');
 							return false;
