@@ -967,7 +967,9 @@ telepath.sessionflow = {
 					col_score.addClass('severe');
 					col_data.addClass('severe');
 				}*/
-				
+				if (parseInt(param.score_data)>10){
+					row.css({"color":"red"})
+				}
 				row.append(col_name).append(col_data).append(col_score);
 				table.append(row);
 				
