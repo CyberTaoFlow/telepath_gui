@@ -17,22 +17,22 @@
         }
 
         .inner.one {
-            left: 0%;
+            left: -15%;
             top: 0%;
             animation: rotate-one 1s linear infinite;
             border-style: solid;
-            border-color: #244f9d;
-            border-width: 3px 3px 0px 0px;
+            border-color: #1D70B7;
+            border-width: 3px 0px 0px 4px;
         }
 
 
         .inner.three {
             right: 0%;
-            bottom: 0%;
+            bottom: -15%;
             animation: rotate-three 1s linear infinite;
             border-style: solid;
             border-color: #5e5e62;
-            border-width: 3px 5px 3px 0px;
+            border-width: 3px 4px 3px 0px;
         }
 
         @keyframes rotate-one {
