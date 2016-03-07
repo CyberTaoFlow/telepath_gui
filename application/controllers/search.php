@@ -23,9 +23,10 @@ class Search extends Tele_Controller
         }
         # Automatically add * to the end of search string
         $key = $this->input->post('search');
-        if (substr($key, -1) != '*')
+        if (substr($key, -1) != '*' && $key[0]!='"' && substr($key, -1) != '"' )
         {
-            $key = $key . '*';
+            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
+
         }
         return array(
             'search' => $key,
