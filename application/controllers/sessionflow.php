@@ -41,9 +41,10 @@ class Sessionflow extends Tele_Controller
         $anchor_field='sid';
         $anchor_value=$this->input->post('sid');
         $filter = $this->input->post('filter');
-        if($filter=="Alerts"){
+        $alerts = $this->input->post('alerts');
+
+        if($alerts && !empty($alerts)){
             $this->load->model('M_Rules');
-            $alerts = $this->input->post('alerts');
             foreach($alerts as $alert){
                 $rule = $this->M_Rules->get_rule($alert['key']);
                 if (!empty($rule) && $rule[0]['criteria'][0]['type']=="IP") {

@@ -382,7 +382,7 @@ class M_Cases extends CI_Model {
 					// If it's a script that always run, we have to query only the latest requests
 
 					if ($range && $last_update=$this->get_last_case_update())
-						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $update_time, 'lte' => $last_update]]];
+						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $last_update, 'lte' => $update_time]]];
 
 
 					$docs = $this->elasticClient->search($params);

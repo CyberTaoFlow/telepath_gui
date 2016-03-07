@@ -131,6 +131,10 @@ class Rules extends Tele_Controller
             $rules[] = array('name' => "Login Brute-Force",
                 'uid' => "Login Brute-Force",
                 'category' => "Brute-Force");
+        } elseif($category == "Credential-Stuffing") {
+            $rules[] = array('name' => "Credential-Stuffing",
+                'uid' => "Credential-Stuffing",
+                'category' => "Credential-Stuffing");
         } else {
             $rules = $this->M_Rules->get_rules($category);
         }

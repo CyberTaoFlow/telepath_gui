@@ -212,13 +212,14 @@ telepath.sessionflow = {
 		this.IP  = IP;
 		this.list = list;
 		this.searchkey = searchkey;
+		this.alerts_names = alerts_names;
+
 		if (searchkey)
 		{
 			this.filter = 'Search';
 		}
 		else if(is_alert && is_alert == 'alert') {
 			this.filter = 'Alerts';
-			this.alerts_names = alerts_names;
 		} else {
 			this.filter = 'All';
 		}
