@@ -69,7 +69,7 @@ class Actions extends Tele_Controller
         $ret = array();
         $host = $this->input->post('host');
 
-        return_success($this->M_Actions->get_actions($host));
+        return_success($this->M_Actions->get_app_actions($host));
 
     }
 
