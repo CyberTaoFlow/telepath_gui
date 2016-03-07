@@ -360,6 +360,26 @@ class M_Rules extends CI_Model {
 		return $this->__get_categories();
 	}
 
+	function searchRules($search){
+
+		$params['index']='telepath-rules';
+		$params['type']=['rules'];
+		$params['body'] = [
+			'partial_fields' => [
+				"_src" => [
+					"include" => ['category','name']
+				],
+			],
+			'size' => 9999,
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category','_id','name'], "query" => '*'.$search . '*']]]],
+
+		];
+
+		$result= $this->elasticClient->search($params);
+
+		return $result['hits']['hits'];
+	}
+
 	// Method declaration
 	// TODO:: implement using json
 	public function get_rule_groups($assoc = false) {}

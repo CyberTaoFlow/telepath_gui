@@ -1760,4 +1760,32 @@ class Rules extends Tele_Controller
 
     }
 
+    public function searchRules()
+    {
+        $search = $this->input->post('search');
+
+        $rules= $this->M_Rules->searchRules($search);
+
+        $ans = array('items' => array(), 'total' => 0, 'success' => true);
+
+        if ($rules && is_array($rules) && !empty($rules)) {
+            foreach ($rules as $rule) {
+                if (!preg_match('/'.$search.'/',$rule['fields']['_src'][0]['name'])){
+                    continue;
+                }
+                $ans['items'][$rule['fields']['_src'][0]['category']][] = array(
+                    'id' => $rule['_id'],
+                    'category' => $rule['fields']['_src'][0]['category'],
+                    'name' => $rule['fields']['_src'][0]['name']
+                );
+
+            }
+
+        }
+
+        $ans['total'] = count($ans['items']);
+
+        return_json($ans);
+    }
+
 }

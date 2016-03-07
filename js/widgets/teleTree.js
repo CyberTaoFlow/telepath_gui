@@ -28,7 +28,8 @@ $.widget( "tele.teleTree", {
 				}, width: 40 }
 			],
 			resizable:true
-		}
+		},
+		searchString: ''
     },
     _create: function() {
         this.element.addClass( "tele-tree" );
@@ -37,7 +38,7 @@ $.widget( "tele.teleTree", {
  
     _setOption: function( key, value ) {
         this.options[ key ] = value;
-        this._update();
+        //this._update();
     },
 	
 	expand: function(obj, callback) {
@@ -48,6 +49,10 @@ $.widget( "tele.teleTree", {
 		var nodeType = obj.data && obj.data.type ? obj.data.type : 'root';
 		var postData = { };
 		var postUrl  = '';
+
+		if (that.options.searchString){
+			nodeType='search';
+		}
 		
 		switch(treeType) {
 			
@@ -68,6 +73,11 @@ $.widget( "tele.teleTree", {
 						postData.id   = obj.data.id;
 						
 					break;
+
+					case 'search':
+						postUrl = '/rules/searchRules';
+						postData.search = that.options.searchString;
+
 				}
 			
 			break;
@@ -76,19 +86,47 @@ $.widget( "tele.teleTree", {
 
 		telepath.ds.get(postUrl, postData, function(data) {
 			var treeData = [];
-			$.each(data.items, function(i, row) {
-			
-				var obj = { children: true, text: row.name, data: { id: row.name, type: postData.type, name: row.name, category: row.category }};
-				
-				if(that.options.type == "rules") {
-					telepath.config.rules.categories = data.items;
-				}
-				
-				if(postData.type == 'group') {	
-					obj.children = false;
-				}
-				treeData.push(obj);
-			});
+
+			if (nodeType=='search'){
+
+				var child={};
+				$.each(data.items, function (i, item) {
+					var obj = {
+						children:[],
+						text: i,
+						data: {id: i, type: 'category', name: i, category:item[0].category}};
+					$.each(item, function (j, row){
+						child = {
+							children: false,
+							text: row.name,
+							data: {id: row.name, type: 'group', name: row.name, category: row.category}
+						};
+						obj.children.push(child)
+					});
+
+					treeData.push(obj)
+				});
+
+			}
+			else {
+				$.each(data.items, function (i, row) {
+
+					var obj = {
+						children: true,
+						text: row.name,
+						data: {id: row.name, type: postData.type, name: row.name, category: row.category}
+					};
+
+					if (that.options.type == "rules") {
+						telepath.config.rules.categories = data.items;
+					}
+
+					if (postData.type == 'group') {
+						obj.children = false;
+					}
+					treeData.push(obj);
+				});
+			}
 			callback.call(that, treeData);
 		});
 		
@@ -113,6 +151,10 @@ $.widget( "tele.teleTree", {
 				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 			that.options.callback(e, data);
+		}).on('loaded.jstree', function() {
+			if (that.options.searchString){
+				that.teleTree.jstree('open_all');
+			}
 		});
 
 		$(this.element).mCustomScrollbar({
