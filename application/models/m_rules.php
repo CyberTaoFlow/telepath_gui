@@ -319,21 +319,21 @@ class M_Rules extends CI_Model {
 	private function __set_categories($array) {
 			
 		// Cleanup
-		$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rule_categories' ] ] ], 'index' => 'telepath-config' ];
+		$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rule_categories' ] ] ], 'index' => 'telepath-rules' ];
 		$this->elasticClient->deleteByQuery($query);
 		
 		// Set
-		$params = ['body' => [ 'rule_categories' => $array ], 'index' => 'telepath-config', 'type' => 'rule_categories','id' => 'categories_id'];
+		$params = ['body' => [ 'rule_categories' => $array ], 'index' => 'telepath-rules', 'type' => 'rule_categories','id' => 'categories_id'];
 		$this->elasticClient->index($params);		
 		
 		// Refresh
-		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-rules'));
 		
 	}
 	
 	public function clear_rules() {
 		
-		$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rules' ] ] ], 'index' => 'telepath-config' ];
+		$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rules' ] ] ], 'index' => 'telepath-rules' ];
 		$this->elasticClient->deleteByQuery($query);
 		
 	}
@@ -341,7 +341,7 @@ class M_Rules extends CI_Model {
 	public function set_rules($obj) {
 		
 		$this->clear_rules();
-		$params = ['body' => $obj, 'index' => 'telepath-config', 'type' => 'rules'];
+		$params = ['body' => $obj, 'index' => 'telepath-rules', 'type' => 'rules'];
 		$this->elasticClient->index($params);
 		
 	}
