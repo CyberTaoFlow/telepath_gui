@@ -88,6 +88,25 @@ telepath.suspects = {
 				telepath.suspects.refresh(function () {	});
 			
 		}});
+
+		// Sort filters
+		var sortRadios = $('<div>').radios({
+			title: 'Sort By',
+			items: [
+				{ id: 'date'     , icon: 'time', tip: 'Time' },
+				{ id: 'score'    , icon: 'bars', tip: 'Severity' },
+				{ id: 'alerts'   , icon: 'alerts', tip: 'Alerts' }
+			],
+			selected: this.sort,
+			callback: function(e, id) {
+				if(that.sort == id) {
+					that.dir = !that.dir;
+				}
+				that.sort = id;
+				that.refresh();
+			}
+		});
+		this.panelTopBarRight.append(sortRadios).append('<div class="tele-navsep"></div>');
 		
 		// Applications
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
@@ -127,24 +146,6 @@ telepath.suspects = {
 		
 		this.panelSubBar.append('<div class="tele-navsep"></div>'); // Sep*/
 
-		// Sort filters
-		var sortRadios = $('<div>').radios({ 
-			title: 'Sort By', 
-			items: [ 
-				{ id: 'date'     , icon: 'time', tip: 'Time' }, 
-				{ id: 'score'    , icon: 'bars', tip: 'Severity' }, 
-				{ id: 'alerts'   , icon: 'alerts', tip: 'Alerts' }
-			], 
-			selected: this.sort,
-			callback: function(e, id) {
-				if(that.sort == id) {
-					that.dir = !that.dir;
-				}
-				that.sort = id;
-				that.refresh();
-			}
-		});
-		this.panelSubBar.append(sortRadios);
 		
 		// Search
 		var searchSuspects = $('<div>').teleSearch({ callback: function (e, txt) {

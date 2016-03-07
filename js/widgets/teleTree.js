@@ -33,12 +33,12 @@ $.widget( "tele.teleTree", {
     },
     _create: function() {
         this.element.addClass( "tele-tree" );
-        this._update();
+        //this._update();
     },
  
     _setOption: function( key, value ) {
         this.options[ key ] = value;
-        //this._update();
+        this._update();
     },
 	
 	expand: function(obj, callback) {

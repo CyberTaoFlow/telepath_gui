@@ -60,7 +60,6 @@ telepath.alerts = {
 				that.refresh();
 			}
 		});
-		panelSubBar.append(sortRadios);
 		
 		// Search
 		var searchAlerts = $('<div>').teleSearch({ callback: function (e, txt) {
@@ -110,7 +109,8 @@ telepath.alerts = {
 		}});
 		
 		// Append All
-		container.append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
+		container.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange)
+			.append('<div class="tele-navsep"></div>').append(filterApps);
 		
 		telepath.alerts.refresh();
 
