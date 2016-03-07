@@ -75,7 +75,7 @@ class M_Cases extends CI_Model {
 			)
 		);
 		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search  ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
 		}
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
