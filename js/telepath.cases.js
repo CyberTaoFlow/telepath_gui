@@ -190,7 +190,7 @@ telepath.cases = {
 		}});
 		panelSubBar.append(deleteBtn);
 		
-		panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
+		//panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
 		
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 
@@ -209,7 +209,7 @@ telepath.cases = {
 				that.refresh();
 			}
 		});
-		panelSubBar.append(sortRadios);
+		//panelSubBar.append(sortRadios);
 		
 		// Search
 		// var searchCases = $('<div>').teleSearch({ callback: function (e, txt) {
@@ -245,7 +245,7 @@ telepath.cases = {
 		}});
 		
 		// Append All
-		container.append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
+		container.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
 	
 	}
 	

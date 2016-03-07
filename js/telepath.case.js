@@ -293,7 +293,28 @@ telepath.casePanel = {
 			
 		}});
 		this.panelTopBar.append(this.archiveCase);
-				
+
+		// Sort filters
+		var sortRadios = $('<div>').radios({
+			title: 'Sort By',
+			items: [
+				{ id: 'created', icon: 'time', tip: 'Time' },
+				{ id: 'favorite' , icon: 'bars', tip: 'Severity' },
+				{ id: 'name', icon: 'alerts', tip: 'Name' }
+			],
+			selected: this.sort,
+			callback: function(e, id) {
+				if(that.sort == id) {
+					that.dir = !that.dir;
+				}
+				that.sort = id;
+				that.refresh();
+			}
+		});
+		this.panelTopBar.append('<div class="tele-navsep"></div>');
+		this.panelTopBar.append(sortRadios);
+
+
 		// Description
 		this.panelTopBar.append(this.caseDesc);
 
@@ -393,26 +414,7 @@ telepath.casePanel = {
 		
 		this.panelSubBar.append('<div class="tele-navsep"></div>'); // Sep
 		*/
-		
-		// Sort filters
-		var sortRadios = $('<div>').radios({ 
-			title: 'Sort By', 
-			items: [ 
-				{ id: 'created', icon: 'time', tip: 'Time' }, 
-				{ id: 'favorite' , icon: 'bars', tip: 'Severity' }, 
-				{ id: 'name', icon: 'alerts', tip: 'Name' }
-			], 
-			selected: this.sort,
-			callback: function(e, id) {
-				if(that.sort == id) {
-					that.dir = !that.dir;
-				}
-				that.sort = id;
-				that.refresh();
-			}
-		});
-		
-		this.panelSubBar.append(sortRadios);
+
 		
 		// Case information block
 		// this.infoBlock = $('<div>').infoblock();
