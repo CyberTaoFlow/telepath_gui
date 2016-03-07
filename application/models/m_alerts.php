@@ -47,7 +47,7 @@ class M_Alerts extends CI_Model {
 			];
 			
 			if($search && strlen($search) > 1) {
-				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search ] ];
+				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND' ] ];
 			}
 			
 			// QUERY
@@ -100,7 +100,7 @@ class M_Alerts extends CI_Model {
 		}
 		
 		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND' ] ];
 		}
 		
 		$params = append_application_query($params, $apps);
@@ -162,7 +162,7 @@ class M_Alerts extends CI_Model {
 		}
 		
 		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND' ] ];
 		}
 		
 		$params = append_application_query($params, $apps);
@@ -274,7 +274,7 @@ class M_Alerts extends CI_Model {
 		}
 		
 		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search  ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
 		}
 	
 		if ($sortfield == "date")

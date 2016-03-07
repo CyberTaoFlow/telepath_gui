@@ -138,7 +138,7 @@ class M_Suspects extends CI_Model {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
 		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search  ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
 		}
 		
 		#print_r(json_encode($params));

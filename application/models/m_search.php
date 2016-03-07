@@ -72,7 +72,8 @@ class M_Search extends CI_Model {
 						[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 						[
                             'query_string' => [
-                                "query" => $settings['search']
+                                "query" => $settings['search'],
+								"default_operator" => 'AND'
                             ] 
                         ]
 					]
@@ -197,7 +198,7 @@ class M_Search extends CI_Model {
 					$params3['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 					$params3['body']['query']['bool']['must'][] = [ 'term' => ['_type' => 'http' ] ];
 					$params3['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ];
-					$params3['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $settings['search'] ] ];
+					$params3['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $settings['search'], "default_operator" => 'AND' ] ];
 
 					$result2 = $this->elasticClient->search($params3);
 					$sid = $result2['aggregations'];

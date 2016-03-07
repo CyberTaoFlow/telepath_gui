@@ -78,7 +78,7 @@ class M_Sessionflow extends CI_Model {
 							[ 'term' => [ '_type' => 'http' ] ],
 							[ 'term' => [ 'sid' => $SID ] ],
 							#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
-							[ 'query_string' => [ "query" => $key ] ]
+							[ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ]
                         	                ]
 					],
 				],
@@ -184,7 +184,7 @@ class M_Sessionflow extends CI_Model {
 			case 'Search':
 				if ($key)
 				{
-					$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $key ] ];
+					$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 					break;
 				}
 			default:
