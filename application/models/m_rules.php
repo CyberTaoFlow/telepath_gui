@@ -371,7 +371,7 @@ class M_Rules extends CI_Model {
 				],
 			],
 			'size' => 9999,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category','_id','name'], "query" => '*'.$search . '*']]]],
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category', 'name'], "query" => '*' . $search . '*', "lowercase_expanded_terms"=>false]]]],
 
 		];
 
