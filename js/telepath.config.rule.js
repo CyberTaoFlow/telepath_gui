@@ -154,24 +154,24 @@ telepath.config.rule = {
 			
 		} }).addClass('tele-rule-email-notif').appendTo(this.container);
 		
-		if(!this.data.alert_param_ids) {
-			this.data.alert_param_ids = [ { mode: 'param' } ];
-		}
-		
-		this.alert_params = $('<div>').teleMulti({ validator: 'email', values: this.data.alert_param_ids, title: 'Parameters to show upon alert', template: function(element, value) {
-			
-			element.teleBrowse({ 
-				label: '', 
-				value: value.att_alias != '' ? value.att_alias : value.att_name, 
-				id: value.att_id,
-				mode: 'param'
-			});
-					
-		} }).addClass('tele-rule-alert-param').appendTo(this.container);
-		if (this.data['builtin_rule'])
-		{
-			$(this.alert_params).hide();
-		}
+		//if(!this.data.alert_param_ids) {
+		//	this.data.alert_param_ids = [ { mode: 'param' } ];
+		//}
+		//
+		//this.alert_params = $('<div>').teleMulti({ validator: 'email', values: this.data.alert_param_ids, title: 'Parameters to show upon alert', template: function(element, value) {
+		//
+		//	element.teleBrowse({
+		//		label: '',
+		//		value: value.att_alias != '' ? value.att_alias : value.att_name,
+		//		id: value.att_id,
+		//		mode: 'param'
+		//	});
+		//
+		//} }).addClass('tele-rule-alert-param').appendTo(this.container);
+		//if (this.data['builtin_rule'])
+		//{
+		//	$(this.alert_params).hide();
+		//}
 		
 		// IP , APP Filters
 		var title1 = $('<div>').addClass('tele-title-1').text('Limit rule by IP').appendTo(this.container);
