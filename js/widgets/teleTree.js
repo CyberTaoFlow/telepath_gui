@@ -33,12 +33,12 @@ $.widget( "tele.teleTree", {
     },
     _create: function() {
         this.element.addClass( "tele-tree" );
-        //this._update();
+        this._update();
     },
  
     _setOption: function( key, value ) {
         this.options[ key ] = value;
-        this._update();
+        //this._update();
     },
 	
 	expand: function(obj, callback) {
@@ -50,7 +50,7 @@ $.widget( "tele.teleTree", {
 		var postData = { };
 		var postUrl  = '';
 
-		if (that.options.searchString){
+		if (telepath.config.rules.searchString){
 			nodeType='search';
 		}
 		
@@ -152,7 +152,7 @@ $.widget( "tele.teleTree", {
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 			that.options.callback(e, data);
 		}).on('loaded.jstree', function() {
-			if (that.options.searchString){
+			if (telepath.config.rules.searchString){
 				that.teleTree.jstree('open_all');
 			}
 		});
