@@ -862,6 +862,17 @@ telepath.sessionflow = {
 		
 		
 		var path = 'http://' + request.host + request.uri;
+		// Add get parameters to URL
+		var get_params = {};
+		$.each(request.parameters, function (i, param) {
+			if (param.type == 'G') {
+				get_params[param.name] = param.value;
+			}
+		});
+		if (!$.isEmptyObject(get_params)) {
+			path += '?' + $.param(get_params);
+		}
+
 		var link = $('<a>').attr('target', '_blank').text(path).attr('href', path).attr('title' ,path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Surfing';
 		container.append(link);
