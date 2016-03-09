@@ -76,7 +76,7 @@ $.widget( "tele.teleTree", {
 
 					case 'search':
 						postUrl = '/rules/searchRules';
-						postData.search = that.options.searchString;
+						postData.search = telepath.config.rules.searchString;
 
 				}
 			
