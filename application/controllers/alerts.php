@@ -18,6 +18,11 @@ class Alerts extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $search = $this->input->post('search');
+        if (substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' )
+        {
+            $search = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$search))) . '*';
+
+        }
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
         if (!$sort || !in_array($sort, array('date', 'type', 'counter'))) {
