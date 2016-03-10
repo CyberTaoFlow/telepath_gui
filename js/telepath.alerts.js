@@ -114,9 +114,17 @@ telepath.alerts = {
 		
 		telepath.alerts.refresh();
 
-		$(".tele-panel-alerts .tele-search-input").keyup('input', function () {
-			telepath.alerts.searchString = $(this).val();
-			that.input();
+		var typingTimer;                //timer identifier
+		var doneTypingInterval = 1000;
+
+		$('.tele-panel-alerts .tele-search-input').keyup('input', function () {
+			clearTimeout(typingTimer);
+			if ($('.tele-panel-alerts .tele-search-input').val()){
+				typingTimer = setTimeout(function(){
+					telepath.alerts.searchString = $('.tele-panel-alerts .tele-search-input').val();
+					that.input();
+				}, doneTypingInterval);
+			}
 		});
 
 		$("#search-button").on("click", function (event) {

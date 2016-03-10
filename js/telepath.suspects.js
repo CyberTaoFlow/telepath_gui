@@ -166,10 +166,17 @@ telepath.suspects = {
 		// Load Data
 		this.refresh();
 
+		var typingTimer;                //timer identifier
+		var doneTypingInterval = 1000;
 
 		$(".tele-panel-suspects .tele-search-input").keyup('input', function () {
-			that.searchString = $(this).val();
-			that.input();
+			clearTimeout(typingTimer);
+			if ($('.tele-panel-suspects .tele-search-input').val()){
+				typingTimer = setTimeout(function(){
+					that.searchString = $('.tele-panel-suspects .tele-search-input').val();
+					that.input();
+				}, doneTypingInterval);
+			}
 		});
 
 		$("#search-button").on("click", function (event) {

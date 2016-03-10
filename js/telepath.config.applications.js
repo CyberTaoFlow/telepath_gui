@@ -198,9 +198,17 @@ telepath.config.applications = {
 
 		this.barLeft.append(this.search).append(this.create);
 
+		var typingTimer;                //timer identifier
+		var doneTypingInterval = 1000;
+
 		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
-			that.searchString = $(this).val();
-			that.input();
+			clearTimeout(typingTimer);
+			if ($(".tele-config-bar-left .tele-search-input").val()){
+				typingTimer = setTimeout(function(){
+					that.searchString  = $(".tele-config-bar-left .tele-search-input").val();
+					that.input();
+				}, doneTypingInterval);
+			}
 		});
 
 		$("#search-button").on("click", function (event) {
