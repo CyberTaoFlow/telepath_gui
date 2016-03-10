@@ -362,7 +362,9 @@ telepath.config.application = {
 
 		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
 
-		this.eta=$('<p>').html('ETA: ' + that.app_data.eta).appendTo(this.app_operation).css({'margin-bottom':'10px'});
+		if(that.app_data.eta){
+			this.eta=$('<p>').html('ETA: ' + that.app_data.eta).appendTo(this.app_operation).css({'margin-bottom':'10px'});
+		}
 
 		this.opmod = $('<div>').teleRadios({
 			checked: selected_opmod,
