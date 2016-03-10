@@ -14,7 +14,7 @@ class Suspects extends Tele_Controller
         $apps = $this->_get_apps();
 
         $search = $this->input->post('search');
-        if (substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' )
+        if ($search && substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' )
         {
             $search = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$search))) . '*';
 
