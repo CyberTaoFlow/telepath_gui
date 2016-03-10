@@ -136,7 +136,7 @@ telepath.sessionflow = {
 					function getRow(lbl, data) {
 						var row = $('<tr>');
 						var td_1 = $('<td>').html(lbl).addClass('tele-alert-info-key');
-						var td_2 = $('<td>').html(data).addClass('tele-alert-info-value');
+						var td_2 = $('<td>').html(escapeHtml(data)).addClass('tele-alert-info-value');
 						row.append(td_1).append(td_2);
 						return row;
 					}
@@ -873,7 +873,7 @@ telepath.sessionflow = {
 			path += '?' + $.param(get_params);
 		}
 
-		var link = $('<a>').attr('target', '_blank').text(path).attr('href', path).attr('title' ,path);
+		var link = $('<a>').attr('target', '_blank').text(escapeHtml(path)).attr('href', escapeHtml(path)).attr('title' ,escapeHtml(path));
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Surfing';
 		container.append(link);
 		container.append('&nbsp;(' + action + ')');
@@ -971,8 +971,8 @@ telepath.sessionflow = {
 			if(param_display) {
 				
 				var row = $('<tr>');
-				var col_name  = $('<td>').addClass('tele-param-name').html(param.name).attr('title',param.name);
-				var col_data  = $('<td>').addClass('tele-param-data').html(param.value);
+				var col_name  = $('<td>').addClass('tele-param-name').html(escapeHtml(param.name)).attr('title',escapeHtml(param.name));
+				var col_data  = $('<td>').addClass('tele-param-data').html(escapeHtml(param.value));
 				var col_score = $('<td>').addClass('tele-param-score').html(parseInt(param.score_data) + '%');
 				
 				/*if(parseInt(param.attribute_score_normal)) {

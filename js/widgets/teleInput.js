@@ -33,10 +33,10 @@ $.widget( "tele.teleInput", {
 		var tpl = this.options.pass ? ' type="password"' : '';
 		
 		if(this.options.link) {
-			this.link = $('<a>').addClass('tele-input-input').attr('href', this.options.value).attr('target', '_blank').html(this.options.value);
+			this.link = $('<a>').addClass('tele-input-input').attr('href', escapeHtml(this.options.value)).attr('target', '_blank').html(escapeHtml(this.options.value));
 			this.element.append(this.link);
 		} else {
-			this.input = $('<input' + tpl + '>').addClass('tele-input-input').val(this.options.value);
+			this.input = $('<input' + tpl + '>').addClass('tele-input-input').val(escapeHtml(this.options.value));
 			if(this.options.disabled)
 				this.input.attr('disabled', 'disabled');
 			this.element.append(this.input);
