@@ -183,7 +183,7 @@ class Tele_Controller extends CI_Controller
 
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
 //        $data = isset($parsed['time_range']) ? $parsed['time_range'] : array( 'end'=> time(), 'start' => strtotime('-7 day'));
-        if (array_key_exists("state",$parsed['time_range'])) {
+        if (isset($parsed['time_range']) && array_key_exists("state", $parsed['time_range'])) {
             switch ($parsed['time_range']['state']) {
                 case 'year':
 
