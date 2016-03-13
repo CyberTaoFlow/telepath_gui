@@ -398,6 +398,9 @@ a.tele-panel-dashboard-refresh-value:hover {
 	margin-left: 18px;
 }
 
+/*.tele-graph-canvas .legend table{
+	top: 120px;
+}*/
 .tele-panel-dashboard  .tele-graph-canvas-outer {
 	padding: 20px;
 	height: 200px;

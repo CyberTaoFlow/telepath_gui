@@ -18,6 +18,7 @@ class Alerts extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $search = $this->input->post('search');
+        $filters = $this->input->post('filters');
         if ($search && substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' )
         {
             $search = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$search))) . '*';
@@ -36,16 +37,26 @@ class Alerts extends Tele_Controller
         $filter = array();
 
         // Alerts Data
-        $alerts = $this->M_Alerts->get_alerts(false, false, $sort, $dir, $offset, 15, $filter, $range, $apps, $search);
+        $alerts = $this->M_Alerts->get_alerts(false, false, $sort, $dir, $offset, 15, $filter, $range, $apps, $search, $filters);
 
         if ($offset > 0) {
             // We need just the alert items
             return_json($alerts);
         }
 
-        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search);
+        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $filters);
         $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search);
-        $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search);
+        $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search, $filters);
+
+
+        if ($filters){
+            foreach($distribution_chart as $key => $dis){
+                if (!in_array($dis['label'], $filters)){
+                    $distribution_chart[$key]['data']=0;
+                }
+            }
+        }
+
 
         return_success(
             array(
