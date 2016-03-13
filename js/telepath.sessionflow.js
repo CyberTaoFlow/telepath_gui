@@ -937,7 +937,7 @@ telepath.sessionflow = {
 		
 		table.append(getRow('Time:', date_format('m/d/y | H:i:s', this.requestInfo.ts)));
 		//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
-		table.append(getRow('Applications:', this.requestInfo.host));
+		table.append(getRow('Applications:', escapeHtml(this.requestInfo.host)));
 		table.append(getRow('IP:', this.requestInfo.ip_orig));
 
 		table.append(getRow('Location:', '<span class="flag flag-' + this.requestInfo.country_code + '"></span>' + 

@@ -28,11 +28,13 @@ telepath.ds = {
 				if(data.console) { console.log(data.console); }				
 				
 				// Success or Fail
-				if(data.success) { if(typeof success == 'function') { success(data, this.flag); } } 
+				if(data.success) { if(typeof success == 'function') {
+					success(data, this.flag);
+				} }
 				else {
 					if(typeof error == 'function') { error(data); }
-					if(typeof error == 'string') { console.log(error); } 
-				} 
+					if(typeof error == 'string') { console.log(error); }
+				}
 			  },
 			  error: function (xhr, textStatus, e) {
 				// Error

@@ -73,8 +73,11 @@ telepath.listitem.generic = {
 			setTimeout(function () {
 				$('.popover').remove();
 			}, 1000);
+
+			var parent_parent = widget.element.parent().parent(),
+				names = (widget.options.raw.alerts_names)?widget.options.raw.alerts_names:[];
 			
-			telepath.sessionflow.init(widget.options.itemID, widget.options.raw.ip_orig, widget.element.parent().parent(), widget.options.icon, (widget.options.raw.alerts_names)?widget.options.raw.alerts_names:[], widget.options.raw.searchkey);
+			telepath.sessionflow.init(widget.options.itemID, widget.options.raw.ip_orig, parent_parent , widget.options.icon, names, widget.options.raw.searchkey);
 		},
 		hover_in: function(el, item) {
 			
