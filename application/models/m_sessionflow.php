@@ -24,6 +24,7 @@ class M_Sessionflow extends CI_Model {
 		$results = get_elastic_results($results);
 //		$params = array();
 //		# Make sure we do not have XSS kind of security bug in HTML headers, Yuli
+//		Now, we escape html in JS (Yossi)
 //		if ($results && isset($results[0]['parameters']))
 //		{
 //			foreach ($results[0]['parameters'] as $p)

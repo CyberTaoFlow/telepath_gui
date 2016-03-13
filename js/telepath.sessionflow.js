@@ -927,7 +927,7 @@ telepath.sessionflow = {
 		function getRow(lbl, data) {
 			var row = $('<tr>');
 			var td_1 = $('<td>').html(lbl).addClass('tele-alert-info-key');
-			var td_2 = $('<td>').text(data).addClass('tele-alert-info-value');
+			var td_2 = $('<td>').html(data).addClass('tele-alert-info-value');
 			row.append(td_1).append(td_2);
 			return row;
 		}
