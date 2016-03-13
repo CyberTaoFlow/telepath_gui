@@ -22,24 +22,24 @@ class M_Sessionflow extends CI_Model {
 		
 		$results = $this->elasticClient->search($params);
 		$results = get_elastic_results($results);
-		$params = array();
-		# Make sure we do not have XSS kind of security bug in HTML headers, Yuli
-		if ($results && isset($results[0]['parameters']))
-		{
-			foreach ($results[0]['parameters'] as $p)
-			{
-				if (!empty($p['value']))
-				{
-					$p['value'] = @htmlspecialchars($p['value'], ENT_QUOTES);
-				}
-				if (!empty($p['name']))
-				{
-					$p['name']  = @htmlspecialchars($p['name'],  ENT_QUOTES);
-				}
-				$params[] = $p;
-			}
-			$results[0]['parameters'] = $params;
-		}
+//		$params = array();
+//		# Make sure we do not have XSS kind of security bug in HTML headers, Yuli
+//		if ($results && isset($results[0]['parameters']))
+//		{
+//			foreach ($results[0]['parameters'] as $p)
+//			{
+//				if (!empty($p['value']))
+//				{
+//					$p['value'] = @htmlspecialchars($p['value'], ENT_QUOTES);
+//				}
+//				if (!empty($p['name']))
+//				{
+//					$p['name']  = @htmlspecialchars($p['name'],  ENT_QUOTES);
+//				}
+//				$params[] = $p;
+//			}
+//			$results[0]['parameters'] = $params;
+//		}
 
 		$params=[];
 		$params['body']=[

@@ -873,7 +873,7 @@ telepath.sessionflow = {
 			path += '?' + $.param(get_params);
 		}
 
-		var link = $('<a>').attr('target', '_blank').text(escapeHtml(path)).attr('href', escapeHtml(path)).attr('title' ,escapeHtml(path));
+		var link = $('<a>').attr('target', '_blank').text(path).attr('href', escapeHtml(path)).attr('title' ,path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Surfing';
 		container.append(link);
 		container.append('&nbsp;(' + action + ')');
@@ -927,7 +927,7 @@ telepath.sessionflow = {
 		function getRow(lbl, data) {
 			var row = $('<tr>');
 			var td_1 = $('<td>').html(lbl).addClass('tele-alert-info-key');
-			var td_2 = $('<td>').html(data).addClass('tele-alert-info-value');
+			var td_2 = $('<td>').text(data).addClass('tele-alert-info-value');
 			row.append(td_1).append(td_2);
 			return row;
 		}
