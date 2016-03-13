@@ -23,6 +23,17 @@ $.widget( "tele.teleList", {
 		return selected;
 	
 	},
+
+	filter: function(value){
+
+
+
+		$.each(this.items, function(i, item) {
+			if ($(item).data('tele-listitem').options.title == value){
+				$(item).toggle();
+			}
+		});
+	},
     options: {
 		title: false,
 		titleCallback: false,

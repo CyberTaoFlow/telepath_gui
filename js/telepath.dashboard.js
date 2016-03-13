@@ -31,7 +31,7 @@ telepath.dashboard = {
 			telepath.dashboard.map_mode=data.items.map_mode;
 			$('.tele-panel-dashboard .tele-panel-subtitle-right .tele-mini-toggle').toggleFlip({flipped:data.items.map_mode=='traffic'}) ;
 			telepath.dashboard.data.items.map = data.items.map;
-			telepath.dashboard.map.vMap({ data: telepath.dashboard.data.items.map, title: 'Alerts over time' });
+			telepath.dashboard.map.vMap({ data: telepath.dashboard.data.items.map, title: data.items.map_mode=='traffic'?'Traffic over time':'Alerts over time'});
 			$(window).trigger('resize');
 		}, null, telepath.dashboard.reloadFlag);
 

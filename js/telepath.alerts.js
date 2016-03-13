@@ -4,6 +4,7 @@ telepath.alerts = {
 	dir: false,
 	data: [],
 	searchString: '',
+	filter: [],
 	init: function () {
 		
 		var that = this;
@@ -11,7 +12,9 @@ telepath.alerts = {
 		// Add Common HTML
 		var container = $('.tele-panel-alerts');
 		container.empty();
-		
+
+		this.filter=[];
+
 		var panelTopBar = $('<div>').addClass('tele-panel-topbar');
 		var panelSubBar = $('<div>').addClass('tele-panel-subtitle');
 		var panelTitle  = $('<div>').addClass('tele-panel-title');
@@ -158,7 +161,8 @@ telepath.alerts = {
 		telepath.ds.get('/alerts/index', {
 			sort: this.sort,
 			dir: this.dir,
-			search: this.searchString
+			search: this.searchString,
+			filters: this.filter
 		}, function (data) {
 			telepath.alerts.setData(data.items);
 			if(callback && typeof(callback) == 'function') {
@@ -208,6 +212,7 @@ telepath.alerts = {
 					dir: telepath.alerts.dir,
 					search: telepath.alerts.searchString,
 					offset: offset,
+					filters: that.filter
 				}, function (data) {
 					callback(data);
 				});
@@ -319,6 +324,8 @@ telepath.alerts = {
 	},
 	show_alert_distribution: function() {
 		
+		var that = this;
+
 		this.graphDistributionCanvas.empty();
 		
 		var pie_data = this.data.distribution_chart;
@@ -359,13 +366,18 @@ telepath.alerts = {
 			},
 			grid:{
 				hoverable: true,
+				clickable: true
 			},
 			legend: { 
 				show: true,
 				position: "nw",
-				margin: 20,
+				margin: ([50,100]),
 				sorted:"ascending",
-				container: $("#alert-distribution-legend")
+				/*labelFormatter: function(label, series) {
+					//return '<span style="cursor:pointer">' + label + '</span>';
+					return label
+				}*/
+				//container: $("#alert-distribution-legend")
 			},
 			// tooltip: true,
 		};
@@ -376,6 +388,51 @@ telepath.alerts = {
 		    	return;
 			percent = parseFloat(obj.series.percent).toFixed(2);
 			$("#alert-distribution-showPercent").html('<span style="font-weight: bold; color: '+obj.series.color+'">'+obj.series.label+' ('+percent+'%)</span>');
+			$('.tele-graph-canvas .flot-overlay').css({"cursor": "pointer"})
+		}
+
+		function pieClick(event, pos, obj){
+
+			if (!obj)
+				return;
+			if (obj.series.label ){
+				that.filter=[];
+				that.filter.push(obj.series.label)
+			}
+			that.refresh()
+
+		}
+
+		function legendClick(){
+			$('.legend tr').on('click',function(){
+				var item = $(this).children('.legendLabel').text();
+				if (($.inArray(item , that.filter)!=-1)){
+					that.filter.splice( $.inArray(item, that.filter), 1 );
+				}else {
+					that.filter.push(item)
+				}
+				that.refresh()
+
+			});
+		}
+
+
+		function set_legend(){
+
+			$('.legend tr').css({"cursor":"pointer"});
+			if (that.filter.length>0){
+				$.each($('.legend tr'),function (i, val){
+					if ($.inArray(val.children[1].innerText , that.filter)==-1){
+						$( this).children(".legendColorBox").children().html('<div style="width:4px;height:0;border:5px solid #999;overflow:hidden; "></div>');
+						$( this ).css({"opacity": "0.5"});
+					}
+				})
+			}
+			else {
+				$.each(that.data.distribution_chart, function(i, val){
+					that.filter.push(val.label);
+				})
+			}
 		}
 		
 		// Plot Graph
@@ -383,10 +440,14 @@ telepath.alerts = {
 		
 			telepath.alerts.graphDistributionCanvas.flotGraph({ data: pie_data, options: options });
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plothover', pieHover);
-			
+			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plotclick', pieClick);
+			legendClick();
+			set_legend()
 		}, 100);
 		
 	},
+
+
 	show_action_distribution: function() {
 	
 		this.graphDistributionCanvas.empty();
@@ -429,13 +490,14 @@ telepath.alerts = {
 			},
 			grid:{
 				hoverable: true,
+				clickable: true
 			},
 			legend: { 
 				show: true,
 				position: "nw",
-				margin: 20,
+				margin: ([50,100]),
 				sorted:"ascending",
-				container: $("#alert-distribution-legend")
+				//container: $("#alert-distribution-legend")
 			},
 			// tooltip: true,
 		};
@@ -446,15 +508,62 @@ telepath.alerts = {
 		    	return;
 			percent = parseFloat(obj.series.percent).toFixed(2);
 			$("#alert-distribution-showPercent").html('<span style="font-weight: bold; color: '+obj.series.color+'">'+obj.series.label+' ('+percent+'%)</span>');
+			$('.tele-graph-canvas .flot-overlay').css({"cursor": "pointer"})
 		}
-		
+		function pieClick(event, pos, obj){
+
+			if (!obj)
+				return;
+			if (obj.series.label ){
+				that.filter=[];
+				that.filter.push(obj.series.label)
+			}
+			that.refresh()
+
+		}
+
+		function legendClick(){
+			$('.legend tr').on('click',function(){
+				var item = $(this).children('.legendLabel').text();
+				if (($.inArray(item , that.filter)!=-1)){
+					that.filter.splice( $.inArray(item, that.filter), 1 );
+				}else {
+					that.filter.push(item)
+				}
+				that.refresh()
+
+			});
+		}
+
+
+		function set_legend(){
+
+			$('.legend tr').css({"cursor":"pointer"});
+			if (that.filter.length>0){
+				$.each($('.legend tr'),function (i, val){
+					if ($.inArray(val.children[1].innerText , that.filter)==-1){
+						$( this).children(".legendColorBox").children().html('<div style="width:4px;height:0;border:5px solid #999;overflow:hidden; "></div>');
+						$( this ).css({"opacity": "0.5"});
+					}
+				})
+			}
+			else {
+				$.each(that.data.distribution_chart, function(i, val){
+					that.filter.push(val.label);
+				})
+			}
+		}
+
 		// Plot Graph
 		setTimeout(function () {
-		
+
 			telepath.alerts.graphDistributionCanvas.flotGraph({ data: pie_data, options: options });
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plothover', pieHover);
-			
+			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plotclick', pieClick);
+			legendClick();
+			set_legend()
 		}, 100);
+
 		
 	},	
 	_resize: function () {

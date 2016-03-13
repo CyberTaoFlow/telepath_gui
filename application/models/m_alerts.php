@@ -12,7 +12,7 @@ class M_Alerts extends CI_Model {
 		$this->elasticClient = new Elasticsearch\Client();
 	}
 
-	public function get_time_chart($range, $apps = array(), $search = '') {
+	public function get_time_chart($range, $apps = array(), $search = '', $filter=[]) {
 		
 		
 		$dots  = 10;
@@ -45,11 +45,36 @@ class M_Alerts extends CI_Model {
 				]
 			]
 			];
-			
-			if($search && strlen($search) > 1) {
-				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND' ] ];
+
+			global $query;
+			$query='';
+
+			if (count($filter)>1){
+				$query.='alerts.name:'.implode(' OR alerts.name:',$filter);
+
 			}
-			
+
+			elseif (count($filter)==1&&$filter!=false){
+
+				$query.='(alerts.name:'.implode(' OR alerts.name:',$filter).')';
+			}
+
+
+
+			if($search && strlen($search) > 1) {
+
+				if (count($filter)>0 &&$filter!=false){
+					$query.=' AND ('.$search.')';
+				}
+				else{
+					$query.=$search;
+				}
+
+			}
+
+			if($query)
+				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'OR' ] ];
+
 			// QUERY
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
 			
@@ -71,7 +96,7 @@ class M_Alerts extends CI_Model {
 		
 	}
 	
-	public function get_action_distribution_chart($range, $apps, $search = '') {
+	public function get_action_distribution_chart($range, $apps, $search = '', $filter=[]) {
 	
 		$dist   = array();
 		$result = array();
@@ -98,11 +123,36 @@ class M_Alerts extends CI_Model {
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
-		
-		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND' ] ];
+
+		global $query;
+		$query='';
+
+		if (count($filter)>1){
+			$query.='alerts.name:'.implode(' OR alerts.name:',$filter);
+
 		}
-		
+
+		elseif (count($filter)==1&&$filter!=false){
+
+			$query.='(alerts.name:'.implode(' OR alerts.name:',$filter).')';
+		}
+
+
+
+		if($search && strlen($search) > 1) {
+
+			if (count($filter)>0 &&$filter!=false){
+				$query.=' AND ('.$search.')';
+			}
+			else{
+				$query.=$search;
+			}
+
+		}
+
+		if($query)
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'OR' ] ];
+
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		
@@ -160,11 +210,11 @@ class M_Alerts extends CI_Model {
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
-		
-		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND' ] ];
-		}
-		
+
+
+		if($search)
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'OR' ] ];
+
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 
@@ -190,7 +240,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts($variable, $val, $sort, $sortorder, $start, $limit = 100, $filter, $range = array(), $apps = array(), $search = '') {
+	public function get_alerts($variable, $val, $sort, $sortorder, $start, $limit = 100, $filter, $range = array(), $apps = array(), $search = '', $filter2=[]) {
 		
 		switch($sort) {
 		
@@ -273,17 +323,41 @@ class M_Alerts extends CI_Model {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
 		
-		if($search && strlen($search) > 1) {
+		/*if($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
+		}*/
+
+		global $query;
+		$query='';
+
+		if (count($filter2)>1){
+			$query.='alerts.name:'.implode(' OR alerts.name:',$filter2);
+			}
+		
+		elseif (count($filter2)==1&&$filter2!=false){
+			$query.='(alerts.name:'.implode(' OR alerts.name:',$filter2).')';
 		}
-	
+
+		if($search && strlen($search) > 1) {
+
+			if (count($filter2)>0 &&$filter2!=false){
+				$query.=' AND ('.$search.')';
+			}
+			else{
+				$query.=$search;
+			}
+		}
+
+		if($query)
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'OR' ] ];
+
 		if ($sortfield == "date")
 		{
 			$params['body']["aggs"]["sid"]["aggs"]["date"] = [ "max" => [ "field" => "ts" ] ];
 		} else if ($sortfield == "alerts_names")
 		{
 			$params['body']["aggs"]["sid"]["aggs"]["alerts_names"] = [ "terms" => [ "field" => "alerts.name", "size" => 10 ] ];
-		}	
+		}
 		
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
