@@ -9,7 +9,7 @@ telepath.formatConditionBrief = function(container, data) {
 		}
 		return ''; 
 	}
-	if(data.negate) { result = 'Not&nbsp;'; }
+	if(data.negate) { result = 'Not '; }
 	
 	console.log(data.type);
 	
