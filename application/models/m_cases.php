@@ -445,6 +445,10 @@ class M_Cases extends CI_Model {
 		if (!$this->input->is_cli_request())
 			return;
 
+		if($message=='Start' ){
+			file_put_contents ('/var/log/flag_requests_by_cases.log','');
+		}
+
 		echo date('Y-m-d H:i') . ' ' . $message . "\n";
 	}
 
