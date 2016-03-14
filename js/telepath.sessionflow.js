@@ -82,7 +82,7 @@ telepath.sessionflow = {
 					$('.tele-similarity-details').remove();
 					that.similarityDetails = $('<div>').addClass('tele-request-details tele-similarity-details').addClass('tele-popup-2').css({ marginTop: 20 });
 					that.boxMid.append(that.similarityDetails);
-					
+
 					var wrap = $('<div>').addClass('tele-alert-details-info');
 					
 					that.requestData.score_average = parseFloat(that.requestData.score_average);
@@ -136,7 +136,7 @@ telepath.sessionflow = {
 					function getRow(lbl, data) {
 						var row = $('<tr>');
 						var td_1 = $('<td>').html(lbl).addClass('tele-alert-info-key');
-						var td_2 = $('<td>').html(escapeHtml(data)).addClass('tele-alert-info-value');
+						var td_2 = $('<td>').html(data).addClass('tele-alert-info-value');
 						row.append(td_1).append(td_2);
 						return row;
 					}
@@ -153,7 +153,7 @@ telepath.sessionflow = {
 					
 					table.append(getRow('Time:', date_format('d/m/y | H:i:s', similarity.ts)));
 					//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
-					table.append(getRow('Applications:', similarity.host));
+					table.append(getRow('Applications:', escapeHtml(similarity.host)));
 					table.append(getRow('IP:', similarity.ip_orig));
 					table.append(getRow('Location:', '<span class="flag flag-' + similarity.country_code + '"></span>' + 
 										'<span class="tele-country">' + telepath.countries.a2n(similarity.country_code) + '</span>'));
