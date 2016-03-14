@@ -106,9 +106,14 @@ class Tele_Controller extends CI_Controller
         );
 
         $results = $this->elasticClient->search($params);
-        $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : array();
+        $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
+
+        if (!$results['aggregations']['grades_stats']['min']){
+            $results['aggregations']['grades_stats']['min']=$results['aggregations']['grades_stats']['max']=time();
+        }
 
         $parsed['time_range'] = array( 'start' => $results['aggregations']['grades_stats']['min'], 'end' => $results['aggregations']['grades_stats']['max']);
+
 
         if ($local){
             return $parsed['time_range'];
