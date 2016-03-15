@@ -11,6 +11,7 @@ $.widget( "tele.teleBrowse", {
 		pagename: false,
 		paramname: false,
 		global: false,
+		filename:false
     },
     _create: function() {
         this.element.addClass( "tele-browse" );
@@ -149,6 +150,7 @@ $.widget( "tele.teleBrowse", {
 				$('input', that.input).val(selected_value).data('selected', JSON.stringify(output));
 				that.options.dataID = data.node.data.id;
 				that.options.callback(data.node.data.id);
+				that.options.filename=selected_value;
 				that.options.text   = data.node.text;
 			}
 			

@@ -7,7 +7,9 @@ $.widget( "tele.teleInput", {
 		'pass': false,
 		'labelCSS' : {},
 		'link': false,
-		'disabled':false
+		'disabled':false,
+		'type': false,
+		'range':false
     },
     _create: function() {
         this.element.addClass( "tele-input" );
@@ -35,13 +37,22 @@ $.widget( "tele.teleInput", {
 		if(this.options.link) {
 			this.link = $('<a>').addClass('tele-input-input').attr('href', escapeHtml(this.options.value)).attr('target', '_blank').html(escapeHtml(this.options.value));
 			this.element.append(this.link);
-		} else {
+		}else if(this.options.type){
+			var type= 'type="'+this.options.type +'" ';
+			if(this.options.range){
+				type+='min="'+this.options.range.min+'" max="'+this.options.range.max+'"';
+			}
+			this.input = $('<input '+type+'>').addClass('tele-input-input').val(escapeHtml(this.options.value));
+			if(this.options.disabled)
+				this.input.attr('disabled', 'disabled');
+			this.element.append(this.input);
+		}else {
 			this.input = $('<input' + tpl + '>').addClass('tele-input-input').val(escapeHtml(this.options.value));
 			if(this.options.disabled)
 				this.input.attr('disabled', 'disabled');
 			this.element.append(this.input);
 		}
-		
+
 		
 		
 		if(this.options.suffix) {
