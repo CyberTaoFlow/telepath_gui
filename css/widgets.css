@@ -250,6 +250,10 @@
 	height: 32px;
 }
 
+.tele-input input[type="number"]{
+	width: 45px;
+}
+
 .tele-input.tele-pattern-count{
 	margin-top: 10px;
 }
