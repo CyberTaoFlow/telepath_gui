@@ -52,7 +52,14 @@ telepath.config.actions = {
 					$.each(data, function(i, row) {
 					
 						var text = row.host;
-						var obj = { children: true, text: text, data: {id: row.host, type: 'app', ssl: row.ssl_flag }};
+						var children = [{ children: true, text: 'Root Domain', data: {id: row.host, type: 'app', ssl: row.ssl_flag }}];
+						if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0){
+							$.each(row.subdomains, function(i,subdomain){
+								var sub = { children: true, text: subdomain, data: {id: subdomain, type: 'app' }};
+								children.push(sub);
+							})
+						}
+						var obj = { children: children, text: text};
 						treeData.push(obj);
 						
 					});
