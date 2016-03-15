@@ -42,12 +42,12 @@ class Applications extends Tele_Controller
 
 //        $res = $this->redisObj->get('cache_applications');
 
-        if (isset($res) && $res) {
-            $data = json_decode($res);
-            if ($data && !empty($data)) {
-                return_success($data);
-            }
-        }
+//        if (isset($res) && $res) {
+//            $data = json_decode($res);
+//            if ($data && !empty($data)) {
+//                return_success($data);
+//            }
+//        }
 
         $data = $this->M_Applications->index($search);
 
