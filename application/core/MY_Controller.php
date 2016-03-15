@@ -108,7 +108,7 @@ class Tele_Controller extends CI_Controller
         $results = $this->elasticClient->search($params);
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
 
-        if (!$results['aggregations']['grades_stats']['min']){
+        if (!isset($results['aggregations']['grades_stats']['min'])){
             $results['aggregations']['grades_stats']['min']=$results['aggregations']['grades_stats']['max']=time();
         }
 
