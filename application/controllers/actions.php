@@ -48,7 +48,7 @@ class Actions extends Tele_Controller
         $text = str_replace(":", "", $text);
         $text = trim($text);
 
-        return_success($this->M_Actions->get_action_autocomplete($text));
+        return $this->M_Actions->get_action_autocomplete($text);
 
 
     }
@@ -174,5 +174,39 @@ class Actions extends Tele_Controller
 
     }
 
+    public function get_app_with_actions()
+    {
+
+        telepath_auth(__CLASS__, __FUNCTION__, $this);
+
+        $search = $this->input->post('search');
+
+//        $res = $this->redisObj->get('cache_applications');
+
+        /*if (isset($res) && $res) {
+            $data = json_decode($res);
+            if ($data && !empty($data)) {
+                return_success($data);
+            }
+        }*/
+
+        if ($search){
+
+            $data=$this->M_Actions->get_app_with_actions($search);
+
+        }
+
+        else{
+
+            $data = $this->M_Applications->index($search);
+
+        }
+
+
+        $this->redisObj->set('cache_applications', json_encode($data), 600);
+
+        return_success($data);
+
+    }
 
 }

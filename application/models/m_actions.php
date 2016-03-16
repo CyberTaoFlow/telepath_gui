@@ -11,12 +11,12 @@ class M_Actions extends CI_Model {
 	}
 
 	function get_actions($host) {
-		
+
 		$params['body'] = [
 			'size'   => 999,
 				'query' => [ "bool" => [ "must" => [
-					[ 'term' => [ "domain" => $host ] ], 
-					[ 'term' => [ '_type' => 'actions' ] ] 
+					[ 'term' => [ "domain" => $host ] ],
+					[ 'term' => [ '_type' => 'actions' ] ]
 				] ]	]
 		];
 		
@@ -63,6 +63,26 @@ class M_Actions extends CI_Model {
 			}
 		}
 		return_success($ans);
+	}
+
+	function get_app_with_actions($search){
+
+		$params['index'] = 'telepath-actions,telepath-applications';
+		$params['type'] = 'actions,application';
+		$params['body']['size'] = 9999;
+		$params['body'] = [
+			'partial_fields' => [
+				"_src" => [
+					"include" => ["application", "action_name", "host"]
+				],
+			],
+			'size' => 9999,
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["application", "action_name","host"], "query" => '*' . $search . '*']]]],
+		];
+
+		$result = $this->client->search($params);
+
+		return $result['hits']['hits'];
 	}
 
 	function set_clear_actions(){
