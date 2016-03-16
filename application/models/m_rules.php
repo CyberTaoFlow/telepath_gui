@@ -307,7 +307,7 @@ class M_Rules extends CI_Model {
 	
 	private function __get_categories() {
 		
-		$results   = $this->elasticClient->search(['body' => [ 'query' => [ 'term' => [ '_type' => 'rule_categories' ] ] ] ]);
+		$results   = $this->elasticClient->search(['body' => [ 'query' => [ 'term' => [ '_type' => 'rule_categories' ] ] ], 'index' => 'telepath-rules' ]);
 		if(isset($results['hits']['hits'][0])) {
 			return $results['hits']['hits'][0]['_source']['rule_categories'];	
 		} else {
