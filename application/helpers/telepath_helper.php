@@ -114,7 +114,7 @@ function prepare_elastic_results($results) {
 	$result  = array();
 	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
 		foreach($results['hits']['hits'] as $row) {
-			$result[] = $row['_source'];
+			$result[] = $row['fields']['_src'][0];
 		}
 	}
 	return $result;

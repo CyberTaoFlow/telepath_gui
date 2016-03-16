@@ -315,16 +315,16 @@ class M_Applications extends CI_Model {
 			'index' => 'telepath-domains',
 			'type' => 'domains',
 			'body' => [
+				'partial_fields' => [
+					"_src" => [
+						"include" => ["host","learning_so_far"]
+					],
+				],
 				'size'=>999,
-				'query' => [
-					'match_all' => [
-					]
-				]
 			]
 		];
 
 		if ($search){
-			$params['body']['query']=[];
 			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => [ "host" ] , "query" => '*' . $search . '*' ] ];
 		}
 
