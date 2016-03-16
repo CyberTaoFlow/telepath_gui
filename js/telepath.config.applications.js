@@ -40,10 +40,13 @@ telepath.config.applications = {
 		var treeData = [];
 		$.each(data, function(i, row) {
 			var text = row.host;
+			var children = false;
 			if(count){
 				text+= '&nbsp;(' + row.learning_so_far+')';
+				children = (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0) ? row.subdomains : false;
 			}
-			var obj  = { children: false, text: text, data: { type: 'app', host: row.host }, 'icon': 'tele-icon-app'};
+
+			var obj  = { children: children, text: text, data: { type: 'app', host: row.host }, 'icon': 'tele-icon-app'};
 			treeData.push(obj);
 		});
 		return treeData;
