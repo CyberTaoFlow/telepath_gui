@@ -122,29 +122,30 @@ telepath.config.application = {
 				// By default automatic mode is selected
 			break;
 		}
-			
-		app_data.ssl_flag			 = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+
+		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.app_ssl_certificate = $('input', this.app_ssl_certificate).data('file');
-		app_data.app_ssl_private 	 = $('input', this.app_ssl_private).data('file');
+		app_data.app_ssl_private = $('input', this.app_ssl_private).data('file');
 
 		// Success Criteria -- Toggle
 		//app_data.form_authentication_flag = this.SC_toggle.teleRadios('option', 'checked') == 'On' ? 1 : 0;
-		
+
 		// Success Criteria -- Cookie
-		app_data.form_authentication_cookie_flag  = this.SC_cookie_toggle.teleRadios('option', 'checked') ? 1 : 0;
-		app_data.form_authentication_cookie_name  = $('input', this.SC_cookie_name).val();
-		app_data.form_authentication_cookie_value = $('input', this.SC_cookie_value).val();
-		app_data.condition_value 				  = this.SC_cookie_flag.teleRadios('option', 'checked') == 'appears' ? 1 : 0;
-	
+		app_data.cookie_mode = this.SC_cookie_toggle.teleRadios('option', 'checked') ? 1 : 0;
+		app_data.cookie_name = $('input', this.SC_cookie_name).val();
+		app_data.cookie_value = $('input', this.SC_cookie_value).val();
+		app_data.cookie_value_appearance = this.SC_cookie_flag.teleRadios('option', 'checked') == 'appears' ? 1 : 0;
+
 		// Success Criteria -- Redirect
-		app_data.form_authentication_redirect_flag      	 = this.SC_redirect_toggle.teleRadios('option', 'checked')  ? 1 : 0;
-		app_data.form_authentication_redirect_page_name 	 = this.SC_redirect_browse.teleBrowse('option', 'filename');
-		app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
-		app_data.form_authentication_redirect_response_range =  this.SC_redirect_range.teleInput('option','value');
+		app_data.redirect_mode = this.SC_redirect_toggle.teleRadios('option', 'checked') ? 1 : 0;
+		app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
+		//app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
+		app_data.redirect_status_code = this.SC_redirect_range.teleInput('option', 'value');
 
 		// Success Criteria -- Body Value
-		app_data.form_authentication_body_value				 = this.SC_body_input.teleInput('option','value');
-		telepath.ds.get('/applications/set_app', app_data, function(data) {
+		app_data.body_value_mode = this.SC_body_toggle.teleRadios('option', 'checked') ? 1 : 0;
+		app_data.body_value_html = this.SC_body_input.teleInput('option', 'value');
+		telepath.ds.get('/applications/set_app', app_data, function (data) {
 			telepath.config.applications.reload();
 			//that.editApp(app_data.host);
 		});
@@ -255,12 +256,12 @@ telepath.config.application = {
                                 basic_flag: 0,
                                 form_flag: 0,
                                 digest_flag: 0,
-                                form_authentication_cookie_flag: 0,
-                                form_authentication_cookie_name: '',
-                                form_authentication_cookie_value: '',
+                                cookie_mode: 0,
+                                cookie_name: '',
+                                cookie_value: '',
                                 ssl_flag: 0,
                                 AppCookieName: '',
-                                form_authentication_redirect_response_range: ''
+                                redirect_status_code: ''
 		};
 	
 		if(app_id == 'new') {
@@ -512,9 +513,9 @@ telepath.config.application = {
 		
 		var SC_wrap = $('<div>');		
 		
-		this.SC_cookie_name   = $('<div>').teleInput({ label: 'Name', value: that.app_data.form_authentication_cookie_name });
-		this.SC_cookie_value  = $('<div>').teleInput({ label: 'Value', value: that.app_data.form_authentication_cookie_value });
-		this.SC_cookie_flag_val = that.app_data.condition_value == '1' ? 'appears' : 'missing';
+		this.SC_cookie_name   = $('<div>').teleInput({ label: 'Name', value: that.app_data.cookie_name });
+		this.SC_cookie_value  = $('<div>').teleInput({ label: 'Value', value: that.app_data.cookie_value });
+		this.SC_cookie_flag_val = that.app_data.cookie_value_appearance == '1' ? 'appears' : 'missing';
 		this.SC_cookie_flag   = $('<div>').teleRadios({
 			checked: this.SC_cookie_flag_val,
 			radios: [ 
@@ -529,10 +530,10 @@ telepath.config.application = {
 		}});
 
 		// SC_cookie
-		// this.SC_cookie_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Cookie', checked: that.app_data.form_authentication_cookie_flag == '1' });
+		// this.SC_cookie_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Cookie', checked: that.app_data.cookie_mode == '1' });
 		this.SC_cookie_toggle = $('<div>').teleRadios({
 			title: 'Cookie',
-			checked: that.app_data.form_authentication_cookie_flag == '1' ? 'On' : 'Off',
+			checked: that.app_data.cookie_mode == '1' ? 'On' : 'Off',
 			radios: [
 				{ key: 'On', label: 'On' },
 				{ key: 'Off', label: 'Off' }
@@ -570,14 +571,14 @@ telepath.config.application = {
 		// SC_redirect
 				
 		this.SC_redirect_browse = $('<div>').teleBrowse({
-			label: 'Page', value: that.app_data.form_authentication_redirect_page_name, id: that.app_data.host, type: 'page' });
+			label: 'Page', value: that.app_data.redirect_page, id: that.app_data.host, type: 'page' });
 		this.SC_redirect_range  = $('<div>').teleInput({ label: 'Response status',
-			value: that.app_data.form_authentication_redirect_response_range , type:'number' ,range:{min:200, max:600} });
+			value: that.app_data.redirect_status_code , type:'number' ,range:{min:200, max:600} });
 
-		//this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.form_authentication_redirect_flag == '1' });
+		//this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.redirect_mode == '1' });
 		this.SC_redirect_toggle = $('<div>').teleRadios({
 			title: 'Redirect',
-			checked: that.app_data.form_authentication_redirect_flag == '1' ? 'On' : 'Off',
+			checked: that.app_data.redirect_mode == '1' ? 'On' : 'Off',
 			radios: [
 				{ key: 'On', label: 'On' },
 				{ key: 'Off', label: 'Off' },
@@ -603,7 +604,7 @@ telepath.config.application = {
 		
 
 		
-		this.SC_body_input  = $('<div>').teleInput({ label: 'Value to search in HTML body', value: that.app_data.form_authentication_body_value }).addClass('tele-app-auth-body');
+		this.SC_body_input  = $('<div>').teleInput({ label: 'Value to search in HTML body', value: that.app_data.body_value_html }).addClass('tele-app-auth-body');
 
 		//SC_body_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Body Value', checked: that.app_data.form_authentication_body_flag == '1' });
 		this.SC_body_toggle = $('<div>').teleRadios({
