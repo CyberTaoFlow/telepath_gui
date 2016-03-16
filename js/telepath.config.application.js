@@ -140,11 +140,12 @@ telepath.config.application = {
 		app_data.redirect_mode = this.SC_redirect_toggle.teleRadios('option', 'checked') ? 1 : 0;
 		app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
 		//app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
-		app_data.redirect_status_code = this.SC_redirect_range.teleInput('option', 'value');
+		app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
 
 		// Success Criteria -- Body Value
 		app_data.body_value_mode = this.SC_body_toggle.teleRadios('option', 'checked') ? 1 : 0;
-		app_data.body_value_html = this.SC_body_input.teleInput('option', 'value');
+		app_data.body_value_html = this.SC_body_input.data('tele-teleInput').input.val();
+
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
 			telepath.config.applications.reload();
 			//that.editApp(app_data.host);
