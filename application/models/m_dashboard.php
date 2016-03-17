@@ -328,8 +328,11 @@ class M_Dashboard extends CI_Model {
 
 		$parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
 
-
-		$map_mode= $parsed['status'];
+		if ($parsed) {
+			$map_mode = $parsed['status'];
+		} else {
+			$map_mode = "alerts";
+		}
 
 		if ($local)
 			return $map_mode;
