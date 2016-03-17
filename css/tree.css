@@ -910,3 +910,14 @@
   margin-left: 0;
   margin-right: 0;
 }
+
+.jstree-icon.jstree-themeicon.tele-icon.tele-icon-actions.jstree-themeicon-custom{
+  display: block ;
+  background: #555555 url("../img/icon_map.png") no-repeat scroll -412px -232px ;
+  border-radius: 20px;
+  height: 33px ;
+  width: 33px ;
+  margin-top: 0 ;
+  margin-right: 8px ;
+  bottom: 5px ;
+}

@@ -717,6 +717,17 @@ class M_Applications extends CI_Model {
 		return $ans;
 		
 	}
+
+	function check_subdomain($host){
+		$params = [
+			'index' => 'telepath-domains',
+			'type' => 'domains',
+			'id' => $host,
+			'_source_include' => ["subdomains"]
+		];
+		$response=$this->elasticClient->get($params);
+		return $response["_source"];
+	}
 	
 }
 ?>

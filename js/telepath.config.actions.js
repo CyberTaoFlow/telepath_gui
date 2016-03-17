@@ -29,6 +29,7 @@ telepath.config.actions = {
 				postData.host    = obj.data.id;
 				postData.type    = 'application';
 				postData.context = 'actions';
+				postData.domain = obj.data.domain;
 			break;
 		}
 		
@@ -52,14 +53,15 @@ telepath.config.actions = {
 					$.each(data, function(i, row) {
 					
 						var text = row.host;
-						var children = [{ children: true, text: 'Root Domain', data: {id: row.host, type: 'app', ssl: row.ssl_flag }}];
-						if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0){
-							$.each(row.subdomains, function(i,subdomain){
-								var sub = { children: true, text: subdomain, data: {id: subdomain, type: 'app' }};
-								children.push(sub);
-							})
-						}
-						var obj = { children: children, text: text};
+						//var children = [{ children: true, text: 'Root Domain', data: {id: row.host, type: 'app', ssl: row.ssl_flag }}];
+						//if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0){
+						//	$.each(row.subdomains, function(i,subdomain){
+						//		var sub = { children: true, text: subdomain, data: {id: subdomain, type: 'app' }};
+						//		children.push(sub);
+						//	})
+						//}
+						//var obj = { children: children, text: text};
+						var obj = {children: true, text: text, data: {id: row.host, type: 'app', ssl: row.ssl_flag, domain: "root"}}
 						treeData.push(obj);
 						
 					});
@@ -94,13 +96,20 @@ telepath.config.actions = {
 					
 					}*/
 					
-					if(data.length > 0) {
+					if(data.actions.length > 0) {
 					
-						$.each(data, function(i, action) {
-							var flow_obj = { children: false, text: action.action_name, data: {id: action.action_name, type: "action", raw: action }};
+						$.each(data.actions, function(i, action) {
+							var flow_obj = { children: false, text: action.action_name, icon:"tele-icon tele-icon-actions",data: {id: action.action_name, type: "action", raw: action }};
 							treeData.push(flow_obj);
 						});
 					
+					}
+					if(data.subdomains.length > 0) {
+						$.each(data.subdomains, function(i, subdomain) {
+							var flow_obj = { children: true, text: subdomain, data: {id: subdomain, type: "app", domain: "subdomain" }};
+							treeData.push(flow_obj);
+						});
+
 					}
 				
 				break;
@@ -194,14 +203,14 @@ telepath.config.actions = {
 					
 				}, width: 40 },
 				{value: function (node) {
-					
+
 					if(node.type == 'action') {
 						return $('<div>').btn({ icon: 'delete', callback: function () {
 							telepath.config.actions.deleteFlow(node.raw);
 						}});
 					}
-					
-					
+
+
 				}, width: 40 }
 			],
 			resizable:true,
