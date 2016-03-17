@@ -317,7 +317,7 @@ class M_Applications extends CI_Model {
 			'body' => [
 				'partial_fields' => [
 					"_src" => [
-						"include" => ["host","learning_so_far"]
+						"include" => ["host","learning_so_far","subdomains"]
 					],
 				],
 				'size'=>999,
