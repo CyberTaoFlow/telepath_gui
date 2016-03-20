@@ -918,6 +918,13 @@
   height: 33px ;
   width: 33px ;
   margin-top: 0 ;
-  margin-right: 8px ;
+  margin-right: 20px ;
   bottom: 5px ;
+  transform: scale(0.9);
 }
+
+.jstree-anchor.jstree-grid-col-0{
+  transform: scale(0.9);
+  font-size: 21px;
+}
+
