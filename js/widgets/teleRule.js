@@ -234,6 +234,10 @@ $.widget( "tele.teleRule", {
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
 						json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
 
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
 
 						if(json.str_match == '') {
 									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
@@ -252,6 +256,10 @@ $.widget( "tele.teleRule", {
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
 						json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
 
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
 
 						if(json.str_match == '') {
 									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
@@ -344,7 +352,8 @@ $.widget( "tele.teleRule", {
 								json.length = $('#rule-slider-length').data('value');
 							
 							break;
-							
+
+
 							case 'rangelength':
 								
 								json.length = $('#rule-slider-between', c).data('sliderValue').join('-');
@@ -369,8 +378,13 @@ $.widget( "tele.teleRule", {
 			
 				json.kind = 'p';
 				json.type = $('.tele-rule-anchor', c).data('tele-tele-radios').options.checked;
-				json.time  = parseInt($('.tele-pattern-time input', c).val());
-				json.count = parseInt($('.tele-pattern-count input', c).val());
+				json.time  = parseInt($('.tele-pattern-time input', c).val()) || 0;
+				json.count = parseInt($('.tele-pattern-count input', c).val()) || 0;
+
+				//if the `getValues` above opened a dialog, stop now
+				if($('.tele-overlay-dialog').is(':visible')){
+					return;
+				}
 
 				if(json.time < 1) {
 					telepath.dialog({ title: 'Rule Editor', msg: 'Invalid time window' });
@@ -393,18 +407,24 @@ $.widget( "tele.teleRule", {
 					case 'Other':
 					
 						// 1. Collect param
+						$('.tele-browse-other input', c).removeClass('error');
 						var param = $('.tele-browse-other input', c).data('selected');
 
 						if(typeof(param) == 'string') {
 							param = JSON.parse(param);
 						}
+
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
 						
-						if(!param.paramname) {
+						if(!param) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must select anchor parameter for type: Other' });
 							$('.tele-browse-other input', c).addClass('error');
 							return false;
 						}
-						
+
 
 						// 2. Collect app + uri
 						
@@ -556,6 +576,11 @@ $.widget( "tele.teleRule", {
 						var count = $('.tele-geo-ts-count input').val();
 						var distance= $('.rule-slider-length input').val();
 
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
+
 						if(distance < 1) {
 							telepath.dialog({ title: 'Rule Editor', msg: 'You must specify valid distance' });
 							$('.rule-slider-length input').addClass('error');
@@ -588,6 +613,11 @@ $.widget( "tele.teleRule", {
 					case 'outside':
 						
 						var selected = "";
+
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
 						if($('.tele-country-list .checked', c).size() == 0) {
 							$('.tele-country-list').addClass('error');
 							telepath.dialog({ title: 'Rule Editor', msg: 'No countries selected' });
