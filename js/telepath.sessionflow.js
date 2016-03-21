@@ -894,6 +894,12 @@ telepath.sessionflow = {
 		this.alertDetailsTimeLabel  = $('<div>').addClass('tele-alert-details-info-time-label').text('Request time:');
 		this.alertDetailsTime  		= $('<div>').addClass('tele-alert-details-info-time').text(date_format('d/m/y | H:i:s', this.requestInfo.ts));
 		this.alertDetailsTimeWrap.append(this.alertDetailsTimeLabel).append(this.alertDetailsTime);
+
+		// Response status
+		this.alertDetailsResponseWrap   = $('<div>').addClass('tele-alert-details-info-response-wrap');
+		this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
+		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( this.requestInfo.status_code);
+		this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
 		
 		//if(this.requestData.score > this.requestData.score_average) { this.requestData.score_average = this.requestData.score }
 		
@@ -911,7 +917,7 @@ telepath.sessionflow = {
 		this.alertSeverityWrap.append(this.alertSeverityLabel).append(this.alertSeverityPercent).append(this.alertSeverityProgBar);
 		this.alertSeverityProgBar.append(this.alertSeverityProgValue);
 		
-		this.alertDetails.append(this.alertSeverityWrap).append(this.alertDetailsTitle).append(this.alertDetailsTimeWrap);
+		this.alertDetails.append(this.alertSeverityWrap).append(this.alertDetailsTitle).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap);
 		
 	},
 	printRequestInfo: function(container) {

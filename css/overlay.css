@@ -313,22 +313,22 @@
 	padding: 10px;
 }
 .tele-alert-details-info {
-	height: 50px;
+	height: 77px;
 	padding: 10px;
 }
 .tele-alert-details-info-title {
 	font-size: 18px;
 	color: #333333;
 }
-.tele-alert-details-info-time-wrap {
+.tele-alert-details-info-time-wrap, .tele-alert-details-info-response-wrap {
 	margin-top: 10px;
 }
-.tele-alert-details-info-time-label {
+.tele-alert-details-info-time-label, .tele-alert-details-info-response-label {
 	color: #555555;
 	float: left;
 	width: 120px;
 }
-.tele-alert-details-info-time {
+.tele-alert-details-info-time, .tele-alert-details-info-response {
 	color: #333333;
 }
 .tele-alert-severity-wrap {
