@@ -51,7 +51,7 @@ class Applications extends Tele_Controller
 
         $data = $this->M_Applications->index($search);
 
-        $this->redisObj->set('cache_applications', json_encode($data), 600);
+//        $this->redisObj->set('cache_applications', json_encode($data), 600);
 
         return_success($data);
 
