@@ -136,6 +136,8 @@ telepath.search = {
                 telepath.range.end = end;
 
                 that.boll=false;
+                //Reset tab result count to 0
+                $('.tele-search-tab span').html('0');
                 telepath.search.refresh(function () {
                 });
 

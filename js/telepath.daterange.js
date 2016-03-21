@@ -118,8 +118,8 @@ $.widget( "tele.daterange", {
 					var from_date_hour = get_hour_value($(".tele-daterange-from-hour"));
 					var to_date_hour = get_hour_value($(".tele-daterange-to-hour"));
 
-					telepath.range.start = (from_date.getTime() + from_date_hour) / 1000;
-					telepath.range.end = (to_date.getTime() + to_date_hour) / 1000;
+					telepath.range.start = parseInt((from_date.getTime() + from_date_hour) / 1000);
+					telepath.range.end = parseInt((to_date.getTime() + to_date_hour) / 1000);
 
 					telepath.ds.get('/telepath/set_time_range', {
 						state: telepath.range.state,
@@ -134,7 +134,7 @@ $.widget( "tele.daterange", {
 					});
 
 				}
-				else
+				else{
 					telepath.ds.get('/telepath/set_time_range', {
 						state: telepath.range.state
 					}, function (data) {
@@ -142,20 +142,8 @@ $.widget( "tele.daterange", {
 						var from_date = new Date();
 						switch(that.options.state) {
 							case 'data':
-								telepath.ds.get('/telepath/get_time_range', { }, function(data) {
-
-									// Globally
-
-									telepath.range.start = data.items.start;
-									telepath.range.end   = data.items.end;
-
-									// Locally
-
-									that.options.start = telepath.range.start;
-									that.options.end   = telepath.range.end;
-
-								});
-
+								telepath.range.start = telepath.fullRangeStart;
+								break;
 							case 'year':
 								from_date.setFullYear(from_date.getFullYear() - 1);
 								break;
@@ -173,16 +161,19 @@ $.widget( "tele.daterange", {
 								break;
 						}
 
-						if (that.options.state!="data"){
-							telepath.range.start = from_date.getTime() / 1000;
-							telepath.range.end = new Date().getTime() / 1000;
-						}
+							if(that.options.state!='data'){
+								telepath.range.start = parseInt(from_date.getTime() / 1000);
+							}
+							telepath.range.end = parseInt(new Date().getTime() / 1000);
+
 
 						that.options.start = telepath.range.start;
 						that.options.end   = telepath.range.end;
 						that.options.change(telepath.range.start, telepath.range.end);
 						that._update();
 					});
+				}
+
 			}
 		});
 		$(".tele-daterange-buttons .tele-button-cancel").click(function () {

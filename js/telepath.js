@@ -192,7 +192,12 @@ telepath.main = {
         });
 
     });
+        telepath.ds.get('/telepath/get_full_time_range', {}, function(data) {
 
+            // Set global variable to hold the time of the first telepath data
+            telepath.fullRangeStart = data.items.start;
+
+        });
     }
 
 };
