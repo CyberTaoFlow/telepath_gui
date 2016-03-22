@@ -26,29 +26,36 @@ telepath.config.rules = {
 			};
 		} });
 
+
+
+		this.barLeft/*.append(leftTitle)*/.append(this.cmdNewRule).append(this.cmdNewCategory) ;
+
+		this.barRight.empty();
+
+		var rightTitle = $('<div>').addClass('tele-panel-subtitle-text').html('Editor');
+
 		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
 			that.searchString = txt;
 			//that.init();
 		}});
-
-		this.barLeft/*.append(leftTitle)*/.append(this.cmdNewRule).append(this.cmdNewCategory).append(this.search) ;
+		this.barRight.append(rightTitle).append(this.search);
 
 		$("#search-button").on("click", function (event) {
 			that.searchString = '';
-			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+			$(".tele-config-bar-right .tele-search-input").prop("value", that.searchString);
 			that.input();
 
 		});
 
 
 		if (typeof(that.searchString) != 'undefined'){
-		 $(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
+		 $(".tele-config-bar-right .tele-search-input").prop("value", that.searchString);
 		 that.input();
 		 }
 
 
 		// add search on client site on key up event
-		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
+		$(".tele-config-bar-right .tele-search-input").keyup('input', function () {
 			that.searchString = $(this).val();
 			console.log(that.searchString);
 			that.input();
@@ -61,7 +68,8 @@ telepath.config.rules = {
 		
 		this.contentLeft.empty();
 		this.contentRight.empty();
-		this.barRight.empty();
+		that.cmdNewRule.hide();
+
 
 		//this.input();
 
@@ -71,22 +79,14 @@ telepath.config.rules = {
 			type: 'rules', 
 			callback: function(e, data) {
 				console.log(data);
-				if(data.node.data.type == 'category' || data.node.data.type == 'group') {
-					if (that.selectedCategory != data.node.data.name){
-						that.cmdNewRule.show();
-						that.selectedCategory = data.node.data.name;
-					}else if (data.node.data.type != 'group'){
-						that.cmdNewRule.hide();
-						data.instance.element.find('.jstree-wholerow-clicked').css('background-color', '#FFFFFF');
-						that.selectedCategory=null;
-					}else {
-						data.instance.element.find('.jstree-wholerow-clicked').css('background-color', '#FFFFFF');
-						that.cmdNewRule.hide();
-						//data.instance.element.find('#'+data.node.parent).children('.jstree-wholerow').css('background-color', 'rgba(189, 189, 189, 0.85098)');
-						//background-color: rgba(189, 189, 189, 0.85098);
-					}
+
+				if(data.node.data.type == 'category') {
+					that.cmdNewRule.show();
+					that.selectedCategory = data.node.data.name;
+				} else {
+					that.cmdNewRule.hide();
 				}
-				
+
 				if(data.node.data.type == 'group') {
 					telepath.config.rule.editRule(data.node.data.name, data.node.data.category);
 				}
@@ -99,8 +99,7 @@ telepath.config.rules = {
 		
 		this.contentLeft.append(this.ruleTree);
 		
-		var rightTitle = $('<div>').addClass('tele-panel-subtitle-text').html('Editor');
-		this.barRight.append(rightTitle);
+
 
 	},
 	input: function(){

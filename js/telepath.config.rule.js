@@ -24,7 +24,9 @@ telepath.config.rule = {
 		this.toolbar   = telepath.config.rules.barRight;
 		// Cleanup
 		this.container.empty();
-		this.toolbar.empty();
+		//this.toolbar.empty();
+		$('.tele-panel-subtitle-text').hide();
+
 		//this.container.append('<h3 style="tele-title-1">Rule Editor</h3><br>');
 		
 		if(rule_name == 'new') {
