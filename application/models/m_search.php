@@ -109,8 +109,11 @@ class M_Search extends CI_Model {
 				// old method
 				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
+				$params['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases' ] ] ] ];
 				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
 				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
+				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases' ] ] ] ];
+
 				// new method !!!
 /*
                                 $params['body']['query']['filtered']['filter']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
@@ -221,8 +224,14 @@ class M_Search extends CI_Model {
 					if($scope == 'cases') {
 						$item["cases_count"] = $cases_count_;
 						$item["cases_names"] = $cases_names_buckets;
-					}					
-				
+					}
+
+					// if one session ID includes alerts requests and regular requests, we don't display it
+					if ($scope == 'requests' && ($item['alerts_count']>0 || $sid['cases_count']['value']>0) ){
+						$result["aggregations"]["sid_count"]["value"]--;
+						continue;
+					}
+
 					$results['items'][] = $item;
 					
 				}
