@@ -127,23 +127,31 @@ class Rules extends Tele_Controller
 
         $rules = array();
         $category = $this->input->post('id', true);
-        if ($category == "Brute-Force") {
-            $rules[] = array('name' => "Login Brute-Force",
-                'uid' => "Login Brute-Force",
-                'category' => "Brute-Force");
-        } elseif($category == "Credential-Stuffing") {
-            $rules[] = array('name' => "Credential-Stuffing",
-                'uid' => "Credential-Stuffing",
-                'category' => "Credential-Stuffing");
-        } else {
-            $rules = $this->M_Rules->get_rules($category);
-        }
+
+        $rules = $this->M_Rules->get_rules($category);
+
 
         $ans = array('items' => array(), 'total' => 0, 'success' => true);
 
+        if ($category == "Brute-Force") {
+            $ans['items'][] = array(
+                'id' => "Login Brute-Force",
+                'category' => "Brute-Force",
+                'name' => "Login Brute-Force"
+            );
+        } elseif($category == "Credential-Stuffing") {
+            $ans['items'][] = array(
+                'id' => "Credential-Stuffing",
+                'category' => "Credential-Stuffing",
+                'name' => "Credential-Stuffing"
+            );
+        }
+
         if ($rules && is_array($rules) && !empty($rules)) {
             foreach ($rules as $rule) {
-
+                if(($category == "Brute-Force" || $category == "Credential-Stuffing") && isset($rule['builtin_rule']) && $rule['builtin_rule']){
+                    continue;
+                }
                 $ans['items'][] = array(
                     'id' => $rule['uid'],
                     'category' => $rule['category'],
