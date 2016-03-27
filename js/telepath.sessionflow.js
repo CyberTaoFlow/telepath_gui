@@ -500,7 +500,7 @@ telepath.sessionflow = {
 			progbarBig: item.progbarBig,
 			checkable: item.checkable,
 			checked: item.checked,
-			progbarValue: item.ip_score,
+			progbarValue: item.score_average,
 			title: item.uri,
 			details: [
 				{ key: 'country', value: item.country_code },
@@ -701,15 +701,15 @@ telepath.sessionflow = {
 			});
 		}*/
 
-		result.progbarValue = item.ip_score;
+		result.progbarValue = item.score_average;
 
 		if(alert !== false) {
 			result.icon   = 'alert';
 			alert = item.alerts[0];
 			result.description  = alert.name;
-			result.progbarValue = item.ip_score;
+			result.progbarValue = item.score_average;
 		} else {
-			if(item.ip_score > 85) {
+			if(item.avg_score > 85) {
 				result.icon = 'suspect_red';
 			}
 		}
@@ -907,7 +907,7 @@ telepath.sessionflow = {
 		//if(this.requestData.score_average > 0 && this.requestData.score_average <= 1) {
 		//	this.requestData.score_average = this.requestData.score_average * 100;
 		//}
-		var severityPercent         = parseInt(this.requestData.ip_score * 100) + '%';
+		var severityPercent         = parseInt(this.requestData.score_average * 100) + '%';
 		this.alertSeverityWrap      = $('<div>').addClass('tele-alert-severity-wrap');
 		this.alertSeverityLabel     = $('<div>').addClass('tele-alert-severity-label').text('Severity');
 		this.alertSeverityPercent   = $('<div>').addClass('tele-alert-severity-percent').text(severityPercent);
