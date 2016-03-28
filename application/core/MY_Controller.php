@@ -47,6 +47,7 @@ class Tele_Controller extends CI_Controller
 
     public function _get_app_filter($local = false)
     {
+        $this->load->model('M_Applications');
 
         $this->user_id = $this->ion_auth->get_user_id();
 
@@ -61,7 +62,19 @@ class Tele_Controller extends CI_Controller
         }
 
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
-        $data = isset($parsed['app_filter']) ? $parsed['app_filter'] : array();
+        $data = array();
+        if (isset($parsed['app_filter'])) {
+            $data = $parsed['app_filter'];
+            // Add subdomains
+            if ($local) {
+                foreach ($parsed['app_filter'] as $root_domain) {
+                    if ($subdomains = $this->M_Applications->get_subdomains($root_domain)) {
+                        $data = array_merge($data, $subdomains);
+                    }
+                }
+            }
+        }
+
 
         if ($local) {
             return $data;

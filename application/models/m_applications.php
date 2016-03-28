@@ -400,6 +400,24 @@ class M_Applications extends CI_Model {
 		return $results;
 		
 	}
+
+	function get_subdomains($root_domain){
+		$params = [
+			'index' => 'telepath-domains',
+			'type' => 'domains',
+			'id' => $root_domain
+		];
+
+		if($this->elasticClient->exists($params)){
+			$result = $this->elasticClient->getSource($params);
+			if(isset ($result['subdomains']) && !empty($result['subdomains'])){
+				return $result['subdomains'];
+			}
+
+			return false;
+
+		}
+	}
 	
 	function get_search($search, $mode) {
 
