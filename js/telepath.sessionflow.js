@@ -765,14 +765,15 @@ telepath.sessionflow = {
 		$('.tele-overlay-tools', this.overlay.headerEl).remove();
 		
 		this.printRequestInfo(this.boxRight);
-		
-		if(alert !== false) {
-			// TODO: Debug Icons
-			//this.initAlertTools();
-			this.initRequestTools();
-		} else {
-			this.initRequestTools();
-		}
+
+		// temporary dismiss this features
+		//if(alert !== false) {
+		//	// TODO: Debug Icons
+		//	//this.initAlertTools();
+		//	this.initRequestTools();
+		//} else {
+		//	this.initRequestTools();
+		//}
 		telepath.sessionflow.reloadFlag = Date.now();
 	
 		// Load similarities

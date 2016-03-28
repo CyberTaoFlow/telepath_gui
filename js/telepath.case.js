@@ -285,14 +285,15 @@ telepath.casePanel = {
 		}});
 		
 		this.panelTopBar.append(this.editCase);
+
+		// Temporary Hide Archive Case
+		// this.panelTopBar.append('<div class="tele-navsep"></div>');
 		
-		this.panelTopBar.append('<div class="tele-navsep"></div>');
-		
-		// Archive Case
-		this.archiveCase = $('<div>').btn({ icon: 'archive', text: 'Archive Case', callback: function () {
-			
-		}});
-		this.panelTopBar.append(this.archiveCase);
+
+		//this.archiveCase = $('<div>').btn({ icon: 'archive', text: 'Archive Case', callback: function () {
+		//
+		//}});
+		//this.panelTopBar.append(this.archiveCase);
 
 		// Sort filters
 		var sortRadios = $('<div>').radios({
