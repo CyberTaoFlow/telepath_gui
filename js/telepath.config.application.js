@@ -31,9 +31,8 @@ telepath.config.application = {
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
 		switch(selected_opmod) {
 			case 'training':   app_data.operation_mode = 1; break;
-			case 'hybrid':     app_data.operation_mode = 2; break;
-			case 'production':     app_data.operation_mode = 3; break;
-
+			case 'production':     app_data.operation_mode = 2; break;
+			case 'hybrid':     app_data.operation_mode = 3; break;
 
 		}
 		
