@@ -43,12 +43,8 @@ class M_Actions extends CI_Model {
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
 		$params['body']['size'] = 999;
+		$params['_source_include'] = ["application", "action_name"];
 		$params['body'] = [
-			'partial_fields' => [
-				"_src" => [
-					"include" => ["application", "action_name"]
-				],
-			],
 			'size' => 9999,
 			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["application", "action_name"], "query" => '*' . $text . '*']]]],
 		];
@@ -63,6 +59,34 @@ class M_Actions extends CI_Model {
 			}
 		}
 		return_success($ans);
+	}
+
+	function search_actions($text){
+
+
+		$params['index'] = 'telepath-actions';
+		$params['type'] = 'actions';
+		$params['body']['size'] = 999;
+		$params['body'] = [
+			'size' => 9999,
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["action_name"], "query" => '*' . $text . '*',"lowercase_expanded_terms"=>false]]]],
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		$results=get_source($results);
+
+//		$results = array_map(function($result) {
+//			return array(
+//				'host' => $result['application'],
+//				'action_name' => $result['action_name']
+//			);
+//		}, $results);
+
+
+
+		return $results;
+
 	}
 
 //	function get_app_with_actions($search){

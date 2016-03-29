@@ -292,7 +292,7 @@ class M_Applications extends CI_Model {
 	//new function
 //curl -XGET 'http://localhost:9200/telepath-20*/_search?pretty' -d '{"size":0,"aggs":{"host":{"terms":{"field":"host","size":999},"aggs":{"ip_resp":{"terms":{"field":"ip_resp"}}}}}}'
 	
-	function index($search = false) {
+	function index($search = false, $learning_so_far=false, $fields=[ "host","subdomains" ] ) {
 		
 		// Search specific records first
 
@@ -311,24 +311,28 @@ class M_Applications extends CI_Model {
 //			'query' => [ 'bool' => [ "must" => [ [ 'term' => [ '_type' => 'http' ] ] ] ] ]
 //		);
 
+		if($learning_so_far){
+            $include=["host","subdomains","learning_so_far"];
+        }
+		else{
+			$include=["host","subdomains"];
+		}
+
 		$params = [
 			'index' => 'telepath-domains',
 			'type' => 'domains',
+			'_source_include' => $include,
 			'body' => [
-				'partial_fields' => [
-					"_src" => [
-						"include" => ["host","learning_so_far","subdomains"]
-					],
-				],
 				'size'=>999,
-			]
+			],
 		];
 
 		if ($search){
-			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => [ "host" ] , "query" => '*' . $search . '*' ] ];
+			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => $fields , "query" => '*' . $search . '*' ] ];
+			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
 
-		$results = prepare_elastic_results($this->elasticClient->search($params));
+		$results = get_source($this->elasticClient->search($params));
 
 
 //		$ans1 = [];
@@ -414,10 +418,25 @@ class M_Applications extends CI_Model {
 				return $result['subdomains'];
 			}
 
-			return false;
-
 		}
+
+		return false;
 	}
+
+//	function get_root_domain($domain){
+//		$params = [
+//			'index' => 'telepath-domains',
+//			'type' => 'domains',
+//			'id' => $domain
+//		];
+//
+//		if($this->elasticClient->exists($params)){
+//			return $domain;
+//		}
+//		else{
+//			return $this->index($domain,false,['subdomains']);
+//		}
+//	}
 	
 	function get_search($search, $mode) {
 
@@ -736,16 +755,6 @@ class M_Applications extends CI_Model {
 		
 	}
 
-	function check_subdomain($host){
-		$params = [
-			'index' => 'telepath-domains',
-			'type' => 'domains',
-			'id' => $host,
-			'_source_include' => ["subdomains"]
-		];
-		$response=$this->elasticClient->get($params);
-		return $response["_source"];
-	}
 	
 }
 ?>

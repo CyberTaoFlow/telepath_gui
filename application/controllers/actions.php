@@ -72,12 +72,13 @@ class Actions extends Tele_Controller
 
         $actions=$this->M_Actions->get_app_actions($host);
 
-        $subdomains=[];
+
         if($domain=='root'){
         $this->load->model('M_Applications');
-            if (!empty($subs=$this->M_Applications->check_subdomain($host))){
-                $subdomains=$subs['subdomains'];
+            $subdomains=$this->M_Applications->get_subdomains($host);
             }
+        if(!isset($subdomains) || !$subdomains){
+            $subdomains=[];
         }
 
         return_success(array('actions'=>$actions,'subdomains'=>$subdomains));

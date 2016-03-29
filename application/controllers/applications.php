@@ -8,6 +8,7 @@ class Applications extends Tele_Controller
 
         parent::__construct();
         $this->load->model('M_Applications');
+        $this->load->model('M_Actions');
 
     }
 
@@ -39,6 +40,8 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         $search = $this->input->post('search');
+        $actions = $this->input->post('actions');
+        $learning_so_far = $this->input->post('learning_so_far');
 
 //        $res = $this->redisObj->get('cache_applications');
 
@@ -49,7 +52,29 @@ class Applications extends Tele_Controller
 //            }
 //        }
 
-        $data = $this->M_Applications->index($search);
+        // retrieve the apps
+        $data = $this->M_Applications->index($search,$learning_so_far);
+
+        // search in business actions
+        if ($search && $actions){
+           $actions = $this->M_Actions->search_actions($search);
+            foreach($actions as $action){
+                //TODO: add option to add an action to a subdomain
+               //$root_domain= $this->M_Applications->get_root_domain($action['application']);
+                // if the domain already exists, we add the action to this domain
+                if($key=array_search($action['application'],array_column($data,'host'))){
+                    $data[$key]['actions'][]=$action;
+                }
+//                elseif($key=array_search($root_domain,array_column($data,'subdomains'))){
+//                    $data[$key]['subdomains']['actions'][]=$action['action_name'];
+//                    $data[$key]['subdomains']['host']=$action['application'];
+//                }
+                else{
+                    $data[]=['host'=>$action['application'], 'actions'=>[$action]];
+                }
+
+            }
+        }
 
 //        $this->redisObj->set('cache_applications', json_encode($data), 600);
 

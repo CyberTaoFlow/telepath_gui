@@ -121,6 +121,22 @@ function prepare_elastic_results($results) {
 }
 
 
+// retrieve only the _source field
+function get_source($results) {
+	$result  = array();
+	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
+		foreach($results['hits']['hits'] as $row) {
+			// if the string was found in subdomains, we aet the open parameter to true, to display the subdomains in the GUI
+			if(isset ($row['_source']['subdomains']) && !empty ($row['_source']['subdomains']) && isset ($row['highlight']['subdomains'] )){
+				$row['_source']['open']=true;
+			}
+			$result[] = $row['_source'];
+		}
+	}
+	return $result;
+}
+
+
 function get_gap($range) {
 	
 		$difference	= $range['end'] - $range['start'];

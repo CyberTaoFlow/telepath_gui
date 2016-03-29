@@ -41,12 +41,18 @@ telepath.config.applications = {
 		$.each(data, function(i, row) {
 			var text = row.host;
 			var children = false;
-			if(count){
-				text+= '&nbsp;(' + row.learning_so_far+')';
+			if (count) {
+				text += '&nbsp;(' + row.learning_so_far + ')';
 				children = (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0) ? row.subdomains : false;
 			}
 
-			var obj  = { children: children, text: text, data: { type: 'app', host: row.host }, 'icon': 'tele-icon-app'};
+			var obj = {
+				children: children,
+				state: {opened: (typeof row.open != "undefined" && row.open) ? true : false},
+				text: text,
+				data: {type: 'app', host: row.host},
+				'icon': 'tele-icon-app'
+			};
 			treeData.push(obj);
 		});
 		return treeData;
@@ -81,7 +87,7 @@ telepath.config.applications = {
 
 		var that = this;
 
-		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications' }, function(data) {
+		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications', learning_so_far: true }, function(data) {
 
 			var treeData = telepath.config.applications.formatData(data.items);
 

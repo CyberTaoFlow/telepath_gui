@@ -22,6 +22,7 @@ telepath.config.actions = {
 			case 'root':
 				url  = '/applications/get_expand';
 				postData.type = 'root';
+				postData.actions = true;
 				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;
 			case 'app':
@@ -61,7 +62,38 @@ telepath.config.actions = {
 						//	})
 						//}
 						//var obj = { children: children, text: text};
-						var obj = {children: true, text: text, data: {id: row.host, type: 'app', ssl: row.ssl_flag, domain: "root"}}
+						var childrens = [];
+						if (typeof row.actions != "undefined" && row.actions != null && row.actions.length > 0) {
+
+							$.each(row.actions, function (i, action) {
+								var flow_obj = {
+									children: false,
+									text: action.action_name,
+									icon: "tele-icon tele-icon-actions",
+									data: {id: action.action_name, type: "action", raw: action}
+								};
+								childrens.push(flow_obj);
+							});
+						}
+
+						if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0 && typeof row.open != "undefined" && row.open) {
+							$.each(row.subdomains, function (i, subdomain) {
+								var flow_obj = {
+									children: true,
+									text: subdomain,
+									data: {id: subdomain, type: "app", domain: "subdomain"}
+								};
+								childrens.push(flow_obj);
+							});
+
+						}
+
+						var obj = {
+							children: (childrens.length > 0) ? childrens : true,
+							state: {opened: (childrens.length > 0) ? true : false},
+							text: text,
+							data: {id: row.host, type: 'app', ssl: row.ssl_flag, domain: "root"}
+						}
 						treeData.push(obj);
 						
 					});
