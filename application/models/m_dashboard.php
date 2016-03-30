@@ -21,7 +21,7 @@ class M_Dashboard extends CI_Model {
 	}
 	
 	public function get_cases($range, $apps = array()) {
-		
+
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => array(
@@ -82,7 +82,9 @@ class M_Dashboard extends CI_Model {
 	public function get_gap_alerts($interval, $range, $apps = array()) {
 		
 		$result = array('case' => 0, 'noncase' => 0);
-		
+
+		$params['index']='telepath-20*';
+		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => array(
@@ -98,7 +100,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
 					]
@@ -128,7 +129,9 @@ class M_Dashboard extends CI_Model {
 	public function get_gap_cases($interval, $range, $apps = array()) {
 		
 		$result = array('case' => 0, 'noncase' => 0);
-		
+
+		$params['index']='telepath-20*';
+		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => array(
@@ -144,7 +147,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'range' => [ 'cases_count' => [ 'gte' => 1 ] ] ],
 					]
@@ -228,7 +230,9 @@ class M_Dashboard extends CI_Model {
 		
 		$this->load->model('M_Suspects');
 		$suspect_threshold = $this->M_Suspects->get_threshold();
-		
+
+		$params['index']='telepath-20*';
+		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => array(
@@ -244,7 +248,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'range' => [ 'score_average' => [ ($suspects ? 'gte' : 'lt') => $suspect_threshold ] ] ]
 					]
