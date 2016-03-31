@@ -67,6 +67,7 @@ class M_Actions extends CI_Model {
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
 		$params['body']['size'] = 999;
+		$params['sort'] = ['application'];
 		$params['body'] = [
 			'size' => 9999,
 			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["action_name"], "query" => '*' . $text . '*',"lowercase_expanded_terms"=>false]]]],

@@ -322,6 +322,7 @@ class M_Applications extends CI_Model {
 			'index' => 'telepath-domains',
 			'type' => 'domains',
 			'_source_include' => $include,
+			'sort' => ['host'],
 			'body' => [
 				'size'=>999,
 			],
