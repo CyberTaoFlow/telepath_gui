@@ -86,7 +86,7 @@ telepath.config.application = {
 		app_data.form_flag   = 0;
 		app_data.digest_flag = 0;
 		
-		var mode = this.userIdentification.teleRadios('option', 'checked');
+		var mode = this.userIdentification.data('teleTeleRadios').options.checked;
 		
 		switch(mode) {
 			case 'NTLM':
@@ -130,19 +130,19 @@ telepath.config.application = {
 		//app_data.form_authentication_flag = this.SC_toggle.teleRadios('option', 'checked') == 'On' ? 1 : 0;
 
 		// Success Criteria -- Cookie
-		app_data.cookie_mode = this.SC_cookie_toggle.teleRadios('option', 'checked') ? 1 : 0;
+		app_data.cookie_mode = this.SC_cookie_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.cookie_name = $('input', this.SC_cookie_name).val();
 		app_data.cookie_value = $('input', this.SC_cookie_value).val();
-		app_data.cookie_value_appearance = this.SC_cookie_flag.teleRadios('option', 'checked') == 'appears' ? 1 : 0;
+		app_data.cookie_value_appearance = this.SC_cookie_flag.data('teleTeleRadios').options.checked == 'appears' ? 1 : 0;
 
 		// Success Criteria -- Redirect
-		app_data.redirect_mode = this.SC_redirect_toggle.teleRadios('option', 'checked') ? 1 : 0;
+		app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
 		//app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
 		app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
 
 		// Success Criteria -- Body Value
-		app_data.body_value_mode = this.SC_body_toggle.teleRadios('option', 'checked') ? 1 : 0;
+		app_data.body_value_mode = this.SC_body_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.body_value_html = this.SC_body_input.data('tele-teleInput').input.val();
 
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
@@ -606,10 +606,11 @@ telepath.config.application = {
 		
 		this.SC_body_input  = $('<div>').teleInput({ label: 'Value to search in HTML body', value: that.app_data.body_value_html }).addClass('tele-app-auth-body');
 
-		//SC_body_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Body Value', checked: that.app_data.form_authentication_body_flag == '1' });
+		//SC_body_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Body Value', checked: that.app_data.body_value_mode == '1' });
 		this.SC_body_toggle = $('<div>').teleRadios({
 			title: 'Body Value',
-			checked: that.app_data.form_authentication_body_flag == '1'? 'On' : 'Off',
+			checked: that.app_data.body_value_mode == '1'? 'On' : 'Off',
+
 			radios: [
 				{ key: 'On', label: 'On' },
 				{ key: 'Off', label: 'Off' },
