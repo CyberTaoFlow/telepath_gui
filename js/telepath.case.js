@@ -355,7 +355,8 @@ telepath.casePanel = {
 			telepath.range.start = start;
 			telepath.range.end = end;
 			
-			telepath.cases.refresh(function () {});
+			//telepath.cases.refresh(function () {});
+				that.refresh();
 			
 		}});
 		
