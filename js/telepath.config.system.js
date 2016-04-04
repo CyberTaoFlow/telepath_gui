@@ -597,7 +597,7 @@ telepath.config.system = {
 		if (!$("#file-upload").length) {
 			this.file_upload = $('<div>').attr('id', 'file-upload').appendTo($('.tele-content'));
 
-			$('<div>').attr('id', 'dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
+			$('<div>').attr('id', 'dragandrophandler').html('Drag & drop files you want to upload here').appendTo(this.file_upload);
 
 			$('<input>').attr('id', 'input').attr('type', 'file').attr('multiple', 'true').css({
 				width: '0px',
@@ -605,7 +605,7 @@ telepath.config.system = {
 				overflow: 'hidden'
 			}).appendTo(this.file_upload);
 
-			$('<a href="#" class="tele-button tele-button-apply disabled">Load to database</a>').click(function (e) {
+			$('<a href="#" class="tele-button tele-button-apply disabled">Process</a>').click(function (e) {
 				$(this).addClass('disabled');
 
 				telepath.ds.get('/config/upload_to_db', {}, function (data) {
