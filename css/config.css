@@ -1183,12 +1183,12 @@ body .jstree .tele-button {
 	clear: both;
 }
 
-.file-upload{
+#file-upload{
 	position: absolute;
 	margin-left: 60%;
 	width: 20%;
 	padding:10px 10px 10px 10px;
-
+	top: 350px;
 }
 
 #dragandrophandler
@@ -1220,7 +1220,9 @@ body .jstree .tele-button {
 	text-align: right;
 	line-height: 22px; /* same as #progressBar height if we want text middle aligned */
 	width: 0;
-	background-color: #0ba1b5; border-radius: 3px;
+	/*background-color: #0ba1b5; */
+	background-color: rgb(247, 147, 30);
+	border-radius: 3px;
 }
 .statusbar
 {
@@ -1260,3 +1262,17 @@ body .jstree .tele-button {
 	cursor:pointer;
 	vertical-align:top
 }
+.statusbar .error{
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: top;
+	color: red;
+	width: 38%;
+	margin-left:6px;
+}
+
+.upload-error{
+	color: red;
+	margin: 5px;
+}
+

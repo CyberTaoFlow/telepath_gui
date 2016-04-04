@@ -695,6 +695,21 @@ public function get_scheduler()
 
     }
 
+    public function check_file_loader_mode()
+    {
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'config',
+            'id' => 'file_loader_mode_id'
+        ];
+
+        $result = $this->elasticClient->get($params);
+        if ($result['_source']['value'] == "1")
+            return true;
+        else
+            return false;
+    }
+
 }
 
 ?>

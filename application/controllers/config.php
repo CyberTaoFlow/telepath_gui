@@ -1,15 +1,14 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 
-/**
- * @property  M_Config M_Config
- */
+
 class Config extends Tele_Controller
 {
 
     function __construct()
     {
         parent::__construct();
+        $this->load->model('M_Config');
     }
 
     public function _interfaces()
@@ -68,8 +67,6 @@ class Config extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        $this->load->model('M_Config');
-
         $ans = $this->M_Config->get();
 
         //move data from sql to elasticsearch
@@ -114,9 +111,6 @@ class Config extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        $this->load->model('M_Config');
-
-
         return_json(array('scheduler' => $this->M_Config->get_scheduler(), 'success' => true));
 
 
@@ -125,8 +119,6 @@ class Config extends Tele_Controller
     public function add_scheduler_event()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->load->model('M_Config');
 
         $mode = $this->input->post('mode', true);
         $event = $this->input->post('event');
@@ -145,8 +137,6 @@ class Config extends Tele_Controller
     public function del_scheduler_event()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->load->model('M_Config');
 
         $mode = $this->input->post('mode', true);
         $event = $this->input->post('event');
@@ -167,8 +157,6 @@ class Config extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->load->model('M_Config');
 
         $mode = $this->input->post('mode', true);
         $data = $this->input->post('data', true);
@@ -215,8 +203,6 @@ class Config extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->load->model('M_Config');
 
         $config = $this->input->post(NULL, true);
 
@@ -392,55 +378,69 @@ class Config extends Tele_Controller
 
     public function do_upload()
     {
+        @set_time_limit(-1);
+        ini_set('memory_limit', '1300M');
 
-            $base_target_file = FCPATH . 'upload/';
-            $target_file = $base_target_file . basename($_FILES["file"]["name"]);
+        $base_target_file = FCPATH . 'upload/';
+        $target_file = $base_target_file . basename($_FILES["file"]["name"]);
 //        $uploadOk = 1;
 //        $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-            // Check if image file is a actual image or fake image
-            /*       if (isset($_POST["submit"])) {
-                       $check = getimagesize($_FILES["file"]["tmp_name"]);
-                       if ($check !== false) {
-                           echo "File is an image - " . $check["mime"] . ".";
-                           $uploadOk = 1;
-                       } else {
-                           echo "File is not an image.";
-                           $uploadOk = 0;
-                       }
-                   }
-           // Check if file already exists
-                   if (file_exists($target_file)) {
-                       echo "Sorry, file already exists.";
+        // Check if image file is a actual image or fake image
+        /*       if (isset($_POST["submit"])) {
+                   $check = getimagesize($_FILES["file"]["tmp_name"]);
+                   if ($check !== false) {
+                       echo "File is an image - " . $check["mime"] . ".";
+                       $uploadOk = 1;
+                   } else {
+                       echo "File is not an image.";
                        $uploadOk = 0;
                    }
-           // Check file size
-                   if ($_FILES["fileToUpload"]["size"] > 500000) {
-                       echo "Sorry, your file is too large.";
-                       $uploadOk = 0;
-                   }
-           // Allow certain file formats
-                   if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                       && $imageFileType != "gif"
-                   ) {
-                       echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-                       $uploadOk = 0;
-                   }
-           // Check if $uploadOk is set to 0 by an error
-                   if ($uploadOk == 0) {
-                       echo "Sorry, your file was not uploaded.";
-           // if everything is ok, try to upload file
-                   } else {*/
+               }
+       // Check if file already exists
+               if (file_exists($target_file)) {
+                   echo "Sorry, file already exists.";
+                   $uploadOk = 0;
+               }
+       // Check file size
+               if ($_FILES["fileToUpload"]["size"] > 500000) {
+                   echo "Sorry, your file is too large.";
+                   $uploadOk = 0;
+               }
+       // Allow certain file formats
+               if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                   && $imageFileType != "gif"
+               ) {
+                   echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                   $uploadOk = 0;
+               }
+       // Check if $uploadOk is set to 0 by an error
+               if ($uploadOk == 0) {
+                   echo "Sorry, your file was not uploaded.";
+       // if everything is ok, try to upload file
+               } else {*/
 
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-                echo "The file " . basename($_FILES["file"]["name"]) . " has been uploaded.";
-            exec('telepath -r ' . $base_target_file);
-                echo "The file has been inserted in Telepath database.";
-            exec('rm -r ' . $base_target_file . '/*');
-            } else {
-                echo "Sorry, there was an error!";
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            if (exec('head -n1 ' . $target_file . ' | tcpdump -r -') != "tcpdump: unknown file format") {
+                return_success(['loader_mode' => $this->M_Config->check_file_loader_mode()]);
             }
-
+        } else {
+            return_fail("An error occurred");
         }
+
+    }
+
+
+    public function upload_to_db()
+    {
+        if (!$this->M_Config->check_file_loader_mode()) {
+            exec('telepath -r ' . FCPATH . 'upload/');
+            return_success();
+        }
+        return_fail();
+    }
+
+
+
 
 
 

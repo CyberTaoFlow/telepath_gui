@@ -59,6 +59,7 @@ telepath.config = {
 				
 				// Cleanup container
 				that.container.empty();
+				$("#file-upload").hide();
 				
 				// Pass container and shared layout function
 				telepath.config[id].container  = that.container;

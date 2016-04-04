@@ -103,6 +103,7 @@ telepath.search = {
         telepath.header.configCmd.removeClass('active');
         $('.tele-nav a.active').removeClass('active');
         $('.tele-panel').empty().hide().removeClass('active');
+        $("#file-upload").hide();
         $('.tele-panel-search').show().addClass('active');
         this.container = $('.tele-panel-search');
         this.container.empty();

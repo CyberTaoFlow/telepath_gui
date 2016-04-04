@@ -95,6 +95,7 @@ telepath.header = {
 			
 			// Cleanup other panels
 			$('.tele-panel').empty().hide();
+			$("#file-upload").hide();
 			$('.tele-nav a.active').removeClass('active');
 			
 			// Trigger this panel
@@ -135,6 +136,7 @@ telepath.header = {
 			}
 			
 			$('.tele-panel').empty().hide().removeClass('active');
+			$("#file-upload").hide();
 			$('.tele-panel-' + id).show().addClass('active');
 			telepath.ui.resize();
 			telepath[id].init();

@@ -69,7 +69,11 @@ telepath.config.system = {
 				
 				var stepId = $(this).attr('id').split('-')[3];
 				$('.tele-config-system-tab').hide();
+				$("#file-upload").hide();
 				$('.tele-config-system-' + stepId).show();
+				if(stepId=="mode"){
+					$("#file-upload").show();
+				}
 				
 				// Paint it orange..
 				$('.active', that.stepContainer).removeClass('active'); // Cleanup
@@ -588,15 +592,41 @@ telepath.config.system = {
 		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
 
 		// File upload
-		this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
+		//this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
 
-		$('<div>').attr('id','dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
+		if (!$("#file-upload").length) {
+			this.file_upload = $('<div>').attr('id', 'file-upload').appendTo($('.tele-content'));
 
-		$('<input>').attr('id','input').attr('type','file').attr('multiple','true').css({width: '0px', height: '0px',overflow: 'hidden'}).appendTo(this.file_upload);
+			$('<div>').attr('id', 'dragandrophandler').html('Drag & Drop Files Here').appendTo(this.file_upload);
+
+			$('<input>').attr('id', 'input').attr('type', 'file').attr('multiple', 'true').css({
+				width: '0px',
+				height: '0px',
+				overflow: 'hidden'
+			}).appendTo(this.file_upload);
+
+			$('<a href="#" class="tele-button tele-button-apply disabled">Load to database</a>').click(function (e) {
+				$(this).addClass('disabled');
+
+				telepath.ds.get('/config/upload_to_db', {}, function (data) {
+					$('.statusbar').remove();
+				}, function () {
+					uploadError.show();
+					var interval = setInterval(function () {
+						telepath.ds.get('/config/upload_to_db', {}, function (data) {
+							$('.statusbar').remove();
+							uploadError.hide();
+							clearInterval(interval);
+						}, 'Load to database error.');
+					}, 60000);
+				});
+			}).appendTo(this.file_upload);
+
+			var uploadError = $('<div>').addClass('upload-error').html('An error occurred during the loading. We will try later one more time.').appendTo(this.file_upload).hide();
 
 
 
-		$(document).ready(function()
+			$(document).ready(function()
 		{
 			var obj = $("#dragandrophandler");
 
@@ -650,6 +680,10 @@ telepath.config.system = {
 			});
 
 		});
+		}
+		else{
+			$("#file-upload").show();
+		}
 
 		//Read the file contents using HTML5 FormData() when the files are dropped.
 		function handleFileUpload(files,obj)
@@ -669,6 +703,9 @@ telepath.config.system = {
 		//Send FormData() to Server using jQuery AJAX API
 		function sendFileToServer(formData,status)
 		{
+			window.onbeforeunload = function(e) {
+				return 'You are uploading files now.';
+			};
 			var uploadURL = telepath.controllerPath+ "/config/do_upload"; //Upload URL
 			var extraData ={}; //Extra Data.
 			var jqXHR=$.ajax({
@@ -695,9 +732,14 @@ telepath.config.system = {
 				cache: false,
 				data: formData,
 				success: function(data){
-					status.setProgress(100);
-
-					$("#status1").append("File upload Done<br>");
+					if(data.success){
+						status.setProgress(100,data.loader_mode);
+						//$("#status1").append("File uploaded<br>");
+					}
+					else{
+						status.displayError(data.error);
+					}
+					window.onbeforeunload = null;
 				}
 			});
 
@@ -736,13 +778,18 @@ telepath.config.system = {
 				this.filename.html(name);
 				this.size.html(sizeStr);
 			}
-			this.setProgress = function(progress)
+			this.setProgress = function(progress,loader_mode)
 			{
 				var progressBarWidth =progress*this.progressBar.width()/ 100;
 				this.progressBar.find('div').animate({ width: progressBarWidth }, 10).html(progress + "% ");
 				if(parseInt(progress) >= 100)
 				{
 					this.abort.hide();
+					if(!loader_mode){
+						obj.siblings("a").removeClass('disabled');
+					}
+
+
 				}
 			}
 			this.setAbort = function(jqxhr)
@@ -753,6 +800,10 @@ telepath.config.system = {
 					jqxhr.abort();
 					sb.hide();
 				});
+			}
+			this.displayError = function(message)
+			{
+				this.progressBar.hide().after("<div class='error'>"+message+"</div>");
 			}
 		}
 
