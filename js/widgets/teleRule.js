@@ -224,14 +224,15 @@ $.widget( "tele.teleRule", {
 						
 						json.method = '';
 						
-						$('.tele-rule-request-wrap .checked').each(function() { 
+						$('.tele-rule-request-wrap .checked',c).each(function() {
 							json.method = json.method + $(this).parent().text().substr(0,1) + ','; 
 						});
 						
 						json.method = json.method.substr(0, json.method.length - 1);
 					
-						json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked').size() > 0;
+
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
+						json.negate    = $('.tele-rule-string-inspection .tele-checkbox-str-'+ json.subtype +' .checked',c).size() > 0;
 						json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
 
 						//if the `getValues` above opened a dialog, stop now
@@ -750,12 +751,12 @@ $.widget( "tele.teleRule", {
 				// Reg
 				var r_regex_control = $('<div>').addClass('rules_string_control_bool');
 				var r_regex_input = $('<div style="width:200px">').teleInput({ value: data.str_match }).addClass('tele-input-str-regex');
-				var r_regex_check = $('<div>').teleCheckbox({ label: 'Not', checked: data.negate });
+				var r_regex_check = $('<div>').teleCheckbox({ label: 'Not', checked: data.negate }).addClass('tele-checkbox-str-regex');
 				r_regex_control.append(r_regex_input).append(r_regex_check)
 				// Con
 				var r_contains_control = $('<div>').addClass('rules_string_control_bool');
 				var r_contains_input = $('<div style="width:200px">').teleInput({ value: data.str_match }).addClass('tele-input-str-stringmatch');;
-				var r_contains_check = $('<div>').teleCheckbox({ label: 'Not', checked: data.negate });
+				var r_contains_check = $('<div>').teleCheckbox({ label: 'Not', checked: data.negate }).addClass('tele-checkbox-str-stringmatch');
 				r_contains_control.append(r_contains_input).append(r_contains_check)
 
 				// Fuz
