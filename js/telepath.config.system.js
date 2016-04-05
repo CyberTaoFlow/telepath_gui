@@ -592,18 +592,20 @@ telepath.config.system = {
 		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
 
 		// File upload
-		//this.file_upload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
+		//this.fileUpload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
 
 		if (!$("#file-upload").length) {
-			this.file_upload = $('<div>').attr('id', 'file-upload').appendTo($('.tele-content'));
+			this.fileUpload = $('<div>').attr('id', 'file-upload').appendTo($('.tele-content'));
 
-			$('<div>').attr('id', 'dragandrophandler').html('Drag & drop files you want to upload here').appendTo(this.file_upload);
+			$('<div>').attr('id', 'dragandrophandler').html('Drag & drop files you want to upload here').appendTo(this.fileUpload);
 
 			$('<input>').attr('id', 'input').attr('type', 'file').attr('multiple', 'true').css({
 				width: '0px',
 				height: '0px',
 				overflow: 'hidden'
-			}).appendTo(this.file_upload);
+			}).appendTo(this.fileUpload);
+
+			this.buttonContainer=$('<div>').addClass('tele-button-container').appendTo(this.fileUpload);
 
 			$('<a href="#" class="tele-button tele-button-apply disabled">Process</a>').click(function (e) {
 				$(this).addClass('disabled');
@@ -620,9 +622,9 @@ telepath.config.system = {
 						}, 'Load to database error.');
 					}, 60000);
 				});
-			}).appendTo(this.file_upload);
+			}).appendTo(this.buttonContainer);
 
-			var uploadError = $('<div>').addClass('upload-error').html('An error occurred during the loading. We will try later one more time.').appendTo(this.file_upload).hide();
+			var uploadError = $('<div>').addClass('upload-error').html('An error occurred during the loading. We will try later one more time.').appendTo(this.fileUpload).hide();
 
 
 
@@ -786,7 +788,7 @@ telepath.config.system = {
 				{
 					this.abort.hide();
 					if(!loader_mode){
-						obj.siblings("a").removeClass('disabled');
+						obj.siblings(".tele-button-container").children(".tele-button").removeClass('disabled');
 					}
 
 
