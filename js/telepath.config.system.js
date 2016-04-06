@@ -611,12 +611,12 @@ telepath.config.system = {
 				$(this).addClass('disabled');
 
 				telepath.ds.get('/config/upload_to_db', {}, function (data) {
-					$('.statusbar').remove();
+					$('#file-upload .statusbar').remove();
 				}, function () {
 					uploadError.show();
 					var interval = setInterval(function () {
 						telepath.ds.get('/config/upload_to_db', {}, function (data) {
-							$('.statusbar').remove();
+							$('#file-upload .statusbar').remove();
 							uploadError.hide();
 							clearInterval(interval);
 						}, 'Load to database error.');
@@ -624,7 +624,7 @@ telepath.config.system = {
 				});
 			}).appendTo(this.buttonContainer);
 
-			var uploadError = $('<div>').addClass('upload-error').html('An error occurred during the loading. We will try later one more time.').appendTo(this.fileUpload).hide();
+			var uploadError = $('<div>').addClass('upload-error').html('An error occurred during the loading. An automatic process will be triggered in a minute.').appendTo(this.fileUpload).hide();
 
 
 
@@ -681,6 +681,12 @@ telepath.config.system = {
 				e.preventDefault();
 			});
 
+			window.onbeforeunload = function(e) {
+				if($('#file-upload .statusbar').length){
+					return 'The upload process is not finished yet.';
+				}
+			};
+
 		});
 		}
 		else{
@@ -705,9 +711,6 @@ telepath.config.system = {
 		//Send FormData() to Server using jQuery AJAX API
 		function sendFileToServer(formData,status)
 		{
-			window.onbeforeunload = function(e) {
-				return 'You are uploading files now.';
-			};
 			var uploadURL = telepath.controllerPath+ "/config/do_upload"; //Upload URL
 			var extraData ={}; //Extra Data.
 			var jqXHR=$.ajax({
@@ -741,11 +744,11 @@ telepath.config.system = {
 					else{
 						status.displayError(data.error);
 					}
-					window.onbeforeunload = null;
 				}
 			});
 
 			status.setAbort(jqXHR);
+			status.setDelete();
 		}
 
 
@@ -761,6 +764,10 @@ telepath.config.system = {
 			this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
 			this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
 			this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
+			this.delete = $("<div class='abort'>Delete</div>").appendTo(this.statusbar).hide();
+
+
+
 			obj.after(this.statusbar);
 
 			this.setFileNameSize = function(name,size)
@@ -787,8 +794,9 @@ telepath.config.system = {
 				if(parseInt(progress) >= 100)
 				{
 					this.abort.hide();
+					this.delete.show();
 					if(!loader_mode){
-						obj.siblings(".tele-button-container").children(".tele-button").removeClass('disabled');
+						$("#file-upload .tele-button").removeClass('disabled');
 					}
 
 
@@ -801,6 +809,18 @@ telepath.config.system = {
 				{
 					jqxhr.abort();
 					sb.hide();
+				});
+			}
+			this.setDelete = function()
+			{
+				var sb = this.statusbar;
+				var fn = this.filename.html();
+				this.delete.click(function()
+				{
+					telepath.ds.get('/config/delete_file', {file_name:fn}, function (data) {
+						sb.hide();
+					}, 'The file was not deleted');
+
 				});
 			}
 			this.displayError = function(message)

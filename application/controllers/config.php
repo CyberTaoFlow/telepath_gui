@@ -439,6 +439,14 @@ class Config extends Tele_Controller
         return_fail();
     }
 
+    public function delete_file()
+    {
+        $file_name = $this->input->post('file_name', TRUE);
+        exec('rm ' . FCPATH . 'upload/'.$file_name);
+            return_success();
+
+    }
+
 
 
 
