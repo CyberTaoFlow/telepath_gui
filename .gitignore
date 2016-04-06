@@ -5,4 +5,4 @@ tmp/
 application/databases/telepath_users.db
 /application/config/database.php
 .svn/
-upload_files/
+upload/
