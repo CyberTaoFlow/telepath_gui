@@ -442,8 +442,12 @@ class Config extends Tele_Controller
     public function delete_file()
     {
         $file_name = $this->input->post('file_name', TRUE);
-        exec('rm ' . FCPATH . 'upload/'.$file_name);
+        $file_path = FCPATH . 'upload/' . $file_name;
+        if (file_exists($file_path) && unlink($file_path)) {
             return_success();
+        } else {
+            return_fail();
+        }
 
     }
 
