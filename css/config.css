@@ -1224,7 +1224,7 @@ body .jstree .tele-button {
 	text-align: right;
 	line-height: 22px; /* same as #progressBar height if we want text middle aligned */
 	width: 0;
-	background-color: #0ba1b5;
+	background-color: #b9e1a5;
 	/*background-color: rgb(247, 147, 30);*/
 	border-radius: 3px;
 }
@@ -1256,7 +1256,8 @@ body .jstree .tele-button {
 	margin-right:5px;
 }
 .abort{
-	background-color:#A8352F;
+	/*background-color:#A8352F;*/
+	background-color:#b3b3b3;
 	-moz-border-radius:4px;
 	-webkit-border-radius:4px;
 	border-radius:4px;display:inline-block;

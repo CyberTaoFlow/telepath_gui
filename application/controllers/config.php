@@ -450,6 +450,10 @@ class Config extends Tele_Controller
         }
 
     }
+    public function empty_folder()
+    {
+        exec('rm ' . FCPATH . 'upload/*');
+    }
 
 
 

@@ -687,6 +687,11 @@ telepath.config.system = {
 				}
 			};
 
+			window.onunload = function(){
+				telepath.ds.get('/config/empty_folder', {}, function (data) {
+				});
+			};
+
 		});
 		}
 		else{
@@ -761,8 +766,8 @@ telepath.config.system = {
 			if(that.rowCount %2 ==0) row ="even";
 			this.statusbar = $("<div class='statusbar "+row+"'></div>");
 			this.filename = $("<div class='filename'></div>").appendTo(this.statusbar);
-			this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
 			this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
+			this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
 			this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
 			this.delete = $("<div class='abort'>Delete</div>").appendTo(this.statusbar).hide();
 
@@ -1067,12 +1072,12 @@ telepath.config.system = {
 		// Save / Cancel Buttons
 		// -----------------------------------------------------------
 		
-		var btnContain = $('<div>').addClass('tele-button-container').appendTo(this.container);
+		var btnContain = $('<div>').addClass('tele-button-container').appendTo(this.contentLeft);
 		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
 		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
 		
 		btnContain.append(saveBtn).append(cancelBtn);
-		
+
 		// Callbacks
 		saveBtn.click(function (e) {
 			e.preventDefault();
