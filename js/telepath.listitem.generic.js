@@ -276,7 +276,7 @@ telepath.listitem.generic = {
 				// Plot Graph
 				var graphContainer = $('<div>').addClass('case-popover-graph');
 				
-				$('.popover-title').html('Last 7 days');
+				$('.popover-title').html('Case Activity');
 				$('.popover-content').empty().append(graphContainer);
 				
 				graphContainer.flotGraph({ data: data, options: options });
