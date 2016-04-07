@@ -265,7 +265,7 @@ telepath.suspects = {
 		this.suspectsList.teleList({ context: "panel", data: this.data, searchkey: telepath.suspects.searchString,
 			formatter: function(item) {
 
-			item.checkable = true;
+			//item.checkable = true;
 			return telepath.suspects.rowFormatter(item);
 
 		}, callbacks: { scroll: function (offset, callback) {

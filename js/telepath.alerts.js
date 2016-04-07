@@ -201,7 +201,7 @@ telepath.alerts = {
 		searchkey: telepath.alerts.searchString,
 		formatter: function(item) {
 			
-			item.checkable = true;
+		//	item.checkable = true;
 			return telepath.alert.rowFormatter(item);
 			
 		},
