@@ -1201,10 +1201,21 @@ body .jstree .tele-button {
 	padding:10px 10px 10px 10px;
 	margin-bottom:10px;
 	font-size:200%;
-	border: 5px dotted rgb(193, 193, 193) !important;
-	cursor: pointer;
+	border: 5px dotted rgb(193, 193, 193);
 	border-radius: 20px;
-	padding: 100px 50px;
+	padding: 10px;
+	/*height: 363px;*/
+}
+
+.dragandroptext{
+	padding:16px;
+	cursor: pointer;
+}
+
+.statusbar-container{
+	height:303px;
+	overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .progressBar {
@@ -1235,6 +1246,9 @@ body .jstree .tele-button {
 	width:97%;
 	padding:10px 10px 0px 10px;
 	vertical-align:top;
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size: 14px;
+	color: #333333;
 }
 .statusbar:nth-child(odd){
 	background:#EBEFF0;
@@ -1263,7 +1277,7 @@ body .jstree .tele-button {
 	border-radius:4px;display:inline-block;
 	color:#fff;
 	font-family:arial;font-size:13px;font-weight:normal;
-	padding:4px 15px;
+	padding:4px 6px;
 	cursor:pointer;
 	vertical-align:top
 }

@@ -597,7 +597,11 @@ telepath.config.system = {
 		if (!$("#file-upload").length) {
 			this.fileUpload = $('<div>').attr('id', 'file-upload').appendTo($('.tele-content'));
 
-			$('<div>').attr('id', 'dragandrophandler').html('Drag & drop files you want to upload here').appendTo(this.fileUpload);
+			this.dragandrophandler=$('<div>').attr('id', 'dragandrophandler').appendTo(this.fileUpload);
+
+			$('<div>').addClass('dragandroptext').html('Drag & drop files you want to upload here').prependTo(this.dragandrophandler);
+
+			$('<div>').addClass('statusbar-container').appendTo(this.dragandrophandler);
 
 			$('<input>').attr('id', 'input').attr('type', 'file').attr('multiple', 'true').css({
 				width: '0px',
@@ -630,39 +634,41 @@ telepath.config.system = {
 
 			$(document).ready(function()
 		{
-			var obj = $("#dragandrophandler");
+			var handler = $("#dragandrophandler");
+			var text = $(".dragandroptext");
+			var container = $(".statusbar-container");
 
 			$('#input').change(function(e){
 				var files = e.currentTarget.files;
 
 				//We need to send dropped files to Server
-				handleFileUpload(files,obj);
+				handleFileUpload(files,container);
 			})
 
-			obj.on('click', function(e){
+			text.on('click', function(e){
 			$('#input').click();
 
 			});
-			obj.on('dragenter', function (e)
+			handler.on('dragenter', function (e)
 			{
 				e.stopPropagation();
 				e.preventDefault();
-				$(this).css('border', '2px solid #0B85A1');
+				$(this).css('border', '5px solid rgb(193, 193, 193)');
 			});
-			obj.on('dragover', function (e)
+			handler.on('dragover', function (e)
 			{
 				e.stopPropagation();
 				e.preventDefault();
 			});
-			obj.on('drop', function (e)
+			handler.on('drop', function (e)
 			{
 
-				$(this).css('border', '2px dotted #0B85A1');
+				$(this).css('border', '5px dotted rgb(193, 193, 193)');
 				e.preventDefault();
 				var files = e.originalEvent.dataTransfer.files;
 
 				//We need to send dropped files to Server
-				handleFileUpload(files,obj);
+				handleFileUpload(files,container);
 			});
 			$(document).on('dragenter', function (e)
 			{
@@ -673,7 +679,7 @@ telepath.config.system = {
 			{
 				e.stopPropagation();
 				e.preventDefault();
-				obj.css('border', '2px dotted #0B85A1');
+				handler.css('border', '5px dotted rgb(193, 193, 193)');
 			});
 			$(document).on('drop', function (e)
 			{
@@ -772,10 +778,12 @@ telepath.config.system = {
 			this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
 			this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
 			this.delete = $("<div class='abort'>Delete</div>").appendTo(this.statusbar).hide();
+			//this.closeEl     = $('<a>').attr('href', '#').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close').appendTo(this.statusbar);
 
 
 
-			obj.after(this.statusbar);
+			obj.prepend(this.statusbar);
+			obj.mCustomScrollbar("update");
 
 			this.setFileNameSize = function(name,size)
 			{
