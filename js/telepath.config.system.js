@@ -783,7 +783,7 @@ telepath.config.system = {
 
 
 			obj.prepend(this.statusbar);
-			obj.mCustomScrollbar("update");
+			//obj.mCustomScrollbar("update");
 
 			this.setFileNameSize = function(name,size)
 			{
