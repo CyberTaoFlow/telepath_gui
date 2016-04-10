@@ -681,15 +681,17 @@ telepath.config.system = {
 				e.preventDefault();
 			});
 
-			window.onbeforeunload = function(e) {
-				if($('#file-upload .statusbar').length){
-					return 'The upload process is not finished yet.';
-				}
-			};
+			window.onbeforeunload = function () {
+			if ($('#file-upload .statusbar').length) {
+				return 'The upload process is not finished yet. You will lost the data.';
+			}
+		};
 
-			window.onunload = function(){
-				telepath.ds.get('/config/empty_folder', {}, function (data) {
-				});
+			window.onunload = function () {
+				if ($('#file-upload .statusbar').length) {
+					telepath.ds.get('/config/empty_folder', {}, function (data) {
+					});
+				}
 			};
 
 		});
