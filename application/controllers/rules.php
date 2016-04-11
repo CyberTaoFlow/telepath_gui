@@ -193,6 +193,8 @@ class Rules extends Tele_Controller
         $rule_cat = $this->input->post('category', true);
 
         $rule = $this->M_Rules->del_rule($rule_name, $rule_cat);
+
+        $this->load->model('M_Config');
         $this->M_Config->update('rules_table_was_changed_id', '1');
 
 
