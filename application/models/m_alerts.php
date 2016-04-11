@@ -50,11 +50,11 @@ class M_Alerts extends CI_Model {
 			$query='';
 
 			if (count($filter)>1){
-				$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+				$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 			}
 
 			elseif (count($filter)==1&&$filter!=false){
-				$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+				$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 			}
 
 
@@ -125,11 +125,11 @@ class M_Alerts extends CI_Model {
 		$query='';
 
 		if (count($filter)>1){
-			$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 		}
 
 		elseif (count($filter)==1&&$filter!=false){
-			$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 		}
 
 
@@ -326,11 +326,11 @@ class M_Alerts extends CI_Model {
 		$query='';
 
 		if (count($filter2)>1){
-			$query.='alerts.name:("'.implode('") OR ("',$filter2).'")';
+			$query.='alerts.name:"'.implode('" OR "',$filter2).'"';
 			}
 		
 		elseif (count($filter2)==1&&$filter2!=false){
-			$query.='alerts.name:("'.implode('") OR ("',$filter2).'")';
+			$query.='alerts.name:"'.implode('" OR "',$filter2).'"';
 		}
 
 		if($search && strlen($search) > 1) {
