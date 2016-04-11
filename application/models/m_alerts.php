@@ -50,15 +50,12 @@ class M_Alerts extends CI_Model {
 			$query='';
 
 			if (count($filter)>1){
-				$query.='alerts.name:'.implode(' OR alerts.name:',$filter);
-
+				$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
 			}
 
 			elseif (count($filter)==1&&$filter!=false){
-
-				$query.='(alerts.name:'.implode(' OR alerts.name:',$filter).')';
+				$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
 			}
-
 
 
 			if($search && strlen($search) > 1) {
@@ -73,7 +70,7 @@ class M_Alerts extends CI_Model {
 			}
 
 			if($query)
-				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'OR' ] ];
+				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 			// QUERY
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
@@ -128,13 +125,11 @@ class M_Alerts extends CI_Model {
 		$query='';
 
 		if (count($filter)>1){
-			$query.='alerts.name:'.implode(' OR alerts.name:',$filter);
-
+			$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
 		}
 
 		elseif (count($filter)==1&&$filter!=false){
-
-			$query.='(alerts.name:'.implode(' OR alerts.name:',$filter).')';
+			$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
 		}
 
 
@@ -151,7 +146,7 @@ class M_Alerts extends CI_Model {
 		}
 
 		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'OR' ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -331,11 +326,11 @@ class M_Alerts extends CI_Model {
 		$query='';
 
 		if (count($filter2)>1){
-			$query.='alerts.name:'.implode(' OR alerts.name:',$filter2);
+			$query.='alerts.name:("'.implode('") OR ("',$filter2).'")';
 			}
 		
 		elseif (count($filter2)==1&&$filter2!=false){
-			$query.='(alerts.name:'.implode(' OR alerts.name:',$filter2).')';
+			$query.='alerts.name:("'.implode('") OR ("',$filter2).'")';
 		}
 
 		if($search && strlen($search) > 1) {
@@ -349,7 +344,7 @@ class M_Alerts extends CI_Model {
 		}
 
 		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'OR' ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 		if ($sortfield == "date")
 		{
