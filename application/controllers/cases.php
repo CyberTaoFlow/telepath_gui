@@ -69,15 +69,15 @@ class Cases extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $now = $this->db->query('SELECT UNIX_TIMESTAMP() as ts')->row_array();
-        $now = $now['ts'];
+//        $now = $this->db->query('SELECT UNIX_TIMESTAMP() as ts')->row_array();
+//        $now = $now['ts'];
 
         $cid = $this->input->post('cid');
         // 7 day range
-        $range = array(
-            'start' => $now - (3600 * 24 * 7),
-            'end' => $now
-        );
+//        $range = array(
+//            'start' => $now - (3600 * 24 * 7),
+//            'end' => $now
+//        );
 
         $range = $this->_get_range();
         $apps = $this->_get_apps();
@@ -117,11 +117,15 @@ class Cases extends Tele_Controller
         $ans = array();
 
         $requests = $this->M_Cases->get_case_sessions(100, $range, $apps, $cid);
+        $similars = $this->M_Cases->get_similar_sessions($requests['requests'], $cid);
        // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
+
+        unset($requests['requests']);
 
         $ans = array_merge($ans, $requests);
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
         $ans['case'] = array('case_data' => $this->M_Cases->get_case_data($cid));
+        $ans['similars']=$similars;
 
         return_json($ans);
 

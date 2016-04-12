@@ -115,9 +115,10 @@ class M_Cases extends CI_Model {
 			break;
 			
 		}
-		
+
+		$params['_source']=false;
 		$params['body'] = [
-			'size' => 0,
+			'size' => 100,
 			"aggs" => [
 				"sid" => [ 
 				
@@ -204,9 +205,127 @@ class M_Cases extends CI_Model {
 		$results['success'] = true;
 		$results['query']   = $params;
 		$results['count']   = intval($result["aggregations"]['sid_count']['value']);
+
+		if(!empty($result['hits']['hits'])){
+			foreach ($result['hits']['hits'] as $key=>$val){
+				unset($result['hits']['hits'][$key]['_score']);
+			}
+		}
+		$results['requests']= $result['hits']['hits'];
 		return $results;
 		
 	}
+	public function get_similar_sessions($requests,$cid){
+
+
+		$params['index']='telepath-20*';
+		$params['type'] ='http';
+		$params['body'] = [
+			'query' => [
+				'bool' => [
+					'must' => [
+						["more_like_this" => [
+							"docs" => $requests,
+							"max_query_terms" => 25,
+							"min_term_freq" => 0,
+							"min_doc_freq" => 20,
+//							"max_doc_freq" => 0,
+							"min_word_length" => 0,
+//							"max_word_length" => 0,
+							"minimum_should_match" => "30%",
+							"percent_terms_to_match" => 0.5
+						]]
+					],
+					'must_not' => [
+						['term' => ["http.cases.name" => $cid]]
+					]
+				]
+			],
+			"aggs" => [
+				"sid" => [
+
+					"terms" => [ "field" => "sid", "size" => 100,
+//						"order" => [ 'score' => 'desc' ]
+					],
+					"aggs" => [
+						"country_code" => [
+							"terms" => [ "field" => "country_code", "size" => 1 ]
+						],
+						"city" => [
+							"terms" => [ "field" => "city" , "size" => 1 ]
+						],
+						"id" => [
+							"terms" => [ "field" => "_id" , "size" => 1 ]
+						],
+						"ip_orig" => [
+							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
+						],
+						"host" => [
+							"terms" => [ "field" => "host" , "size" => 100 ]
+						],
+						"alerts_count" => [
+							"sum" => [ "field" => "alerts_count" ]
+						],
+						"score" => [
+							"avg" => [ "field" => "alerts.score" ]
+						],
+						"alerts_names" => [
+							"terms" => [ "field" => "alerts.name", "size" => 100 ]
+						],
+						"date" => [
+							"min" => [ "field" => "ts" ]
+						],
+//						"similarity" => [
+//							"max" => [ "script" => "_score" ]
+//						],
+					],
+
+				],
+				"sid_count" => [
+					"cardinality" => [ "field" => "sid", "precision_threshold" => 200 ],
+				]
+			]
+		];
+//		if(!empty($range)) {
+//			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
+//		}
+//
+//		$params = append_application_query($params, $apps);
+		$params = append_access_query($params);
+
+		$result = $this->elasticClient->search($params);
+		$results = array('items' => array());
+
+		if(isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid"]) &&
+			isset($result["aggregations"]["sid"]["buckets"]) &&
+			!empty($result["aggregations"]["sid"]["buckets"])) {
+
+			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
+			foreach($sid_buckets as $sid) {
+
+				$results['items'][] = array(
+					"sid"     => $sid['key'],
+					"city"    => $sid['city']['buckets'][0]['key'],
+					"alerts_count"  => $sid['alerts_count']['value'],
+					"alerts_names"  => $sid['alerts_names']['buckets'],
+					"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
+					"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
+					"host"    => $sid['host']['buckets'],
+					"count"   => $sid['doc_count'],
+					"score"  => $sid['score']['value'],
+					"date"  => $sid['date']['value']
+				);
+			}
+		}
+
+		$results['success'] = true;
+		$results['query']   = $params;
+		$results['count']   = intval($result["aggregations"]['sid_count']['value']);
+
+		return $results;
+	}
+
 
 	// Get the time of the last flagged requests by cases
 	public function get_last_case_update()

@@ -72,7 +72,7 @@ telepath.caseOverlay = {
 		
 		// Show Window
 		telepath.overlay.init('case-edit', data.case_data.case_name);
-		$('.tele-overlay').height(860).trigger('resize');
+	//	$('.tele-overlay').height(860).trigger('resize');
 		
 		// Case Name
 		var caseName = $('<div>').teleInput({ label: 'Name', value: data.id == 'new' ? '' : data.case_data.case_name, disabled: data.id == 'new' ? false : true });
@@ -230,7 +230,7 @@ telepath.casePanel = {
 				callback();
 			}
 		});
-		
+
 	},
 	getData: function(caseID) {
 		this.caseID = caseID;
@@ -424,20 +424,44 @@ telepath.casePanel = {
 		// Create List
 		
 		this.list = $('<div>').addClass('tele-case-alerts-block');
-		this.listWrap = $('<div>').append(this.list).css({ height: $(window).height() - 480 });
-				
+		this.listWrap = $('<div>').append(this.list).css({ display: 'inline-block' }).width('65%');
+
 		this.container.append(this.listWrap);
 		
 		// Init List
 		this.list.teleList({ 
 			data: this.data.items,
+			//height: 500,
 			formatter: function(row) {
 				return that.formatter(row);
 			}
 		});
-		
-		$(this.listWrap).mCustomScrollbar({ advanced:{ updateOnContentResize: true } });
-		
+
+
+		this.similarsList=$('<div>').addClass('tele-case-similar-block');
+		this.similarsListWrap = $('<div>').append(this.similarsList).css({ display: 'inline-block' }).width('35%');
+
+		this.container.append(this.similarsListWrap);
+
+		// Init List
+		this.similarsList.teleList({
+			title: 'Related Sessions',
+			//height: 500,
+			data: this.data.similars.items,
+			formatter: function(row) {
+				return that.formatter(row);
+			}
+		});
+
+		$(window).resize(function () { that._resize() });
+
+
+		//$(window).trigger('resize');
+
+
+		//$(this.listWrap).mCustomScrollbar({ advanced:{ updateOnContentResize: true } });
+		//$(this.similarsListWrap).mCustomScrollbar({ advanced:{ updateOnContentResize: true } });
+
 	},
 	formatter: function(item) {
 		
@@ -480,6 +504,21 @@ telepath.casePanel = {
 
 		return result;
 	
+	},
+	_resize: function () {
+		var height = $(window).height();
+		$('.tele-body').css({ height: height });
+		var offset = height -
+			$('.tele-header').outerHeight() -
+			$('.tele-panel-topbar').outerHeight() -
+			$('.tele-case-graph').outerHeight() -
+			$('.tele-panel-subtitle').outerHeight();
+
+		$('.tele-panel-case .tele-block').height(offset - 40);
+		$('.tele-panel-case .tele-block .tele-list').height(offset - 70);
+		$('.tele-panel-case .tele-case-alerts-block .tele-list').mCustomScrollbar("update");
+		$('.tele-panel-case .tele-case-similar-block .tele-list').mCustomScrollbar("update");
+
 	}
 	
 }
