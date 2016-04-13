@@ -344,7 +344,7 @@ class M_Alerts extends CI_Model {
 		}
 
 		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND',"lowercase_expanded_terms"=>false ] ];
 
 		if ($sortfield == "date")
 		{
