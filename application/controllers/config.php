@@ -433,7 +433,7 @@ class Config extends Tele_Controller
     public function upload_to_db()
     {
         if (!$this->M_Config->check_file_loader_mode()) {
-            exec('telepath -r ' . FCPATH . 'upload/');
+            exec('sudo telepath -r ' . FCPATH . 'upload/  > /dev/null &');
             return_success();
         }
         return_fail();
