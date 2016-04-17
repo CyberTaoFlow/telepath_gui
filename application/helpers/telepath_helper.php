@@ -318,5 +318,20 @@ function get_gap($range) {
 		RETURN $text_str;
 		
 	}
+
+    function logger($message, $file_path = false)
+    {
+
+        if (!$this->input->is_cli_request())
+            return;
+
+        if ($file_path) {
+            file_put_contents($file_path, '');
+        }
+
+        echo date('Y-m-d H:i') . ' ' . $message . "\n";
+    }
+
+
 	
 ?>

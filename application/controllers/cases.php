@@ -131,32 +131,27 @@ class Cases extends Tele_Controller
 
     }
 
-    public function store_similar_case_sessions($cases=[])
+    public function store_similar_case_sessions($cases = [])
     {
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        if (!empty ($cases)) {
-      //      register_shutdown_function([$this->M_Cases, 'remove_update_flag'],$cases[0]);
-        } else {
-            $cases=[];
+        if (empty ($cases)) {
+            logger('Start','/var/log/store_similar_case_sessions.log');
+            $cases = [];
             $cases_data = $this->M_Cases->get_case_data('all');
-            foreach($cases_data as $case){
-                $cases[]=$case['case_name'];
+            foreach ($cases_data as $case) {
+                $cases[] = $case['case_name'];
             }
-
         }
 
-        foreach($cases as $cid){
+        foreach ($cases as $cid) {
             $requests = $this->M_Cases->get_case_sessions(100, $cid);
-            if(!empty($requests['requests'])){
+            if (!empty($requests['requests'])) {
                 $similars = $this->M_Cases->get_similar_sessions($requests['requests'], $cid);
-                $this->M_Cases->store_similar_case_sessions($similars,$cid);
+                $this->M_Cases->store_similar_case_sessions($similars, $cid);
+                logger('Finish to update similar sessions for case: '.$cid);
             }
-
         }
-
-
-
 
     }
 

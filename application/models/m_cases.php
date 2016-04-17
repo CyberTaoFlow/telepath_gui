@@ -414,8 +414,7 @@ class M_Cases extends CI_Model {
 
 	public function flag_requests_by_cases($cases_name, $range, $method)
 	{
-
-		$this->logger('Start');
+		logger('Start','/var/log/flag_requests_by_cases.log');
 
 		@set_time_limit(-1);
 
@@ -424,7 +423,7 @@ class M_Cases extends CI_Model {
 		$status = $this->elasticClient->indices()->status(['index' => 'telepath-20*']);
 		foreach ($status['indices'] as $index_name => $index_status) {
 
-			$this->logger('Start index: ' . $index_name );
+			logger('Start index: ' . $index_name );
 
 			$params = [
 				"search_type" => "scan",    // use search_type=scan
@@ -470,7 +469,7 @@ class M_Cases extends CI_Model {
 						}
 					}
 
-					$this->logger('delete old case: ' . $case);
+					logger('delete old case: ' . $case);
 
 				}
 
@@ -572,7 +571,7 @@ class M_Cases extends CI_Model {
 						}
 					}
 
-					$this->logger('Finish to '.$method . ' case: ' . $case['case_name']);
+					logger('Finish to '.$method . ' case: ' . $case['case_name']);
 
 				}
 			}
@@ -583,7 +582,7 @@ class M_Cases extends CI_Model {
 
 		if ($range) {
 			$this->set_last_case_update($update_time);
-			$this->logger('Update the time to: '. $update_time);
+			logger('Update the time to: '. $update_time);
 			return;
 		}
 
@@ -599,19 +598,6 @@ class M_Cases extends CI_Model {
 
 	}
 
-	public function logger($message)
-	{
-
-
-		if (!$this->input->is_cli_request())
-			return;
-
-		if($message=='Start' ){
-			file_put_contents ('/var/log/flag_requests_by_cases.log','');
-		}
-
-		echo date('Y-m-d H:i') . ' ' . $message . "\n";
-	}
 
 	/**
 	 * @param $results
