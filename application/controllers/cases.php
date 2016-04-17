@@ -274,7 +274,9 @@ class Cases extends Tele_Controller
             $this->store_similar_case_sessions($cases);
         }
 
-        return_success();
+        if(!$range){
+            return_success();
+        }
 
     }
 

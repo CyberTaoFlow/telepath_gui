@@ -321,8 +321,8 @@ function get_gap($range) {
 
     function logger($message, $file_path = false)
     {
-
-        if (!$this->input->is_cli_request())
+        $context = &get_instance();
+        if (!$context->input->is_cli_request())
             return;
 
         if ($file_path) {
