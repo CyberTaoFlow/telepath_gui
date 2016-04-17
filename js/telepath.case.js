@@ -72,7 +72,7 @@ telepath.caseOverlay = {
 		
 		// Show Window
 		telepath.overlay.init('case-edit', data.case_data.case_name);
-	//	$('.tele-overlay').height(860).trigger('resize');
+		$('.tele-overlay').height(860).trigger('resize');
 		
 		// Case Name
 		var caseName = $('<div>').teleInput({ label: 'Name', value: data.id == 'new' ? '' : data.case_data.case_name, disabled: data.id == 'new' ? false : true });

@@ -98,7 +98,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function get_case_sessions($limit = 100, $range = array(), $apps, $cid) {
+	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array()) {
 		
 		$sort      = 'date';
 		$sortorder = 'desc';
@@ -215,11 +215,11 @@ class M_Cases extends CI_Model {
 		return $results;
 		
 	}
-	public function get_similar_sessions($requests,$cid){
 
-
-		$params['index']='telepath-20*';
-		$params['type'] ='http';
+	public function get_similar_sessions($requests, $cid)
+	{
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'query' => [
 				'bool' => [
@@ -234,7 +234,8 @@ class M_Cases extends CI_Model {
 //							"max_word_length" => 0,
 							"minimum_should_match" => "30%",
 							"percent_terms_to_match" => 0.5
-						]]
+							]
+						]
 					],
 					'must_not' => [
 						['term' => ["http.cases.name" => $cid]]
@@ -244,36 +245,36 @@ class M_Cases extends CI_Model {
 			"aggs" => [
 				"sid" => [
 
-					"terms" => [ "field" => "sid", "size" => 100,
+					"terms" => ["field" => "sid", "size" => 100,
 //						"order" => [ 'score' => 'desc' ]
 					],
 					"aggs" => [
 						"country_code" => [
-							"terms" => [ "field" => "country_code", "size" => 1 ]
+							"terms" => ["field" => "country_code", "size" => 1]
 						],
 						"city" => [
-							"terms" => [ "field" => "city" , "size" => 1 ]
+							"terms" => ["field" => "city", "size" => 1]
 						],
 						"id" => [
-							"terms" => [ "field" => "_id" , "size" => 1 ]
+							"terms" => ["field" => "_id", "size" => 1]
 						],
 						"ip_orig" => [
-							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
+							"terms" => ["field" => "ip_orig", "size" => 1]
 						],
 						"host" => [
-							"terms" => [ "field" => "host" , "size" => 100 ]
+							"terms" => ["field" => "host", "size" => 100]
 						],
 						"alerts_count" => [
-							"sum" => [ "field" => "alerts_count" ]
+							"sum" => ["field" => "alerts_count"]
 						],
 						"score" => [
-							"avg" => [ "field" => "alerts.score" ]
+							"avg" => ["field" => "alerts.score"]
 						],
 						"alerts_names" => [
-							"terms" => [ "field" => "alerts.name", "size" => 100 ]
+							"terms" => ["field" => "alerts.name", "size" => 100]
 						],
 						"date" => [
-							"min" => [ "field" => "ts" ]
+							"min" => ["field" => "ts"]
 						],
 //						"similarity" => [
 //							"max" => [ "script" => "_score" ]
@@ -282,7 +283,7 @@ class M_Cases extends CI_Model {
 
 				],
 				"sid_count" => [
-					"cardinality" => [ "field" => "sid", "precision_threshold" => 200 ],
+					"cardinality" => ["field" => "sid", "precision_threshold" => 200],
 				]
 			]
 		];
@@ -296,34 +297,76 @@ class M_Cases extends CI_Model {
 		$result = $this->elasticClient->search($params);
 		$results = array('items' => array());
 
-		if(isset($result["aggregations"]) &&
+		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["sid"]) &&
 			isset($result["aggregations"]["sid"]["buckets"]) &&
-			!empty($result["aggregations"]["sid"]["buckets"])) {
+			!empty($result["aggregations"]["sid"]["buckets"])
+		) {
 
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
-			foreach($sid_buckets as $sid) {
+			foreach ($sid_buckets as $sid) {
 
 				$results['items'][] = array(
-					"sid"     => $sid['key'],
-					"city"    => $sid['city']['buckets'][0]['key'],
-					"alerts_count"  => $sid['alerts_count']['value'],
-					"alerts_names"  => $sid['alerts_names']['buckets'],
+					"sid" => $sid['key'],
+					"city" => $sid['city']['buckets'][0]['key'],
+					"alerts_count" => $sid['alerts_count']['value'],
+					"alerts_names" => $sid['alerts_names']['buckets'],
 					"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 					"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
-					"host"    => $sid['host']['buckets'],
-					"count"   => $sid['doc_count'],
-					"score"  => $sid['score']['value'],
-					"date"  => $sid['date']['value']
+					"host" => $sid['host']['buckets'],
+					"count" => $sid['doc_count'],
+					"score" => $sid['score']['value'],
+					"date" => $sid['date']['value']
 				);
 			}
 		}
 
-		$results['success'] = true;
-		$results['query']   = $params;
-		$results['count']   = intval($result["aggregations"]['sid_count']['value']);
+		$results['count'] = intval($result["aggregations"]['sid_count']['value']);
 
 		return $results;
+	}
+
+	public function store_similar_case_sessions($similars, $cid)
+	{
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'cases',
+			'id' => $cid,
+			'body' => ['similars' => $similars]
+		];
+
+		$this->elasticClient->index($params);
+	}
+
+	public function get_similar_case_sessions($cid)
+	{
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'cases',
+			'id' => $cid
+		];
+
+		if ($this->elasticClient->exists($params)) {
+			$response = $this->elasticClient->get($params);
+		}
+
+		if (isset($response['_source']['similars']))
+			return $response['_source']['similars'];
+		else
+			return [];
+	}
+
+	public function delete_similar_case_sessions($cid)
+	{
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'cases',
+			'id' => $cid
+		];
+
+		if ($this->elasticClient->exists($params)) {
+			$this->elasticClient->delete($params);
+		}
 	}
 
 
@@ -399,7 +442,7 @@ class M_Cases extends CI_Model {
 			if ($method != 'add') {
 
 				foreach ($cases_name as $case) {
-					register_shutdown_function([$this, 'flag_shutdown'],$case,$method, $range);
+//					register_shutdown_function([$this, 'remove_update_flag'],$case,$method, $range);
 					$params['body']['query']['bool']['must'][] = ['term' => ["cases.name" => $case]];
 					$params['body']["sort"] = ["_doc"];
 					$docs = $this->elasticClient->search($params);
@@ -441,7 +484,7 @@ class M_Cases extends CI_Model {
 					$cases = [$this->get_case_data($cases_name[0])];
 
 				foreach ($cases as $case) {
-					register_shutdown_function([$this, 'flag_shutdown'],$case['case_name'],$method, $range);
+//					register_shutdown_function([$this, 'remove_update_flag'],$case['case_name'],$method, $range);
 
 					$params['body'] = [];
 					foreach ($case['details'] as $condition) {
@@ -545,16 +588,15 @@ class M_Cases extends CI_Model {
 		}
 
 
-		return_success();
+//		return_success();
 	}
 
 
 	// if it's not the script and we added or updated a case, we need to inform the user that the updating process is finish
-	public function flag_shutdown($case_name,$method, $range)
+	public function remove_update_flag($case_name)
 	{
-		if ($method != 'delete' && !$range) {
 			$this->update($case_name, false, false);
-		}
+
 	}
 
 	public function logger($message)
@@ -809,10 +851,7 @@ class M_Cases extends CI_Model {
 	
 	public function delete($cids) {
 		
-		// Cast to array in case of 1 item
-		if(!is_array($cids)) {
-			$cids = array($cids);
-		}
+
 		
 		// Generic cases query
 		$params = [];
@@ -853,6 +892,8 @@ class M_Cases extends CI_Model {
 		$action_data['body'] = array('All_Cases' => $new_data);
 		$this->elasticClient->index($action_data);
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
+
+
 		
 	}
 	

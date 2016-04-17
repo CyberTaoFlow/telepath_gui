@@ -116,8 +116,8 @@ class Cases extends Tele_Controller
         // Contains requests data to display
         $ans = array();
 
-        $requests = $this->M_Cases->get_case_sessions(100, $range, $apps, $cid);
-        $similars = $this->M_Cases->get_similar_sessions($requests['requests'], $cid);
+        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps);
+        $similars = $this->M_Cases->get_similar_case_sessions($cid);
        // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
 
         unset($requests['requests']);
@@ -128,6 +128,35 @@ class Cases extends Tele_Controller
         $ans['similars']=$similars;
 
         return_json($ans);
+
+    }
+
+    public function store_similar_case_sessions($cases=[])
+    {
+        telepath_auth(__CLASS__, __FUNCTION__);
+
+        if (!empty ($cases)) {
+      //      register_shutdown_function([$this->M_Cases, 'remove_update_flag'],$cases[0]);
+        } else {
+            $cases=[];
+            $cases_data = $this->M_Cases->get_case_data('all');
+            foreach($cases_data as $case){
+                $cases[]=$case['case_name'];
+            }
+
+        }
+
+        foreach($cases as $cid){
+            $requests = $this->M_Cases->get_case_sessions(100, $cid);
+            if(!empty($requests['requests'])){
+                $similars = $this->M_Cases->get_similar_sessions($requests['requests'], $cid);
+                $this->M_Cases->store_similar_case_sessions($similars,$cid);
+            }
+
+        }
+
+
+
 
     }
 
@@ -185,7 +214,7 @@ class Cases extends Tele_Controller
         }
 
         // Create
-        $cid = $this->M_Cases->create($name, json_decode($case, true));
+        $this->M_Cases->create($name, json_decode($case, true));
         //not used
 //        $this->M_Config->update('case_list_was_changed', 1);
 
@@ -200,7 +229,17 @@ class Cases extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
         $cids = $this->input->post('cids');
+
+        // Cast to array in case of 1 item
+        if (!is_array($cids)) {
+            $cids = array($cids);
+        }
+
         $this->M_Cases->delete($cids);
+
+        foreach ($cids as $cid) {
+            $this->M_Cases->delete_similar_case_sessions($cid);
+        }
         //not used
 //        $this->M_Config->update('case_list_was_changed', 1);
 
@@ -229,8 +268,19 @@ class Cases extends Tele_Controller
             $method = 'add';
         }
 
+        if($cases!='all' && $method != 'delete' && !$range){
+            register_shutdown_function([$this->M_Cases, 'remove_update_flag'],$cases[0]);
+        }
+
 
         $this->M_Cases->flag_requests_by_cases($cases,$range, $method);
+
+        if (!$range && $method!='delete'){
+            $this->store_similar_case_sessions($cases);
+        }
+
+        return_success();
+
     }
 
 }
