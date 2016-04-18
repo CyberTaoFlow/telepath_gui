@@ -30,7 +30,7 @@
 		$context = &get_instance();
 
 		// Admins == unlimited
-		if($context->ion_auth->is_admin() || $context->input->is_cli_request()) {
+		if($context->input->is_cli_request() || $context->ion_auth->is_admin() ) {
 			return $base;
 		}
 		
@@ -201,6 +201,7 @@ function get_gap($range) {
 		if(!$context) { $context = &get_instance(); }
 		
 		// Initialize access list.
+		if(!$context->input->is_cli_request()){
 		$context->acl->init_current_acl();
 		
 		telepath_log($class, $function, $context, $_REQUEST);
@@ -232,6 +233,8 @@ function get_gap($range) {
 				$function = $rewrite_item['to_function'];
 			}
 		}
+
+		}
 		
 		// END Rewrites
 		
@@ -245,7 +248,7 @@ function get_gap($range) {
 		
 			// Passthru if Admin
 			
-			if(!$context->ion_auth->is_admin() && !$context->input->is_cli_request()) {
+			if(!$context->input->is_cli_request() && !$context->ion_auth->is_admin()) {
 				
 				// Fail if not logged in.
 				if(!$context->ion_auth->logged_in()) {
