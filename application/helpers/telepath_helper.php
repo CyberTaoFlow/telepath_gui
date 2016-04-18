@@ -30,7 +30,7 @@
 		$context = &get_instance();
 
 		// Admins == unlimited
-		if($context->ion_auth->is_admin()) {
+		if($context->ion_auth->is_admin() || $context->input->is_cli_request()) {
 			return $base;
 		}
 		
@@ -245,7 +245,7 @@ function get_gap($range) {
 		
 			// Passthru if Admin
 			
-			if(!$context->ion_auth->is_admin()) {
+			if(!$context->ion_auth->is_admin() && !$context->input->is_cli_request()) {
 				
 				// Fail if not logged in.
 				if(!$context->ion_auth->logged_in()) {
