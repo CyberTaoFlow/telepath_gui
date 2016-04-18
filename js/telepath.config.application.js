@@ -26,6 +26,12 @@ telepath.config.application = {
 			return false;
 		}
 
+
+		// Added automatically toggle
+		app_data.added_automatically = this.AddedAutomaticallyAppToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+
+
+
 		//Operation Mode ID
 
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
@@ -35,7 +41,7 @@ telepath.config.application = {
 			case 'hybrid':     app_data.operation_mode = 3; break;
 
 		}
-		
+
 		app_data.move_to_production = $('input', this.move_to_production).val();
 		
 		// DISPLAY NAME
@@ -144,6 +150,13 @@ telepath.config.application = {
 		// Success Criteria -- Body Value
 		app_data.body_value_mode = this.SC_body_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.body_value_html = this.SC_body_input.data('tele-teleInput').input.val();
+
+		if(that.app_id=='new'){
+			app_data.learning_so_far='0';
+			app_data.subdomains='';
+			app_data.eta='1d 0h 0m';
+		}
+
 
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
 			telepath.config.applications.reload();
@@ -261,7 +274,9 @@ telepath.config.application = {
                                 cookie_value: '',
                                 ssl_flag: 0,
                                 AppCookieName: '',
-                                redirect_status_code: ''
+                                redirect_status_code: '',
+								operation_mode: '1',
+								eta: '1d 0h 0m',
 		};
 	
 		if(app_id == 'new') {
@@ -351,6 +366,9 @@ telepath.config.application = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 
+		$('<div>').addClass('tele-title-1 ').html('Added Automatically').appendTo('#tele-app-details');
+		this.AddedAutomaticallyAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: that.app_data.added_automatically == '1' }).addClass('tele-addedAutomaticallyApp-toggle').appendTo('#tele-app-details');
+
 		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
 		var selected_opmod = '';
@@ -362,9 +380,7 @@ telepath.config.application = {
 
 		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
 
-		if(that.app_data.eta){
-			this.eta=$('<p>').html('ETA: ' + that.app_data.eta).appendTo(this.app_operation).css({'margin-bottom':'10px'});
-		}
+		this.eta = $('<div>').html('ETA: ' + that.app_data.eta);
 
 		this.opmod = $('<div>').teleRadios({
 			checked: selected_opmod,
@@ -380,6 +396,8 @@ telepath.config.application = {
 					that.eta.hide();
 				}
 			}}).addClass('tele-config-opmod').appendTo(this.app_operation);
+
+		this.eta.appendTo(this.app_operation).css({float: 'left',clear: 'both','margin-top': '5px'});
 
 
 

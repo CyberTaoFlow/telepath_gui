@@ -201,11 +201,10 @@ class M_Applications extends CI_Model {
 		if (!$exists) {
 			$app['AppCookieName'] = '';
 			$app['app_ips'] = '';
-			$app['operation_mode_id'] = '';
+			$app['operation_mode'] = '';
 			$app['move_to_production'] = '';
-			$app['eta_id'] = '';
-			$app['app_ips'] = '';
-			$app['form_authentication_redirect_response_range'] = '';
+			$app['eta'] = '';
+//			$app['form_authentication_redirect_response_range'] = '';
 			$app['host'] = $host;
 			$app['cookie_suggestion'] = ['PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS'];
 		} else {
@@ -227,21 +226,21 @@ class M_Applications extends CI_Model {
 			if (!isset($app['app_ips'])) {
 				$app['app_ips'] = '';
 			}
-			if (!isset($app['operation_mode_id'])) {
-				$app['operation_mode_id'] = '';
+			if (!isset($app['operation_mode'])) {
+				$app['operation_mode'] = '';
 			}
 			if (!isset($app['move_to_production'])) {
 				$app['move_to_production'] = '';
 			}
-			if (!isset($app['eta_id'])) {
-				$app['eta_id'] = '';
+			if (!isset($app['eta'])) {
+				$app['eta'] = '';
 			}
 			if (!isset($app['app_ips'])) {
 				$app['app_ips'] = '';
 			}
-			if (!isset($app['form_authentication_redirect_response_range'])) {
-				$app['form_authentication_redirect_response_range'] = '';
-			}
+//			if (!isset($app['form_authentication_redirect_response_range'])) {
+//				$app['form_authentication_redirect_response_range'] = '';
+//			}
 			if (isset($app['cookie_suggestion'])) {
 				if (is_array($app['cookie_suggestion']))
 					array_push($app['cookie_suggestion'], 'PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS');
