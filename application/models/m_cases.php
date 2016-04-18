@@ -174,7 +174,7 @@ class M_Cases extends CI_Model {
 		}
 		
 		$params = append_application_query($params, $apps);
-		$params = append_access_query($params);
+			$params = append_access_query($params);
 		$result = $this->elasticClient->search($params);
 		
 		$results = array('items' => array());
@@ -330,7 +330,7 @@ class M_Cases extends CI_Model {
 	{
 		$params = [
 			'index' => 'telepath-cases',
-			'type' => 'cases',
+			'type' => 'case',
 			'id' => $cid,
 			'body' => ['similars' => $similars]
 		];
@@ -342,7 +342,7 @@ class M_Cases extends CI_Model {
 	{
 		$params = [
 			'index' => 'telepath-cases',
-			'type' => 'cases',
+			'type' => 'case',
 			'id' => $cid
 		];
 
@@ -360,7 +360,7 @@ class M_Cases extends CI_Model {
 	{
 		$params = [
 			'index' => 'telepath-cases',
-			'type' => 'cases',
+			'type' => 'case',
 			'id' => $cid
 		];
 
