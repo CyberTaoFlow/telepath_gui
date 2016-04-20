@@ -209,7 +209,7 @@ class M_Config extends CI_Model
 
     }
 
-    public function get($key = false)
+    public function get()
     {
         /*        GET /telepath-config/config/_search?pretty=true
         {
@@ -323,22 +323,38 @@ class M_Config extends CI_Model
         }
     }
 
-    public function update($key, $value)
+    public function update($key, $value, $doc_as_upsert=false)
     {
 
         $params = [
             'index' => 'telepath-config',
-            'type' => $this->tableName,
+            'type' => 'config',
             'id' => $key,
             'body' => [
                 'doc' => [
                     'value' => $value
-                ]
+                ],
+                'doc_as_upsert'=>$doc_as_upsert
             ]
         ];
 
         $this->elasticClient->update($params);
 
+    }
+
+    public function get_key($key)
+    {
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'config',
+            'id' => $key,
+        ];
+        if ($this->elasticClient->exists($params)) {
+            $response = $this->elasticClient->get($params);
+            if (isset($response['_source']['value']) && !empty($response['_source']['value']))
+                return $response['_source']['value'];
+        }
+        return false;
     }
 
 

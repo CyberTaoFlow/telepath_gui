@@ -41,13 +41,17 @@ class Cases extends Tele_Controller
         }
         $all = $this->M_Cases->get_case_data($search);
 
+        if(empty($all)){
+            return_success();
+        }
+
         if (!isset($all[0])){
             $all=array($all);
         }
         foreach ($all as $tmp) {
 
             $found = false;
-            foreach ($res0 as $case) {
+                foreach ($res0 as $case) {
                 if ($case['name'] == $tmp['case_name']) {
                     $found = true;
                     $res[] = $case;

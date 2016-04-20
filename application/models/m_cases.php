@@ -12,7 +12,7 @@ class M_Cases extends CI_Model {
 		$this->elasticClient = new Elasticsearch\Client();
 	}
 
-	public function get_case_data($cid) {
+	public function old_get_case_data($cid) {
 		
 		$params['index'] = 'telepath-config';	
 		$params['body'] = [
@@ -39,8 +39,34 @@ class M_Cases extends CI_Model {
 		}
 		
 
+
+	}
+
+	public function get_case_data($cid)
+	{
+
+		if ($cid == 'all') {
+			$response = $this->elasticClient->search(['index' => 'telepath-cases','type'=>'case']);
+			$cases = get_source($response);
+			return $cases;
+
+		}
+
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'case',
+			'id' => $cid,
+		];
+
+		if ($this->elasticClient->exists($params)) {
+			$response = $this->elasticClient->get($params);
+			$response['_source']['empty'] = false;
+			return $response['_source'];
+		}
+
 		return array(array('case_name' => $cid, 'details' => array(), 'empty' => true));
-		
+
+
 	}
 
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
@@ -332,10 +358,14 @@ class M_Cases extends CI_Model {
 			'index' => 'telepath-cases',
 			'type' => 'case',
 			'id' => $cid,
-			'body' => ['similars' => $similars]
+			'body' => [
+				'doc'=>[
+					'similars' => $similars
+				]
+			]
 		];
 
-		$this->elasticClient->index($params);
+		$this->elasticClient->update($params);
 	}
 
 	public function get_similar_case_sessions($cid)
@@ -371,40 +401,39 @@ class M_Cases extends CI_Model {
 
 
 	// Get the time of the last flagged requests by cases
-	public function get_last_case_update()
-	{
-		$params = [
-			'index' => 'telepath-config',
-			'type' => 'cases',
-			'id' => 'cases_id',
-			'_source' => 'last_update'
-		];
-
-		$response = $this->elasticClient->get($params);
-
-		if (isset($response['_source']['last_update']) && !empty($response['_source']['last_update']))
-			return $response['_source']['last_update'];
-		else
-			return false;
-	}
-
-	// Set the time of the last flagged requests by cases
-	public function set_last_case_update($update_time)
-	{
-		$params = [
-			'index' => 'telepath-config',
-			'type' => 'cases',
-			'id' => 'cases_id',
-			'body' => [
-				'doc' => [
-					'last_update' => $update_time
-				]
-			]
-		];
-
-		$response = $this->elasticClient->update($params);
-		return $response;
-	}
+//	public function get_last_case_update()
+//	{
+//		$params = [
+//			'index' => 'telepath-cases',
+//			'type' => 'case',
+//			'id' => 'last_update',
+//		];
+//		if ($this->elasticClient->exists($params)) {
+//			$response = $this->elasticClient->get($params);
+//			if (isset($response['_source']['last_update']) && !empty($response['_source']['last_update']))
+//				return $response['_source']['last_update'];
+//		}
+//		return false;
+//	}
+//
+//	// Set the time of the last flagged requests by cases
+//	public function set_last_case_update($update_time)
+//	{
+//		$params = [
+//			'index' => 'telepath-config',
+//			'type' => 'config',
+//			'id' => 'last_case_update_id',
+//			'body' => [
+//				'doc' => [
+//					'last_update' => $update_time
+//				],
+//				'doc_as_upsert' =>true
+//			]
+//		];
+//
+//		$response = $this->elasticClient->update($params);
+//		return $response;
+//	}
 
 	/**
 	 * @param $cases_name array of strings (cases name) or "all"
@@ -434,8 +463,10 @@ class M_Cases extends CI_Model {
 			];
 
 			// If it's a script that always run, we take the time before the iterations
-			if ($range)
+			if ($range){
 				$update_time = time();
+				$this->load->model('M_Config');
+			}
 
 			// Delete all the flags of the cases, if method = delete or update
 			if ($method != 'add') {
@@ -541,8 +572,7 @@ class M_Cases extends CI_Model {
 					$params['body']["sort"] = ["_doc"];
 
 					// If it's a script that always run, we have to query only the latest requests
-
-					if ($range && $last_update=$this->get_last_case_update())
+					if ($range && $last_update = $this->M_Config->get_key('last_case_update_id'))
 						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $last_update, 'lte' => $update_time]]];
 
 
@@ -581,7 +611,7 @@ class M_Cases extends CI_Model {
 		}
 
 		if ($range) {
-			$this->set_last_case_update($update_time);
+			$this->M_Config->update('last_case_update_id',$update_time,true);
 			logger('Update the time to: '. $update_time);
 			return;
 		}
@@ -835,7 +865,7 @@ class M_Cases extends CI_Model {
 	}
 		
 	
-	public function delete($cids) {
+	public function old_delete($cids) {
 		
 
 		
@@ -882,8 +912,28 @@ class M_Cases extends CI_Model {
 
 		
 	}
+
+	/**
+	 * @param array $cids  cases ids
+	 */
+	public function delete($cids)
+	{
+
+		foreach ($cids as $cid) {
+			$params = [
+				'index' => 'telepath-cases',
+				'type' => 'case',
+				'id' => $cid
+			];
+			if ($this->elasticClient->exists($params)) {
+				$this->elasticClient->delete($params);
+			}
+		}
+
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-cases'));
+	}
 	
-	public function create($name, $details) {
+	public function old_create($name, $details) {
 		
 		$params = [];
 		$params['body'] = [
@@ -923,8 +973,29 @@ class M_Cases extends CI_Model {
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
 		
 	}
-	
-	public function update($name, $data=false, $updating=true, $favorite=false) {
+
+	/**
+	 * @param string $name case name
+	 * @param array $details details of the case
+     */
+	public function create($name, $details)
+	{
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'case',
+			'id' => $name,
+			'body' => [
+				'case_name' => $name,
+				'created' => time(),
+				'details' => $details,
+				'updating' => true
+			]
+		];
+		$this->elasticClient->index($params);
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-cases'));
+	}
+
+	public function old_update($name, $data=false, $updating=true, $favorite=false) {
 		
 		$params = [];
 		$params['body'] = [
@@ -962,7 +1033,34 @@ class M_Cases extends CI_Model {
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-config'));
 		
 	}
-	
+
+	/**
+	 * @param string $name name of the case
+	 * @param bool $data the details of the case
+	 * @param bool $updating flag to display to the user the update period
+	 * @param bool $favorite favorite case, for dashboard display
+     */
+	public function update($name, $data = false, $updating = true, $favorite = false)
+	{
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'case',
+			'id' => $name,
+			'body' => [
+				'doc' => [
+					'updating' => $updating,
+					'favorite' => $favorite
+				]
+			]
+		];
+		if($data){
+			$params['body']['doc']['details']=$data;
+		}
+		$this->elasticClient->update($params);
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-cases'));
+	}
+
+
 }
 
 ?>

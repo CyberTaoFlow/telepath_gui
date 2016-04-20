@@ -75,7 +75,7 @@ class M_Actions extends CI_Model {
 
 		$results = $this->elasticClient->search($params);
 
-		$results=get_source($results);
+		$results=get_app_source($results);
 
 //		$results = array_map(function($result) {
 //			return array(
