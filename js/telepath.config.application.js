@@ -28,7 +28,7 @@ telepath.config.application = {
 
 
 		// Added automatically toggle
-		app_data.added_automatically = this.AddedAutomaticallyAppToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+		app_data.top_level_domain = this.TopLevelDomainAppToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
 
 
 
@@ -366,8 +366,8 @@ telepath.config.application = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 
-		$('<div>').addClass('tele-title-1 ').html('Added Automatically').appendTo('#tele-app-details');
-		this.AddedAutomaticallyAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: that.app_data.added_automatically == '1' }).addClass('tele-addedAutomaticallyApp-toggle').appendTo('#tele-app-details');
+		$('<div>').addClass('tele-title-1 ').html('Top Level Domain').appendTo('#tele-app-details');
+		this.TopLevelDomainAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: true }).addClass('tele-TopLevelDomainApp-toggle').appendTo('#tele-app-details');
 
 		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
