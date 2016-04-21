@@ -157,6 +157,8 @@ class Cases extends Tele_Controller
             }
         }
 
+        logger('End of the process');
+
     }
 
     // Set (Update) Case favorite flag
