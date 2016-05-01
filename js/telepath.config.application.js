@@ -277,6 +277,7 @@ telepath.config.application = {
                                 redirect_status_code: '',
 								operation_mode: '1',
 								eta: '1d 0h 0m',
+								top_level_domain: '1'
 		};
 	
 		if(app_id == 'new') {
@@ -367,7 +368,7 @@ telepath.config.application = {
 		this.container.append(this.c_mode);
 
 		$('<div>').addClass('tele-title-1 ').html('Top Level Domain').appendTo('#tele-app-details');
-		this.TopLevelDomainAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: true }).addClass('tele-TopLevelDomainApp-toggle').appendTo('#tele-app-details');
+		this.TopLevelDomainAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: that.app_data.top_level_domain=='1' }).addClass('tele-TopLevelDomainApp-toggle').appendTo('#tele-app-details');
 
 		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
