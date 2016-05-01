@@ -134,20 +134,6 @@ class M_Applications extends CI_Model {
 
 	}
 
-	/*function delete($host) {
-		# Delete host from the application index, Yuli
-		$params['index'] = 'telepath-applications';
-		$params['type'] = 'application';
-                $params['body']['query']['match']['host'] = $host;
-		$results = $this->elasticClient->deleteByQuery($params);
-
-		# Delete all records where HTTP host is used the same ias $host, Yuli
-		$params = array();
-		$params['index'] = '_all';
-		$params['body']['query']['bool']['must']['term']['http.host'] = $host;
-		$results = $this->elasticClient->deleteByQuery($params);
-	}*/
-
 	function delete($host) {
 		# Delete host from the application index, Yuli
 		$params['index'] = 'telepath-domains';
@@ -162,16 +148,9 @@ class M_Applications extends CI_Model {
 		# Delete all records where HTTP host is used the same ias $host, Yuli
 		$params = array();
 		$params['index'] = '_all';
+//		$params['type'] = 'http';
 		$params['body']['query']['bool']['must']['term']['host'] = $host;
-		$results = get_elastic_results($this->elasticClient->search($params));
-
-		foreach ($results as $res){
-			$params=[];
-			$params['index'] = $res['index'];
-			$params['type'] = $res['type'];
-			$params['id']=$res['uid'];
-			$this->elasticClient->delete($params);
-		}
+		delete_by_query($this->elasticClient, $params, 1);
 	}
 
 	function get($host)

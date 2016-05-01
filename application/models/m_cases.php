@@ -142,6 +142,8 @@ class M_Cases extends CI_Model {
 			
 		}
 
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['_source']=false;
 		$params['body'] = [
 			'size' => 100,
@@ -184,6 +186,7 @@ class M_Cases extends CI_Model {
 					"cardinality" => [ "field" => "sid", "precision_threshold" => 200 ],
 				]
 			],
+/*
 			'query' => [
 				'bool' => [
 					'must' => [
@@ -191,33 +194,34 @@ class M_Cases extends CI_Model {
 					]
 				],
 			],
+*/
 		];
-		
-		$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases.name" => $cid ] ];
-		
+
+		$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases.name" => $cid ] ];
+
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
-		
+
 		$params = append_application_query($params, $apps);
-			$params = append_access_query($params);
+		$params = append_access_query($params);
 		$result = $this->elasticClient->search($params);
 		
 		$results = array('items' => array());
 		
-		if(isset($result["aggregations"]) && 
-		   isset($result["aggregations"]["sid"]) && 
-		   isset($result["aggregations"]["sid"]["buckets"]) && 
+		if(isset($result["aggregations"]) &&
+		   isset($result["aggregations"]["sid"]) &&
+		   isset($result["aggregations"]["sid"]["buckets"]) &&
 		   !empty($result["aggregations"]["sid"]["buckets"])) {
-				
+
 				$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 				foreach($sid_buckets as $sid) {
-				
+
 					$results['items'][] = array(
 						"sid"     => $sid['key'],
-						"city"    => $sid['city']['buckets'][0]['key'], 
-						"alerts_count"  => $sid['alerts_count']['value'], 
-						"alerts_names"  => $sid['alerts_names']['buckets'], 
+						"city"    => $sid['city']['buckets'][0]['key'],
+						"alerts_count"  => $sid['alerts_count']['value'],
+						"alerts_names"  => $sid['alerts_names']['buckets'],
 						"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 						"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
 						"host"    => $sid['host']['buckets'],
@@ -239,7 +243,7 @@ class M_Cases extends CI_Model {
 		}
 		$results['requests']= $result['hits']['hits'];
 		return $results;
-		
+
 	}
 
 	public function get_similar_sessions($requests, $cid)
@@ -259,12 +263,12 @@ class M_Cases extends CI_Model {
 							"min_word_length" => 0,
 //							"max_word_length" => 0,
 							"minimum_should_match" => "30%",
-							"percent_terms_to_match" => 0.5
+//							"percent_terms_to_match" => 0.5
 							]
 						]
 					],
 					'must_not' => [
-						['term' => ["http.cases.name" => $cid]]
+						['term' => ["cases.name" => $cid]]
 					]
 				]
 			],
@@ -449,9 +453,8 @@ class M_Cases extends CI_Model {
 
 		ignore_user_abort(true);
 
-		$status = $this->elasticClient->indices()->status(['index' => 'telepath-20*']);
+		$status = $this->elasticClient->indices()->stats(['index' => 'telepath-20*']);
 		foreach ($status['indices'] as $index_name => $index_status) {
-
 			logger('Start index: ' . $index_name );
 
 			$params = [
@@ -666,7 +669,7 @@ class M_Cases extends CI_Model {
 				'id' => $result['_id'],
 				'body' => [
 					'doc' => [
-						'cases.name' => $db_case_name,
+						'cases' =>['name'=>$db_case_name] ,
 						'cases_count' => $db_case_count
 					]
 				]

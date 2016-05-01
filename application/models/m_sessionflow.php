@@ -43,6 +43,8 @@ class M_Sessionflow extends CI_Model {
 //		}
 
 		$params=[];
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body']=[
 			'size'=>1,
 			"sort"=>[
@@ -68,6 +70,8 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_session_stats($SID, $key = '', $range = null) {
+                $params['index'] = 'telepath-20*';
+                $params['type'] = 'http';
 		$search_count = 0;
 		if ($key)
 		{	
@@ -76,7 +80,7 @@ class M_Sessionflow extends CI_Model {
 				'query' => [
 					'bool' => [
 						'must' => [
-							[ 'term' => [ '_type' => 'http' ] ],
+//							[ 'term' => [ '_type' => 'http' ] ],
 							[ 'term' => [ 'sid' => $SID ] ],
 							#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 							[ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ]
@@ -159,7 +163,8 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = null) {
-		
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => $limit,
 			'from' => $start,
@@ -201,7 +206,8 @@ class M_Sessionflow extends CI_Model {
 		$params = append_access_query($params);
 		$results = get_elastic_results($this->elasticClient->search($params));
 
-
+		$params2['index'] = 'telepath-20*';
+		$params2['type'] = 'http';
 		$params2['body']=[
 			'size'=>1,
 			'sort'=>[

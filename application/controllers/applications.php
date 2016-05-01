@@ -166,9 +166,9 @@ class Applications extends Tele_Controller
 
         $data = $this->input->post();
         $data['host'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['host']));
-        if($data['subdomains']==''){
-            $data['subdomains']=[];
-    }
+	if(empty($data['subdomains'])) {
+		$data['subdomains']=[];
+	}
         $this->M_Applications->set($data);
 
         $this->load->model('M_Config');

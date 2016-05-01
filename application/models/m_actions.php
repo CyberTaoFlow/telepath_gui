@@ -115,7 +115,7 @@ class M_Actions extends CI_Model {
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
 		$params['body']['query']['match']['domain'] = '192.168.1.111';
-		$res = $this->client->deleteByQuery($params);
+                delete_by_query($this->client, $params);
 	}
 
 	function get_app_actions($host){
@@ -145,7 +145,8 @@ class M_Actions extends CI_Model {
 		$params['type'] = 'actions';
 		$params['body']['query']['bool']['must'][] = ['term' => ['action_name' => $name]];
 		$params['body']['query']['bool']['must'][] = ['term' => ['application' => $app]];
-		$res = $this->client->deleteByQuery($params);
+		#$res = $this->client->deleteByQuery($params);
+                delete_by_query($this->client, $params);
 
 		// Insert new
 		$params = ['body' => $new_json, 'index' => 'telepath-actions', 'type' => 'actions'];

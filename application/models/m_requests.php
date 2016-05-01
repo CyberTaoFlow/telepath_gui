@@ -9,7 +9,7 @@ class M_Requests extends CI_Model {
 	}
 	
 	function get_by_id($id) {
-		
+	
 		$params['body'] = [
 			'size'  => 1,
 			'query' => [
@@ -30,6 +30,8 @@ class M_Requests extends CI_Model {
 	}
 	
 	function get_latest($desc = true) {
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		
 		$params['body'] = array(
 			'size'  => 1,
@@ -52,7 +54,7 @@ class M_Requests extends CI_Model {
 		
 		$req = $this->get_by_id($id);
 		if(empty($req)) { return array(); }
-		
+
 		/*
 		$params['body'] = [
 		//	"explain" => true,
@@ -60,12 +62,13 @@ class M_Requests extends CI_Model {
 			"query"   => 
 		];
 		*/
-		
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ "more_like_this" => [ "ids" => [ $id ], "min_term_freq" => 0, "max_query_terms" => 100, "percent_terms_to_match" => 0.5 ] ]
+						[ "more_like_this" => [ "ids" => [ $id ], "min_term_freq" => 0, "max_query_terms" => 100, /* "minimum_should_match" => '50%' */ ] ]
 					],
 					'must_not' => [
 						[ "term" => [ "ip_orig" => $req['ip_orig'] ] ]

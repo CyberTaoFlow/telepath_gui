@@ -110,6 +110,36 @@
 		return $result;
 	}
 
+function delete_by_query($client, $params, $max = 0)
+{
+	#$results = $this->elasticClient->deleteByQuery($params);
+	$results   = get_elastic_results($client->search($params));
+	if (!$results)
+	{
+		return;
+	}
+	if (count($results) == 1 or $max == 1)
+	{
+                foreach ($results as $res){
+                        $params=[];
+                        $params['index'] = $res['index'];
+                        $params['type'] = $res['type'];
+                        $params['id']=$res['uid'];
+                        $client->delete($params);
+			return;
+                }
+		return;
+        }
+	foreach ($results as $res){
+		$params=[];
+		$params['index'] = $res['index'];
+		$params['type'] = $res['type'];
+		$params['id']=$res['uid'];
+		$client->delete($params);
+	}
+}
+
+
 function prepare_elastic_results($results) {
 	$result  = array();
 	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
