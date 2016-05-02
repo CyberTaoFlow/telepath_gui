@@ -642,8 +642,8 @@ class M_Cases extends CI_Model {
 
 		foreach ($results as $result) {
 
-			if (isset ($result['_source']['cases.name']) && !empty($result['_source']['cases.name']))
-				$db_case_name = $result['_source']['cases.name'];
+			if (isset ($result['_source']['cases']['name']) && !empty($result['_source']['cases']['name']))
+				$db_case_name = $result['_source']['cases']['name'];
 			else
 				$db_case_name = [];
 
