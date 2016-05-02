@@ -136,7 +136,7 @@ telepath.listitem.generic = {
 				}
 			}
 			if ($(el).hasClass('tele-icon-actions') && item.raw.actions_count && item.raw.actions_count > 0 && item.raw.actions_names && item.raw.actions_names.length > 0) {
-				
+
 				//var actions_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Actions');
 				var actions_content = $('<div>').addClass('popover-content');
 
@@ -216,7 +216,7 @@ telepath.listitem.generic = {
 
 				$(telepath.generic_popover).css({
 					position: 'absolute',
-					top: $(el).offset().top,
+					top: $(el).offset().top - 2,
 					left: $(el).offset().left + 100
 				}).fadeIn().popover({
 					title: 'Loading anomaly scores..',
