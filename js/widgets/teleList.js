@@ -116,12 +116,17 @@ $.widget( "tele.teleList", {
 
 		
 		// Hook hover Callbacks
-		$('.tele-listitem-inner', newItem).hover(function () {
+		$('.tele-listitem-icon, .tele-listitem-progbar, .tele-listitem-count', newItem).hover(function () {
 			$('.popover').remove();
 			if(that.timer) {
 				clearTimeout(that.timer);
 			}
-			var el = this;
+			if($(this).hasClass('tele-listitem-count')){
+				var el=$(this).prev();
+			}
+			else{
+				var el = this;
+			}
 			that.timer = setTimeout(function () {
 				that.options.callbacks.hover_in(el, $(el).data('formattedItem'));
 			}, 500);
