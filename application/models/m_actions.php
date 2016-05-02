@@ -54,7 +54,7 @@ class M_Actions extends CI_Model {
 		$ans = [];
 		if (!empty($results['hits']['hits'])) {
 			foreach ($results['hits']['hits'] as $hit) {
-				$fields = $hit['fields']['_src'][0];
+				$fields = $hit['_source'];
 				$ans[] = array('key' => $fields['application'] . ' :: ' . $fields['action_name'], 'raw' => $fields);
 			}
 		}
