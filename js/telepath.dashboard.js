@@ -206,11 +206,11 @@ telepath.dashboard = {
 		};
 
 		var chartData = [{ label: "Alerts", 		     data: this.data.items.chart.alerts,      color: '#64a5bc' },
-						 { label: "Other Sessions",      data: this.data.items.chart.sessions,    color: '#986da0' },
-						 { label: "Case Sessions",       data: this.data.items.chart.cases, color: '#ff850b' },
-						 { label: "Suspicious Sessions", data: this.data.items.chart.suspects,    color: '#6ab789' }];
+						 { label: "Normal",      data: this.data.items.chart.sessions,    color: '#986da0' },
+						 { label: "Cases",       data: this.data.items.chart.cases, color: '#ff850b' },
+						 { label: "Suspects", data: this.data.items.chart.suspects,    color: '#6ab789' }];
 		
-		this.graph.flotGraph({ data: chartData, options: options, dashboard: true, title: 'Traffic type over time' });
+		this.graph.flotGraph({ data: chartData, options: options, dashboard: true, title: 'Overall Transactions' });
 	
 	},
 	resetContainer: function (loading) {
