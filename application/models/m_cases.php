@@ -463,7 +463,7 @@ class M_Cases extends CI_Model {
 			logger('Start index: ' . $index_name );
 
 			$params = [
-				"search_type" => "scan",    // use search_type=scan
+//				"search_type" => "scan",    // use search_type=scan
 				"scroll" => "1m",          // h ow long between scroll requests. should be small!
 				"size" => 9999,               // how many results *per shard* you want back
 				"index" => $index_name,
