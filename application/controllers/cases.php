@@ -33,8 +33,7 @@ class Cases extends Tele_Controller
         $apps = $this->_get_apps();
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $res0 = $this->M_Cases->get(100, $range, $apps ,$search);
-        $res = array();
+
 
         if(!$search ) {
             $search = 'all';
@@ -44,6 +43,9 @@ class Cases extends Tele_Controller
         if(empty($all)){
             return_success();
         }
+
+        $res0 = $this->M_Cases->get(100, $range, $apps ,$search);
+        $res = array();
 
         if (!isset($all[0])){
             $all=array($all);

@@ -70,7 +70,9 @@ class M_Cases extends CI_Model {
 	}
 
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
-		
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => array(
@@ -95,6 +97,9 @@ class M_Cases extends CI_Model {
 								'lte' => intval($range['end'])
 							  )
 							)
+						),
+						array(
+							'exists' => [ 'field' => 'cases.name' ]
 						)
 					)
 				)

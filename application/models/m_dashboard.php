@@ -101,7 +101,9 @@ class M_Dashboard extends CI_Model {
 				'bool' => [
 					'must' => [
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
-						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
+//						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
+						[ 'exists' => [ 'field' => 'alerts' ] ],
+
 					]
 				]
 			]
@@ -148,7 +150,8 @@ class M_Dashboard extends CI_Model {
 				'bool' => [
 					'must' => [
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
-						[ 'range' => [ 'cases_count' => [ 'gte' => 1 ] ] ],
+//						[ 'range' => [ 'cases_count' => [ 'gte' => 1 ] ] ],
+						[ 'exists' => [ 'field' => 'cases.name' ] ],
 					]
 				]
 			]
@@ -249,12 +252,18 @@ class M_Dashboard extends CI_Model {
 				'bool' => [
 					'must' => [
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
-						[ 'range' => [ 'score_average' => [ ($suspects ? 'gte' : 'lt') => $suspect_threshold ] ] ]
+						[ 'range' => [ 'score_average' => [ ($suspects ? 'gte' : 'lt') => $suspect_threshold ] ] ],
+					],
+					'must_not'=>[
+						[ 'exists' => [ 'field' => 'alerts' ] ],
+						[ 'exists' => [ 'field' => 'cases.name' ] ]
 					]
+
 				]
 			]
 		);
-		
+
+
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		$results   = $this->elasticClient->search($params);
