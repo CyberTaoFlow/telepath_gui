@@ -16,7 +16,7 @@
 		}
 		
 		if(isset($base['body']) && isset($base['body']['query']) && isset($base['body']['query']['bool'])) {
-			$base['body']['query']['bool']['must'][] = [ "terms" => [ "host" => $apps, "minimum_should_match" => 1 ] ];
+			$base['body']['query']['bool']['must'][] = [ "terms" => [ "host" => $apps ] ];
 		}
 		
 		return $base;
