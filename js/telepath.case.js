@@ -242,7 +242,7 @@ telepath.casePanel = {
 		this.data = data;
 		
 		$('.loader', this.container).remove();
-		$(".tele-case-graph, .tele-case-alerts-block, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar", this.container).remove();
+		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar", this.container).remove();
 
 		this.panelTopBar.empty();
 
@@ -424,7 +424,7 @@ telepath.casePanel = {
 		// Create List
 		
 		this.list = $('<div>').addClass('tele-case-alerts-block');
-		this.listWrap = $('<div>').append(this.list).css({ display: 'inline-block' }).width('65%');
+		this.listWrap = $('<div>').addClass('tele-wrapper').append(this.list).css({ display: 'inline-block' }).width('65%');
 
 		this.container.append(this.listWrap);
 		
@@ -439,7 +439,7 @@ telepath.casePanel = {
 
 
 		this.similarsList=$('<div>').addClass('tele-case-similar-block');
-		this.similarsListWrap = $('<div>').append(this.similarsList).css({ display: 'inline-block' }).width('35%');
+		this.similarsListWrap = $('<div>').addClass('tele-wrapper').append(this.similarsList).css({ display: 'inline-block' }).width('35%');
 
 		this.container.append(this.similarsListWrap);
 
