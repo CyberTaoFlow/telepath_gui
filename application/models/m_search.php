@@ -103,7 +103,7 @@ class M_Search extends CI_Model {
 			case 'suspects':
 				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases.name' ] ];
+//				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases.name' ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 //				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 			break;
@@ -111,7 +111,7 @@ class M_Search extends CI_Model {
 				// old method
 				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ] ;
-				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases.name' ] ];
+//				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases.name' ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
 //				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 //				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases' ] ] ] ];
