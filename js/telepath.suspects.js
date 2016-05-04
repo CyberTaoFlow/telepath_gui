@@ -281,7 +281,7 @@ telepath.suspects = {
 			}
 		} });
 		
-		this.panelTitle.html('Active Suspects | ' + this.count + ' Sessions');
+		this.panelTitle.html( this.count + ' Sessions');
 		
 		// Resize hooks
 		setTimeout(function () { that._resize(); }, 0);
