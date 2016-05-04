@@ -235,7 +235,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts($variable, $val, $sort, $sortorder, $start, $limit = 100, $filter, $range = array(), $apps = array(), $search = '', $filter2=[]) {
+	public function get_alerts(/*$variable, $val,*/ $sort, $sortorder, $start, $limit = 100, $range = array(), $apps = array(), $search = '', $filter=[]) {
 		
 		switch($sort) {
 		
@@ -328,17 +328,17 @@ class M_Alerts extends CI_Model {
 		global $query;
 		$query='';
 
-		if (count($filter2)>1){
-			$query.='alerts.name:"'.implode('" OR "',$filter2).'"';
+		if (count($filter)>1){
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 			}
 		
-		elseif (count($filter2)==1&&$filter2!=false){
-			$query.='alerts.name:"'.implode('" OR "',$filter2).'"';
+		elseif (count($filter)==1&&$filter!=false){
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 		}
 
 		if($search && strlen($search) > 1) {
 
-			if (count($filter2)>0 &&$filter2!=false){
+			if (count($filter)>0 &&$filter!=false){
 				$query.=' AND ('.$search.')';
 			}
 			else{

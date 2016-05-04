@@ -13,71 +13,71 @@ class M_Dashboard extends CI_Model {
 	
 	
 	
-	public function get_alerts($range, $apps = array(), $sort = 'counter', $dir = 'ASC') {
+//	public function get_alerts($range, $apps = array(), $sort = 'counter', $dir = 'ASC') {
+//
+//		$this->load->model('M_Alerts');
+//		return $this->M_Alerts->get_alerts(false, false, $sort, $dir, 0, 5, false, $range, $apps);
+//
+//	}
 	
-		$this->load->model('M_Alerts');
-		return $this->M_Alerts->get_alerts(false, false, $sort, $dir, 0, 5, false, $range, $apps);
-		
-	}
-	
-	public function get_cases($range, $apps = array()) {
-
-		$params['body'] = array(
-			'size'  => 0,
-			'aggs'  => array(
-				'cases' => array(
-					"terms" => array(
-						"field" => "cases.name",
-						"size" => 200
-					),
-					"aggs" => [
-						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200] ],
-						'date'=>  ['max'=>['field'=>'ts']]
-					]
-				)				
-			),
-			'query' => array(
-				'bool' => array(
-					'must' => array(
-						array(
-							'range' => array(
-							  'ts' => array(
-								'gte' => intval($range['start']),
-								'lte' => intval($range['end'])
-							  )
-							)
-						)
-					)
-				)
-			)
-		);
-		
-		$params = append_application_query($params, $apps);
-		$params = append_access_query($params);
-		
-		$results = $this->elasticClient->search($params);
-		$ans = array();
-		
-		if(!empty($results) && isset($results['aggregations'])) {
-			
-			foreach($results['aggregations']['cases']['buckets'] as $bucket) {
-				
-				$this->load->model('M_Cases');
-				$case_data = $this->M_Cases->get_case_data($bucket['key']);
-
-				if (isset($case_data['empty']) && $case_data['empty'] == false)
-				{
-					$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $case_data);
-				}
-				
-			}
-			return $ans;
-			
-		} 
-		
-		return $ans;
-		
-	}
+//	public function get_cases($range, $apps = array()) {
+//
+//		$params['body'] = array(
+//			'size'  => 0,
+//			'aggs'  => array(
+//				'cases' => array(
+//					"terms" => array(
+//						"field" => "cases.name",
+//						"size" => 200
+//					),
+//					"aggs" => [
+//						"sid" => [ "cardinality" => [ "field" => "sid", "precision_threshold" => 200] ],
+//						'date'=>  ['max'=>['field'=>'ts']]
+//					]
+//				)
+//			),
+//			'query' => array(
+//				'bool' => array(
+//					'must' => array(
+//						array(
+//							'range' => array(
+//							  'ts' => array(
+//								'gte' => intval($range['start']),
+//								'lte' => intval($range['end'])
+//							  )
+//							)
+//						)
+//					)
+//				)
+//			)
+//		);
+//
+//		$params = append_application_query($params, $apps);
+//		$params = append_access_query($params);
+//
+//		$results = $this->elasticClient->search($params);
+//		$ans = array();
+//
+//		if(!empty($results) && isset($results['aggregations'])) {
+//
+//			foreach($results['aggregations']['cases']['buckets'] as $bucket) {
+//
+//				$this->load->model('M_Cases');
+//				$case_data = $this->M_Cases->get_case_data($bucket['key']);
+//
+//				if (isset($case_data['empty']) && $case_data['empty'] == false)
+//				{
+//					$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $case_data);
+//				}
+//
+//			}
+//			return $ans;
+//
+//		}
+//
+//		return $ans;
+//
+//	}
 	
 	public function get_gap_alerts($interval, $range, $apps = array()) {
 		
@@ -175,12 +175,12 @@ class M_Dashboard extends CI_Model {
 		
 	}
 	
-	public function get_suspects($range, $apps = array(), $sort = 'counter', $dir = 'ASC', $limit = 5) {
-
-		$this->load->model('M_Suspects');
-		return $this->M_Suspects->get($range, $apps, $sort, $dir, 0, $limit);
-
-	}
+//	public function get_suspects($range, $apps = array(), $sort = 'counter', $dir = 'ASC', $limit = 5) {
+//
+//		$this->load->model('M_Suspects');
+//		return $this->M_Suspects->get($range, $apps, $sort, $dir, 0, $limit);
+//
+//	}
 	
 	// Dashboard Functionality
 	function get_map($range, $apps, $map_mode) {

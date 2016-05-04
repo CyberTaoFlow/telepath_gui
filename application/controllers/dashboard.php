@@ -52,7 +52,12 @@ class Dashboard extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
 
-        $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
+       // $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
+
+        $this->load->model('M_Suspects');
+        $suspects= $this->M_Suspects->get($range, $apps, $sort, $dir, 0, 5);
+
+
 
         $data = array('suspects' => $suspects);
 
@@ -70,7 +75,10 @@ class Dashboard extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
 
-        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
+//        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
+
+        $this->load->model('M_Alerts');
+        $alerts = $this->M_Alerts->get_alerts(/*false, false,*/ $sort, $dir, 0, 5, $range, $apps);
 
         $data = array('alerts' => $alerts);
 
@@ -85,7 +93,11 @@ class Dashboard extends Tele_Controller
         $range = $this->_get_range();
         $apps = $this->_get_apps();
 
-        $cases = $this->M_Dashboard->get_cases($range, $apps);
+//        $cases = $this->M_Dashboard->get_cases($range, $apps);
+
+        $this->load->model('M_Cases');
+        $cases = $this->M_Cases->get(200, $range, $apps);
+
         # Make sure we have only 5 cases in the dashboard report, Yulli
         $result=[];
         foreach ($cases as $case){
