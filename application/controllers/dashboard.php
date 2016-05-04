@@ -96,8 +96,29 @@ class Dashboard extends Tele_Controller
 //        $cases = $this->M_Dashboard->get_cases($range, $apps);
 
         $this->load->model('M_Cases');
-        $cases = $this->M_Cases->get(200, $range, $apps);
 
+        $all = $this->M_Cases->get_case_data('all');
+
+        if(empty($all)){
+            return_success();
+        }
+
+        $res0 = $this->M_Cases->get(100, $range, $apps);
+        $cases = array();
+
+        if (!isset($all[0])){
+            $all=array($all);
+        }
+        foreach ($all as $tmp) {
+
+            foreach ($res0 as $case) {
+                if ($case['name'] == $tmp['case_name']) {
+                    $cases[] = $case;
+                    break;
+                }
+            }
+            
+        }
         # Make sure we have only 5 cases in the dashboard report, Yulli
         $result=[];
         foreach ($cases as $case){
@@ -105,7 +126,7 @@ class Dashboard extends Tele_Controller
                 $result[]=$case;
             }
         }
-        if (count($result)<5&& count($result)>0){
+        if (count($result)<5 && count($result)>0){
             foreach ($cases as $case){
                 foreach ($result as $res) {
                     if ($case['name'] != $res['name'] && count($result) < 5) {
