@@ -420,18 +420,14 @@ class M_Applications extends CI_Model {
 	function get_search($search, $mode) {
 
 		$params['index'] = 'telepath-20*';
+		$params['type']='http';
 
 		if ($mode == 'page')
 			$field = "uri";
 		if ($mode == 'param')
 			$field = "parameters.name";
-
+		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
 		$params['body'] = [
-			'partial_fields' => [
-				"_src" => [
-					"include" => ["host", "uri", "parameters.name", "parameters.type"]
-				],
-			],
 			'size'   => 9999,
 			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
@@ -447,7 +443,7 @@ class M_Applications extends CI_Model {
 		$search = strtolower($search);
 
 		foreach($results['hits']['hits'] as $res) {
-			$result = $res['fields']['_src'][0];
+			$result = $res['_source'];
 
 			$hash = crc32(serialize($result));
 			if(isset($out[$hash])) { continue; }

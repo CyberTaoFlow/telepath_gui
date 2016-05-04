@@ -370,12 +370,8 @@ class M_Rules extends CI_Model {
 
 		$params['index']='telepath-rules';
 		$params['type']=['rules'];
+		$params['_source_include'] = ['category','name'];
 		$params['body'] = [
-			'partial_fields' => [
-				"_src" => [
-					"include" => ['category','name']
-				],
-			],
 			'size' => 9999,
 			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category', 'name'], "query" => '*' . $search . '*', "lowercase_expanded_terms"=>false]]]],
 
