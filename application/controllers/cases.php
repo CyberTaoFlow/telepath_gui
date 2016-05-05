@@ -62,7 +62,7 @@ class Cases extends Tele_Controller
             }
 
             if ($found == false) {
-                $res[] = array('name' => $tmp['case_name'], 'count' => 0, 'data' => $tmp['details'], 'case_data' => $tmp);
+                $res[] = array('name' => $tmp['case_name'], 'count' => 0, 'case_data' => $tmp);
             }
         }
 

@@ -77,9 +77,10 @@ telepath.dashboard = {
 			// Hide deleted cases. Yuli
 			var cases = [];
                         var index;
+						var caseCount=(data.items.cases)?data.items.cases.length:0;
                         // limited the max display to 5, hilik
-                        var minimum = Math.min(6,data.items.cases.length);
-                        for (index = 0; index < minimum; ++index){
+                      //  var minimum = Math.min(6,caseCount);
+                        for (index = 0; index < caseCount; ++index){
 				//if (data.items.cases[index].name)
 				//{
 				cases.push(data.items.cases[index]);

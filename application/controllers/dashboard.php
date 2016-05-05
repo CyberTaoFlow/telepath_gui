@@ -111,13 +111,18 @@ class Dashboard extends Tele_Controller
         }
         foreach ($all as $tmp) {
 
+            $found = false;
             foreach ($res0 as $case) {
                 if ($case['name'] == $tmp['case_name']) {
+                    $found = true;
                     $cases[] = $case;
                     break;
                 }
             }
-            
+
+            if ($found == false) {
+                $cases[] = array('name' => $tmp['case_name'], 'count' => 0, 'checkable' => false, 'case_data' => $tmp);
+            }
         }
         # Make sure we have only 5 cases in the dashboard report, Yulli
         $result=[];
