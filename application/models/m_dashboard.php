@@ -27,7 +27,7 @@ class M_Dashboard extends CI_Model {
 //			'aggs'  => array(
 //				'cases' => array(
 //					"terms" => array(
-//						"field" => "cases.name",
+//						"field" => "cases_name",
 //						"size" => 200
 //					),
 //					"aggs" => [
@@ -151,7 +151,7 @@ class M_Dashboard extends CI_Model {
 					'must' => [
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 //						[ 'range' => [ 'cases_count' => [ 'gte' => 1 ] ] ],
-						[ 'exists' => [ 'field' => 'cases.name' ] ],
+						[ 'exists' => [ 'field' => 'cases_name' ] ],
 					]
 				]
 			]
@@ -256,7 +256,7 @@ class M_Dashboard extends CI_Model {
 					],
 					'must_not'=>[
 						[ 'exists' => [ 'field' => 'alerts' ] ],
-						[ 'exists' => [ 'field' => 'cases.name' ] ]
+						[ 'exists' => [ 'field' => 'cases_name' ] ]
 					]
 
 				]

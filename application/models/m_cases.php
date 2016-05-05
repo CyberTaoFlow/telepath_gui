@@ -78,7 +78,7 @@ class M_Cases extends CI_Model {
 			'aggs'  => array(
 				'cases' => array(
 					"terms" => array(
-						"field" => "cases.name",
+						"field" => "cases_name",
 						"size" => $limit
 					),
 					"aggs" => [
@@ -99,7 +99,7 @@ class M_Cases extends CI_Model {
 							)
 						),
 						array(
-							'exists' => [ 'field' => 'cases.name' ]
+							'exists' => [ 'field' => 'cases_name' ]
 						)
 					)
 				)
@@ -202,7 +202,7 @@ class M_Cases extends CI_Model {
 */
 		];
 
-		$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases.name" => $cid ] ];
+		$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases_name" => $cid ] ];
 
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
@@ -273,7 +273,7 @@ class M_Cases extends CI_Model {
 						]
 					],
 					'must_not' => [
-						['term' => ["cases.name" => $cid]]
+						['term' => ["cases_name" => $cid]]
 					]
 				]
 			],
@@ -467,7 +467,8 @@ class M_Cases extends CI_Model {
 				"scroll" => "1m",          // h ow long between scroll requests. should be small!
 				"size" => 9999,               // how many results *per shard* you want back
 				"index" => $index_name,
-				"_source" => ['cases.name', 'cases_count']
+				"type" => 'http',
+				"_source" => ['cases_name', 'cases_count']
 			];
 
 			// If it's a script that always run, we take the time before the iterations
@@ -481,11 +482,13 @@ class M_Cases extends CI_Model {
 
 				foreach ($cases_name as $case) {
 //					register_shutdown_function([$this, 'remove_update_flag'],$case,$method, $range);
-					$params['body']['query']['bool']['must'][] = ['term' => ["cases.name" => $case]];
+					$params['body']['query']['bool']['must'][] = ['term' => ["cases_name" => $case]];
 					$params['body']["sort"] = ["_doc"];
-					$docs = $this->elasticClient->search($params);
+					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
 
-					$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
+					$this->update_requests($docs['hits']['hits'], $case, true);
+
+					$scroll_id = $docs['_scroll_id'];
 
 					// Now we loop until the scroll "cursors" are exhausted
 					while (\true) {
@@ -576,7 +579,7 @@ class M_Cases extends CI_Model {
 					}
 
 					// If the request has already this case name, we don't need to flag it
-					$params['body']['query']['bool']['must_not'][] = ["term" => ["cases.name" => $case['case_name']]];
+					$params['body']['query']['bool']['must_not'][] = ["term" => ["cases_name" => $case['case_name']]];
 					$params['body']["sort"] = ["_doc"];
 
 					// If it's a script that always run, we have to query only the latest requests
@@ -584,9 +587,12 @@ class M_Cases extends CI_Model {
 						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $last_update, 'lte' => $update_time]]];
 
 
-					$docs = $this->elasticClient->search($params);
+					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
 
-					$scroll_id = $docs['_scroll_id'];   // The response will contain no results, just a _scroll_id
+					$this->update_requests($docs['hits']['hits'], $case['case_name'], false);
+
+
+					$scroll_id = $docs['_scroll_id'];
 
 					// Now we loop until the scroll "cursors" are exhausted
 					while (\true) {
@@ -647,8 +653,8 @@ class M_Cases extends CI_Model {
 
 		foreach ($results as $result) {
 
-			if (isset ($result['_source']['cases']['name']) && !empty($result['_source']['cases']['name']))
-				$db_case_name = $result['_source']['cases']['name'];
+			if (isset ($result['_source']['cases_name']) && !empty($result['_source']['cases_name']))
+				$db_case_name = $result['_source']['cases_name'];
 			else
 				$db_case_name = [];
 
@@ -674,7 +680,7 @@ class M_Cases extends CI_Model {
 				'id' => $result['_id'],
 				'body' => [
 					'doc' => [
-						'cases' =>['name'=>$db_case_name] ,
+						'cases_name' =>$db_case_name ,
 						'cases_count' => $db_case_count
 					]
 				]
@@ -773,7 +779,7 @@ class M_Cases extends CI_Model {
 
 		}
 
-		//$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases.name" => $cid ] ];
+		//$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases_name" => $cid ] ];
 
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
@@ -843,13 +849,13 @@ class M_Cases extends CI_Model {
 					'bool' => [
 						'must' => [
 							[ 'term' => [ '_type' => 'http' ] ],
-							[ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases' ] ] ] ],
+							[ 'exists' => [ 'field' => 'cases' ] ] ,
 						]
 					]
 				]
 			);
 			
-			$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases.name" => $cid ] ];
+			$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases_name" => $cid ] ];
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
 			
 			

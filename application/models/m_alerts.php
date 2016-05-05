@@ -246,7 +246,6 @@ class M_Alerts extends CI_Model {
 				$sortfield = 'alerts_count';
 			break;
 			case 'type':
-				$sortfield = 'alerts_names';
 				$sortfield = 'alerts_count';
 			break;
 			default:
@@ -414,7 +413,7 @@ class M_Alerts extends CI_Model {
 									"terms" => [ "field" => "alerts.name", "size" => 10 ]
 								],
 								"cases_names" => [
-									"terms" => [ "field" => "cases.name", "size" => 10 ]
+									"terms" => [ "field" => "cases_name", "size" => 10 ]
 								],
 								"actions_count" => [
 									"sum" => [ "field" => "business_actions_count" ]
