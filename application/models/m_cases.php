@@ -658,10 +658,12 @@ class M_Cases extends CI_Model {
 			else
 				$db_case_name = [];
 
-			if (isset ($result['_source']['cases_count']) && !empty($result['_source']['cases_count']))
-				$db_case_count = $result['_source']['cases_count'];
-			else
-				$db_case_count = 0;
+//			if (isset ($result['_source']['cases_count']) && !empty($result['_source']['cases_count']))
+//				$db_case_count = $result['_source']['cases_count'];
+//			else
+//				$db_case_count = 0;
+
+			$db_case_count=sizeof($db_case_name);
 
 			// check if case_name already exists before adding it
 			if (!$delete && !in_array($case_name, $db_case_name)) {
