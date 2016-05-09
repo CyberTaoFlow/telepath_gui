@@ -123,9 +123,9 @@ telepath.config.application = {
 			case 'Digest':
 				app_data.digest_flag = 1;
 			break;
-			default:
-				// By default automatic mode is selected
-			break;
+			//default:
+			//	// By default automatic mode is selected
+			//break;
 		}
 
 		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
@@ -142,10 +142,10 @@ telepath.config.application = {
 		app_data.cookie_value_appearance = this.SC_cookie_flag.data('teleTeleRadios').options.checked == 'appears' ? 1 : 0;
 
 		// Success Criteria -- Redirect
-		app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
-		app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
-		//app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
-		app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
+		//app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+		//app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
+		////app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
+		//app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
 
 		// Success Criteria -- Body Value
 		app_data.body_value_mode = this.SC_body_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
@@ -267,14 +267,14 @@ telepath.config.application = {
                                 form_param_id: '',
                                 ntlm: 0,
                                 basic_flag: 0,
-                                form_flag: 0,
+                                form_flag: 1,
                                 digest_flag: 0,
                                 cookie_mode: 0,
                                 cookie_name: '',
                                 cookie_value: '',
                                 ssl_flag: 0,
                                 AppCookieName: '',
-                                redirect_status_code: '',
+                                //redirect_status_code: '',
 								operation_mode: '1',
 								eta: '1d 0h 0m',
 								top_level_domain: '1'
@@ -492,26 +492,29 @@ telepath.config.application = {
 			.css({ position: 'absolute', top: 100, left: 300 });
 		
 		
-		var userID_val = 'Automatic';
+		var userID_val = 'Form';
 		if(telepath.config.application.app_data.ntlm == '1') {
 			userID_val = 'NTLM';
 		}
 		if(telepath.config.application.app_data.basic_flag == '1') {
 			userID_val = 'Basic';
 		}
-		if(telepath.config.application.app_data.form_flag == '1') {
-			userID_val = 'Form';
-			this.usernameParameter.show();
-		}
+		//if(telepath.config.application.app_data.form_flag == '1') {
+		//	userID_val = 'Form';
+		//}
 		if(telepath.config.application.app_data.digest_flag == '1') {
 			userID_val = 'Digest';
 		}
-		
+		if(userID_val = 'Form'){
+			this.usernameParameter.show();
+		}
+
+
 		this.userIdentification = $('<div>').teleRadios({
 			title: 'Authentication',
 			checked: userID_val,
 			radios: [ 
-				{ key: 'Automatic', label: 'Automatic' }, 
+				//{ key: 'Automatic', label: 'Automatic' },
 				{ key: 'Form', label: 'Form' },
 				{ key: 'Basic', label: 'Basic' },
 				{ key: 'Digest', label: 'Digest' },
@@ -589,35 +592,35 @@ telepath.config.application = {
 		
 		// SC_redirect
 				
-		this.SC_redirect_browse = $('<div>').teleBrowse({
-			label: 'Page', value: that.app_data.redirect_page, id: that.app_data.host, type: 'page' });
-		this.SC_redirect_range  = $('<div>').teleInput({ label: 'Response status',
-			value: that.app_data.redirect_status_code , type:'number' ,range:{min:200, max:600} });
-
-		//this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.redirect_mode == '1' });
-		this.SC_redirect_toggle = $('<div>').teleRadios({
-			title: 'Redirect',
-			checked: that.app_data.redirect_mode == '1' ? 'On' : 'Off',
-			radios: [
-				{ key: 'On', label: 'On' },
-				{ key: 'Off', label: 'Off' },
-			], callback: function(radio) {
-
-				that.SC_redirect_browse.hide();
-				that.SC_redirect_range.hide();
-				 switch(radio.key) {
-				 case 'On':
-					 that.SC_redirect_browse.show();
-					 that.SC_redirect_range.show();
-				 break;
-				 }
-
-			}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
-
-
-		SC_wrap.append(this.SC_redirect_toggle).append(this.SC_redirect_browse).append(this.SC_redirect_range);
-		
-		SC_wrap.append('<div class="tele-form-hr">');
+		//this.SC_redirect_browse = $('<div>').teleBrowse({
+		//	label: 'Page', value: that.app_data.redirect_page, id: that.app_data.host, type: 'page' });
+		//this.SC_redirect_range  = $('<div>').teleInput({ label: 'Response status',
+		//	value: that.app_data.redirect_status_code , type:'number' ,range:{min:200, max:600} });
+        //
+		////this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.redirect_mode == '1' });
+		//this.SC_redirect_toggle = $('<div>').teleRadios({
+		//	title: 'Redirect',
+		//	checked: that.app_data.redirect_mode == '1' ? 'On' : 'Off',
+		//	radios: [
+		//		{ key: 'On', label: 'On' },
+		//		{ key: 'Off', label: 'Off' },
+		//	], callback: function(radio) {
+        //
+		//		that.SC_redirect_browse.hide();
+		//		that.SC_redirect_range.hide();
+		//		 switch(radio.key) {
+		//		 case 'On':
+		//			 that.SC_redirect_browse.show();
+		//			 that.SC_redirect_range.show();
+		//		 break;
+		//		 }
+        //
+		//	}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
+        //
+        //
+		//SC_wrap.append(this.SC_redirect_toggle).append(this.SC_redirect_browse).append(this.SC_redirect_range);
+		//
+		//SC_wrap.append('<div class="tele-form-hr">');
 		
 		// SC_body
 		
