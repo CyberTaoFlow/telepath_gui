@@ -458,6 +458,12 @@ class M_Cases extends CI_Model {
 
 		ignore_user_abort(true);
 
+		// If it's a script that always run, we take the time before the iterations
+		if ($range){
+			$update_time = time()-200;
+			$this->load->model('M_Config');
+		}
+
 		$status = $this->elasticClient->indices()->stats(['index' => 'telepath-20*']);
 		foreach ($status['indices'] as $index_name => $index_status) {
 			logger('Start index: ' . $index_name );
@@ -470,12 +476,6 @@ class M_Cases extends CI_Model {
 				"type" => 'http',
 				"_source" => ['cases_name', 'cases_count']
 			];
-
-			// If it's a script that always run, we take the time before the iterations
-			if ($range){
-				$update_time = time();
-				$this->load->model('M_Config');
-			}
 
 			// Delete all the flags of the cases, if method = delete or update
 			if ($method != 'add') {
@@ -584,8 +584,7 @@ class M_Cases extends CI_Model {
 
 					// If it's a script that always run, we have to query only the latest requests
 					if ($range && $last_update = $this->M_Config->get_key('last_case_update_id'))
-						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $last_update, 'lte' => $update_time]]];
-
+						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gt' => $last_update]]];
 
 					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
 
@@ -682,7 +681,7 @@ class M_Cases extends CI_Model {
 				'id' => $result['_id'],
 				'body' => [
 					'doc' => [
-						'cases_name' =>$db_case_name ,
+						'cases_name' => $db_case_name,
 						'cases_count' => $db_case_count
 					]
 				]
