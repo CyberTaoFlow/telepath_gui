@@ -42,7 +42,7 @@ telepath.config.applications = {
 			var text = row.host;
 			var children = false;
 			if (count) {
-				text += '&nbsp;(' + row.learning_so_far + ')';
+			//	text += '&nbsp;(' + row.learning_so_far + ')';
 				children = (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0) ? row.subdomains : false;
 			}
 
@@ -50,8 +50,8 @@ telepath.config.applications = {
 				children: children,
 				state: {opened: (typeof row.open != "undefined" && row.open) ? true : false},
 				text: text,
-				data: {type: 'app', host: row.host},
-				'icon': 'tele-icon-app'
+				data: {type: 'app', host: row.host, count:'(' + row.learning_so_far + ')'},
+				icon: 'tele-icon-app'
 			};
 			treeData.push(obj);
 		});
@@ -139,7 +139,8 @@ telepath.config.applications = {
 		contextmenu: { items: telepath.contextMenu },
 		grid: {
 			columns: [
-				{width: 280 },
+				{width: 220},
+				{width: 60, value: "count", cellClass:"learning-so-far"},
 				{value: function (node) {
 					return $('<div>').btn({ icon: 'edit', callback: function (tree) {
 						$nodeParent = tree.element.parents('[role="treeitem"]');
@@ -176,7 +177,10 @@ telepath.config.applications = {
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 				telepath.config.application.editApp(data.node.data.host);
 			}
-		})/*.on('ready.jstree', function(e, data) {
+		}).on('hover_node.jstree',function(e,data){
+			$("#"+data.node.id).prop('title', data.node.text);
+		})
+		/*.on('ready.jstree', function(e, data) {
 			data.instance.search(that.searchString);
 		});*/
 
