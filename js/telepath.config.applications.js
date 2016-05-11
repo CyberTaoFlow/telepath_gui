@@ -50,7 +50,7 @@ telepath.config.applications = {
 				children: children,
 				state: {opened: (typeof row.open != "undefined" && row.open) ? true : false},
 				text: text,
-				data: {type: 'app', host: row.host, count: '(' + row.learning_so_far + ')',countWidth: (row.learning_so_far.toString().length) * 10 + 10},
+				data: {type: 'app', host: row.host, count: '(' + row.learning_so_far + ')'},
 				icon: 'tele-icon-app'
 			};
 			treeData.push(obj);
@@ -139,8 +139,8 @@ telepath.config.applications = {
 		contextmenu: { items: telepath.contextMenu },
 		grid: {
 			columns: [
-				{ width: 240 },
-				{ width: 40, value: "count", cellClass: "learning-so-far" },
+				{ width: 230 },
+				{ width: 50, value: "count", cellClass: "learning-so-far" },
 				{ value: function (node) {
 					return $('<div>').btn({ icon: 'edit', callback: function (tree) {
 						$nodeParent = tree.element.parents('[role="treeitem"]');

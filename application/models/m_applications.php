@@ -311,7 +311,7 @@ class M_Applications extends CI_Model {
 			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
 
-		$results = get_app_source($this->elasticClient->search($params));
+		$results = get_app_source($this->elasticClient->search($params),$learning_so_far);
 
 
 //		$ans1 = [];

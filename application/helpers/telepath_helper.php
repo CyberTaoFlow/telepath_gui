@@ -152,7 +152,7 @@ function prepare_elastic_results($results) {
 
 
 // retrieve only the _source field
-function get_app_source($results)
+function get_app_source($results,$learning_so_far=false)
 {
 	$result = array();
 	if (!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
@@ -161,6 +161,10 @@ function get_app_source($results)
 			if (isset ($row['_source']['subdomains']) && !empty ($row['_source']['subdomains']) && isset ($row['highlight']['subdomains'])) {
 				$row['_source']['open'] = true;
 			}
+			if($learning_so_far){
+				$row['_source']['learning_so_far']=thousandsCurrencyFormat($row['_source']['learning_so_far']);
+			}
+
 			$result[] = $row['_source'];
 		}
 	}
@@ -377,6 +381,21 @@ function get_gap($range) {
 
         echo date('Y-m-d H:i') . ' ' . $message . "\n";
     }
+
+	function thousandsCurrencyFormat($num)
+	{
+		$x = round($num);
+		$x_number_format = number_format($x);
+		$x_array = explode(',', $x_number_format);
+		$x_parts = array('k', 'm', 'b', 't');
+		$x_count_parts = count($x_array) - 1;
+		$x_display = $x_array[0];
+		if($x_count_parts>0) {
+			$x_display .= ((int)$x_array[1][0] !== 0 ? '.' . $x_array[1][0] : '');
+			$x_display .= $x_parts[$x_count_parts - 1];
+		}
+		return $x_display;
+	}
 
 
 	
