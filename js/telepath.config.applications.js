@@ -139,8 +139,8 @@ telepath.config.applications = {
 		contextmenu: { items: telepath.contextMenu },
 		grid: {
 			columns: [
-				{ width: 280-that.data.data.countWidth },
-				{ width: that.data.data.countWidth, value: "count", cellClass: "learning-so-far" },
+				{ width: 240 },
+				{ width: 40, value: "count", cellClass: "learning-so-far" },
 				{ value: function (node) {
 					return $('<div>').btn({ icon: 'edit', callback: function (tree) {
 						$nodeParent = tree.element.parents('[role="treeitem"]');
