@@ -269,7 +269,8 @@ $.widget( "tele.listitem", {
 							case 'user':
 								
 								if(detail.key && detail.key == 'user' && detail.value && detail.value != '') {
-									li.append(detail.key).append(':&nbsp;').append('<b>' + escapeHtml(detail.value) + '</b>');
+									var iconEl = $('<div>').addClass('tele-listitem-user-name');
+									li.append(iconEl).append('&nbsp&nbsp;').append(escapeHtml(detail.value));
 								} else {
 									li = false;
 								}
