@@ -49,7 +49,8 @@ telepath.alert = {
 					{ key: 'city', value: row.city },
 					{ key: 'host', value: telepath.alert.grabNames(row.host) },
 					{ key: 'actions', value: row.actions_count },
-					{ key: 'cases', value: row.cases_count }
+					{ key: 'cases', value: row.cases_count },
+					{ key: 'user', value: row.user }
 				]
 			}
 		};	

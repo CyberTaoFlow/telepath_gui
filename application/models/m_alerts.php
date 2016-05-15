@@ -424,6 +424,9 @@ class M_Alerts extends CI_Model {
 								"date" => [
 									"max" => [ "field" => "ts" ]
 								],
+								"user" =>[
+									"terms" => [ "field"=> "username" ]
+								],
 								"last_score" => [
 									"terms" => [
 										"field" => "ip_score",
@@ -460,7 +463,8 @@ class M_Alerts extends CI_Model {
 							"count"   => $doc_count,
 							"score"  => $sid['score']['value'],
 							"date"  => $sid['date']['value'],
-							'ip_score'=>$sid['last_score']['buckets'][0]['key']
+							'ip_score'=>$sid['last_score']['buckets'][0]['key'],
+							"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:'yossi'
 						);
 						$count_insert++;
 						if($count_insert >= $limit) {
