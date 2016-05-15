@@ -67,7 +67,7 @@ telepath.cases = {
 		});
 
 		// Update title + Create Add Button
-		this.panelTitle.html('Active Cases | ' + this.data.length + ' Cases');
+		this.panelTitle.html( this.data.length + ' Cases');
 		
 		// Bind resize hooks
 		setTimeout(function () {
@@ -109,8 +109,8 @@ telepath.cases = {
 		
 		panelTopBar.append(panelTitle).append(panelTopBarRight);
 		
-		panelTitle.html('Active Cases');
-		
+		//panelTitle.html('Active Cases');
+
 		this.panelTitle = panelTitle;
 		
 		var addBtn = $('<div>').btn({ icon: 'plus', text: 'New Case', callback: function () { 

@@ -134,20 +134,6 @@ class M_Applications extends CI_Model {
 
 	}
 
-	/*function delete($host) {
-		# Delete host from the application index, Yuli
-		$params['index'] = 'telepath-applications';
-		$params['type'] = 'application';
-                $params['body']['query']['match']['host'] = $host;
-		$results = $this->elasticClient->deleteByQuery($params);
-
-		# Delete all records where HTTP host is used the same ias $host, Yuli
-		$params = array();
-		$params['index'] = '_all';
-		$params['body']['query']['bool']['must']['term']['http.host'] = $host;
-		$results = $this->elasticClient->deleteByQuery($params);
-	}*/
-
 	function delete($host) {
 		# Delete host from the application index, Yuli
 		$params['index'] = 'telepath-domains';
@@ -162,16 +148,9 @@ class M_Applications extends CI_Model {
 		# Delete all records where HTTP host is used the same ias $host, Yuli
 		$params = array();
 		$params['index'] = '_all';
+//		$params['type'] = 'http';
 		$params['body']['query']['bool']['must']['term']['host'] = $host;
-		$results = get_elastic_results($this->elasticClient->search($params));
-
-		foreach ($results as $res){
-			$params=[];
-			$params['index'] = $res['index'];
-			$params['type'] = $res['type'];
-			$params['id']=$res['uid'];
-			$this->elasticClient->delete($params);
-		}
+		delete_by_query($this->elasticClient, $params, 1);
 	}
 
 	function get($host)
@@ -201,11 +180,10 @@ class M_Applications extends CI_Model {
 		if (!$exists) {
 			$app['AppCookieName'] = '';
 			$app['app_ips'] = '';
-			$app['operation_mode_id'] = '';
+			$app['operation_mode'] = '';
 			$app['move_to_production'] = '';
-			$app['eta_id'] = '';
-			$app['app_ips'] = '';
-			$app['form_authentication_redirect_response_range'] = '';
+			$app['eta'] = '';
+//			$app['form_authentication_redirect_response_range'] = '';
 			$app['host'] = $host;
 			$app['cookie_suggestion'] = ['PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS'];
 		} else {
@@ -227,21 +205,21 @@ class M_Applications extends CI_Model {
 			if (!isset($app['app_ips'])) {
 				$app['app_ips'] = '';
 			}
-			if (!isset($app['operation_mode_id'])) {
-				$app['operation_mode_id'] = '';
+			if (!isset($app['operation_mode'])) {
+				$app['operation_mode'] = '';
 			}
 			if (!isset($app['move_to_production'])) {
 				$app['move_to_production'] = '';
 			}
-			if (!isset($app['eta_id'])) {
-				$app['eta_id'] = '';
+			if (!isset($app['eta'])) {
+				$app['eta'] = '';
 			}
 			if (!isset($app['app_ips'])) {
 				$app['app_ips'] = '';
 			}
-			if (!isset($app['form_authentication_redirect_response_range'])) {
-				$app['form_authentication_redirect_response_range'] = '';
-			}
+//			if (!isset($app['form_authentication_redirect_response_range'])) {
+//				$app['form_authentication_redirect_response_range'] = '';
+//			}
 			if (isset($app['cookie_suggestion'])) {
 				if (is_array($app['cookie_suggestion']))
 					array_push($app['cookie_suggestion'], 'PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS');
@@ -333,7 +311,7 @@ class M_Applications extends CI_Model {
 			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
 
-		$results = get_source($this->elasticClient->search($params));
+		$results = get_app_source($this->elasticClient->search($params),$learning_so_far);
 
 
 //		$ans1 = [];
@@ -442,18 +420,14 @@ class M_Applications extends CI_Model {
 	function get_search($search, $mode) {
 
 		$params['index'] = 'telepath-20*';
+		$params['type']='http';
 
 		if ($mode == 'page')
 			$field = "uri";
 		if ($mode == 'param')
 			$field = "parameters.name";
-
+		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
 		$params['body'] = [
-			'partial_fields' => [
-				"_src" => [
-					"include" => ["host", "uri", "parameters.name", "parameters.type"]
-				],
-			],
 			'size'   => 9999,
 			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
@@ -469,7 +443,7 @@ class M_Applications extends CI_Model {
 		$search = strtolower($search);
 
 		foreach($results['hits']['hits'] as $res) {
-			$result = $res['fields']['_src'][0];
+			$result = $res['_source'];
 
 			$hash = crc32(serialize($result));
 			if(isset($out[$hash])) { continue; }

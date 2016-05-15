@@ -54,7 +54,7 @@ class M_Actions extends CI_Model {
 		$ans = [];
 		if (!empty($results['hits']['hits'])) {
 			foreach ($results['hits']['hits'] as $hit) {
-				$fields = $hit['fields']['_src'][0];
+				$fields = $hit['_source'];
 				$ans[] = array('key' => $fields['application'] . ' :: ' . $fields['action_name'], 'raw' => $fields);
 			}
 		}
@@ -75,7 +75,7 @@ class M_Actions extends CI_Model {
 
 		$results = $this->elasticClient->search($params);
 
-		$results=get_source($results);
+		$results=get_app_source($results);
 
 //		$results = array_map(function($result) {
 //			return array(
@@ -115,7 +115,7 @@ class M_Actions extends CI_Model {
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
 		$params['body']['query']['match']['domain'] = '192.168.1.111';
-		$res = $this->client->deleteByQuery($params);
+                delete_by_query($this->client, $params);
 	}
 
 	function get_app_actions($host){
@@ -145,7 +145,8 @@ class M_Actions extends CI_Model {
 		$params['type'] = 'actions';
 		$params['body']['query']['bool']['must'][] = ['term' => ['action_name' => $name]];
 		$params['body']['query']['bool']['must'][] = ['term' => ['application' => $app]];
-		$res = $this->client->deleteByQuery($params);
+		#$res = $this->client->deleteByQuery($params);
+                delete_by_query($this->client, $params);
 
 		// Insert new
 		$params = ['body' => $new_json, 'index' => 'telepath-actions', 'type' => 'actions'];

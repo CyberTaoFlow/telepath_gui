@@ -50,11 +50,11 @@ class M_Alerts extends CI_Model {
 			$query='';
 
 			if (count($filter)>1){
-				$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+				$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 			}
 
 			elseif (count($filter)==1&&$filter!=false){
-				$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+				$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 			}
 
 
@@ -125,11 +125,11 @@ class M_Alerts extends CI_Model {
 		$query='';
 
 		if (count($filter)>1){
-			$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 		}
 
 		elseif (count($filter)==1&&$filter!=false){
-			$query.='alerts.name:("'.implode('") OR ("',$filter).'")';
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 		}
 
 
@@ -235,7 +235,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts($variable, $val, $sort, $sortorder, $start, $limit = 100, $filter, $range = array(), $apps = array(), $search = '', $filter2=[]) {
+	public function get_alerts(/*$variable, $val,*/ $sort, $sortorder, $start, $limit = 100, $range = array(), $apps = array(), $search = '', $filter=[]) {
 		
 		switch($sort) {
 		
@@ -246,14 +246,15 @@ class M_Alerts extends CI_Model {
 				$sortfield = 'alerts_count';
 			break;
 			case 'type':
-				$sortfield = 'alerts_names';
 				$sortfield = 'alerts_count';
 			break;
 			default:
 				$sortfield = 'alerts_count';
 			break;
 		}
-		
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -306,14 +307,15 @@ class M_Alerts extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
+						[ 'exists' => [ 'field' => 'alerts' ] ],
 					]
 				],
 			],
 		];
 		
-		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
-		
+//		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
+
+
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
@@ -325,17 +327,17 @@ class M_Alerts extends CI_Model {
 		global $query;
 		$query='';
 
-		if (count($filter2)>1){
-			$query.='alerts.name:("'.implode('") OR ("',$filter2).'")';
+		if (count($filter)>1){
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 			}
 		
-		elseif (count($filter2)==1&&$filter2!=false){
-			$query.='alerts.name:("'.implode('") OR ("',$filter2).'")';
+		elseif (count($filter)==1&&$filter!=false){
+			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
 		}
 
 		if($search && strlen($search) > 1) {
 
-			if (count($filter2)>0 &&$filter2!=false){
+			if (count($filter)>0 &&$filter!=false){
 				$query.=' AND ('.$search.')';
 			}
 			else{
@@ -344,7 +346,7 @@ class M_Alerts extends CI_Model {
 		}
 
 		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
+			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND',"lowercase_expanded_terms"=>false ] ];
 
 		if ($sortfield == "date")
 		{
@@ -411,7 +413,7 @@ class M_Alerts extends CI_Model {
 									"terms" => [ "field" => "alerts.name", "size" => 10 ]
 								],
 								"cases_names" => [
-									"terms" => [ "field" => "cases.name", "size" => 10 ]
+									"terms" => [ "field" => "cases_name", "size" => 10 ]
 								],
 								"actions_count" => [
 									"sum" => [ "field" => "business_actions_count" ]

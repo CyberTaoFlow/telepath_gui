@@ -88,7 +88,7 @@ telepath.alert = {
 				return telepath.actionList[x].name;
 			}
 		}
-		return 'Surfing';
+		return 'Browsing';
 		
 	},
 	lookupRequest: function(RID) { // Request for RID or false if not found

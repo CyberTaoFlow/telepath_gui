@@ -34,10 +34,10 @@ class Alerts extends Tele_Controller
         $apps = $this->_get_apps();
 
         // Prep filter
-        $filter = array();
+//        $filter = array();
 
         // Alerts Data
-        $alerts = $this->M_Alerts->get_alerts(false, false, $sort, $dir, $offset, 15, $filter, $range, $apps, $search, $filters);
+        $alerts = $this->M_Alerts->get_alerts(/*false, false,*/ $sort, $dir, $offset, 15, /*$filter*/ $range, $apps, $search, $filters);
 
         if ($offset > 0) {
             // We need just the alert items

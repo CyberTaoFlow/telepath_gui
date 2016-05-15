@@ -170,8 +170,8 @@ telepath.search = {
         var tabs = [
             {id: 'alerts', text: 'Alerts'},
             {id: 'cases', text: 'Cases'},
-            {id: 'suspects', text: 'Suspicions'},
-            {id: 'requests', text: 'Other Sessions'},
+            {id: 'suspects', text: 'Suspects'},
+            {id: 'requests', text: 'Normal'},
         ];
 
         // Tab Print

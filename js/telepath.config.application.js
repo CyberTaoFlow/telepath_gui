@@ -26,6 +26,12 @@ telepath.config.application = {
 			return false;
 		}
 
+
+		// Added automatically toggle
+		app_data.top_level_domain = this.TopLevelDomainAppToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
+
+
+
 		//Operation Mode ID
 
 		var selected_opmod = this.opmod.data('tele-teleRadios').options.checked;
@@ -35,7 +41,7 @@ telepath.config.application = {
 			case 'hybrid':     app_data.operation_mode = 3; break;
 
 		}
-		
+
 		app_data.move_to_production = $('input', this.move_to_production).val();
 		
 		// DISPLAY NAME
@@ -117,9 +123,9 @@ telepath.config.application = {
 			case 'Digest':
 				app_data.digest_flag = 1;
 			break;
-			default:
-				// By default automatic mode is selected
-			break;
+			//default:
+			//	// By default automatic mode is selected
+			//break;
 		}
 
 		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
@@ -136,14 +142,21 @@ telepath.config.application = {
 		app_data.cookie_value_appearance = this.SC_cookie_flag.data('teleTeleRadios').options.checked == 'appears' ? 1 : 0;
 
 		// Success Criteria -- Redirect
-		app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
-		app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
-		//app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
-		app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
+		//app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+		//app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
+		////app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
+		//app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
 
 		// Success Criteria -- Body Value
 		app_data.body_value_mode = this.SC_body_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.body_value_html = this.SC_body_input.data('tele-teleInput').input.val();
+
+		if(that.app_id=='new'){
+			app_data.learning_so_far='0';
+			app_data.subdomains='';
+			app_data.eta='1d 0h 0m';
+		}
+
 
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
 			telepath.config.applications.reload();
@@ -254,14 +267,17 @@ telepath.config.application = {
                                 form_param_id: '',
                                 ntlm: 0,
                                 basic_flag: 0,
-                                form_flag: 0,
+                                form_flag: 1,
                                 digest_flag: 0,
                                 cookie_mode: 0,
                                 cookie_name: '',
                                 cookie_value: '',
                                 ssl_flag: 0,
                                 AppCookieName: '',
-                                redirect_status_code: ''
+                                //redirect_status_code: '',
+								operation_mode: '1',
+								eta: '1d 0h 0m',
+								top_level_domain: '1'
 		};
 	
 		if(app_id == 'new') {
@@ -351,6 +367,9 @@ telepath.config.application = {
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
 		this.container.append(this.c_mode);
 
+		$('<div>').addClass('tele-title-1 ').html('Top Level Domain').appendTo('#tele-app-details');
+		this.TopLevelDomainAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: that.app_data.top_level_domain=='1' }).addClass('tele-TopLevelDomainApp-toggle').appendTo('#tele-app-details');
+
 		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
 		var selected_opmod = '';
@@ -362,9 +381,7 @@ telepath.config.application = {
 
 		this.app_operation=$('<div>').appendTo('#tele-app-details').css({'width': '300px'});
 
-		if(that.app_data.eta){
-			this.eta=$('<p>').html('ETA: ' + that.app_data.eta).appendTo(this.app_operation).css({'margin-bottom':'10px'});
-		}
+		this.eta = $('<div>').html('ETA: ' + that.app_data.eta);
 
 		this.opmod = $('<div>').teleRadios({
 			checked: selected_opmod,
@@ -380,6 +397,8 @@ telepath.config.application = {
 					that.eta.hide();
 				}
 			}}).addClass('tele-config-opmod').appendTo(this.app_operation);
+
+		this.eta.appendTo(this.app_operation).css({float: 'left',clear: 'both','margin-top': '5px'});
 
 
 
@@ -473,26 +492,29 @@ telepath.config.application = {
 			.css({ position: 'absolute', top: 100, left: 300 });
 		
 		
-		var userID_val = 'Automatic';
+		var userID_val = 'Form';
 		if(telepath.config.application.app_data.ntlm == '1') {
 			userID_val = 'NTLM';
 		}
 		if(telepath.config.application.app_data.basic_flag == '1') {
 			userID_val = 'Basic';
 		}
-		if(telepath.config.application.app_data.form_flag == '1') {
-			userID_val = 'Form';
-			this.usernameParameter.show();
-		}
+		//if(telepath.config.application.app_data.form_flag == '1') {
+		//	userID_val = 'Form';
+		//}
 		if(telepath.config.application.app_data.digest_flag == '1') {
 			userID_val = 'Digest';
 		}
-		
+		if(userID_val = 'Form'){
+			this.usernameParameter.show();
+		}
+
+
 		this.userIdentification = $('<div>').teleRadios({
 			title: 'Authentication',
 			checked: userID_val,
 			radios: [ 
-				{ key: 'Automatic', label: 'Automatic' }, 
+				//{ key: 'Automatic', label: 'Automatic' },
 				{ key: 'Form', label: 'Form' },
 				{ key: 'Basic', label: 'Basic' },
 				{ key: 'Digest', label: 'Digest' },
@@ -570,35 +592,35 @@ telepath.config.application = {
 		
 		// SC_redirect
 				
-		this.SC_redirect_browse = $('<div>').teleBrowse({
-			label: 'Page', value: that.app_data.redirect_page, id: that.app_data.host, type: 'page' });
-		this.SC_redirect_range  = $('<div>').teleInput({ label: 'Response status',
-			value: that.app_data.redirect_status_code , type:'number' ,range:{min:200, max:600} });
-
-		//this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.redirect_mode == '1' });
-		this.SC_redirect_toggle = $('<div>').teleRadios({
-			title: 'Redirect',
-			checked: that.app_data.redirect_mode == '1' ? 'On' : 'Off',
-			radios: [
-				{ key: 'On', label: 'On' },
-				{ key: 'Off', label: 'Off' },
-			], callback: function(radio) {
-
-				that.SC_redirect_browse.hide();
-				that.SC_redirect_range.hide();
-				 switch(radio.key) {
-				 case 'On':
-					 that.SC_redirect_browse.show();
-					 that.SC_redirect_range.show();
-				 break;
-				 }
-
-			}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
-
-
-		SC_wrap.append(this.SC_redirect_toggle).append(this.SC_redirect_browse).append(this.SC_redirect_range);
-		
-		SC_wrap.append('<div class="tele-form-hr">');
+		//this.SC_redirect_browse = $('<div>').teleBrowse({
+		//	label: 'Page', value: that.app_data.redirect_page, id: that.app_data.host, type: 'page' });
+		//this.SC_redirect_range  = $('<div>').teleInput({ label: 'Response status',
+		//	value: that.app_data.redirect_status_code , type:'number' ,range:{min:200, max:600} });
+        //
+		////this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.redirect_mode == '1' });
+		//this.SC_redirect_toggle = $('<div>').teleRadios({
+		//	title: 'Redirect',
+		//	checked: that.app_data.redirect_mode == '1' ? 'On' : 'Off',
+		//	radios: [
+		//		{ key: 'On', label: 'On' },
+		//		{ key: 'Off', label: 'Off' },
+		//	], callback: function(radio) {
+        //
+		//		that.SC_redirect_browse.hide();
+		//		that.SC_redirect_range.hide();
+		//		 switch(radio.key) {
+		//		 case 'On':
+		//			 that.SC_redirect_browse.show();
+		//			 that.SC_redirect_range.show();
+		//		 break;
+		//		 }
+        //
+		//	}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
+        //
+        //
+		//SC_wrap.append(this.SC_redirect_toggle).append(this.SC_redirect_browse).append(this.SC_redirect_range);
+		//
+		//SC_wrap.append('<div class="tele-form-hr">');
 		
 		// SC_body
 		

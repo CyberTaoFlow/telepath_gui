@@ -456,9 +456,9 @@ telepath.sessionflow = {
 	},
 	appendItem: function (req) {
 		
-		if(this.lastAction == -1 || (req.business_actions && (req.business_actions[0].name != this.lastAction || req.business_actions[0].status == 2)) || (!req.business_actions && this.lastAction != -1 && this.lastAction != 'Surfing')) {
+		if(this.lastAction == -1 || (req.business_actions && (req.business_actions[0].name != this.lastAction || req.business_actions[0].status == 2)) || (!req.business_actions && this.lastAction != -1 && this.lastAction != 'Browsing')) {
 				
-			var action_name = req.business_actions ? req.business_actions[0].name : 'Surfing';
+			var action_name = req.business_actions ? req.business_actions[0].name : 'Browsing';
 			
 			this.actionContainer      = $('<div>').addClass('tele-alert-action');
 			this.actionContainerIcon  = $('<div>').addClass('tele-alert-action-icon').addClass('tele-icon').addClass('tele-icon-suspect');
@@ -544,7 +544,7 @@ telepath.sessionflow = {
 				return telepath.actionList[x].name;
 			}
 		}
-		return 'Surfing';
+		return 'Browsing';
 		
 	},
 	lookupSimilarity: function(RID) {
@@ -875,7 +875,7 @@ telepath.sessionflow = {
 		}
 
 		var link = $('<a>').attr('target', '_blank').text(path).attr('href', escapeHtml(path)).attr('title' ,path);
-		var action = request.business_id ? this.lookupAction(request.business_id) : 'Surfing';
+		var action = request.business_id ? this.lookupAction(request.business_id) : 'Browsing';
 		container.append(link);
 		container.append('&nbsp;(' + action + ')');
 	

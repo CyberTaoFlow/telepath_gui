@@ -573,7 +573,7 @@ telepath.config.system = {
 		
 		this.telepathEngineToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.engine_mode_id == '1', flip: function (value) {
 			
-			telepath.ds.get('/telepath/set_engine_' + (value ? 'start' : 'stop'), { }, function (data) {
+			telepath.ds.get('/telepath/set_engine_' + (value ? 'start' : 'restart'), { }, function (data) {
 			
 			});
 		

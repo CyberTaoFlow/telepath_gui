@@ -79,48 +79,31 @@ telepath.listitem.generic = {
 			
 			telepath.sessionflow.init(widget.options.itemID, widget.options.raw.ip_orig, parent_parent , widget.options.icon, names, widget.options.raw.searchkey);
 		},
-		hover_in: function(el, item) {
-			
-			telepath.generic_popover_loading = true;
-			setTimeout(function () {
-				telepath.generic_popover_loading = false;
-			}, 1000);
-			if(telepath.generic_popover_timer) {
+		hover_in: function (el, item) {
+
+			//console.log(item);
+			if (!item) {
+				return;
+			}
+			//telepath.generic_popover_loading = true;
+			//setTimeout(function () {
+			//	telepath.generic_popover_loading = false;
+			//}, 1000);
+			if (telepath.generic_popover_timer) {
 				clearTimeout(telepath.generic_popover_timer);
 			}
 			$('.popover').remove();
-			if(telepath.generic_popover) {
+
+			if (telepath.generic_popover) {
 				telepath.generic_popover.remove();
 			}
 			telepath.generic_popover = $('<div>');
 			$('body').append(telepath.generic_popover);
-			$(telepath.generic_popover).css({
-					position: 'absolute',
-					top: $(el).offset().top + 25,
-					left: $(el).offset().left + 70
-			}).fadeIn().popover({
-				title: 'Loading anomaly scores..',
-				html: true,
-				content: telepath.loader
-			}).popover('show');
 
-			//console.log(item);
-			if (!item)
-			{
-				return;
-			}
+			if ($(el).hasClass('tele-icon-alert') && item.raw.alerts_count && item.raw.alerts_count > 0 && item.raw.alerts_names && item.raw.alerts_names.length > 0) {
 
-			if(item.raw.alerts_count && item.raw.alerts_count > 0 && item.raw.alerts_names && item.raw.alerts_names.length > 0) {
 
-				$('.popover').remove();
-
-				telepath.generic_popover.remove();
-
-				telepath.generic_popover = $('<div>');
-
-				$('body').append(telepath.generic_popover);
-
-				var alerts_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Alerts');
+				//	var alerts_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Alerts');
 				var alerts_content = $('<div>').addClass('popover-content');
 
 				$.each(item.raw.alerts_names, function (i, x) {
@@ -136,44 +119,63 @@ telepath.listitem.generic = {
 				$(telepath.generic_popover).css({
 					position: 'absolute',
 					top: $(el).offset().top - 45,
-					left: $(el).offset().left + 70
+					left: $(el).offset().left + 40
 				}).fadeIn().popover({
-					title: 'Loading anomaly scores..',
+					title: 'Alerts',
 					html: true,
-					content: telepath.loader
+					//content: telepath.loader
 				}).popover('show');
-				$('.popover').append(alerts_title).append(alerts_content);
-				var top = ( $('.popover').height() / 2 - 25);
+				$('.popover').append(alerts_content);
+				var top = ( $('.popover').height() / 2);
 				if (top) {
 					$('.popover').css({
 						position: 'absolute',
 						top: $(el).offset().top - top,
-						left: $(el).offset().left + 70
+						left: $(el).offset().left + 40
 					})
 				}
 			}
-			if(item.raw.actions_count && item.raw.actions_count > 0 && item.raw.actions_names && item.raw.actions_names.length > 0) {
+			if ($(el).hasClass('tele-icon-actions') && item.raw.actions_count && item.raw.actions_count > 0 && item.raw.actions_names && item.raw.actions_names.length > 0) {
 
-				var actions_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Actions');
+				//var actions_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Actions');
 				var actions_content = $('<div>').addClass('popover-content');
 
 				$.each(item.raw.actions_names, function (i, x) {
 
 					var row = $('<div>').addClass('tele-popover-row')
-										.append($('<div>').addClass('tele-icon').addClass('tele-icon-actions'))
-										.append($('<div>').addClass('tele-count').text(x.doc_count))
-										.append($('<div>').addClass('tele-popover-subtitle').html(x.key));
+						.append($('<div>').addClass('tele-icon').addClass('tele-icon-actions'))
+						.append($('<div>').addClass('tele-count').text(x.doc_count))
+						.append($('<div>').addClass('tele-popover-subtitle').html(x.key));
 
 					actions_content.append(row);
 
 				});
 
-				$('.popover').append(actions_title).append(actions_content);
+				$(telepath.generic_popover).css({
+					position: 'absolute',
+					top: $(el).offset().top - 45,
+					left: $(el).offset().left + 40
+				}).fadeIn().popover({
+					title: 'Actions',
+					html: true,
+					//content: telepath.loader
+				}).popover('show');
+
+				$('.popover').append(actions_content);
+
+				var top = ( $('.popover').height() / 2);
+				if (top) {
+					$('.popover').css({
+						position: 'absolute',
+						top: $(el).offset().top - top,
+						left: $(el).offset().left + 40
+					})
+				}
 
 			}
-			if(item.raw.cases_count && item.raw.cases_count > 0 && item.raw.cases_names && item.raw.cases_names.length > 0) {
+			if ($(el).hasClass('tele-icon-case') && item.raw.cases_count && item.raw.cases_count > 0 && item.raw.cases_names && item.raw.cases_names.length > 0) {
 
-				var cases_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Cases');
+				//var cases_title = $('<h3>').addClass('popover-title').addClass('not-round').html('Cases');
 				var cases_content = $('<div>').addClass('popover-content');
 
 				$.each(item.raw.cases_names, function (i, x) {
@@ -183,35 +185,61 @@ telepath.listitem.generic = {
 						.append($('<div>').addClass('tele-count').text(x.doc_count))
 						.append($('<div>').addClass('tele-popover-subtitle').html(x.key));
 
-				cases_content.append(row);
+					cases_content.append(row);
 
 				});
 
-				$('.popover').append(cases_title).append(cases_content);
+				$(telepath.generic_popover).css({
+					position: 'absolute',
+					top: $(el).offset().top - 45,
+					left: $(el).offset().left + 40
+				}).fadeIn().popover({
+					title: 'Cases',
+					html: true,
+					//content: telepath.loader
+				}).popover('show');
+
+				$('.popover').append(cases_content);
+
+				var top = ( $('.popover').height() / 2);
+				if (top) {
+					$('.popover').css({
+						position: 'absolute',
+						top: $(el).offset().top - top,
+						left: $(el).offset().left + 40
+					})
+				}
 
 			}
 
-			telepath.ds.get('/sessionflow/get_session_stats', { sid: item.itemID }, function (data) {
+			if ($(el).hasClass('tele-listitem-progbar')) {
 
-
-
-				$('.popover-title:first').html('Anomaly Scores');
-				$('.popover-content .tele-loader').after($('<div>').anomalyScore({ request: data.items })).remove();
-				$('.popover').css({
+				$(telepath.generic_popover).css({
 					position: 'absolute',
-					top: $(el).offset().top - ($('.popover').height()/2-25),
-					left: $(el).offset().left + 70
-				})
-			});
+					top: $(el).offset().top - 2,
+					left: $(el).offset().left + 100
+				}).fadeIn().popover({
+					title: 'Loading anomaly scores..',
+					html: true,
+					content: telepath.loader
+				}).popover('show');
+
+				telepath.ds.get('/sessionflow/get_session_stats', {sid: item.itemID}, function (data) {
+
+
+					$('.popover-title:first').html('Anomaly Scores');
+					$('.popover-content .tele-loader').after($('<div>').anomalyScore({request: data.items})).remove();
+				});
+			}
 
 		},
 		hover_out: function(el, item) {
-			if(telepath.generic_popover_loading) return;
+			//if(telepath.generic_popover_loading) return;
 			telepath.generic_popover_timer = setTimeout(function () {
 				$('.popover').fadeOut(function () {
 					$('.popover').remove();
 				});
-			}, 1000);
+			}, 500);
 		},
 		favorite: function(widget) {
 				

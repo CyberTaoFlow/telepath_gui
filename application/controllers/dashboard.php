@@ -52,7 +52,12 @@ class Dashboard extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
 
-        $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
+       // $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
+
+        $this->load->model('M_Suspects');
+        $suspects= $this->M_Suspects->get($range, $apps, $sort, $dir, 0, 5);
+
+
 
         $data = array('suspects' => $suspects);
 
@@ -70,7 +75,10 @@ class Dashboard extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
 
-        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
+//        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
+
+        $this->load->model('M_Alerts');
+        $alerts = $this->M_Alerts->get_alerts(/*false, false,*/ $sort, $dir, 0, 5, $range, $apps);
 
         $data = array('alerts' => $alerts);
 
@@ -85,7 +93,37 @@ class Dashboard extends Tele_Controller
         $range = $this->_get_range();
         $apps = $this->_get_apps();
 
-        $cases = $this->M_Dashboard->get_cases($range, $apps);
+//        $cases = $this->M_Dashboard->get_cases($range, $apps);
+
+        $this->load->model('M_Cases');
+
+        $all = $this->M_Cases->get_case_data('all');
+
+        if(empty($all)){
+            return_success();
+        }
+
+        $res0 = $this->M_Cases->get(100, $range, $apps);
+        $cases = array();
+
+        if (!isset($all[0])){
+            $all=array($all);
+        }
+        foreach ($all as $tmp) {
+
+            $found = false;
+            foreach ($res0 as $case) {
+                if ($case['name'] == $tmp['case_name']) {
+                    $found = true;
+                    $cases[] = $case;
+                    break;
+                }
+            }
+
+            if ($found == false) {
+                $cases[] = array('name' => $tmp['case_name'], 'count' => 0, 'checkable' => false, 'case_data' => $tmp);
+            }
+        }
         # Make sure we have only 5 cases in the dashboard report, Yulli
         $result=[];
         foreach ($cases as $case){
@@ -93,7 +131,7 @@ class Dashboard extends Tele_Controller
                 $result[]=$case;
             }
         }
-        if (count($result)<5&& count($result)>0){
+        if (count($result)<5 && count($result)>0){
             foreach ($cases as $case){
                 foreach ($result as $res) {
                     if ($case['name'] != $res['name'] && count($result) < 5) {

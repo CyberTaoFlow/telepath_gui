@@ -229,6 +229,11 @@ $.widget( "tele.teleRule", {
 						});
 						
 						json.method = json.method.substr(0, json.method.length - 1);
+
+						// Nothing checked
+						if(json.method.length<1){
+							json.method='Request';
+						}
 					
 
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
@@ -715,12 +720,15 @@ $.widget( "tele.teleRule", {
 					], callback: function(radio) {
 					
 					if(radio.key == 'Request' || radio.key == 'Title' || radio.key == 'Uri') {
-						$('.tele-string-inspection .tele-radio-wrap').hide();
-						$('.tele-string-inspection .tele-radio-radio[rel="regex"]').parent().show();
-						$('.tele-string-inspection .tele-radio-radio[rel="regex"]').click();
+
+						inspectionType.children('.tele-radio-wrap').hide();
+						inspectionType.find('.tele-radio-radio[rel="regex"]').parent().show();
+						inspectionType.find('.tele-radio-radio[rel="regex"]').click();
 						// Display stringmatch when user is creating title match rule, Yuli
-						$('.tele-string-inspection .tele-radio-radio[rel="stringmatch"]').parent().show();
-						
+						inspectionType.find('.tele-radio-radio[rel="stringmatch"]').parent().show();
+
+
+
 						if(radio.key == 'Title' || radio.key == 'Uri') {
 							requestWRAP.hide();
 						} else {
@@ -730,7 +738,7 @@ $.widget( "tele.teleRule", {
 						paramWRAP.hide();
 						
 					} else {
-						$('.tele-string-inspection .tele-radio-wrap').show();
+						inspectionType.children('.tele-radio-wrap').show();
 						requestWRAP.hide();
 						paramWRAP.show();
 					}
@@ -994,7 +1002,7 @@ $.widget( "tele.teleRule", {
 										
 						case 'stringmatch':
 						
-							$('.tele-string-inspection .tele-radio-radio[rel="stringmatch"]').click();
+							inspectionType.find('.tele-radio-radio[rel="stringmatch"]').click();
 							$('input', r_contains_input).val(data.str_match);
 							if(data.not_signal) {
 								$('.tele-checkbox-checkbox', r_contains_check).click();
@@ -1004,7 +1012,7 @@ $.widget( "tele.teleRule", {
 						break;
 						case 'regex':
 							
-							$('.tele-string-inspection .tele-radio-radio[rel="regex"]').click();
+							inspectionType.find('.tele-radio-radio[rel="regex"]').click();
 							$('input', r_regex_input).val(data.str_match);
 							if(data.not_signal) {
 								$('.tele-checkbox-checkbox', r_regex_check).click();
@@ -1013,20 +1021,22 @@ $.widget( "tele.teleRule", {
 						break;
 						case 'fuzzylength':
 							
-							$('.tele-string-inspection .tele-radio-radio[rel="fuzzylength"]').click();
+							inspectionType.find('.tele-radio-radio[rel="fuzzylength"]').click();
 							r_fuzzy_list.val(data.str_length);
 						
 						break;
 						case 'exactlength':
 							
-							$('.tele-string-inspection .tele-radio-radio[rel="exactlength"]').click();
+							inspectionType.find('.tele-radio-radio[rel="exactlength"]').click();
+
 							$('input', r_len_input).attr('value', data.str_length);
 							// r_len_slider_div.data('ui-slider').option('value', data.str_length)
 						
 						break;
 						case 'rangelength':
 							
-							$('.tele-string-inspection .tele-radio-radio[rel="rangelength"]').click();
+							inspectionType.find('.tele-radio-radio[rel="rangelength"]').click();
+
 							var tmp = data.str_length.split("-");
 							$('input', r_bet_input).attr('value', data.str_length);
 							// r_bet_slider.data('ui-slider').option('values', [tmp[0], tmp[1]]);
@@ -1034,20 +1044,23 @@ $.widget( "tele.teleRule", {
 						break;
 						case 'distance':
 							
-							$('.tele-string-inspection .tele-radio-radio[rel="distance"]').click();
+							inspectionType.find('.tele-radio-radio[rel="distance"]').click();
+
 							$('input', r_sim_input).attr('value', data.str_length);
 							// r_sim_slider.data('ui-slider').option('value', data.str_similarity);
 						
 						break;
 						default: 
 							
-							$('.tele-string-inspection .tele-radio-radio[rel="heuristic"]').click();
-							
-						break;
+							inspectionType.find('.tele-radio-radio[rel="heuristic"]').click();
+
+
+							break;
 						
 						}
 					} else {
-						$('.tele-string-inspection .tele-radio-radio[rel="heuristic"]').click();
+						inspectionType.find('.tele-radio-radio[rel="heuristic"]').click();
+
 					}
 				
 				}

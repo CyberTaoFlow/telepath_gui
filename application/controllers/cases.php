@@ -33,13 +33,19 @@ class Cases extends Tele_Controller
         $apps = $this->_get_apps();
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $res0 = $this->M_Cases->get(100, $range, $apps ,$search);
-        $res = array();
+
 
         if(!$search ) {
             $search = 'all';
         }
         $all = $this->M_Cases->get_case_data($search);
+
+        if(empty($all)){
+            return_success();
+        }
+
+        $res0 = $this->M_Cases->get(100, $range, $apps ,$search);
+        $res = array();
 
         if (!isset($all[0])){
             $all=array($all);
@@ -47,7 +53,7 @@ class Cases extends Tele_Controller
         foreach ($all as $tmp) {
 
             $found = false;
-            foreach ($res0 as $case) {
+                foreach ($res0 as $case) {
                 if ($case['name'] == $tmp['case_name']) {
                     $found = true;
                     $res[] = $case;
@@ -56,7 +62,7 @@ class Cases extends Tele_Controller
             }
 
             if ($found == false) {
-                $res[] = array('name' => $tmp['case_name'], 'count' => 0, 'data' => $tmp['details'], 'case_data' => $tmp);
+                $res[] = array('name' => $tmp['case_name'], 'count' => 0, 'case_data' => $tmp);
             }
         }
 
@@ -69,15 +75,15 @@ class Cases extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $now = $this->db->query('SELECT UNIX_TIMESTAMP() as ts')->row_array();
-        $now = $now['ts'];
+//        $now = $this->db->query('SELECT UNIX_TIMESTAMP() as ts')->row_array();
+//        $now = $now['ts'];
 
         $cid = $this->input->post('cid');
         // 7 day range
-        $range = array(
-            'start' => $now - (3600 * 24 * 7),
-            'end' => $now
-        );
+//        $range = array(
+//            'start' => $now - (3600 * 24 * 7),
+//            'end' => $now
+//        );
 
         $range = $this->_get_range();
         $apps = $this->_get_apps();
@@ -116,14 +122,44 @@ class Cases extends Tele_Controller
         // Contains requests data to display
         $ans = array();
 
-        $requests = $this->M_Cases->get_case_sessions(100, $range, $apps, $cid);
+        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps);
+        $similars = $this->M_Cases->get_similar_case_sessions($cid);
        // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
+
+        unset($requests['requests']);
 
         $ans = array_merge($ans, $requests);
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
         $ans['case'] = array('case_data' => $this->M_Cases->get_case_data($cid));
+        $ans['similars']=$similars;
 
         return_json($ans);
+
+    }
+
+    public function store_similar_case_sessions($cases = [])
+    {
+        telepath_auth(__CLASS__, __FUNCTION__);
+
+        if (empty ($cases)) {
+            logger('Start','/var/log/store_similar_case_sessions.log');
+            $cases = [];
+            $cases_data = $this->M_Cases->get_case_data('all');
+            foreach ($cases_data as $case) {
+                $cases[] = $case['case_name'];
+            }
+        }
+
+        foreach ($cases as $cid) {
+            $requests = $this->M_Cases->get_case_sessions(100, $cid);
+            if (!empty($requests['requests'])) {
+                $similars = $this->M_Cases->get_similar_sessions($requests['requests'], $cid);
+                $this->M_Cases->store_similar_case_sessions($similars, $cid);
+                logger('Finish to update similar sessions for case: '.$cid);
+            }
+        }
+
+        logger('End of the process');
 
     }
 
@@ -181,7 +217,7 @@ class Cases extends Tele_Controller
         }
 
         // Create
-        $cid = $this->M_Cases->create($name, json_decode($case, true));
+        $this->M_Cases->create($name, json_decode($case, true));
         //not used
 //        $this->M_Config->update('case_list_was_changed', 1);
 
@@ -196,7 +232,17 @@ class Cases extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
         $cids = $this->input->post('cids');
+
+        // Cast to array in case of 1 item
+        if (!is_array($cids)) {
+            $cids = array($cids);
+        }
+
         $this->M_Cases->delete($cids);
+
+        foreach ($cids as $cid) {
+            $this->M_Cases->delete_similar_case_sessions($cid);
+        }
         //not used
 //        $this->M_Config->update('case_list_was_changed', 1);
 
@@ -225,8 +271,21 @@ class Cases extends Tele_Controller
             $method = 'add';
         }
 
+        if($cases!='all' && $method != 'delete' && !$range){
+            register_shutdown_function([$this->M_Cases, 'remove_update_flag'],$cases[0]);
+        }
+
 
         $this->M_Cases->flag_requests_by_cases($cases,$range, $method);
+
+        if (!$range && $method!='delete'){
+            $this->store_similar_case_sessions($cases);
+        }
+
+        if(!$range){
+            return_success();
+        }
+
     }
 
 }

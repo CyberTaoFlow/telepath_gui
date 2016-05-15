@@ -1207,9 +1207,9 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 	background-color: #222222;
 }
 
-.tele-panel-case .tele-list {
-	padding: 20px 20px;
-}
+/*.tele-panel-case .tele-list {*/
+	/*padding: 20px 20px;*/
+/*}*/
 
 /* Anomaly Score Widget */
 .tele-anomaly-score {

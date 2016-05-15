@@ -223,7 +223,7 @@ telepath.alerts = {
 		});
 
 		// Update title + Create Add Button
-		this.panelTitle.html('Active Alerts | ' + data.alerts.count + ' Alerts');
+		this.panelTitle.html( data.alerts.count + ' Sessions');
 		
 		if(parseInt(data.alerts.count) == 0) {
 			return;

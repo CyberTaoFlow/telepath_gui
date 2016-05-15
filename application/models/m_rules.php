@@ -22,9 +22,10 @@ class M_Rules extends CI_Model {
 		$params['body']['query']['bool']['must'][] = ['match' => ['name' => $name]];
 		$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
 
-		$results = $this->elasticClient->deleteByQuery($params);
+		#$results = $this->elasticClient->deleteByQuery($params);
+		delete_by_query($this->elasticClient, $params, 1);
 
-			// Generic cases query
+		// Generic cases query
 		$params = [];
 		$params['index'] = 'telepath-config';
 		$params['type']  = 'cases';
@@ -125,7 +126,8 @@ class M_Rules extends CI_Model {
 		}
 		// var_dump(json_encode($data));
 		//return;
-		$res = $this->elasticClient->deleteByQuery($query);
+		#$res = $this->elasticClient->deleteByQuery($query);
+                delete_by_query($this->elasticClient, $query );
 		
 		$params = ['body' => $data, 'index' => 'telepath-rules', 'type' => 'rules'];
 		$this->elasticClient->index($params);
@@ -238,7 +240,8 @@ class M_Rules extends CI_Model {
 		
 		// Delete rules assosiated with the category
 		$query = ['body' => [ 'query' => [ 'term' => [ 'category' => $cat ] ] ], 'index' => 'telepath-rules' ];
-		$this->elasticClient->deleteByQuery($query);
+		#$this->elasticClient->deleteByQuery($query);
+                delete_by_query($this->elasticClient, $query, 1);
 		
 		// Clear category from category index
 		$old_cats = $this->__get_categories();
@@ -320,7 +323,8 @@ class M_Rules extends CI_Model {
 			
 		// Cleanup
 		$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rule_categories' ] ] ], 'index' => 'telepath-rules' ];
-		$this->elasticClient->deleteByQuery($query);
+		#$this->elasticClient->deleteByQuery($query);
+                delete_by_query($this->elasticClient, $query, 1);
 		
 		// Set
 		$params = ['body' => [ 'rule_categories' => $array ], 'index' => 'telepath-rules', 'type' => 'rule_categories','id' => 'categories_id'];
@@ -333,9 +337,11 @@ class M_Rules extends CI_Model {
 	
 	public function clear_rules() {
 		
-		$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rules' ] ] ], 'index' => 'telepath-rules' ];
-		$this->elasticClient->deleteByQuery($query);
-		
+		#$query = ['body' => [ 'query' => [ 'term' => [ '_type' => 'rules' ] ] ], 'index' => 'telepath-rules' ];
+		#$this->elasticClient->deleteByQuery($query);
+		$deleteParams['index'] = 'telepath-rules';
+		$deleteParams['type'] = 'rules';
+		$this->elasticClient->delete($deleteParams);
 	}
 	
 	public function set_rules($obj) {
@@ -364,12 +370,8 @@ class M_Rules extends CI_Model {
 
 		$params['index']='telepath-rules';
 		$params['type']=['rules'];
+		$params['_source_include'] = ['category','name'];
 		$params['body'] = [
-			'partial_fields' => [
-				"_src" => [
-					"include" => ['category','name']
-				],
-			],
 			'size' => 9999,
 			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category', 'name'], "query" => '*' . $search . '*', "lowercase_expanded_terms"=>false]]]],
 

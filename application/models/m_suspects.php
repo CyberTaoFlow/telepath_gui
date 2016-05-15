@@ -76,7 +76,8 @@ class M_Suspects extends CI_Model {
 		}
 		
 		//die;
-		
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -119,7 +120,6 @@ class M_Suspects extends CI_Model {
 					"cardinality" => [ "field" => "sid" ],
 				]
 			],
-			'query' => [ 'bool' => [ 'must' => [ [ 'term' => [ '_type' => 'http' ] ] ] ] ]
 		];
 
 		if ($sortfield == "date")
@@ -132,8 +132,9 @@ class M_Suspects extends CI_Model {
 //		$params['body']["aggs"]["sid"]["aggs"] = [ "cases_count" => [ "sum" => [ "field" => "cases_count" ] ] ];
 
 		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-		$params['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-		
+		$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+		$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+
 		if(!empty($range)) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 		}
@@ -170,6 +171,8 @@ class M_Suspects extends CI_Model {
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
+						$params2['index'] = 'telepath-20*';
+						$params2['type'] = 'http';
 						$params2['body'] = [
 								'size' => 0,
 								"aggs" => [
@@ -218,9 +221,10 @@ class M_Suspects extends CI_Model {
 							];
 
 						$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-						$params2['body']['query']['bool']['must'][] = [ 'term' => ['_type' => 'http' ] ];
 						$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-						$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
+						$params2['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+						$params2['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+
 						if(!empty($range)) {	
 							$params2["body"]["query"]["bool"]["must"][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 						}

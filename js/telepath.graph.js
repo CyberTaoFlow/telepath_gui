@@ -42,10 +42,10 @@ $.widget( "tele.flotGraph", {
 			
 			// Graph Filters		
 			this.filterTypes = [
-				{ type: 'noncase-alerts', label: 'Alerts', count: 0, active: true, suffix: 'Sessions with alerts' },
-				{ type: 'case-alerts', label: 'Case Sessions', count: 0, active: true, suffix: 'Sessions' },
-				{ type: 'suspicions', label: 'Suspicious Sessions', count: 0, active: true, suffix: 'Sessions' },
-				{ type: 'other-sessions', label: 'Other Sessions', count: 0, active: true, suffix: 'Sessions' }
+				{ type: 'noncase-alerts', label: 'Alerts', count: 0, active: true, suffix: 'Tx' },
+				{ type: 'case-alerts', label: 'Cases', count: 0, active: true, suffix: 'Tx' },
+				{ type: 'suspicions', label: 'Suspects', count: 0, active: true, suffix: 'Tx' },
+				{ type: 'other-sessions', label: 'Normal', count: 0, active: true, suffix: 'Tx' }
 			];
 					
 			var totalCount = 0;

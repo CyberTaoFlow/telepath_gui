@@ -1780,13 +1780,13 @@ class Rules extends Tele_Controller
 
         if ($rules && is_array($rules) && !empty($rules)) {
             foreach ($rules as $rule) {
-                if (!preg_match('/'.$search.'/',$rule['fields']['_src'][0]['name'])){
+                if (!preg_match('/'.$search.'/',$rule['_source']['name'])){
                     continue;
                 }
-                $ans['items'][$rule['fields']['_src'][0]['category']][] = array(
+                $ans['items'][$rule['_source']['category']][] = array(
                     'id' => $rule['_id'],
                     'category' => $rule['fields']['_src'][0]['category'],
-                    'name' => $rule['fields']['_src'][0]['name']
+                    'name' => $rule['_source']['name']
                 );
 
             }

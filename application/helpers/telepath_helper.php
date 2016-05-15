@@ -16,7 +16,7 @@
 		}
 		
 		if(isset($base['body']) && isset($base['body']['query']) && isset($base['body']['query']['bool'])) {
-			$base['body']['query']['bool']['must'][] = [ "terms" => [ "host" => $apps, "minimum_should_match" => 1 ] ];
+			$base['body']['query']['bool']['must'][] = [ "terms" => [ "host" => $apps ] ];
 		}
 		
 		return $base;
@@ -30,7 +30,7 @@
 		$context = &get_instance();
 
 		// Admins == unlimited
-		if($context->ion_auth->is_admin()) {
+		if($context->input->is_cli_request() || $context->ion_auth->is_admin() ) {
 			return $base;
 		}
 		
@@ -110,6 +110,36 @@
 		return $result;
 	}
 
+function delete_by_query($client, $params, $max = 0)
+{
+	#$results = $this->elasticClient->deleteByQuery($params);
+	$results   = get_elastic_results($client->search($params));
+	if (!$results)
+	{
+		return;
+	}
+	if (count($results) == 1 or $max == 1)
+	{
+                foreach ($results as $res){
+                        $params=[];
+                        $params['index'] = $res['index'];
+                        $params['type'] = $res['type'];
+                        $params['id']=$res['uid'];
+                        $client->delete($params);
+			return;
+                }
+		return;
+        }
+	foreach ($results as $res){
+		$params=[];
+		$params['index'] = $res['index'];
+		$params['type'] = $res['type'];
+		$params['id']=$res['uid'];
+		$client->delete($params);
+	}
+}
+
+
 function prepare_elastic_results($results) {
 	$result  = array();
 	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
@@ -122,14 +152,31 @@ function prepare_elastic_results($results) {
 
 
 // retrieve only the _source field
-function get_source($results) {
-	$result  = array();
-	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
-		foreach($results['hits']['hits'] as $row) {
-			// if the string was found in subdomains, we aet the open parameter to true, to display the subdomains in the GUI
-			if(isset ($row['_source']['subdomains']) && !empty ($row['_source']['subdomains']) && isset ($row['highlight']['subdomains'] )){
-				$row['_source']['open']=true;
+function get_app_source($results,$learning_so_far=false)
+{
+	$result = array();
+	if (!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
+		foreach ($results['hits']['hits'] as $row) {
+			// if the string was found in subdomains, we set the open parameter to true, to display the subdomains in the GUI
+			if (isset ($row['_source']['subdomains']) && !empty ($row['_source']['subdomains']) && isset ($row['highlight']['subdomains'])) {
+				$row['_source']['open'] = true;
 			}
+			if($learning_so_far){
+				$row['_source']['learning_so_far']=thousandsCurrencyFormat($row['_source']['learning_so_far']);
+			}
+
+			$result[] = $row['_source'];
+		}
+	}
+	return $result;
+}
+
+// retrieve only the _source field
+function get_source($results)
+{
+	$result = array();
+	if (!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
+		foreach ($results['hits']['hits'] as $row) {
 			$result[] = $row['_source'];
 		}
 	}
@@ -201,6 +248,7 @@ function get_gap($range) {
 		if(!$context) { $context = &get_instance(); }
 		
 		// Initialize access list.
+		if(!$context->input->is_cli_request()){
 		$context->acl->init_current_acl();
 		
 		telepath_log($class, $function, $context, $_REQUEST);
@@ -232,6 +280,8 @@ function get_gap($range) {
 				$function = $rewrite_item['to_function'];
 			}
 		}
+
+		}
 		
 		// END Rewrites
 		
@@ -245,7 +295,7 @@ function get_gap($range) {
 		
 			// Passthru if Admin
 			
-			if(!$context->ion_auth->is_admin()) {
+			if(!$context->input->is_cli_request() && !$context->ion_auth->is_admin()) {
 				
 				// Fail if not logged in.
 				if(!$context->ion_auth->logged_in()) {
@@ -318,5 +368,35 @@ function get_gap($range) {
 		RETURN $text_str;
 		
 	}
+
+    function logger($message, $file_path = false)
+    {
+        $context = &get_instance();
+        if (!$context->input->is_cli_request())
+            return;
+
+        if ($file_path) {
+            file_put_contents($file_path, '');
+        }
+
+        echo date('Y-m-d H:i') . ' ' . $message . "\n";
+    }
+
+	function thousandsCurrencyFormat($num)
+	{
+		$x = round($num);
+		$x_number_format = number_format($x);
+		$x_array = explode(',', $x_number_format);
+		$x_parts = array('k', 'm', 'b', 't');
+		$x_count_parts = count($x_array) - 1;
+		$x_display = $x_array[0];
+		if($x_count_parts>0) {
+			$x_display .= ((int)$x_array[1][0] !== 0 ? '.' . $x_array[1][0] : '');
+			$x_display .= $x_parts[$x_count_parts - 1];
+		}
+		return $x_display;
+	}
+
+
 	
 ?>
