@@ -125,7 +125,6 @@ class M_Sessionflow extends CI_Model {
 				'bool' => array(
 					'must' => array(
 						[ 'term' => array('sid' => $SID) ],
-						[ 'term' => [ '_type' => 'http' ] ]
 					)
 				)
 			)

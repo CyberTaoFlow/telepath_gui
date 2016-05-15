@@ -17,7 +17,9 @@ class M_Search extends CI_Model {
 	function search($scope, $settings) {
 		
 		$limit = 100;
-		
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -68,7 +70,6 @@ class M_Search extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
 						[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 						[
                             'query_string' => [

@@ -708,6 +708,8 @@ class M_Cases extends CI_Model {
 
 		}
 
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -748,14 +750,7 @@ class M_Cases extends CI_Model {
 				"sid_count" => [
 					"cardinality" => [ "field" => "sid", "precision_threshold" => 200 ],
 				]
-			],
-			'query' => [
-				'bool' => [
-					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
-					]
-				],
-			],
+			]
 		];
 
 		foreach ($case_data['details'] as $condition){

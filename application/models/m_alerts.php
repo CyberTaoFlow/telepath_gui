@@ -26,7 +26,9 @@ class M_Alerts extends CI_Model {
 			
 			$scope_start = $range['start'] + ($x * $step);       // 4JS
 			$scope_end   = $range['start'] + (($x + 1) * $step); // 4JS
-			
+
+			$params['index'] = 'telepath-20*';
+			$params['type'] = 'http';
 			$params['body'] = [
 			'size'  => 0,
 			'aggs'  => array(
@@ -39,8 +41,7 @@ class M_Alerts extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
-						[ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts_count' ] ] ] ],
+						 [ 'exists' => [ 'field' => 'alerts_count' ] ] ,
 					]
 				]
 			]
@@ -98,21 +99,16 @@ class M_Alerts extends CI_Model {
 		$dist   = array();
 		$result = array();
 		$max    = 5;
-		
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
 				"actions" => [ 
 					"terms" => [ "field" => "business_actions.name", "size" => 999 ],
 				],
-			],
-			'query' => [
-				'bool' => [
-					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
-					]
-				],
-			],
+			]
 		];
 		
 		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
@@ -178,7 +174,9 @@ class M_Alerts extends CI_Model {
 		$dist   = array();
 		$result = array();
 		$max    = 5;
-		
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -190,14 +188,7 @@ class M_Alerts extends CI_Model {
 						],
 					],
 				],
-			],
-			'query' => [
-				'bool' => [
-					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
-					]
-				],
-			],
+			]
 		];
 		
 		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];

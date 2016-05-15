@@ -599,7 +599,6 @@ class M_Applications extends CI_Model {
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
-			'query' => [ 'bool' => [ "must" => [ 'term' => [ '_type' => 'http' ]  ] ] ]
 		);
 		
 		$params = append_access_query($params);

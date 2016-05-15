@@ -184,7 +184,9 @@ class M_Dashboard extends CI_Model {
 	
 	// Dashboard Functionality
 	function get_map($range, $apps, $map_mode) {
-		
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size'  => 0,
 			'aggs'  => [
@@ -198,7 +200,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
 						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 					]
 				],
