@@ -184,6 +184,9 @@ class M_Cases extends CI_Model {
 						"date" => [
 							"min" => [ "field" => "ts" ]
 						],
+						"user" => [
+							"terms" => [ "field" => "username" ]
+						],
 					],
 				
 				],
@@ -232,7 +235,8 @@ class M_Cases extends CI_Model {
 						"host"    => $sid['host']['buckets'],
 						"count"   => $sid['doc_count'],
 						"score"  => $sid['score']['value'],
-						"date"  => $sid['date']['value']
+						"date"  => $sid['date']['value'],
+						"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
 					);
 			}
 		}
@@ -311,6 +315,9 @@ class M_Cases extends CI_Model {
 						"date" => [
 							"min" => ["field" => "ts"]
 						],
+						"user" => [
+							"terms" => [ "field" => "username" ]
+						],
 //						"similarity" => [
 //							"max" => [ "script" => "_score" ]
 //						],
@@ -351,7 +358,8 @@ class M_Cases extends CI_Model {
 					"host" => $sid['host']['buckets'],
 					"count" => $sid['doc_count'],
 					"score" => $sid['score']['value'],
-					"date" => $sid['date']['value']
+					"date" => $sid['date']['value'],
+					"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
 				);
 			}
 		}

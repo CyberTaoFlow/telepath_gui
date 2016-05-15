@@ -464,7 +464,7 @@ class M_Alerts extends CI_Model {
 							"score"  => $sid['score']['value'],
 							"date"  => $sid['date']['value'],
 							'ip_score'=>$sid['last_score']['buckets'][0]['key'],
-							"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:'yossi'
+							"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
 						);
 						$count_insert++;
 						if($count_insert >= $limit) {
