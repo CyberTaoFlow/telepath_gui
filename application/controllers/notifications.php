@@ -35,7 +35,7 @@ class Notifications extends Tele_Controller
                     'must' => [
                         ['term' => ['_type' => 'http']],
                         ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]],
-                        ['filtered' => ['filter' => ['exists' => ['field' => 'cases']]]],
+                        ['filtered' => ['filter' => ['exists' => ['field' => 'cases_name']]]],
                     ]
                 ]
             ]

@@ -836,7 +836,9 @@ class M_Cases extends CI_Model {
 			$scope_end   = $range['start'] + (($x + 1) * $step); // 4JS
 				
 			// QUERY
-			
+
+			$params['index'] = 'telepath-20*';
+			$params['type'] = 'http';
 			$params['body'] = array(
 				'size'  => 0,
 				'aggs'  => array(
@@ -849,8 +851,7 @@ class M_Cases extends CI_Model {
 				'query' => [
 					'bool' => [
 						'must' => [
-							[ 'term' => [ '_type' => 'http' ] ],
-							[ 'exists' => [ 'field' => 'cases' ] ] ,
+							[ 'exists' => [ 'field' => 'cases_name' ] ]
 						]
 					]
 				]
