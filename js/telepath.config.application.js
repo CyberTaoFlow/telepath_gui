@@ -111,7 +111,7 @@ telepath.config.application = {
 				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
 
 				$('input', this.usernameParameter).css({ borderColor: '#555' });
-				if(app_data.form_param_name == '' || app_data.form_param_name.length > 64 || parseInt(app_data.form_param_id) == 0) {
+				if(!app_data.form_param_name || app_data.form_param_name == '' || app_data.form_param_name.length > 64 || parseInt(app_data.form_param_id) == 0) {
 					$('input', this.usernameParameter).css({ borderColor: 'red' });
 					telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application authentication username parameter is missing.' });
 					return false;
@@ -267,7 +267,7 @@ telepath.config.application = {
                                 form_param_id: '',
                                 ntlm: 0,
                                 basic_flag: 0,
-                                form_flag: 1,
+                                form_flag: 0,
                                 digest_flag: 0,
                                 cookie_mode: 0,
                                 cookie_name: '',
@@ -490,24 +490,23 @@ telepath.config.application = {
 			})
 			.appendTo('#tele-app-auth').hide()
 			.css({ position: 'absolute', top: 100, left: 300 });
-		
-		
-		var userID_val = 'Form';
+
+
+		var userID_val='';
+		if(telepath.config.application.app_data.form_flag == '1') {
+			userID_val = 'Form';
+			this.usernameParameter.show();
+		}
 		if(telepath.config.application.app_data.ntlm == '1') {
 			userID_val = 'NTLM';
 		}
 		if(telepath.config.application.app_data.basic_flag == '1') {
 			userID_val = 'Basic';
 		}
-		//if(telepath.config.application.app_data.form_flag == '1') {
-		//	userID_val = 'Form';
-		//}
 		if(telepath.config.application.app_data.digest_flag == '1') {
 			userID_val = 'Digest';
 		}
-		if(userID_val = 'Form'){
-			this.usernameParameter.show();
-		}
+
 
 
 		this.userIdentification = $('<div>').teleRadios({
@@ -518,7 +517,8 @@ telepath.config.application = {
 				{ key: 'Form', label: 'Form' },
 				{ key: 'Basic', label: 'Basic' },
 				{ key: 'Digest', label: 'Digest' },
-				{ key: 'NTLM', label: 'NTLM' }
+				{ key: 'NTLM', label: 'NTLM' },
+				{ key: '', label: 'None' }
 			], callback: function(radio) {
 				
 				that.usernameParameter.hide();
