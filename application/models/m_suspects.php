@@ -247,8 +247,7 @@ class M_Suspects extends CI_Model {
 								"business_action" => $sid['business_action']['buckets'],
 								"date"  => $sid['date']['value'],
 								"ip_score" =>$sid['last_score']['buckets'][0]['key'],
-//								"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
-								'user'=>'test'
+								"user" => $sid['user']['buckets'][0]['key']
 							);
 							$count_insert++;
 							if($count_insert >= $limit) {

@@ -236,7 +236,7 @@ class M_Cases extends CI_Model {
 						"count"   => $sid['doc_count'],
 						"score"  => $sid['score']['value'],
 						"date"  => $sid['date']['value'],
-						"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
+						"user" => $sid['user']['buckets'][0]['key']
 					);
 			}
 		}
@@ -359,7 +359,7 @@ class M_Cases extends CI_Model {
 					"count" => $sid['doc_count'],
 					"score" => $sid['score']['value'],
 					"date" => $sid['date']['value'],
-					"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
+					"user" => $sid['user']['buckets'][0]['key']
 				);
 			}
 		}

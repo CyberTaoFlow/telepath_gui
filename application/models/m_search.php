@@ -229,7 +229,7 @@ class M_Search extends CI_Model {
 						"score_average" => $sid['score']['value'],
 						"date"  => $sid['date']['value'],
 						"ip_score"=>$sid['last_score']['buckets'][0]['key'],
-						"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
+						"user" => $sid['user']['buckets'][0]['key']
 					);
 
 					// if one session ID includes alerts requests and regular requests, we don't display it
