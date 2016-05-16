@@ -206,6 +206,9 @@ class M_Suspects extends CI_Model {
 									"date" => [
 										"max" => [ "field" => "ts" ]
 									],
+									"user" => [
+										"terms" => [ "field" => "username" ]
+									],
 									"last_score" => [
 										"terms" => [
 												"field" => "ip_score",
@@ -243,7 +246,9 @@ class M_Suspects extends CI_Model {
 								"count"   => $doc_count,
 								"business_action" => $sid['business_action']['buckets'],
 								"date"  => $sid['date']['value'],
-								"ip_score" =>$sid['last_score']['buckets'][0]['key']
+								"ip_score" =>$sid['last_score']['buckets'][0]['key'],
+//								"user" => isset($sid['user']['buckets'][0]['key'])?$sid['user']['buckets'][0]['key']:''
+								'user'=>'test'
 							);
 							$count_insert++;
 							if($count_insert >= $limit) {
