@@ -228,12 +228,9 @@ class M_Dashboard extends CI_Model {
 		
 	}
 	
-	public function get_gap_sessions($interval, $range, $apps = array(), $suspects = false) {
+	public function get_gap_sessions($interval, $range, $apps = array(), $suspect_threshold, $suspects = false) {
 		
 		$result = array('case' => 0, 'noncase' => 0);
-		
-		$this->load->model('M_Suspects');
-		$suspect_threshold = $this->M_Suspects->get_threshold();
 
 		$params['index']='telepath-20*';
 		$params['type']='http';
@@ -282,15 +279,16 @@ class M_Dashboard extends CI_Model {
 				
 	}
 	
-	function get_chart($range, $apps) {
+	function get_chart($range, $apps, $suspect_threshold) {
 
 		$time = $this->getRanges($range, false, false);
 
+
 		$result = array(
 			'alerts'   => $this->get_gap_alerts($time, $range, $apps),
-			'sessions' => $this->get_gap_sessions($time, $range, $apps),
+			'sessions' => $this->get_gap_sessions($time, $range, $apps, $suspect_threshold),
 			'cases'    => $this->get_gap_cases($time, $range, $apps),
-			'suspects' => $this->get_gap_sessions($time, $range, $apps, true)
+			'suspects' => $this->get_gap_sessions($time, $range, $apps, $suspect_threshold, true)
 		);
 		return $result;
 	}

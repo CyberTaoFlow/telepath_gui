@@ -28,7 +28,8 @@ class Suspects extends Tele_Controller
         }
 
         $this->load->model('M_Suspects');
-        return_json($this->M_Suspects->get($range, $apps, $sort, $dir, $offset, 15, $search));
+        $suspect_threshold = $this->M_Suspects->get_threshold();
+        return_json($this->M_Suspects->get($range, $apps, $sort, $dir, $offset, 15, $suspect_threshold, $search));
 
     }
 

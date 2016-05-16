@@ -10,7 +10,7 @@ class Search extends Tele_Controller
 
         parent::__construct();
         $this->load->model('M_Search');
-
+        $this->load->model('M_Suspects');
     }
 
     function _getSettings()
@@ -57,14 +57,16 @@ class Search extends Tele_Controller
     public function suspects()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-        return_json($this->M_Search->search('suspects', $this->_getSettings()));
+        $suspect_threshold = $this->M_Suspects->get_threshold();
+        return_json($this->M_Search->search('suspects', $this->_getSettings(), $suspect_threshold));
     }
 
     // Requests thread
     public function requests()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-        return_json($this->M_Search->search('requests', $this->_getSettings()));
+        $suspect_threshold = $this->M_Suspects->get_threshold();
+        return_json($this->M_Search->search('requests', $this->_getSettings(), $suspect_threshold));
     }
 
 

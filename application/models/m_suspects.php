@@ -14,48 +14,48 @@ class M_Suspects extends CI_Model {
 		$this->elasticClient = new Elasticsearch\Client();
 		
 	}
-	
-	public function get_threshold() {
 
-#		$params['body'] = array(
-#			'size'  => 1,
-#			'filter' => [ 'exists' => [ 'field' => 'score_average' ] ]
-#		);
-#		$results   = $this->elasticClient->search($params);
-		
-#		if(intval($results['hits']['total']) > 0) {
-	
-#			$params['body'] = array(
-#				'size'  => 0,
-#				'facets' => [
-#					'score_average' => [
-#						'statistical' => [
-#							'field' => 'score_average'
-#						]
-#					]
-#				],
-#				'filter' => [ 'exists' => [ 'field' => 'score_average' ] ]
-#			);
-			
-#			$results   = $this->elasticClient->search($params);
-			
-#		}
-		
-#		if(!isset($results['facets'])) { return 0.85; }
-		
-		// Change modifier to raise suspects threshold
-#		$mod = 2;
-#		$t = $results['facets']['score_average']['mean'] + ($mod * $results['facets']['score_average']['std_deviation']);
+	public function get_threshold()
+	{
 
-#		return $t;
-               return 0.85;		
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"grades_stats" => [
+					"extended_stats" => ["field" => "score_average", "sigma" => 3]
+				]
+			],
+			'query' => [
+				'bool' => [
+					'must_not' => [
+						["match" => ['operation_mode' => '1']]
+					]
+				]
+			]
+		];
+
+		$result = $this->elasticClient->search($params);
+
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["grades_stats"]) &&
+			isset($result["aggregations"]["grades_stats"]["std_deviation_bounds"]) &&
+			isset($result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"]) &&
+			!empty($result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"])
+		) {
+			return $result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"];
+		} else {
+			return 0.85;
+		}
+
 	}
 	
-	public function get($range, $apps, $sort, $sortorder, $start = 0, $limit = 100, $search = '') {
+	public function get($range, $apps, $sort, $sortorder, $start = 0, $limit = 100, $suspect_threshold, $search = '') {
 		
 		//$suspect_threshold = $this->get_threshold();
 		//ROI CHECK THIS OUT (Yuli)
-		$suspect_threshold = 0.85;
+		//$suspect_threshold = 0.85;
 		
 		$sortfield = 'score';
 		

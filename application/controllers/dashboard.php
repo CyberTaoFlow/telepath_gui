@@ -9,6 +9,8 @@ class Dashboard extends Tele_Controller
     {
         parent::__construct();
         $this->load->model('M_Dashboard');
+        $this->load->model('M_Suspects');
+
     }
 
     public function get_map()
@@ -34,7 +36,9 @@ class Dashboard extends Tele_Controller
         $range = $this->_get_range();
         $apps = $this->_get_apps();
 
-        $chart = $this->M_Dashboard->get_chart($range, $apps);
+        $suspect_threshold = $this->M_Suspects->get_threshold();
+
+        $chart = $this->M_Dashboard->get_chart($range, $apps, $suspect_threshold);
 
         $data = array('chart' => $chart);
 
@@ -54,8 +58,8 @@ class Dashboard extends Tele_Controller
 
        // $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
 
-        $this->load->model('M_Suspects');
-        $suspects= $this->M_Suspects->get($range, $apps, $sort, $dir, 0, 5);
+        $suspect_threshold = $this->M_Suspects->get_threshold();
+        $suspects = $this->M_Suspects->get($range, $apps, $sort, $dir, 0, 5, $suspect_threshold);
 
 
 

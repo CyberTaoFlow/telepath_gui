@@ -13,8 +13,9 @@ class M_Search extends CI_Model {
 		
 		$this->elasticClient = new Elasticsearch\Client();
 	}
-	
-	function search($scope, $settings) {
+
+	function search($scope, $settings, $suspect_threshold = false)
+	{
 		
 		$limit = 100;
 
@@ -81,9 +82,7 @@ class M_Search extends CI_Model {
 				],
 			],
 		];
-		
-		$this->load->model('M_Suspects');
-		$suspect_threshold = $this->M_Suspects->get_threshold();
+
 		
 		$params2 = array();
 		switch($scope) {
