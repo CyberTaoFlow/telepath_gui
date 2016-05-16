@@ -225,7 +225,7 @@ telepath.config.actions = {
 		plugins: ["json_data","wholerow", "theme", "grid", "search"],
 		grid: {
 			columns: [
-				{width: 280 },
+				{width: 370 },
 				{value: function (node) {
 					/*
 					return $('<div>').btn({ icon: 'edit', callback: function () {

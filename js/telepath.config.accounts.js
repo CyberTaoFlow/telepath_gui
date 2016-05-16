@@ -388,7 +388,7 @@ telepath.config.accounts = {
 			plugins: ["grid", "wholerow", "theme"],
 			grid: {
 				columns: [
-					{width: 280 },
+					{width: 390 },
 					{value: function (node) {
 						
 						if(node.name !== 'All') {
@@ -407,7 +407,7 @@ telepath.config.accounts = {
 							return '';
 						}
 						
-					}, width: 50 },
+					}, width: 40 },
 					{value: function (node) {
 						
 						if(node.name !== 'All') {
@@ -428,7 +428,7 @@ telepath.config.accounts = {
 							return '';
 						}
 						
-					}, width: 50 }
+					}, width: 40 }
 				],
 				resizable:true
 			},

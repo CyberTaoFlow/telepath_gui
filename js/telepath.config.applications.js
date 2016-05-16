@@ -139,7 +139,7 @@ telepath.config.applications = {
 		contextmenu: { items: telepath.contextMenu },
 		grid: {
 			columns: [
-				{ width: 230 },
+				{ width: 320 },
 				{ width: 50, value: "count", cellClass: "learning-so-far" },
 				{ value: function (node) {
 					return $('<div>').btn({ icon: 'edit', callback: function (tree) {

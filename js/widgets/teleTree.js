@@ -5,7 +5,7 @@ $.widget( "tele.teleTree", {
 		callback: function(e, data) {},
 		grid: {
 			columns: [
-				{width: 280 },
+				{width: 415 },
 				/*{value: function (node) {
 					
 					return $('<div>').btn({ icon: 'edit', callback: function () {

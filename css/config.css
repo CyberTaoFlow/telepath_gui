@@ -94,6 +94,9 @@ body .jstree-grid-cell {
 	z-index: 100;
 	position: relative;
 }
+body .jstree-grid-cell-last{
+	margin-right: 10px;
+}
 
 body .jstree-grid-cell .learning-so-far {
 	margin-top: 16px;

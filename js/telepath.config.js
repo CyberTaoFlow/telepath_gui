@@ -199,7 +199,7 @@ telepath.config = {
 		
 		} else {
 		
-			var magic = 420;
+			var magic = 520;
 			
 			this.contentLeft.width(magic);
 			this.contentRight.width(width - magic - 20);
