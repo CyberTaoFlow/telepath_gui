@@ -16,6 +16,7 @@ telepath.alert = {
 
 		//Do not show "city" in the Dashboard
 		if (mode == 'dashboard'){
+			var identification = (row.user!='' ? {key: 'user', value: row.user } : { key: 'IP', value: row.ip_orig } );
 			return {
 				raw: row,
 				itemID: row.sid,
@@ -26,8 +27,8 @@ telepath.alert = {
 				progbarValue: row.ip_score,
 				time: row.date,
 				title:  telepath.alert.grabNames(row.alerts_names),
-				details: [ 
-					{ key: 'IP', value: row.ip_orig },
+				details: [
+					identification,
 					{ key: 'country', value: row.country },
 					{ key: 'host', value: telepath.alert.grabNames(row.host) },
 				]

@@ -9,6 +9,7 @@ telepath.suspects = {
 	rowFormatter: function(item,mode) {
 
 		if (mode=='dashboard') {
+			var identification = (item.user!='' ? {key: 'user', value: item.user } : { key: 'IP', value: item.ip_orig } );
 			result = {
 				raw: item,
 				icon: 'suspect',
@@ -23,8 +24,8 @@ telepath.suspects = {
 				time: item.date,
 				details: [
 					{ key: 'country', value: item.country },
-					{ key: 'IP', value: item.ip_orig },
-					{ key: 'host', value: grabNames(item.host) }
+					{ key: 'host', value: grabNames(item.host) },
+					identification
 				]
 			}
 		}
