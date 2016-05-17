@@ -157,6 +157,9 @@ telepath.sessionflow = {
 					table.append(getRow('IP:', similarity.ip_orig));
 					table.append(getRow('Location:', '<span class="flag flag-' + similarity.country_code + '"></span>' + 
 										'<span class="tele-country">' + telepath.countries.a2n(similarity.country_code) + '</span>'));
+					if(similarity.username){
+						table.append(getRow('User:', similarity.username));
+					}
 					
 					table.append(getRow('Similarty:', similarity._score + '%'));
 					
@@ -946,10 +949,13 @@ telepath.sessionflow = {
 		//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
 		table.append(getRow('Applications:', escapeHtml(this.requestInfo.host)));
 		table.append(getRow('IP:', this.requestInfo.ip_orig));
-
 		table.append(getRow('Location:', '<span class="flag flag-' + this.requestInfo.country_code + '"></span>' + 
 							'<span class="tele-country">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
-							
+		if(this.requestInfo.username){
+			table.append(getRow('User:', this.requestInfo.username));
+		}
+
+
 		//if(alert.user && alert.user != '') {
 		//	table.append(getRow('User:', alert.user));
 		//}
