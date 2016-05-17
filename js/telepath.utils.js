@@ -114,6 +114,54 @@ function getRangeUI(data, container) {
 	
 }
 
+function getStatusCodeRangeUI(data) {
+
+  if (!data) {
+    data = '';
+  } else {
+    data = data.trim()
+  }
+
+  var is_range = data.split('-').length > 1;
+
+  var scWrap = $('<div>').addClass('tele-sc-wrap');
+  var scStart = $('<div>').teleInput({
+    value: data.split('-')[0],
+    type: 'number',
+    range: {min: 100, max: 600},
+    step: 100,
+    margintop: 1
+  }).addClass('tele-sc');
+  var scDash = $('<div>').addClass('tele-sc-dash').html('_');
+  var scEnd = $('<div>').teleInput({
+    value: !is_range ? '' : data.split('-')[1],
+    type: 'number',
+    range: {min: 100, max: 600}, step: 100, margintop: 1
+  }).addClass('tele-sc');
+
+  if (!is_range) {
+    scDash.hide();
+    scEnd.hide();
+  }
+
+
+  var scToggle = $('<div>').toggleFlip({
+
+    left_value: 'Single',
+    right_value: 'Range',
+    flip: function () {
+      scEnd.toggle();
+      scDash.toggle();
+    },
+    flipped: is_range
+  });
+
+
+  scWrap.append(scToggle).append(scStart).append(scDash).append(scEnd);
+  return scWrap;
+
+}
+
 function getRangeLB(data, container) {
 
   if(!data) { data = ''; }

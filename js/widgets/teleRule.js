@@ -219,6 +219,103 @@ $.widget( "tele.teleRule", {
 				console.log(method);
 				
 				switch(method) {
+
+					case 'Parameter':
+
+						// 1. Collect param
+						$('.tele-browse input', c).removeClass('error');
+						var param = $('.tele-browse input', c).data('selected');
+
+						if(typeof(param) == 'string') {
+							param = JSON.parse(param);
+						}
+
+						//if the `getValues` above opened a dialog, stop now
+						if($('.tele-overlay-dialog').is(':visible')){
+							return;
+						}
+
+
+						if(!param) {
+							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for a parameter.' });
+							$('.tele-browse input', c).addClass('error');
+
+							return false;
+						}
+
+
+						// 2. Collect app + uri
+
+						if(param.type == 'page') {
+
+							// INVALID IN THIS CONTEXT
+							json.type = 'specific';
+
+						} else {
+							if(param.type == 'param') {
+								if(param.global) {
+									json.type = 'inclusive';
+									json.inclusive = {
+										"paramname": param.paramname
+									}
+								} else {
+									json.type = 'specific';
+									json.specific = {
+										"domain":    param.domain,
+										"pagename":  param.pagename,
+										"paramname": param.paramname
+									}
+								}
+							}
+						}
+
+						// 3. Match type
+
+						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
+						switch(json.subtype) {
+
+							case 'heuristic':
+
+								break;
+							case 'regex':
+							case 'stringmatch':
+								json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked',c).size() > 0;
+								json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
+
+								if(json.str_match == '') {
+									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
+									$('.tele-rule-string-inspection input').addClass('error');
+									return false;
+								}
+
+								break;
+
+							case 'fuzzylength':
+								json.length    = $('.tele-rule-string-inspection .tele-rule-dropdown').val();
+								break;
+
+							case 'exactlength':
+
+								json.length = $('#rule-slider-length').data('value');
+
+								break;
+
+
+							case 'rangelength':
+
+								json.length = $('#rule-slider-between', c).data('sliderValue').join('-');
+
+								break;
+
+							case 'distance':
+
+								json.distance = $('#rule-slider-similarity').data('value');
+
+								break;
+
+						}
+
+						break;
 					
 					case 'Request':
 						
@@ -254,12 +351,57 @@ $.widget( "tele.teleRule", {
 						json.type = 'global';
 					
 					break;
+
+					case 'Response':
+
+
+						json.method = $('.tele-response-settings .tele-radio-knob', c).parent().attr('rel');
+						var message;
+
+						if (json.method == 'StatusCode') {
+							json.subtype = 'code';
+							json.negate = false;
+							var is_range = $('.tele-mini-toggle', c).data('tele-toggleFlip').options.flipped;
+							var sc_start = $('.tele-sc:first input', c).val();
+							var sc_end = $('.tele-sc:last input', c).val();
+							json.str_match='';
+							if (is_range) {
+								if (sc_start && sc_end && sc_start < sc_end) {
+									json.str_match = sc_start + '-' + sc_end;
+								}
+							} else {
+								if (sc_start) {
+									json.str_match = sc_start;
+								}
+							}
+							message = 'You must specify a status code';
+						}
+						else {
+							json.subtype = $('.tele-string-inspection .tele-radio-knob', c).parent().attr('rel');
+							json.negate = $('.tele-rule-string-inspection .tele-checkbox-str-' + json.subtype + ' .checked', c).size() > 0;
+							json.str_match = $('.tele-rule-string-inspection .tele-input-str-' + json.subtype + ' input', c).val();
+							message = 'You must specify match pattern / regex';
+						}
+
+
+						//if the `getValues` above opened a dialog, stop now
+						if ($('.tele-overlay-dialog').is(':visible')) {
+							return;
+						}
+
+						if (json.str_match == '') {
+							telepath.dialog({title: 'Rule Editor', msg: message});
+							$('.tele-rule-string-inspection input').addClass('error');
+							return false;
+						}
+
+						json.type = 'global';
+					break;
 						
 					case 'Uri':
-					case 'Title':
 					
-						json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked').size() > 0;
 						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
+						json.negate    = $('.tele-rule-string-inspection .tele-checkbox-str-'+ json.subtype +' .checked',c).size() > 0;
 						json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
 
 						//if the `getValues` above opened a dialog, stop now
@@ -278,103 +420,10 @@ $.widget( "tele.teleRule", {
 						json.type = 'global';
 					
 					break;
-					
-					case 'Parameter':
-						
-						// 1. Collect param
-						$('.tele-browse input', c).removeClass('error');
-						var param = $('.tele-browse input', c).data('selected');
-
-						if(typeof(param) == 'string') {
-							param = JSON.parse(param);
-						}
-
-						//if the `getValues` above opened a dialog, stop now
-						if($('.tele-overlay-dialog').is(':visible')){
-							return;
-						}
 
 
-						if(!param) {
-							telepath.dialog({ title: 'Rule Editor', msg: 'You must browse for a parameter.' });
-							$('.tele-browse input', c).addClass('error');
-
-							return false;
-						}
-						
-
-						// 2. Collect app + uri
-						
-						if(param.type == 'page') {
-							
-							// INVALID IN THIS CONTEXT
-							json.type = 'specific';
-							
-						} else {
-							if(param.type == 'param') {
-								if(param.global) {
-									json.type = 'inclusive';
-									json.inclusive = {
-										"paramname": param.paramname 
-									}
-								} else {
-									json.type = 'specific';
-									json.specific = {
-										"domain":    param.domain,
-										"pagename":  param.pagename,
-										"paramname": param.paramname 
-									}
-								}
-							}
-						}
-						
-						// 3. Match type
-						
-						json.subtype = $('.tele-string-inspection .tele-radio-knob',c).parent().attr('rel');
-						switch(json.subtype) {
-							
-							case 'heuristic':
-								
-							break;
-							case 'regex':
-							case 'stringmatch': 							
-								json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked',c).size() > 0;
-								json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
-
-								if(json.str_match == '') {
-									telepath.dialog({ title: 'Rule Editor', msg: 'You must specify match pattern / regex' });
-									$('.tele-rule-string-inspection input').addClass('error');
-									return false;
-								}
-								
-							break;
-																					
-							case 'fuzzylength':
-								json.length    = $('.tele-rule-string-inspection .tele-rule-dropdown').val();
-							break;
-							
-							case 'exactlength':
-								
-								json.length = $('#rule-slider-length').data('value');
-							
-							break;
 
 
-							case 'rangelength':
-								
-								json.length = $('#rule-slider-between', c).data('sliderValue').join('-');
-							
-							break;
-							
-							case 'distance':
-								
-								json.distance = $('#rule-slider-similarity').data('value');
-								
-							break;
-							
-						}
-						
-					break;
 				
 				}
 				
@@ -706,65 +755,85 @@ $.widget( "tele.teleRule", {
 		switch(type) {
 			case 'parameter':
 				
-				// Wrappers for 2 types
+				// Wrappers for 3 types
 				var paramWRAP = $('<div>').addClass('tele-rule-param-wrap').hide();
 				var requestWRAP    = $('<div>').addClass('tele-rule-request-wrap').hide();
-				
+				var statusCodeWRAP    = $('<div>').addClass('tele-rule-codeStatus-wrap').hide();
+
 				// Type toggle
-				var toggleType = $('<div>').teleRadios({ 
-					radios: [ 
-						{ key: 'Parameter', label: 'Parameter' }, 
-						{ key: 'Request', label: 'Request' },
-						{ key: 'Title', label: 'Title' },
-						{ key: 'Uri', label: 'URI' }
-					], callback: function(radio) {
-					
-					if(radio.key == 'Request' || radio.key == 'Title' || radio.key == 'Uri') {
+				var toggleType = $('<div>').teleRadios({
+					radios: [
+						{key: 'Parameter', label: 'Parameter'},
+						{key: 'Request', label: 'Request'},
+						{key: 'Response', label: 'Response'},
+						{key: 'Uri', label: 'URI'}
+					], callback: function (radio) {
 
-						inspectionType.children('.tele-radio-wrap').hide();
-						inspectionType.find('.tele-radio-radio[rel="regex"]').parent().show();
-						inspectionType.find('.tele-radio-radio[rel="regex"]').click();
-						// Display stringmatch when user is creating title match rule, Yuli
-						inspectionType.find('.tele-radio-radio[rel="stringmatch"]').parent().show();
+						if (radio.key == 'Request' || radio.key == 'Response' || radio.key == 'Uri') {
 
+							inspectionType.children('.tele-radio-wrap').hide();
+							inspectionType.find('.tele-radio-radio[rel="regex"]').parent().show();
+							inspectionType.find('.tele-radio-radio[rel="regex"]').click();
+							// Display stringmatch when user is creating title match rule, Yuli
+							inspectionType.find('.tele-radio-radio[rel="stringmatch"]').parent().show();
 
+							if (radio.key == 'Request' || radio.key == 'Uri') {
+								statusCodeWRAP.hide();
+								controlsWrap.show();
+								inspectionType.show();
+							}
 
-						if(radio.key == 'Title' || radio.key == 'Uri') {
-							requestWRAP.hide();
+							if (radio.key == 'Response' || radio.key == 'Uri') {
+								requestWRAP.hide();
+							} else {
+								requestWRAP.show();
+							}
+
+							if (radio.key == 'Response') {
+								responseSettings.show();
+								if(	responseSettings.find('.tele-radio-knob').parent().attr('rel')=='StatusCode'){
+									statusCodeWRAP.show();
+									controlsWrap.hide();
+									inspectionType.hide();
+								}else{
+									statusCodeWRAP.hide();
+									controlsWrap.show();
+									inspectionType.show();
+								}
+							}
+							else {
+								responseSettings.hide();
+							}
+
+							paramWRAP.hide();
+
 						} else {
-							requestWRAP.show();
+							inspectionType.children('.tele-radio-wrap').show();
+							requestWRAP.hide();
+							controlsWrap.show();
+							inspectionType.show();
+							responseSettings.hide();
+							statusCodeWRAP.hide();
+							paramWRAP.show();
 						}
-						
-						paramWRAP.hide();
-						
-					} else {
-						inspectionType.children('.tele-radio-wrap').show();
-						requestWRAP.hide();
-						paramWRAP.show();
+
 					}
-					
-				}}).addClass('tele-parameter-type');
+				}).addClass('tele-parameter-type');
 				
 				/* START STRING INSPECTION CONTROLS */
-				
-				if(!data.str_match) {
-					data.str_match = '';
-				}
-				if(!data.negate) {
-					data.negate = false;
-				}
+
 				
 				var controlsWrap = $('<div>').addClass('tele-rule-string-inspection');
 				// Heu
 				// Reg
 				var r_regex_control = $('<div>').addClass('rules_string_control_bool');
-				var r_regex_input = $('<div style="width:200px">').teleInput({ value: data.str_match }).addClass('tele-input-str-regex');
-				var r_regex_check = $('<div>').teleCheckbox({ label: 'Not', checked: data.negate }).addClass('tele-checkbox-str-regex');
+				var r_regex_input = $('<div style="width:200px">').teleInput({ value: '' }).addClass('tele-input-str-regex');
+				var r_regex_check = $('<div>').teleCheckbox({ label: 'Not', checked: false }).addClass('tele-checkbox-str-regex');
 				r_regex_control.append(r_regex_input).append(r_regex_check)
 				// Con
 				var r_contains_control = $('<div>').addClass('rules_string_control_bool');
-				var r_contains_input = $('<div style="width:200px">').teleInput({ value: data.str_match }).addClass('tele-input-str-stringmatch');;
-				var r_contains_check = $('<div>').teleCheckbox({ label: 'Not', checked: data.negate }).addClass('tele-checkbox-str-stringmatch');
+				var r_contains_input = $('<div style="width:200px">').teleInput({ value: '' }).addClass('tele-input-str-stringmatch');;
+				var r_contains_check = $('<div>').teleCheckbox({ label: 'Not', checked: false }).addClass('tele-checkbox-str-stringmatch');
 				r_contains_control.append(r_contains_input).append(r_contains_check)
 
 				// Fuz
@@ -924,19 +993,47 @@ $.widget( "tele.teleRule", {
 				
 				requestWRAP.append(this.requestPOST).append(this.requestGET).append(this.requestHEADER);
 
-				
+				// Response settings
+				var responseSettings = $('<div>').teleRadios({
+					checked: 'Title',
+					radios: [
+						{key: 'Title', label: 'Title',},
+						{key: 'StatusCode', label: 'Status Code'},
+						{key: 'Body', label: 'Body'}
+					],
+					callback: function (radio) {
+						if (radio.key == 'StatusCode') {
+							controlsWrap.hide();
+							inspectionType.hide();
+							statusCodeWRAP.show();
+						}
+						else {
+							statusCodeWRAP.hide();
+							controlsWrap.show();
+							inspectionType.show();
+						}
+					}
+				}).addClass('tele-response-settings');
+
+				// Status code settings
+				statusCodeWRAP.append(getStatusCodeRangeUI(''));
+
+
+
 				var inspectionTitle = $('<div>').addClass('tele-title-1').html('String Inspection').hide();
 				var toggleReqTitle  = $('<div>').addClass('tele-title-1').html('Parameter').hide();
-				
-				
+
+
 				// Append all UI elements to rule inner container
 				ruleInner.append(toggleReqTitle)
-						 .append(toggleType)
-						 .append(paramWRAP)
-						 .append(requestWRAP)
-						 .append(inspectionTitle)
-						 .append(inspectionType)
-						 .append(controlsWrap);
+					.append(toggleType)
+					.append(paramWRAP)
+					.append(requestWRAP)
+					.append(responseSettings)
+					.append(inspectionTitle)
+					.append(inspectionType)
+					.append(statusCodeWRAP)
+					.append(controlsWrap);
 				// DONE BUILDING UI
 				
 				
@@ -952,14 +1049,25 @@ $.widget( "tele.teleRule", {
 							// Check param
 							$('.tele-parameter-type [rel="Parameter"]', container).trigger('click');
 						break;
+						case 'Title':
+							// Check Title
+							$('.tele-parameter-type [rel="Response"]', container).trigger('click');
+							$('.tele-response-settings [rel="Title"]', container).trigger('click');
+						break;
+						case 'StatusCode':
+							// Check Status Code
+							$('.tele-parameter-type [rel="Response"]', container).trigger('click');
+							$('.tele-response-settings [rel="StatusCode"]', container).trigger('click');
+						break;
+						case 'Body':
+							// Check Body
+							$('.tele-parameter-type [rel="Response"]', container).trigger('click');
+							$('.tele-response-settings [rel="Body"]', container).trigger('click');
+						break;
 						case 'Uri':
 							// Check URI
 							$('.tele-parameter-type [rel="Uri"]', container).trigger('click');
-						break;
-						case 'Title':
-							// Check Title
-							$('.tele-parameter-type [rel="Title"]', container).trigger('click');
-						break;
+							break;
 						default: 
 							// Check request
 							$('.tele-parameter-type [rel="Request"]', container).trigger('click');
@@ -1007,7 +1115,7 @@ $.widget( "tele.teleRule", {
 							if(data.not_signal) {
 								$('.tele-checkbox-checkbox', r_contains_check).click();
 							}
-							
+
 							
 						break;
 						case 'regex':
@@ -1018,6 +1126,12 @@ $.widget( "tele.teleRule", {
 								$('.tele-checkbox-checkbox', r_regex_check).click();
 							}
 						
+						break;
+						case 'code':
+							statusCodeWRAP.empty();
+							statusCodeWRAP.append(getStatusCodeRangeUI(data.str_match));
+
+
 						break;
 						case 'fuzzylength':
 							
