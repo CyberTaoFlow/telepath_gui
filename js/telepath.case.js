@@ -475,6 +475,7 @@ telepath.casePanel = {
 		result.timeFormat = 'h:i A';
 		result.offset = 20;
 		result.icon   = 'case';
+		result.count   = item.count;
 		result.itemID = item.sid;
 		
 		result.details = [
