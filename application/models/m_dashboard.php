@@ -188,7 +188,7 @@ class M_Dashboard extends CI_Model {
 
 	}
 
-	public function get_gap_score() {
+	public function get_gap_score($learning=false) {
 
 		$params['index']='telepath-20*';
 		$params['type']='http';
@@ -325,13 +325,14 @@ class M_Dashboard extends CI_Model {
 //						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'exists' => [ 'field' => 'score_average' ] ],
 
-					],
-					'must_not' => [
-						["match" => ['operation_mode' => '1']]
 					]
 				]
 			]
 		);
+
+		if(!$learning){
+			$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+		}
 
 //		$params = append_application_query($params, $apps);
 //		$params = append_access_query($params);

@@ -46,13 +46,18 @@ class Dashboard extends Tele_Controller
 
     }
 
-    public function get_gap_score()
+    public function get_gap_score($learning=false)
     {
 //        telepath_auth(__CLASS__, __FUNCTION__);
 //        $range = $this->_get_range();
 //        $apps = $this->_get_apps();
-
-        $data = $this->M_Dashboard->get_gap_score();
+        if(isset ($learning) && $learning=='learning'){
+            $learning=true;
+        }
+        else{
+            $learning=false;
+        }
+        $data = $this->M_Dashboard->get_gap_score($learning);
 
         return_success($data);
 
