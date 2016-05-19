@@ -46,6 +46,20 @@ class Dashboard extends Tele_Controller
 
     }
 
+    public function get_gap_score()
+    {
+        telepath_auth(__CLASS__, __FUNCTION__);
+        $range = $this->_get_range();
+        $apps = $this->_get_apps();
+
+        $data = $this->M_Dashboard->get_gap_score($range, $apps);
+
+        return_success($data);
+
+    }
+
+
+
     public function get_suspects()
     {
 

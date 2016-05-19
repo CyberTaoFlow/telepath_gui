@@ -80,8 +80,6 @@ class M_Dashboard extends CI_Model {
 //	}
 	
 	public function get_gap_alerts($interval, $range, $apps = array()) {
-		
-		$result = array('case' => 0, 'noncase' => 0);
 
 		$params['index']='telepath-20*';
 		$params['type']='http';
@@ -123,11 +121,144 @@ class M_Dashboard extends CI_Model {
 			}
 			return $data;
 		}
-		
+
 		return $data;
-		
+
 	}
-	
+
+	// Not used for now
+	public function get_gap_score_per_time($interval, $range, $apps = array()) {
+
+		$params['index']='telepath-20*';
+		$params['type']='http';
+		$params['body'] = array(
+			'size'  => 0,
+			'aggs'  => array(
+				'sid' => array(
+					"histogram" => [
+						"field" => "ts",
+						"interval" => $interval,
+						"min_doc_count" => 0,
+						"extended_bounds" => ["min"=>intval($range['start']),"max"=>intval($range['end'])]
+					],
+					'aggs' =>[
+						"score" => [
+							"avg" => [ "field" => "score_average" ]
+						]
+					]
+				)
+			),
+			'query' => [
+				'bool' => [
+					'must' => [
+						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
+//						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
+						[ 'exists' => [ 'field' => 'score_average' ] ],
+
+					],
+					'must_not' => [
+						["match" => ['operation_mode' => '1']]
+					]
+				]
+			]
+		);
+
+		$params = append_application_query($params, $apps);
+		$params = append_access_query($params);
+
+		$results   = $this->elasticClient->search($params);
+		$data = array();
+		if(!empty($results) && isset($results['aggregations']['sid']))
+		{
+			//$result['alerts'][]   = array($time['start'] * 1000, $this->get_gap_alerts($time, $apps));
+			foreach ($results['aggregations']['sid']['buckets'] as $bucket)
+			{
+				if($bucket['score']['value']){
+					$score=$bucket['score']['value'];
+				}
+				else{
+					$score=0;
+				}
+				$data[] = array($bucket['key'] * 1000, $score);
+			}
+			return $data;
+		}
+
+		return $data;
+
+	}
+
+	public function get_gap_score( $range, $apps = array()) {
+
+		$params['index']='telepath-20*';
+		$params['type']='http';
+		$params['body'] = array(
+			'size'  => 0,
+//			'aggs'  => array(
+//				'score' => array(
+//					"histogram" => [
+//						"field" => "score_average",
+//						"interval" => 0.1,
+//						"min_doc_count" => 0,
+//						"extended_bounds" => ["min"=>0,"max"=>1]
+//					]
+//				)
+//			),
+//			'aggs' =>[
+//				"score" => [
+//					"terms" => [ "field" => "score_average", "order"=>["_term"=>"asc"] ]
+//				]
+//			],
+			'aggs' => [
+				"score" => [
+					"range" => [
+						"field" => "score_average",
+						"ranges" => [
+							["from" => 0, "to" => 0.1],
+							["from" => 0.1, "to" => 0.2],
+							["from" => 0.2, "to" => 0.3],
+							["from" => 0.3, "to" => 0.4],
+							["from" => 0.4, "to" => 0.5],
+							["from" => 0.5, "to" => 0.6],
+							["from" => 0.6, "to" => 0.7],
+							["from" => 0.7, "to" => 0.8],
+							["from" => 0.8, "to" => 0.9],
+							["from" => 0.9, "to" => 1],
+							["from" => 1]
+						]
+					]
+				]
+			],
+			'query' => [
+				'bool' => [
+					'must' => [
+						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
+						[ 'exists' => [ 'field' => 'score_average' ] ],
+
+					],
+					'must_not' => [
+						["match" => ['operation_mode' => '1']]
+					]
+				]
+			]
+		);
+
+		$params = append_application_query($params, $apps);
+		$params = append_access_query($params);
+
+		$results   = $this->elasticClient->search($params);
+		$data = array();
+		if(!empty($results) && isset($results['aggregations']['score']) && isset($results['aggregations']['score']['buckets']))
+		{
+			foreach( $results['aggregations']['score']['buckets'] as $bucket) {
+				$data[]=$bucket['doc_count'];
+			}
+		}
+
+		return $data;
+
+	}
+
 	public function get_gap_cases($interval, $range, $apps = array()) {
 		
 		$result = array('case' => 0, 'noncase' => 0);
@@ -288,7 +419,8 @@ class M_Dashboard extends CI_Model {
 			'alerts'   => $this->get_gap_alerts($time, $range, $apps),
 			'sessions' => $this->get_gap_sessions($time, $range, $apps, $suspect_threshold),
 			'cases'    => $this->get_gap_cases($time, $range, $apps),
-			'suspects' => $this->get_gap_sessions($time, $range, $apps, $suspect_threshold, true)
+			'suspects' => $this->get_gap_sessions($time, $range, $apps, $suspect_threshold, true),
+			'score'=>  $this->get_gap_score_per_time($time, $range, $apps)
 		);
 		return $result;
 	}
