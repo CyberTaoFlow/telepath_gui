@@ -188,7 +188,7 @@ class M_Dashboard extends CI_Model {
 
 	}
 
-	public function get_gap_score( $range, $apps = array()) {
+	public function get_gap_score() {
 
 		$params['index']='telepath-20*';
 		$params['type']='http';
@@ -214,16 +214,106 @@ class M_Dashboard extends CI_Model {
 					"range" => [
 						"field" => "score_average",
 						"ranges" => [
-							["from" => 0, "to" => 0.1],
-							["from" => 0.1, "to" => 0.2],
-							["from" => 0.2, "to" => 0.3],
-							["from" => 0.3, "to" => 0.4],
-							["from" => 0.4, "to" => 0.5],
-							["from" => 0.5, "to" => 0.6],
-							["from" => 0.6, "to" => 0.7],
-							["from" => 0.7, "to" => 0.8],
-							["from" => 0.8, "to" => 0.9],
-							["from" => 0.9, "to" => 1],
+							["from" => 0, "to" => 0.01],
+							["from" => 0.01, "to" => 0.02],
+							["from" => 0.02, "to" => 0.03],
+							["from" => 0.03, "to" => 0.04],
+							["from" => 0.04, "to" => 0.05],
+							["from" => 0.05, "to" => 0.06],
+							["from" => 0.06, "to" => 0.07],
+							["from" => 0.07, "to" => 0.08],
+							["from" => 0.08, "to" => 0.09],
+							["from" => 0.09, "to" => 0.10],
+							["from" => 0.10, "to" => 0.11],
+							["from" => 0.11, "to" => 0.12],
+							["from" => 0.12, "to" => 0.13],
+							["from" => 0.13, "to" => 0.14],
+							["from" => 0.14, "to" => 0.15],
+							["from" => 0.15, "to" => 0.16],
+							["from" => 0.16, "to" => 0.17],
+							["from" => 0.17, "to" => 0.18],
+							["from" => 0.18, "to" => 0.19],
+							["from" => 0.19, "to" => 0.20],
+							["from" => 0.20, "to" => 0.21],
+							["from" => 0.21, "to" => 0.22],
+							["from" => 0.22, "to" => 0.23],
+							["from" => 0.23, "to" => 0.24],
+							["from" => 0.24, "to" => 0.25],
+							["from" => 0.25, "to" => 0.26],
+							["from" => 0.26, "to" => 0.27],
+							["from" => 0.27, "to" => 0.28],
+							["from" => 0.28, "to" => 0.29],
+							["from" => 0.29, "to" => 0.30],
+							["from" => 0.30, "to" => 0.31],
+							["from" => 0.31, "to" => 0.32],
+							["from" => 0.32, "to" => 0.33],
+							["from" => 0.33, "to" => 0.34],
+							["from" => 0.34, "to" => 0.35],
+							["from" => 0.35, "to" => 0.36],
+							["from" => 0.36, "to" => 0.37],
+							["from" => 0.37, "to" => 0.38],
+							["from" => 0.38, "to" => 0.39],
+							["from" => 0.39, "to" => 0.40],
+							["from" => 0.40, "to" => 0.41],
+							["from" => 0.41, "to" => 0.42],
+							["from" => 0.42, "to" => 0.43],
+							["from" => 0.43, "to" => 0.44],
+							["from" => 0.44, "to" => 0.45],
+							["from" => 0.45, "to" => 0.46],
+							["from" => 0.46, "to" => 0.47],
+							["from" => 0.47, "to" => 0.48],
+							["from" => 0.48, "to" => 0.49],
+							["from" => 0.49, "to" => 0.50],
+							["from" => 0.50, "to" => 0.51],
+							["from" => 0.51, "to" => 0.52],
+							["from" => 0.52, "to" => 0.53],
+							["from" => 0.53, "to" => 0.54],
+							["from" => 0.54, "to" => 0.55],
+							["from" => 0.55, "to" => 0.56],
+							["from" => 0.56, "to" => 0.57],
+							["from" => 0.57, "to" => 0.58],
+							["from" => 0.58, "to" => 0.59],
+							["from" => 0.59, "to" => 0.60],
+							["from" => 0.60, "to" => 0.61],
+							["from" => 0.61, "to" => 0.62],
+							["from" => 0.62, "to" => 0.63],
+							["from" => 0.63, "to" => 0.64],
+							["from" => 0.64, "to" => 0.65],
+							["from" => 0.65, "to" => 0.66],
+							["from" => 0.66, "to" => 0.67],
+							["from" => 0.67, "to" => 0.68],
+							["from" => 0.68, "to" => 0.69],
+							["from" => 0.69, "to" => 0.70],
+							["from" => 0.70, "to" => 0.71],
+							["from" => 0.71, "to" => 0.72],
+							["from" => 0.72, "to" => 0.73],
+							["from" => 0.73, "to" => 0.74],
+							["from" => 0.74, "to" => 0.75],
+							["from" => 0.75, "to" => 0.76],
+							["from" => 0.76, "to" => 0.77],
+							["from" => 0.77, "to" => 0.78],
+							["from" => 0.78, "to" => 0.79],
+							["from" => 0.79, "to" => 0.80],
+							["from" => 0.80, "to" => 0.81],
+							["from" => 0.81, "to" => 0.82],
+							["from" => 0.82, "to" => 0.83],
+							["from" => 0.83, "to" => 0.84],
+							["from" => 0.84, "to" => 0.85],
+							["from" => 0.85, "to" => 0.86],
+							["from" => 0.86, "to" => 0.87],
+							["from" => 0.87, "to" => 0.88],
+							["from" => 0.88, "to" => 0.89],
+							["from" => 0.99, "to" => 0.90],
+							["from" => 0.90, "to" => 0.91],
+							["from" => 0.91, "to" => 0.92],
+							["from" => 0.92, "to" => 0.93],
+							["from" => 0.93, "to" => 0.94],
+							["from" => 0.94, "to" => 0.95],
+							["from" => 0.95, "to" => 0.96],
+							["from" => 0.96, "to" => 0.97],
+							["from" => 0.97, "to" => 0.98],
+							["from" => 0.98, "to" => 0.99],
+							["from" => 0.99, "to" => 1],
 							["from" => 1]
 						]
 					]
@@ -232,7 +322,7 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
+//						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'exists' => [ 'field' => 'score_average' ] ],
 
 					],
@@ -243,8 +333,8 @@ class M_Dashboard extends CI_Model {
 			]
 		);
 
-		$params = append_application_query($params, $apps);
-		$params = append_access_query($params);
+//		$params = append_application_query($params, $apps);
+//		$params = append_access_query($params);
 
 		$results   = $this->elasticClient->search($params);
 		$data = array();
