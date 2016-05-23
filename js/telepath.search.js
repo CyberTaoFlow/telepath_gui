@@ -413,7 +413,7 @@ telepath.search = {
 
         // Create List
         this.list = $('<div>').addClass('tele-cases-block');
-        this.container.append(this.list);
+        $('#tele-search-cases').append(this.list);
 
         // Init List
         this.list.teleList({
@@ -468,7 +468,7 @@ telepath.search = {
             return;
         // Create List
         this.list = $('<div>').addClass('tele-alerts-block');
-        this.container.append(this.list);
+        $('#tele-search-alerts').append(this.list);
 
         //this.list.teleList({data: this.results.alerts, searchkey: this.searchStr});
         // Init List
@@ -477,7 +477,7 @@ telepath.search = {
             searchkey: this.searchStr,
             formatter: function (item) {
 
-                item.checkable = true;
+                //item.checkable = true;
                 return telepath.alert.rowFormatter(item);
 
             }
@@ -489,12 +489,12 @@ telepath.search = {
             return;
         // Create List
         this.list = $('<div>').addClass('tele-suspects-block');
-        this.container.append(this.list);
+        $('#tele-search-suspects').append(this.list);
 
         // Init Suspects
         this.list.teleList({data: this.results.suspects, searchkey: this.searchStr,
         formatter: function(item){
-            item.checkable = true;
+           // item.checkable = true;
             return telepath.suspects.rowFormatter(item);
         }});
 
@@ -504,12 +504,12 @@ telepath.search = {
             return;
         // Create List
         this.list = $('<div>').addClass('tele-requests-block');
-        this.container.append(this.list);
+        $('#tele-search-requests').append(this.list);
 
         // Init Suspects
         this.list.teleList({data: this.results.requests, searchkey: this.searchStr,
             formatter: function(item){
-                item.checkable = true;
+             //   item.checkable = true;
                 return telepath.suspects.rowFormatter(item);
             }});
 
