@@ -421,6 +421,7 @@ class M_Alerts extends CI_Model {
 								"last_score" => [
 									"terms" => [
 										"field" => "ip_score",
+										"size" => 1,
 										"order"=>["max_ts" => "desc" ]
 									],
 									'aggs'=>[

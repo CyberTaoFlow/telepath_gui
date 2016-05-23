@@ -185,7 +185,7 @@ class M_Cases extends CI_Model {
 							"min" => [ "field" => "ts" ]
 						],
 						"user" => [
-							"terms" => [ "field" => "username" ]
+							"terms" => [ "field" => "username", "size" => 1 ]
 						],
 					],
 				
@@ -316,7 +316,7 @@ class M_Cases extends CI_Model {
 							"min" => ["field" => "ts"]
 						],
 						"user" => [
-							"terms" => [ "field" => "username" ]
+							"terms" => [ "field" => "username" , "size" => 1]
 						],
 //						"similarity" => [
 //							"max" => [ "script" => "_score" ]
