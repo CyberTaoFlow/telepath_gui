@@ -75,7 +75,7 @@ telepath.config.accounts = {
 				break;
 			}
 			
-			console.log();
+			// console.log();
 			
 		}}).addClass('tele-limit-type-group');
 		
@@ -328,7 +328,7 @@ telepath.config.accounts = {
 						if(d_val['login'] != 'admin'){
 							to_delete.push(user_id);
 						}else{
-							console.log('Cannot delete admin');
+							// console.log('Cannot delete admin');
 						};
 					}
 				});
@@ -435,7 +435,7 @@ telepath.config.accounts = {
 			}).on('changed.jstree', function (e, data) {
 				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
-				console.log('Group Changed - ' + data.node.text );
+				// console.log('Group Changed - ' + data.node.text );
 				telepath.config.accounts.selectedGroup = data.node.data.id;
 				telepath.config.accounts.getUsers();
 			});

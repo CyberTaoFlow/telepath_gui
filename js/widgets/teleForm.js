@@ -124,7 +124,7 @@ $.widget( "tele.teleForm", {
     },
 	validate: function(that) {
 		// Trigger Apply Hook
-		console.log('HOOK');
+		// console.log('HOOK');
 		that.options.callback();
 	}
 

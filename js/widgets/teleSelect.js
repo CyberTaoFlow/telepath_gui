@@ -32,7 +32,7 @@ telepath.autocomplete = {
         $(element).css({backgroundColor: '#cecece'});
         element.parent().append(telepath.loader);
 
-        console.log('Seeking autocomplete of type ' + type + ' value ' + value);
+        // console.log('Seeking autocomplete of type ' + type + ' value ' + value);
 
         var url = '';
         switch (type) {

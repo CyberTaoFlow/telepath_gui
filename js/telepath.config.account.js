@@ -53,7 +53,7 @@ telepath.config.account = {
 
 		$(".tele-button-apply", this.container).click(function () {
 		
-			console.log('Saving user');
+			// console.log('Saving user');
 				
 			var userData = { user: {}, perm: [], groups: [], apps: [], ranges: [] };
 			
@@ -162,14 +162,14 @@ telepath.config.account = {
 			if(userData.user.id == 'new') {
 				
 				telepath.ds.get('/users/add_user', { items: userData }, function (data) {
-					console.log(data);		
+					// console.log(data);
 					telepath.config.accounts.loadData();
 				});
 			
 			} else {
 						
 				telepath.ds.get('/users/set_user', { items: userData }, function (data) {
-					console.log(data);					
+					// console.log(data);
 					telepath.config.accounts.loadData();
 				});
 			

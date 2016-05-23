@@ -136,7 +136,7 @@ telepath.groups = {
 	
 		var id = telepath.groups.editData.items.group.id;
 		
-		console.log(id);
+		// console.log(id);
 		
 		telepath.groups.group_mask = new Ext.LoadMask(telepath.groups.editWindow.body.el, {msg:"Please wait..."});
 		telepath.groups.group_mask.show();

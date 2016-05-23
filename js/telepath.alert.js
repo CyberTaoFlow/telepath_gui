@@ -438,13 +438,13 @@ telepath.alert = {
 		if(req) {
 			this.requestInfo = req;
 		} else {
-			console.log('RID ' + RID + ' was not found in requests');
+			// console.log('RID ' + RID + ' was not found in requests');
 			return;
 		}
 		
 		telepath.ds.get('/similarities/', { param_type: 'request', param_id: RID }, function(data) {
 		
-			console.log(data);
+			// console.log(data);
 			
 			that.similaritiesList = $('<div>');
 			
@@ -472,17 +472,17 @@ telepath.alert = {
 			callbacks: {
 				click: function (widget) {
 				
-					console.log(widget.options);
+					// console.log(widget.options);
 					
 				},
 				hover_in: function(el, item) {
 					
-					console.log(item);
+					// console.log(item);
 						
 				},
 				hover_out: function(el, item) {
 				
-					console.log(item);
+					// console.log(item);
 				}
 			}}).appendTo(that.requestDetails);
 			
@@ -536,7 +536,7 @@ telepath.alert = {
 				callback: function (widget) {
 					telepath.alert.filters[filter.type] = widget.options.checked;
 					that.printParams();
-					console.log(telepath.alert.filters);
+					// console.log(telepath.alert.filters);
 			}});
 			that.filtersContainer.append(filter_el);
 		});

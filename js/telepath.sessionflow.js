@@ -141,12 +141,12 @@ telepath.sessionflow = {
 						return row;
 					}
 					
-					console.log(similarity);
+					// console.log(similarity);
 					
 					similarity._source._score = similarity._score;
 					similarity = similarity._source;
 					
-					console.log(similarity);
+					// console.log(similarity);
 					
 					// Fill table data
 					var table =  $('<table>').addClass('tele-alert-info-table');
@@ -294,7 +294,7 @@ telepath.sessionflow = {
 				count:   total, 
 				name: that.alertsList ? 'Alert' : 'Session', 
 				callback: function (itemIndex) {
-					console.log(itemIndex);
+					// console.log(itemIndex);
 					that.SID = that.RIDS[itemIndex];
 					that.loadSession();
 					
@@ -752,7 +752,7 @@ telepath.sessionflow = {
 		if(req) {
 			this.requestInfo = req;
 		} else {
-			console.log('RID ' + uid + ' was not found in requests');
+			// console.log('RID ' + uid + ' was not found in requests');
 			return;
 		}
 		

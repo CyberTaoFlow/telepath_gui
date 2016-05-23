@@ -57,7 +57,7 @@ telepath.config.rules = {
 		// add search on client site on key up event
 		$(".tele-config-bar-right .tele-search-input").keyup('input', function () {
 			that.searchString = $(this).val();
-			console.log(that.searchString);
+			// console.log(that.searchString);
 			that.input();
 		});
 	},
@@ -78,7 +78,7 @@ telepath.config.rules = {
 		this.ruleTree = $('<div>').teleTree({ 
 			type: 'rules', 
 			callback: function(e, data) {
-				console.log(data);
+				// console.log(data);
 
 				if(data.node.data.type == 'category') {
 					that.cmdNewRule.show();
@@ -142,8 +142,8 @@ telepath.config.rules = {
 		
 			var found = false;
 			$.each(telepath.config.rules.categories, function(i, v) {
-				 console.log(value); 
-				 console.log(v.name);
+				 // console.log(value);
+				 // console.log(v.name);
 				 if(v.name.toLowerCase() == value.toLowerCase()){
 				 	found = true;
 				 };

@@ -158,7 +158,7 @@ $.widget( "tele.listitem", {
 				if(typeof(that.options.favoriteCallBack) == 'function') {
 					that.options.favoriteCallBack(that);
 				}
-				console.log(that.options);
+				// console.log(that.options);
 			}});
 			this.element.append(this.favEl);
 		}

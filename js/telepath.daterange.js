@@ -78,7 +78,7 @@ $.widget( "tele.daterange", {
 		});
 
 		$(".tele-daterange-period a").click(function () {
-			console.log('HERE!');
+			// console.log('HERE!');
 			$(".tele-daterange-period a.active").removeClass('active');
 			that.options.state = $(this).attr('class').split('-')[3]; // .split(' ')[0]
 			$(this).addClass('active');

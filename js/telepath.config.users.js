@@ -230,7 +230,7 @@ telepath.users = {
 	
 		var id = telepath.users.editData.items.user.id;
 		
-		console.log(id);
+		// console.log(id);
 		
 		telepath.users.user_mask = new Ext.LoadMask(telepath.users.editWindow.body.el, {msg:"Please wait..."});
 		telepath.users.user_mask.show();

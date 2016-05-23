@@ -152,7 +152,7 @@ $.widget( "tele.teleBrowser", {
 
 				// EXPANDING PAGE , SHOW PARAMS
 
-				console.log('NEED TO EXPAND A PAGE');
+				// console.log('NEED TO EXPAND A PAGE');
 
 				telepath.ds.get('/applications/get_page', { host: obj.data.host, path: obj.data.path, mode: that.options.mode }, function(data) {
 

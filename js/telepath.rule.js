@@ -7,7 +7,7 @@ telepath.ruleOverlay = {
 				
 		telepath.ds.get('/rules', { mode: 'expand_group', id: rule_id }, function(data) {
 			that.data = data;
-			console.log(data);
+			// console.log(data);
 			that.initUI({ id: 'new', name: 'New Rule', data: data });
 		});
 		

@@ -56,7 +56,7 @@ $.widget( "tele.teleRequest", {
 			$(this).removeClass('hover');
 			that.hideParameters();
 		}).click(function () {
-			console.log(that.options.data);
+			// console.log(that.options.data);
 			that.showParameters();
 		});
 		} else {

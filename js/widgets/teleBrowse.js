@@ -141,7 +141,7 @@ $.widget( "tele.teleBrowse", {
 					
 				}
 				
-				console.log(data);
+				// console.log(data);
 				window.d = data;
 			
 				that.maskEl.remove();

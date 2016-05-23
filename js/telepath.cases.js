@@ -79,7 +79,7 @@ telepath.cases = {
 	_resize: function () {
 		
 		if($('.tele-panel-cases').children().size() == 0) return;
-		console.log('Cases Resize');
+		// console.log('Cases Resize');
 		
 		var height = $(window).height();
 		$('.tele-body').css({ height: height });
@@ -177,7 +177,7 @@ telepath.cases = {
 							that.setData(data.items);
 
 							telepath.ds.get('/cases/flag_requests_by_cases', { case: selected, range: false, method: 'delete', repeat: false  }, function (data) {
-								console.log('Delete the case:' + data);
+								// console.log('Delete the case:' + data);
 							});
 						});
 					}

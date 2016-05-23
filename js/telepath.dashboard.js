@@ -496,7 +496,7 @@ telepath.realtime = {
 	},
 	start: function (container) {
 	
-		console.log('starting realtime');
+		// console.log('starting realtime');
 		this.container = container;
 		
 		var totalPoints = 60;
@@ -532,10 +532,10 @@ telepath.realtime = {
 	stop: function () {
 		clearInterval(this.timer);
 		this.container.empty();
-		console.log('stopping realtime');
+		// console.log('stopping realtime');
 	},
 	tick: function() {
-		console.log(telepath.realtime.count);
+		// console.log(telepath.realtime.count);
 		telepath.realtime.count = telepath.realtime.count + 1;
 	},
 	getData: function() {

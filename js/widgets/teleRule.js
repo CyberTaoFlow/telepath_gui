@@ -216,7 +216,7 @@ $.widget( "tele.teleRule", {
 				
 				json.kind = 'P';
 				var method = $('.tele-parameter-type .tele-radio-knob',c).parent().attr('rel');
-				console.log(method);
+				// console.log(method);
 				
 				switch(method) {
 
@@ -730,7 +730,7 @@ $.widget( "tele.teleRule", {
 			};
 			
 		}
-		console.log(data);
+		// console.log(data);
 		
 		// START Small Rule Bar containing TOGGLE , TRIGGER ALERT # and SCORE
 		var triggerWrap  	  = $('<div>').addClass('tele-rule-trigger-wrap');
@@ -1187,7 +1187,7 @@ $.widget( "tele.teleRule", {
 				
 				var changingWindow = $('<div>').addClass('tele-pattern-changing');
 				
-				console.log(data);
+				// console.log(data);
 				
 				
 				// OTHER BROWSE

@@ -159,7 +159,7 @@ telepath.action.recorder = {
 		this.recordValue = value;
 		
 		if(telepath.debug) {
-			console.log('Tracking ' + type + ' - ' + value);
+			// console.log('Tracking ' + type + ' - ' + value);
 		}
 		
 		function tick() {
@@ -257,15 +257,15 @@ telepath.action.recorder = {
 
 	},
 	initDebugger: function () {
-		console.log('Actions debugger online');
-		console.log('Current host  : ' + telepath.action.currentApp);
+		// console.log('Actions debugger online');
+		// console.log('Current host  : ' + telepath.action.currentApp);
 		this.container.append('<div>Active sessions in last 5 minutes ::</div>');
 		var that = this;
 		telepath.ds.get('/actions/get_top_active_sessions', { host: telepath.action.currentApp.trim() }, function(data) {
-			console.log(data.items);
+			// console.log(data.items);
 			if(data.items) {
 				$.each(data.items, function(i, item) { 
-					console.log(item);
+					// console.log(item);
 					var item_el = $('<div>');
 					item_el.append('<span>' + new Date(item.ts * 1000).toString() + '<span>');
 					item_el.append('<span>' + item.sid + '</span>');
@@ -273,7 +273,7 @@ telepath.action.recorder = {
 					item_el.click(function () {
 						
 						$(this).css({ paddingBottom: 20 });
-						console.log('Tracking ' + item.sid + ' starting stamp ' + item.ts);
+						// console.log('Tracking ' + item.sid + ' starting stamp ' + item.ts);
 						
 						
 						if(telepath.action.recorder.timer) {
@@ -282,7 +282,7 @@ telepath.action.recorder = {
 						
 						telepath.action.recorder.timer = setInterval(function () {
 							telepath.ds.get('/actions/track_session_by_sid', { sid: item.sid, time: item.ts }, function(data) {
-								console.log(data);
+								// console.log(data);
 								if(data.items && data.items.length > 0) {
 									item_el.append($('<div>').html(JSON.stringify(data)));
 								}
@@ -538,7 +538,7 @@ telepath.config.action = {
 			
 			var cleanData = [];
 			
-			console.log(actionData);
+			// console.log(actionData);
 			
 			$.each(actionData, function(i, action) {
 				
@@ -555,7 +555,7 @@ telepath.config.action = {
 			
 			});
 			
-			console.log(cleanData);
+			// console.log(cleanData);
 			
 			// Either stored or from input
 			var flow_name = that.action_data && that.action_data.action_name ?  that.action_data.action_name : $('input', telepath.action.recorder.actionName).val();

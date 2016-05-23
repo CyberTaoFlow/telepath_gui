@@ -261,7 +261,7 @@ $.widget( "tele.condition", {
 											that.options.data.value = that.options.data.value.substr(0, that.options.data.value.length - 1);
 										}
 										
-										console.log(that.options.data.value);
+										// console.log(that.options.data.value);
 									
 									}
 								});
@@ -274,7 +274,7 @@ $.widget( "tele.condition", {
 					},
 					callback: function(e, data) {
 						if(data.node.data.type == 'rule') {
-							console.log(data);
+							// console.log(data);
 						}
 					}
 				});

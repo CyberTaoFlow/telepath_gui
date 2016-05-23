@@ -11,7 +11,7 @@ telepath.formatConditionBrief = function(container, data) {
 	}
 	if(data.negate) { result = 'Not '; }
 	
-	console.log(data.type);
+	// console.log(data.type);
 	
 	switch(data.type) {
 		

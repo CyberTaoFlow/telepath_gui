@@ -40,7 +40,7 @@ $.widget( "tele.teleFile", {
 		
 		this.file.change(function (e) {
 			
-			console.log('FILECHANGE');
+			// console.log('FILECHANGE');
 			
 			var files = this.files;
 			if(!files.length) {

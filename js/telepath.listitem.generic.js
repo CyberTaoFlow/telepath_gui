@@ -264,7 +264,7 @@ telepath.listitem.generic = {
 		},
 		hover_in: function (el, opt) {
 			
-			console.log(opt);
+			// console.log(opt);
 			
 			var cid = opt.dataID;
 			

@@ -3,7 +3,7 @@ telepath.config = {
 	loaded: false,
 	init: function () {
 		
-		console.log('Configuration online');
+		// console.log('Configuration online');
 		this.outerContainer = $('.tele-panel-config');
 		this.initTabs();
 
@@ -158,7 +158,7 @@ telepath.config = {
 	},
 	resizeLayout: function() {
 		
-		console.log('Settings Resize');
+		// console.log('Settings Resize');
 		//console.log(this);
 		
 		this.barEl.css({ height: 40, width: '100%', background: '#333333' });

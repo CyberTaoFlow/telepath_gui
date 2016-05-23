@@ -64,7 +64,7 @@ telepath.search = {
                 callback: function (widget) {
 
                     that.options[data.id] = widget.options.checked;
-                    console.log(that.options);
+                    // console.log(that.options);
 
                 }
             });
@@ -260,7 +260,7 @@ telepath.search = {
 
     refresh: function () {
 
-        console.log('Starting Search..');
+        // console.log('Starting Search..');
 
         if (!this.searchStr){
             $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {

@@ -141,7 +141,7 @@ $.widget( "tele.appSelect", {
 			});
 			
 			that.popup.remove();
-			console.log(result);
+			// console.log(result);
 			
 			telepath.ds.get('/telepath/set_app_filter', { apps: result }, function (data) {
 			

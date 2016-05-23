@@ -131,20 +131,31 @@ telepath.main = {
 
 
         // Load some stuff
-        telepath.ds.get('/parameters/get_global_headers', {}, function(data) { telepath.global_headers = data.items; console.log('GLOBAL HEADERS::'); console.log(telepath.global_headers); });
-        telepath.ds.get('/rules/get_cmds', {}, function(data) { telepath.rule_cmds = data.items; console.log('CMD EXEC::'); console.log(telepath.rule_cmds); });
+        telepath.ds.get('/parameters/get_global_headers', {}, function (data) {
+            telepath.global_headers = data.items;
+            // console.log('GLOBAL HEADERS::');
+            // console.log(telepath.global_headers);
+        });
+        telepath.ds.get('/rules/get_cmds', {}, function (data) {
+            telepath.rule_cmds = data.items;
+            // console.log('CMD EXEC::');
+            // console.log(telepath.rule_cmds);
+        });
 
 
-        telepath.ds.get('/telepath/get_app_filter', {}, function(data) 	     {
+        telepath.ds.get('/telepath/get_app_filter', {}, function (data) {
 
-            telepath.app_filter = data.items;     console.log('APP FILTER::');     console.log(telepath.app_filter);
+            telepath.app_filter = data.items;     // console.log('APP FILTER::');     console.log(telepath.app_filter);
 
-            if(data.ip == '81.218.185.126') {
-                console.log('DEBUG FROM OFFICE');
+            if (data.ip == '81.218.185.126') {
+                // console.log('DEBUG FROM OFFICE');
             }
 
         });
-        telepath.ds.get('/telepath/get_time_range', {}, function(data)       { telepath.range      = data.items;     console.log('TIME RANGE::');     console.log(telepath.range);
+        telepath.ds.get('/telepath/get_time_range', {}, function (data) {
+            telepath.range = data.items;
+            // console.log('TIME RANGE::');
+            // console.log(telepath.range);
 
         // Load resources
         telepath.main.loadResources(function () {

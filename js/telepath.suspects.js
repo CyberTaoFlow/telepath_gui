@@ -160,7 +160,7 @@ telepath.suspects = {
 			$('.tele-panel-suspects .tele-search-input').val('');
 			telepath.suspects.searchString = '';
 			telepath.suspects.refresh();
-			console.log('Delete')
+			// console.log('Delete')
 		});
 		//searchSuspects.append(resetInput);
 
