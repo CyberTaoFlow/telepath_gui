@@ -56,7 +56,6 @@ if($logged_in && $can_access) {
 	<title>Telepath 3.0</title>
 	<link rel='shortcut icon' href='/favicon.ico'/>
 	<link rel='icon' href='/favicon.ico'/>
-	<!-- <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300' rel='stylesheet' type='text/css'> -->
 
 	<?php
 
@@ -84,13 +83,7 @@ if($logged_in && $can_access) {
 	<?php }?>
 
 
-	<script src="js/lib/jquery-1.11.0.min.js"></script>
-	<script src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
-	<script src="js/lib/yepnope.1.5.4-min.js"></script>
-	<script src="js/lib/jquery.contextmenu.min.js"></script>
-
-
-	<script>
+		<script>
 		var telepath = { 
 			basePath: "<?php echo dirname($_SERVER['PHP_SELF']) != '/' ? dirname($_SERVER['PHP_SELF']) : ''; ?>",
 			controllerPath: "<?php echo $_SERVER['PHP_SELF']; ?>",
@@ -98,39 +91,41 @@ if($logged_in && $can_access) {
 			access: <?php echo json_encode(array('admin' => $is_admin, 'perm' => $perms)) ?>
 		};
 	</script>
-	
+
 	<?php
-		
-		
-		
-		$autoload = array(
-			"js/lib/jquery.fileupload.min.js",
-			"js/lib/jquery.iframe-transport.min.js",
-			"js/lib/jquery.flot.min.js", 
-			"js/lib/jquery.flot.resize.min.js", 
-			"js/lib/jquery.flot.pie.min.js",
-			"js/lib/jquery.flot.selection.min.js",
-			"js/lib/jquery.flot.time.min.js",
-			"js/lib/jquery.flot.axislabels.min.js",
-			"js/lib/bootstrap-slider.min.js",
-			"js/lib/jquery.flot.symbol.min.js",
-			"js/lib/jquery.flot.tooltip.min.js",
-			"js/lib/jquery.tipsy.min.js"
+
+			$autoload = array(
+			"/lib/jquery-1.11.0.min.js",
+			"/lib/jquery-ui-1.10.4.custom.min.js",
+			"/lib/yepnope.1.5.4-min.js",
+			"/lib/jquery.contextmenu.min.js",
+			"/lib/jquery.fileupload.min.js",
+			"/lib/jquery.iframe-transport.min.js",
+			"/lib/jquery.flot.min.js",
+			"/lib/jquery.flot.resize.min.js",
+			"/lib/jquery.flot.pie.min.js",
+			"/lib/jquery.flot.selection.min.js",
+			"/lib/jquery.flot.time.min.js",
+			"/lib/jquery.flot.axislabels.min.js",
+			"/lib/bootstrap-slider.min.js",
+			"/lib/jquery.flot.symbol.min.js",
+			"/lib/jquery.flot.tooltip.min.js",
+			"/lib/jquery.tipsy.min.js"
 		);
 
-		foreach($autoload as $src) {
-			echo '<script src="' . $src . '"></script>';
-		}
-	
+
+
 
 	if ($_SERVER['HTTP_HOST'] != 'localhost') {
-		// add js files
-		$this->minify->js(array("telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js", "telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js"));
-
-		// rebuild js (false means skip rebuilding).
-		echo $this->minify->deploy_js(true);
+		array_push($autoload,"telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js","telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js");
 	}
-	else{
+	// add js files
+	$this->minify->js($autoload);
+
+	// rebuild js (false means skip rebuilding).
+		echo $this->minify->deploy_js(true);
+
+	if ($_SERVER['HTTP_HOST'] == 'localhost') {
 		?>
 			<script src="js/telepath.js"></script>
 			<script src="js/telepath.header.js"></script>
