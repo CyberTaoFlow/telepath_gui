@@ -62,7 +62,8 @@ if($logged_in && $can_access) {
 
 	if ($_SERVER['HTTP_HOST'] != 'localhost') {
 		// add css files
-		$this->minify->css(array('reset.css', 'telepath.css', 'listitem.css', 'infoblock.css', "icons.css", "flags.css", "overlay.css", "jquery.contextmenu.css", "slider.css", "tipsy.css"));
+		$this->minify->css(array('reset.css','/ui-lightness/jquery-ui-1.10.4.custom.min.css', 'telepath.css',
+			'listitem.css', 'infoblock.css', "icons.css", "flags.css", "overlay.css", "jquery.contextmenu.css", "slider.css", "tipsy.css"));
 
 		// bool argument for rebuild css (false means skip rebuilding).
 		echo $this->minify->deploy_css(true);
@@ -70,6 +71,7 @@ if($logged_in && $can_access) {
 	else{
 	?>
 			<link rel="stylesheet" href="css/reset.css">
+			<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
 			<link rel="stylesheet" href="css/telepath.css">
 			<link rel="stylesheet" href="css/listitem.css">
 			<link rel="stylesheet" href="css/infoblock.css">
@@ -81,13 +83,11 @@ if($logged_in && $can_access) {
 			<link rel="stylesheet" href="css/tipsy.css">
 	<?php }?>
 
-	<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
-
 
 	<script src="js/lib/jquery-1.11.0.min.js"></script>
 	<script src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
 	<script src="js/lib/yepnope.1.5.4-min.js"></script>
-	<script src="js/lib/jquery.contextmenu.js"></script>
+	<script src="js/lib/jquery.contextmenu.min.js"></script>
 
 
 	<script>
@@ -104,19 +104,18 @@ if($logged_in && $can_access) {
 		
 		
 		$autoload = array(
-			"js/lib/jquery.fileupload.js",
-			"js/lib/jquery.iframe-transport.js",
-
+			"js/lib/jquery.fileupload.min.js",
+			"js/lib/jquery.iframe-transport.min.js",
 			"js/lib/jquery.flot.min.js", 
 			"js/lib/jquery.flot.resize.min.js", 
 			"js/lib/jquery.flot.pie.min.js",
 			"js/lib/jquery.flot.selection.min.js",
 			"js/lib/jquery.flot.time.min.js",
-			"js/lib/jquery.flot.axislabels.js",
-			"js/lib/bootstrap-slider.js",
+			"js/lib/jquery.flot.axislabels.min.js",
+			"js/lib/bootstrap-slider.min.js",
 			"js/lib/jquery.flot.symbol.min.js",
 			"js/lib/jquery.flot.tooltip.min.js",
-			"js/lib/jquery.tipsy.js"
+			"js/lib/jquery.tipsy.min.js"
 		);
 
 		foreach($autoload as $src) {
