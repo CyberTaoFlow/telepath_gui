@@ -147,9 +147,9 @@ telepath.main = {
 
             telepath.app_filter = data.items;     // console.log('APP FILTER::');     console.log(telepath.app_filter);
 
-            if (data.ip == '81.218.185.126') {
-                // console.log('DEBUG FROM OFFICE');
-            }
+            //if (data.ip == '81.218.185.126') {
+            //     console.log('DEBUG FROM OFFICE');
+            //}
 
         });
         telepath.ds.get('/telepath/get_time_range', {}, function (data) {

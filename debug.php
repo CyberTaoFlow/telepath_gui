@@ -61,7 +61,7 @@ foreach($bro as $index) {
 }
 
 die;
-*/
+
 
 $query = array('size'  => 0); // Set size to 0 when need to aggregate
 $db->apply_query_aggregate($query, 'id.orig_h', 100);
