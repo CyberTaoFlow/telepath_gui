@@ -83,12 +83,12 @@ class M_Search extends CI_Model {
 			],
 		];
 
-		
+
 		$params2 = array();
 		switch($scope) {
 			case 'alerts':
 				$params['body']['query']['bool']['must'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-			//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
+				//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 				//$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 			break;
 			case 'cases':
@@ -125,18 +125,29 @@ class M_Search extends CI_Model {
 */
 			break;
 		}
-	
+
+
+
+		//var_dump($settings['apps']);
+		$params = append_application_query($params, $settings['apps']);	
+		//var_dump(json_encode($params));
+		$result = $this->elasticClient->search($params);
+		$results = array('items' => array());
+
+		$params2 = array();
+		$params2['index'] = 'telepath-20*';
+		$params2['type'] = 'http';
 		$params2['body'] = [
 			'size' => 0,
 			"aggs" => [
-				"country_code" => [ 
-					"terms" => [ "field" => "country_code", "size" => 1 ] 
+				"country_code" => [
+					"terms" => [ "field" => "country_code", "size" => 1 ]
 				],
-				"city" => [ 
-					"terms" => [ "field" => "city" , "size" => 1 ] 
+				"city" => [
+					"terms" => [ "field" => "city" , "size" => 1 ]
 				],
-				"id" => [ 
-					"terms" => [ "field" => "_id" , "size" => 1 ] 
+				"id" => [
+					"terms" => [ "field" => "_id" , "size" => 1 ]
 				],
 				"ip_orig" => [
 					"terms" => [ "field" => "ip_orig" , "size" => 1 ]
@@ -186,12 +197,9 @@ class M_Search extends CI_Model {
 			]
 		];
 
-		//var_dump($settings['apps']);
-		$params = append_application_query($params, $settings['apps']);	
-		//var_dump(json_encode($params));
-		$result = $this->elasticClient->search($params);
-		$results = array('items' => array());
-		
+		$params2['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end'])]]];
+		$params2['body']['query']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],"default_operator" => 'AND']];
+
 		if(isset($result["aggregations"]) && 
 		   isset($result["aggregations"]["sid"]) && 
 		   isset($result["aggregations"]["sid"]["buckets"]) && 
@@ -206,9 +214,6 @@ class M_Search extends CI_Model {
 					$params3 = $params2;
 					
 					$params3['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-					$params3['body']['query']['bool']['must'][] = [ 'term' => ['_type' => 'http' ] ];
-					$params3['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ];
-					$params3['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $settings['search'], "default_operator" => 'AND' ] ];
 
 					$result2 = $this->elasticClient->search($params3);
 					$sid = $result2['aggregations'];

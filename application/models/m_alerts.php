@@ -373,6 +373,8 @@ class M_Alerts extends CI_Model {
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
+						$params2['index'] = 'telepath-20*';
+						$params2['type'] = 'http';
 						$params2['body'] = [
 							'size' => 0,
 							"aggs" => [
@@ -433,7 +435,6 @@ class M_Alerts extends CI_Model {
 							]
 						];
 						$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-						$params2['body']['query']['bool']['must'][] = [ 'term' => ['_type' => 'http' ] ];
 						if(!empty($range)) {
 							$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 						}

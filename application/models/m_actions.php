@@ -158,11 +158,12 @@ class M_Actions extends CI_Model {
 
 		$scope = 300; // in last 5 minutes
 
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 100,
 			'query' => ['bool' =>
 				['must' => [
-					['term' => ['_type' => 'http']],
 					['term' => ['parameters.name' => 'hybridrecord']],
 					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
 				],
@@ -201,9 +202,10 @@ class M_Actions extends CI_Model {
 		// empty array (Yuli)
 		$params = array();
 		// Base query
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 100,
-			'query' => ['bool' => ['must' => [['term' => ['_type' => 'http']]]]],
 			'sort' => [["ts" => ["order" => "desc"]]]
 		];
 
@@ -297,6 +299,8 @@ class M_Actions extends CI_Model {
 
 		$scope = 300; // in last 5 minutes
 
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -311,7 +315,7 @@ class M_Actions extends CI_Model {
 				],
 			],
 			'query' => ['bool' =>
-				['must' => [['term' => ['_type' => 'http']],
+				['must' => [
 					['term' => ['host' => $host]],
 					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
 				],
