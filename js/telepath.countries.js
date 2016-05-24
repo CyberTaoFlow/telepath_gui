@@ -283,4 +283,4 @@ telepath.countries = {
 	"00":"Unknown"
 	}
 
-}
+};

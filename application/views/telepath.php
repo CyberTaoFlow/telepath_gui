@@ -57,22 +57,38 @@ if($logged_in && $can_access) {
 	<link rel='shortcut icon' href='/favicon.ico'/>
 	<link rel='icon' href='/favicon.ico'/>
 	<!-- <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300' rel='stylesheet' type='text/css'> -->
-	<link rel="stylesheet" href="css/reset.css">
+
+	<?php
+
+	if ($_SERVER['HTTP_HOST'] != 'localhost') {
+		// add css files
+		$this->minify->css(array('reset.css', 'telepath.css', 'listitem.css', 'infoblock.css', "icons.css", "flags.css", "overlay.css", "jquery.contextmenu.css", "slider.css", "tipsy.css"));
+
+		// bool argument for rebuild css (false means skip rebuilding).
+		echo $this->minify->deploy_css(true);
+	}
+	else{
+	?>
+			<link rel="stylesheet" href="css/reset.css">
+			<link rel="stylesheet" href="css/telepath.css">
+			<link rel="stylesheet" href="css/listitem.css">
+			<link rel="stylesheet" href="css/infoblock.css">
+			<link rel="stylesheet" href="css/icons.css">
+			<link rel="stylesheet" href="css/flags.css">
+			<link rel="stylesheet" href="css/overlay.css">
+			<link rel="stylesheet" href="css/jquery.contextmenu.css">
+			<link rel="stylesheet" href="css/slider.css">
+			<link rel="stylesheet" href="css/tipsy.css">
+	<?php }?>
+
 	<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
-	<link rel="stylesheet" href="css/telepath.css">
-	<link rel="stylesheet" href="css/listitem.css">
-	<link rel="stylesheet" href="css/infoblock.css">
-	<link rel="stylesheet" href="css/icons.css">
-	<link rel="stylesheet" href="css/flags.css">
-	<link rel="stylesheet" href="css/overlay.css">
-	<link rel="stylesheet" href="css/jquery.contextmenu.css">
-	<link rel="stylesheet" href="css/slider.css">
-	<link rel="stylesheet" href="css/tipsy.css">
-	
+
+
 	<script src="js/lib/jquery-1.11.0.min.js"></script>
 	<script src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
 	<script src="js/lib/yepnope.1.5.4-min.js"></script>
 	<script src="js/lib/jquery.contextmenu.js"></script>
+
 
 	<script>
 		var telepath = { 
@@ -107,41 +123,51 @@ if($logged_in && $can_access) {
 			echo '<script src="' . $src . '"></script>';
 		}
 	
+
+	if ($_SERVER['HTTP_HOST'] != 'localhost') {
+		// add js files
+		$this->minify->js(array("telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js", "telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js"));
+
+		// rebuild js (false means skip rebuilding).
+		echo $this->minify->deploy_js(true);
+	}
+	else{
+		?>
+			<script src="js/telepath.js"></script>
+			<script src="js/telepath.header.js"></script>
+
+			<script src="js/telepath.utils.js"></script>
+			<script src="js/telepath.ds.js"></script>
+			<script src="js/telepath.infoblock.js"></script>
+			<script src="js/telepath.popup.js"></script>
+			<script src="js/telepath.countries.js"></script>
+			<script src="js/telepath.dropdown.js"></script>
+			<script src="js/telepath.radios.js"></script>
+			<script src="js/telepath.button.js"></script>
+			<script src="js/telepath.checkbox.js"></script>
+			<script src="js/telepath.search.js"></script>
+			<script src="js/telepath.listitem.js"></script>
+			<script src="js/telepath.listitem.generic.js"></script>
+			<script src="js/telepath.toggle.js"></script>
+			<script src="js/telepath.daterange.js"></script>
+			<script src="js/telepath.graph.js"></script>
+			<script src="js/telepath.vectormap.js"></script>
+			<script src="js/telepath.anomalyscore.js"></script>
+			<script src="js/telepath.notifications.js"></script>
+			<script src="js/telepath.overlay.js"></script>
+			<script src="js/telepath.pagination.js"></script>
+
+			<script src="js/telepath.config.js"></script>
+
+			<script src="js/telepath.dashboard.js"></script>
+			<script src="js/telepath.case.js"></script>
+			<script src="js/telepath.cases.js"></script>
+			<script src="js/telepath.alert.js"></script>
+			<script src="js/telepath.alerts.js"></script>
+			<script src="js/telepath.suspects.js"></script>
+			<script src="js/telepath.reports.js"></script>
+	<?php 	}
 	?>
-	
-	<script src="js/telepath.js"></script>
-	<script src="js/telepath.header.js"></script>
-	
-	<script src="js/telepath.utils.js"></script>
-	<script src="js/telepath.ds.js"></script>
-	<script src="js/telepath.infoblock.js"></script>
-	<script src="js/telepath.popup.js"></script>
-	<script src="js/telepath.countries.js"></script>
-	<script src="js/telepath.dropdown.js"></script>
-	<script src="js/telepath.radios.js"></script>
-	<script src="js/telepath.button.js"></script>
-	<script src="js/telepath.checkbox.js"></script>
-	<script src="js/telepath.search.js"></script>
-	<script src="js/telepath.listitem.js"></script>
-	<script src="js/telepath.listitem.generic.js"></script>
-	<script src="js/telepath.toggle.js"></script>
-	<script src="js/telepath.daterange.js"></script>
-	<script src="js/telepath.graph.js"></script>
-	<script src="js/telepath.vectormap.js"></script>
-	<script src="js/telepath.anomalyscore.js"></script>
-	<script src="js/telepath.notifications.js"></script>
-	<script src="js/telepath.overlay.js"></script>
-	<script src="js/telepath.pagination.js"></script>
-	
-	<script src="js/telepath.config.js"></script>
-	
-	<script src="js/telepath.dashboard.js"></script>
-	<script src="js/telepath.case.js"></script>
-	<script src="js/telepath.cases.js"></script>
-	<script src="js/telepath.alert.js"></script>
-	<script src="js/telepath.alerts.js"></script>
-	<script src="js/telepath.suspects.js"></script>
-	<script src="js/telepath.reports.js"></script>
 	
 
 </head>
