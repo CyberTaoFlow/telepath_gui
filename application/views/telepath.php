@@ -89,7 +89,7 @@ if($logged_in && $can_access) {
 
     <?php
 
-    $autoload = array(
+    $js_files = array(
         "lib/jquery-1.11.0.min.js",
         "lib/jquery-ui-1.10.4.custom.min.js",
         "lib/yepnope.1.5.4-min.js",
@@ -108,17 +108,17 @@ if($logged_in && $can_access) {
         "lib/jquery.tipsy.min.js"
     );
 
-    array_push($autoload, "telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js", "telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js");
+    array_push($js_files, "telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js", "telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js");
 
     // add js files
-    $this->minify->js($autoload);
+    $this->minify->js($js_files);
 
     // rebuild js (false means skip rebuilding).
     echo $this->minify->deploy_js($rebuild);
 
     if ($_SERVER['HTTP_HOST'] == 'localhost') {
 
-        foreach ($autoload as $src) {
+        foreach ($js_files as $src) {
             echo '<script src="js/' . $src . '"></script>';
         }
     }
