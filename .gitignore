@@ -1,5 +1,3 @@
-/js/scripts.min.js
-/css/styles.min.css
 vendor/elasticsearch/elasticsearch/src/Elasticsearch/Client.php
 /application/config/config.php
 tmp/
