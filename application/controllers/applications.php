@@ -42,6 +42,15 @@ class Applications extends Tele_Controller
         $search = $this->input->post('search');
         $actions = $this->input->post('actions');
         $learning_so_far = $this->input->post('learning_so_far');
+        $sort = $this->input->post('sort');
+        $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
+
+        if (!$sort || !in_array($sort, array('name', 'count')) || $sort == 'name') {
+            $sort = 'host';
+        }
+        else{
+            $sort="learning_so_far";
+        }
 
 //        $res = $this->redisObj->get('cache_applications');
 
@@ -53,7 +62,7 @@ class Applications extends Tele_Controller
 //        }
 
         // retrieve the apps
-        $data = $this->M_Applications->index($search,$learning_so_far);
+        $data = $this->M_Applications->index($search, $learning_so_far, $sort, $dir);
 
         // search in business actions
         if ($search && $actions){

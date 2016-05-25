@@ -233,12 +233,15 @@ class M_Alerts extends CI_Model {
 			case 'date':
 				$sortfield = 'date';
 			break;
-			case 'counter':
+			case 'count':
 				$sortfield = 'alerts_count';
 			break;
-			case 'type':
-				$sortfield = 'alerts_count';
-			break;
+//			case 'score':
+//				$sortfield = 'last_score';
+//			break;
+//			case 'name':
+//				$sortfield = 'alerts_names';
+//			break;
 			default:
 				$sortfield = 'alerts_count';
 			break;
@@ -339,13 +342,25 @@ class M_Alerts extends CI_Model {
 		if($query)
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND',"lowercase_expanded_terms"=>false ] ];
 
-		if ($sortfield == "date")
-		{
-			$params['body']["aggs"]["sid"]["aggs"]["date"] = [ "max" => [ "field" => "ts" ] ];
-		} else if ($sortfield == "alerts_names")
-		{
-			$params['body']["aggs"]["sid"]["aggs"]["alerts_names"] = [ "terms" => [ "field" => "alerts.name", "size" => 10 ] ];
+		if ($sortfield == "date") {
+			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
+		} else if ($sortfield == "alerts_names") {
+			$params['body']["aggs"]["sid"]["aggs"]["alerts_names"] = ["terms" => ["field" => "alerts.name", "size" => 10]];
+		} else if ($sortfield == "last_score") {
+			$params['body']["aggs"]["sid"]["aggs"]["last_score"] = [
+				"terms" => [
+					"field" => "ip_score",
+					"size" => 1,
+					"order" => ["date" => "desc"]
+				],
+				'aggs' => [
+					'date' => [
+						"max" => ["field" => "ts"]
+					]
+				]
+			];
 		}
+
 		
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);

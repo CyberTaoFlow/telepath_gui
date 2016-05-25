@@ -13,7 +13,7 @@ class M_Dashboard extends CI_Model {
 	
 	
 	
-//	public function get_alerts($range, $apps = array(), $sort = 'counter', $dir = 'ASC') {
+//	public function get_alerts($range, $apps = array(), $sort = 'count', $dir = 'ASC') {
 //
 //		$this->load->model('M_Alerts');
 //		return $this->M_Alerts->get_alerts(false, false, $sort, $dir, 0, 5, false, $range, $apps);
@@ -397,7 +397,7 @@ class M_Dashboard extends CI_Model {
 		
 	}
 	
-//	public function get_suspects($range, $apps = array(), $sort = 'counter', $dir = 'ASC', $limit = 5) {
+//	public function get_suspects($range, $apps = array(), $sort = 'count', $dir = 'ASC', $limit = 5) {
 //
 //		$this->load->model('M_Suspects');
 //		return $this->M_Suspects->get($range, $apps, $sort, $dir, 0, $limit);

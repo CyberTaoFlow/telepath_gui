@@ -317,9 +317,14 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-bars.selected { background-position: -295px -204px; }
 
 /*Checked*/
-.tele-icon-alerts { background-position: -326px -234px; }
-.tele-icon-alerts.hover { background-position: -296px -234px; }
-.tele-icon-alerts.selected { background-position: -296px -234px; }
+.tele-icon-alerts { background-position: -325px -234px; }
+.tele-icon-alerts.hover { background-position: -295px -234px; }
+.tele-icon-alerts.selected { background-position: -295px -234px; }
+
+/*Checked*/
+.tele-icon-arrow { background-position: -325px -143px; }
+.tele-icon-arrow.hover { background-position: -295px -143px; }
+.tele-icon-arrow.selected { background-position: -295px -143px; }
 
 .tele-icon-caseConfig { background-position: -325px -293px; }
 .tele-icon-caseConfig.hover { background-position: -295px -293px; }

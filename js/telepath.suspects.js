@@ -1,6 +1,6 @@
 telepath.suspects = {
 	
-	sort: 'time',
+	sort: 'date',
 	dir: false,
 	data: [],
 	total: 0,
@@ -95,9 +95,8 @@ telepath.suspects = {
 		var sortRadios = $('<div>').radios({
 			title: 'Sort By',
 			items: [
-				{ id: 'date'     , icon: 'time', tip: 'Time' },
-				{ id: 'score'    , icon: 'bars', tip: 'Severity' },
-				{ id: 'alerts'   , icon: 'alerts', tip: 'Alerts' }
+				{id: 'date', icon: 'time', tip: 'Time'},
+				{id: 'count', icon: 'bars', tip: 'Count'}
 			],
 			selected: this.sort,
 			callback: function(e, id) {

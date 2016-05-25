@@ -270,7 +270,7 @@ class M_Applications extends CI_Model {
 	//new function
 //curl -XGET 'http://localhost:9200/telepath-20*/_search?pretty' -d '{"size":0,"aggs":{"host":{"terms":{"field":"host","size":999},"aggs":{"ip_resp":{"terms":{"field":"ip_resp"}}}}}}'
 	
-	function index($search = false, $learning_so_far=false, $fields=[ "host","subdomains" ] ) {
+	function index($search = false, $learning_so_far=false, $sort, $dir, $fields=[ "host","subdomains" ] ) {
 		
 		// Search specific records first
 
@@ -300,7 +300,7 @@ class M_Applications extends CI_Model {
 			'index' => 'telepath-domains',
 			'type' => 'domains',
 			'_source_include' => $include,
-			'sort' => ['host'],
+			'sort' => [$sort.':'.$dir],
 			'body' => [
 				'size'=>999,
 			],
@@ -311,7 +311,8 @@ class M_Applications extends CI_Model {
 			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
 
-		$results = get_app_source($this->elasticClient->search($params),$learning_so_far);
+		$res=$this->elasticClient->search($params);
+		$results = get_app_source($res,$learning_so_far);
 
 
 //		$ans1 = [];

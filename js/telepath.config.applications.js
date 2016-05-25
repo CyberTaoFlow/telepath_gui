@@ -1,5 +1,8 @@
 telepath.config.applications = {
 
+	sort: 'name',
+	dir: true,
+
 	formatSearchData: function(data) {
 
 		var treeData = [];
@@ -87,7 +90,7 @@ telepath.config.applications = {
 
 		var that = this;
 
-		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications', learning_so_far: true }, function(data) {
+		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications', learning_so_far: true, sort: telepath.config.applications.sort, dir: telepath.config.applications.dir }, function(data) {
 
 			var treeData = telepath.config.applications.formatData(data.items);
 
@@ -196,6 +199,26 @@ telepath.config.applications = {
 	initTools: function() {
 
 		var that = this;
+
+		// Sort filters
+		var sortRadios = $('<div>').radios({
+			title: 'Sort By',
+			items: [
+				{id: 'name', icon: 'arrow', tip: 'ABC'},
+				{id: 'count', icon: 'bars', tip: 'Count'}
+			],
+			selected: this.sort,
+			callback: function(e, id) {
+				if(that.sort == id) {
+					that.dir = !that.dir;
+				}
+				that.sort = id;
+				that.reload();
+			}
+		});
+
+		var rightPanel=$('<div>').css('float','right').append(sortRadios);
+		$('.tele-panel-topbar').append(rightPanel);
 
 		// Search
 		this.search = $('<div>').teleSearch({ callback: function (e, txt) {

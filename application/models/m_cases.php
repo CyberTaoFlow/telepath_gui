@@ -117,7 +117,6 @@ class M_Cases extends CI_Model {
 			
 			foreach($results['aggregations']['cases']['buckets'] as $bucket) {
 				
-				$case_data = '{}';
 				$ans[] = array('name' => $bucket['key'], 'count' => $bucket['sid']['value'], 'last_time'=>$bucket['date']['value'], 'checkable' => false, 'case_data' => $this->get_case_data($bucket['key']));
 				
 			}
@@ -129,21 +128,22 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array()) {
-		
-		$sort      = 'date';
-		$sortorder = 'desc';
+	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc' ) {
+
 		
 		switch($sort) {
 			case 'date':
 				$sortfield = 'date';
 			break;
-			case 'counter':
-				$sortfield = 'score';
+			case 'count':
+				$sortfield = '_count'; // we need to get a specific case, so the count is not the sum of the "cases_count" elastic field
 			break;
-			case 'type':
-				$sortfield = 'alerts_count';
+			case 'score':
+				$sortfield = 'last_score';
 			break;
+//			case 'type':
+//				$sortfield = 'alerts_count';
+//			break;
 			
 		}
 
@@ -707,7 +707,7 @@ class M_Cases extends CI_Model {
 			case 'date':
 				$sortfield = 'date';
 				break;
-			case 'counter':
+			case 'count':
 				$sortfield = 'score';
 				break;
 			case 'type':

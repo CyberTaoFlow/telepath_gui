@@ -6,7 +6,7 @@ telepath.listitem.generic = {
 		return telepath.listitem.generic.formatter(item, 'dashboard');
 	},
 	formatter: function(item, mode) {
-		if (mode=='dashbord') {
+		if (mode=='dashboard') {
 			result = {
 				raw: item,
 				icon: 'suspect',
@@ -22,7 +22,6 @@ telepath.listitem.generic = {
 				details: [
 					{ key: 'country', value: item.country },
 					{ key: 'IP', value: item.ip_orig },
-					{ key: 'city', value: item.city },
 					{ key: 'host', value: grabNames(item.host) },
 					//{ key: 'alerts', value: item.alerts_count },
 					//{ key: 'actions', value: item.actions_count }
@@ -59,9 +58,9 @@ telepath.listitem.generic = {
 			result.details.push({key: 'business_actions', value: item.business_actions[0].key})
 		}*/
 
-		if(mode == 'dashboard') {
-			findAndRemove(result.details, 'key', 'city');
-		}
+		//if(mode == 'dashboard') {
+		//	findAndRemove(result.details, 'key', 'city');
+		//}
 		
 		return result;
 		

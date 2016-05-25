@@ -1,6 +1,6 @@
 telepath.alerts = {
 	
-	sort: 'time',
+	sort: 'date',
 	dir: false,
 	data: [],
 	searchString: '',
@@ -49,11 +49,12 @@ telepath.alerts = {
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 
 			title: 'Sort By', 
-			items: [ 
-				{ id: 'date'          , icon: 'time'  , tip: 'Time' }, 
-				{ id: 'counter' , icon: 'bars'        , tip: 'Severity' }, 
-				{ id: 'type'          , icon: 'alerts', tip: 'Type' }
-			], 
+			items: [
+				{id: 'date', icon: 'time', tip: 'Time'},
+				//{id: 'name', icon: 'arrow', tip: 'ABC'},
+				{id: 'count', icon: 'bars', tip: 'Count'},
+				//{id: 'score', icon: 'alerts', tip: 'Score'}
+			],
 			selected: this.sort,
 			callback: function(e, id) {
 				if(that.sort == id) {

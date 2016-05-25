@@ -28,13 +28,20 @@ class Search extends Tele_Controller
             $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
 
         }
+
+        $sort = $this->input->post('sort');
+        if (!$sort || !in_array($sort, array('date', 'name', 'count', 'score'))) {
+            $sort = 'date';
+        }
         return array(
             'search' => $key,
             'options' => $this->input->post('options'),
             'range' => $this->input->post('range'),
             //'apps' 	  	 => $this->input->post('apps'),
             'apps' => $this->_get_apps(),
-            'is_country' => $this->input->post('is_country') == 'true' // Comes as string, not boolean
+            'is_country' => $this->input->post('is_country') == 'true', // Comes as string, not boolean
+            'sort' => $sort,
+            'dir' => $this->input->post('dir') == 'true' ? 'ASC' : 'DESC'
         );
 
     }

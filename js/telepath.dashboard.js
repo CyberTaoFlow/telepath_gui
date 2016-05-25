@@ -2,7 +2,7 @@ telepath.dashboard = {
 	
 	divs:0,
 	data: { items: {} },
-	sort: 'counter',
+	sort: 'count',
 	dir: false,
 	refreshTimer: false,
 	refreshInterval: 5,
@@ -380,9 +380,9 @@ telepath.dashboard = {
 		// Sort filters
 		var sortRadios = $('<div>').radios({ 
 			title: 'Sort By', 
-			items: [ 
-				{ id: 'date'          , icon: 'time'  , tip: 'Time' }, 
-				{ id: 'counter' 	  , icon: 'bars'  , tip: 'Severity' }
+			items: [
+				{id: 'date', icon: 'time', tip: 'Time'},
+				{id: 'count', icon: 'bars', tip: 'Count'}
 			], 
 			selected: this.sort,
 			callback: function(e, id) {

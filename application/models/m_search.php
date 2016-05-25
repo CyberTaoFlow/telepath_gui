@@ -19,6 +19,28 @@ class M_Search extends CI_Model {
 		
 		$limit = 100;
 
+		switch($settings['sort']) {
+
+			case 'date':
+				$sortfield = 'date';
+				break;
+			case 'count':
+				if($scope=='alerts' || $scope == 'cases' ){
+					$sortfield = $scope.'_count';
+				}
+				else{
+					$sortfield = '_count';
+				}
+
+				break;
+//			case 'score':
+//				$sortfield = 'last_score';
+//			break;
+			default:
+				$sortfield = 'date';
+				break;
+		}
+
 		$params['index'] = 'telepath-20*';
 		$params['type'] = 'http';
 		$params['body'] = [
@@ -26,7 +48,7 @@ class M_Search extends CI_Model {
 			"aggs" => [
 				"sid" => [ 
 				
-					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ 'date' => 'DESC' ] ],
+					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $settings['dir'] ] ],
 					"aggs" => [
 						/*"country_code" => [ 
 							"terms" => [ "field" => "country_code", "size" => 1 ] 
@@ -84,10 +106,10 @@ class M_Search extends CI_Model {
 		];
 
 
-		$params2 = array();
 		switch($scope) {
 			case 'alerts':
 				$params['body']['query']['bool']['must'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+				$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
 				//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 				//$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 			break;

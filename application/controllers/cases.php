@@ -22,11 +22,11 @@ class Cases extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $sort = $this->input->post('sort');
-        $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
+        $dir = $this->input->post('dir') == 'true' ? true : false;
         $search = $this->input->post('search');
 
-        if (!$sort || !in_array($sort, array('created', 'favorite', 'name'))) {
-            $sort = 'created';
+        if (!$sort || !in_array($sort, array('date', 'name', 'count'))) {
+            $sort = 'date';
         }
 
         $range = $this->_get_range();
@@ -35,25 +35,25 @@ class Cases extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
 
-        if(!$search ) {
+        if (!$search) {
             $search = 'all';
         }
         $all = $this->M_Cases->get_case_data($search);
 
-        if(empty($all)){
+        if (empty($all)) {
             return_success();
         }
 
-        $res0 = $this->M_Cases->get(100, $range, $apps ,$search);
+        $res0 = $this->M_Cases->get(100, $range, $apps, $search);
         $res = array();
 
-        if (!isset($all[0])){
-            $all=array($all);
+        if (!isset($all[0])) {
+            $all = array($all);
         }
         foreach ($all as $tmp) {
 
             $found = false;
-                foreach ($res0 as $case) {
+            foreach ($res0 as $case) {
                 if ($case['name'] == $tmp['case_name']) {
                     $found = true;
                     $res[] = $case;
@@ -62,8 +62,46 @@ class Cases extends Tele_Controller
             }
 
             if ($found == false) {
-                $res[] = array('name' => $tmp['case_name'], 'count' => 0, 'case_data' => $tmp);
+                $res[] = array('name' => $tmp['case_name'], 'count' => 0, 'case_data' => $tmp, 'checkable' => false, 'last_time' => false);
             }
+        }
+
+        // sort with php array function because an empty case is not within the result of the elastic query ($res0).
+        switch ($sort) {
+            case 'date':
+                if ($dir) {
+                    usort($res, function ($a, $b) {
+                        return $a['last_time'] - $b['last_time'];
+                    });
+                } else {
+                    usort($res, function ($a, $b) {
+                        return $b['last_time'] - $a['last_time'];
+                    });
+                }
+                break;
+            case 'count':
+                if ($dir) {
+                    usort($res, function ($a, $b) {
+                        return $a['count'] - $b['count'];
+                    });
+                } else {
+                    usort($res, function ($a, $b) {
+                        return $b['count'] - $a['count'];
+                    });
+                }
+                break;
+            case 'name':
+                if ($dir) {
+                    usort($res, function ($a, $b) {
+                        return strcmp($a["name"], $b["name"]);
+                    });
+                } else {
+                    usort($res, function ($a, $b) {
+                        return strcmp($b["name"], $a["name"]);
+                    });
+                }
+                break;
+
         }
 
         return_success($res);
@@ -107,7 +145,7 @@ class Cases extends Tele_Controller
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
        // $case_data= $this->input->post('case_data');
 
-        if (!$sort || !in_array($sort, array('date', 'type', 'counter'))) {
+        if (!$sort || !in_array($sort, array('date', 'type', 'count'))) {
             $sort = 'date';
         }
 
@@ -122,7 +160,7 @@ class Cases extends Tele_Controller
         // Contains requests data to display
         $ans = array();
 
-        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps);
+        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps, $sort, $dir);
         $similars = $this->M_Cases->get_similar_case_sessions($cid);
        // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
 

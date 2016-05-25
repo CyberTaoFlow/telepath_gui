@@ -23,7 +23,7 @@ class Suspects extends Tele_Controller
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
-        if (!$sort || !in_array($sort, array('date', 'score', 'alerts'))) {
+        if (!$sort || !in_array($sort, array('date', 'count', 'alerts'))) {
             $sort = 'date';
         }
 

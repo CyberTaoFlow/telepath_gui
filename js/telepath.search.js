@@ -12,6 +12,8 @@ telepath.search = {
         'request_data': true,
         'users': false
     },
+    sort: 'date',
+    dir: false,
 
     options: false,
     searchTypes: [
@@ -126,6 +128,27 @@ telepath.search = {
         this.panelTopBar.append(this.panelTopBarRight);
         this.container.append(this.panelSubBar);
 
+        // Sort filters
+        var sortRadios = $('<div>').radios({
+            title: 'Sort By',
+            items: [
+                {id: 'date', icon: 'time', tip: 'Time'},
+                {id: 'count', icon: 'bars', tip: 'Count'},
+                //{id: 'score', icon: 'alerts', tip: 'Score'}
+            ],
+            selected: this.sort,
+            callback: function(e, id) {
+                if(that.sort == id) {
+                    that.dir = !that.dir;
+                }
+                that.sort = id;
+
+                telepath.search.refresh(function () {
+                });
+            }
+        });
+
+
         // DateRange
         var filterDateRange = $('<div>').daterange({
 
@@ -136,7 +159,7 @@ telepath.search = {
                 telepath.range.start = start;
                 telepath.range.end = end;
 
-                that.boll=false;
+                //that.boll=false;
                 //Reset tab result count to 0
                 $('.tele-search-tab span').html('0');
                 telepath.search.refresh(function () {
@@ -156,7 +179,7 @@ telepath.search = {
         });
 
         // Append tools
-        this.panelTopBarRight.append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
+        this.panelTopBarRight.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
 
         // TABS
         // --------------------------------
@@ -300,7 +323,9 @@ telepath.search = {
             options: this.options,
             range: telepath.range,
             apps: telepath.appFilter,
-            is_country: this.countryFlag
+            is_country: this.countryFlag,
+            sort: this.sort,
+            dir: this.dir
         };
 
 

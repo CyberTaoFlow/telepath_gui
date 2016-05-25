@@ -26,7 +26,7 @@ class Alerts extends Tele_Controller
         }
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
-        if (!$sort || !in_array($sort, array('date', 'type', 'counter'))) {
+        if (!$sort || !in_array($sort, array('date', 'name', 'count', 'score'))) {
             $sort = 'date';
         }
 

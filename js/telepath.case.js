@@ -189,7 +189,7 @@ telepath.caseOverlay = {
 telepath.casePanel = {
 	
 	data: {},
-	sort: 'time',
+	sort: 'date',
 	dir: false,
 	init: function (caseID) {
 		
@@ -299,9 +299,9 @@ telepath.casePanel = {
 		var sortRadios = $('<div>').radios({
 			title: 'Sort By',
 			items: [
-				{ id: 'created', icon: 'time', tip: 'Time' },
-				{ id: 'favorite' , icon: 'bars', tip: 'Severity' },
-				{ id: 'name', icon: 'alerts', tip: 'Name' }
+				{id: 'date', icon: 'time', tip: 'Time'},
+				{id: 'count', icon: 'bars', tip: 'Count'},
+				//{id: 'score', icon: 'alerts', tip: 'Score'}
 			],
 			selected: this.sort,
 			callback: function(e, id) {
