@@ -18,36 +18,37 @@ class M_Suspects extends CI_Model {
 	public function get_threshold()
 	{
 
-		$params['index'] = 'telepath-20*';
-		$params['type'] = 'http';
-		$params['body'] = [
-			'size' => 0,
-			"aggs" => [
-				"grades_stats" => [
-					"extended_stats" => ["field" => "score_average", "sigma" => 3]
-				]
-			],
-			'query' => [
-				'bool' => [
-					'must_not' => [
-						["match" => ['operation_mode' => '1']]
-					]
-				]
-			]
-		];
-
-		$result = $this->elasticClient->search($params);
-
-		if (isset($result["aggregations"]) &&
-			isset($result["aggregations"]["grades_stats"]) &&
-			isset($result["aggregations"]["grades_stats"]["std_deviation_bounds"]) &&
-			isset($result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"]) &&
-			!empty($result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"])
-		) {
-			return $result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"];
-		} else {
-			return 0.85;
-		}
+//		$params['index'] = 'telepath-20*';
+//		$params['type'] = 'http';
+//		$params['body'] = [
+//			'size' => 0,
+//			"aggs" => [
+//				"grades_stats" => [
+//					"extended_stats" => ["field" => "score_average", "sigma" => 3]
+//				]
+//			],
+//			'query' => [
+//				'bool' => [
+//					'must_not' => [
+//						["match" => ['operation_mode' => '1']]
+//					]
+//				]
+//			]
+//		];
+//
+//		$result = $this->elasticClient->search($params);
+//
+//		if (isset($result["aggregations"]) &&
+//			isset($result["aggregations"]["grades_stats"]) &&
+//			isset($result["aggregations"]["grades_stats"]["std_deviation_bounds"]) &&
+//			isset($result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"]) &&
+//			!empty($result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"])
+//		) {
+//			return $result["aggregations"]["grades_stats"]["std_deviation_bounds"]["upper"];
+//		} else {
+//			return 0.85;
+//		}
+		return 0.85;
 
 	}
 	
@@ -55,9 +56,9 @@ class M_Suspects extends CI_Model {
 		
 		//$suspect_threshold = $this->get_threshold();
 		//ROI CHECK THIS OUT (Yuli)
-		//$suspect_threshold = 0.85;
+//		$suspect_threshold = 0.75;
 		
-		$sortfield = 'score';
+		$sortfield = 'count';
 		
 		// fix undefined variabale (Yuli)
 		$count = 0;
@@ -66,13 +67,13 @@ class M_Suspects extends CI_Model {
 			case 'date':
 				$sortfield = 'date';
 			break;
-			case 'counter':
-			case 'score':
+			case 'count':
+//			case 'score':
 				$sortfield = '_count';
 			break;
-			case 'alerts':
-				$sortfield = 'alerts_count';
-			break;
+//			case 'alerts':
+//				$sortfield = 'alerts_count';
+//			break;
 		}
 		
 		//die;
@@ -125,10 +126,11 @@ class M_Suspects extends CI_Model {
 		if ($sortfield == "date")
 		{
 			$params['body']["aggs"]["sid"]["aggs"] = [ "date" => [ "max" => [ "field" => "ts" ] ] ];
-		} else if ($sortfield == "alerts_count")
-		{
-			$params['body']["aggs"]["sid"]["aggs"] = [ "alerts_count" => [ "sum" => [ "field" => "alerts_count" ] ] ];
 		}
+//		else if ($sortfield == "alerts_count")
+//		{
+//			$params['body']["aggs"]["sid"]["aggs"] = [ "alerts_count" => [ "sum" => [ "field" => "alerts_count" ] ] ];
+//		}
 //		$params['body']["aggs"]["sid"]["aggs"] = [ "cases_count" => [ "sum" => [ "field" => "cases_count" ] ] ];
 
 		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
