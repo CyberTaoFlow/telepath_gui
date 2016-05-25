@@ -59,15 +59,20 @@ if($logged_in && $can_access) {
 
 	<?php
 
-	if ($_SERVER['HTTP_HOST'] != 'localhost') {
+	if ($_SERVER['HTTP_HOST'] == 'localhost') {
+		$rebuild=true;
+	}
+	else{
+		$rebuild=false;
+	}
 		// add css files
 		$this->minify->css(array('reset.css','/ui-lightness/jquery-ui-1.10.4.custom.min.css', 'telepath.css',
 			'listitem.css', 'infoblock.css', "icons.css", "flags.css", "overlay.css", "jquery.contextmenu.css", "slider.css", "tipsy.css"));
 
 		// bool argument for rebuild css (false means skip rebuilding).
-		echo $this->minify->deploy_css(true);
-	}
-	else{
+		echo $this->minify->deploy_css($rebuild);
+
+	if ($_SERVER['HTTP_HOST'] == 'localhost'){
 	?>
 			<link rel="stylesheet" href="css/reset.css">
 			<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
@@ -116,17 +121,22 @@ if($logged_in && $can_access) {
 
 
 
-	if ($_SERVER['HTTP_HOST'] != 'localhost') {
 		array_push($autoload,"telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js","telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js");
-	}
+
 	// add js files
 	$this->minify->js($autoload);
 
 	// rebuild js (false means skip rebuilding).
-		echo $this->minify->deploy_js(true);
+		echo $this->minify->deploy_js($rebuild);
 
 	if ($_SERVER['HTTP_HOST'] == 'localhost') {
+
+		foreach($autoload as $src) {
+			echo '<script src="js' . $src . '"></script>';
+		}
 		?>
+
+
 			<script src="js/telepath.js"></script>
 			<script src="js/telepath.header.js"></script>
 
