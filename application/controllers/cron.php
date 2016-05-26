@@ -325,7 +325,8 @@ class Cron extends Tele_Controller
             'body' => [
                 'doc' => [
                     'ips' => $insert_data
-                ]
+                ],
+                'doc_as_upsert' => true
             ]
         ];
 
