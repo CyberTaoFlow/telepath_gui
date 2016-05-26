@@ -213,14 +213,24 @@ telepath.listitem.generic = {
 			}
 
 			if ($(el).hasClass('tele-listitem-progbar')) {
-
+				var left=$(el).offset().left;
+				var placement;
+				if(left+422>$( window ).width()){
+					left-=10;
+					placement= 'left';
+				}
+				else{
+					left+=100;
+					placement='right';
+				}
 				$(telepath.generic_popover).css({
 					position: 'absolute',
 					top: $(el).offset().top - 2,
-					left: $(el).offset().left + 100
+					left: left
 				}).fadeIn().popover({
 					title: 'Loading anomaly scores..',
 					html: true,
+					placement: placement,
 					content: telepath.loader
 				}).popover('show');
 

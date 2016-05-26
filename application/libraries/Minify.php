@@ -363,10 +363,8 @@ class Minify
 
 		$this->_scan_files('css', $force, $group);
 
-		if ($_SERVER['HTTP_HOST'] != 'localhost') {
+		return '<link href="' . base_url($this->_css_file) . '" rel="stylesheet" type="text/css" />';
 
-			return '<link href="' . base_url($this->_css_file) . '" rel="stylesheet" type="text/css" />';
-		}
 	}
 
 	//--------------------------------------------------------------------
@@ -394,10 +392,9 @@ class Minify
 		$this->_set('js_file', $file_name);
 
 		$this->_scan_files('js', $force, $group);
-		if ($_SERVER['HTTP_HOST'] != 'localhost') {
 
-			return '<script type="text/javascript" src="' . base_url($this->_js_file) . '"></script>';
-		}
+		return '<script type="text/javascript" src="' . base_url($this->_js_file) . '"></script>';
+
 	}
 
 	//--------------------------------------------------------------------

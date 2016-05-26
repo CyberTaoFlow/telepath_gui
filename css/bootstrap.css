@@ -284,7 +284,6 @@
 }
 
 .popover:after, .popover:before {
-	right: 100%;
 	top: 50%;
 	border: solid transparent;
 	content: " ";
@@ -295,19 +294,39 @@
 }
 
 
-.popover:after {
-	border-color: rgba(255, 255, 255, 0);
+.popover.right:after {
+    right: 100%;
+    border-color: rgba(255, 255, 255, 0);
 	border-right-color: #ffffff;
 	border-width: 15px;
 	margin-top: -15px;
 }
-.popover:before {
-	border-color: rgba(0, 0, 0, 0);
+.popover.right:before {
+    right: 100%;
+    border-color: rgba(0, 0, 0, 0);
 	border-right-color: rgba(0,0,0,0.3);
 	border-width: 17px;
 	margin-top: -17px;
 	margin-right: 5px;
 }
+
+.popover.left:after {
+    right: -9%;
+    border-color: rgba(255, 255, 255, 0);
+    border-left-color: #ffffff;
+	border-width: 15px;
+	margin-top: -15px;
+}
+.popover.left:before {
+    right: -9%;
+	border-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(0,0,0,0.3);
+	border-width: 17px;
+	margin-top: -17px;
+	margin-right: -8px;
+}
+
+
 
 .popover .loader {
 	position: relative;
