@@ -59,20 +59,20 @@ if($logged_in && $can_access) {
 
     <?php
 
-    if ($_SERVER['HTTP_HOST'] == 'localhost') {
+ //   if ($_SERVER['HTTP_HOST'] == 'localhost') {
         $css_files = array('reset.css', 'ui-lightness/jquery-ui-1.10.4.custom.min.css', 'telepath.css', 'listitem.css', 'infoblock.css', "icons.css", "flags.css", "overlay.css", "jquery.contextmenu.css", "slider.css", "tipsy.css");
         // add css files
-        $this->minify->css($css_files);
+       // $this->minify->css($css_files);
 
         // bool argument for rebuild css (false means skip rebuilding).
-        $this->minify->deploy_css(false);
+       // $this->minify->deploy_css(true);
 
         foreach ($css_files as $src) {
             echo '<link rel="stylesheet" href="css/' . $src . '">';
         }
-    } else {
-        echo '<link rel="stylesheet" href="css/styles.min.css">';
-    }
+//    } else {
+//        echo '<link rel="stylesheet" href="css/styles.min.css">';
+//    }
 
     ?>
 
@@ -89,7 +89,7 @@ if($logged_in && $can_access) {
     <script src="js/libraries.min.js"></script>
 
     <?php
-    if ($_SERVER['HTTP_HOST'] == 'localhost') {
+ //   if ($_SERVER['HTTP_HOST'] == 'localhost') {
 
 //        $js_files = array(
 //            "lib/jquery-1.11.0.min.js",
@@ -115,17 +115,17 @@ if($logged_in && $can_access) {
         array_push($js_files, "telepath.js", "telepath.header.js", "telepath.utils.js", "telepath.ds.js", "telepath.infoblock.js", "telepath.popup.js", "telepath.countries.js", "telepath.dropdown.js", "telepath.radios.js", "telepath.button.js", "telepath.checkbox.js", "telepath.search.js", "telepath.listitem.js", "telepath.listitem.generic.js", "telepath.toggle.js", "telepath.daterange.js", "telepath.graph.js", "telepath.vectormap.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.anomalyscore.js", "telepath.notifications.js", "telepath.notifications.js", "telepath.overlay.js", "telepath.pagination.js", "telepath.config.js", "telepath.dashboard.js", "telepath.case.js", "telepath.cases.js", "telepath.alert.js", "telepath.alerts.js", "telepath.suspects.js", "telepath.reports.js");
 
         // add js files
-        $this->minify->js($js_files);
+      //  $this->minify->js($js_files);
 
         // rebuild js (false means skip rebuilding).
-         $this->minify->deploy_js(false);
+     //   $this->minify->deploy_js(false);
 
         foreach ($js_files as $src) {
             echo '<script src="js/' . $src . '"></script>';
         }
-    } else {
-        echo '<script src="js/scripts.min.js"></script>';
-    }
+//    } else {
+//        echo '<script src="js/scripts.min.js"></script>';
+//    }
     ?>
 
 
