@@ -209,7 +209,9 @@ class M_Suspects extends CI_Model {
 										"max" => [ "field" => "ts" ]
 									],
 									"user" => [
-										"terms" => [ "field" => "username", "size" => 1 ]
+										"terms" => [ "field" => "username",
+											"order" => ["_term" => "desc" ],
+											"size" => 1 ]
 									],
 									"last_score" => [
 										"terms" => [

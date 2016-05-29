@@ -433,7 +433,10 @@ class M_Alerts extends CI_Model {
 									"max" => [ "field" => "ts" ]
 								],
 								"user" =>[
-									"terms" => [ "field"=> "username" ]
+									"terms" => ["field" => "username",
+										"order" => ["_term" => "desc"],
+										"size" => 1
+									]
 								],
 								"last_score" => [
 									"terms" => [

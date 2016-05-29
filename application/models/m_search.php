@@ -202,7 +202,10 @@ class M_Search extends CI_Model {
 					"max" => [ "field" => "ts" ]
 				],
 				"user" => [
-					"terms" => [ "field" => "username", "size" => 1 ]
+					"terms" => [ "field" => "username",
+						"size" => 1,
+						"order" => [ "_term" => "desc" ]
+					]
 				],
 				"last_score" => [
 					"terms" => [
