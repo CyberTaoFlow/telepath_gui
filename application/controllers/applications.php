@@ -47,6 +47,7 @@ class Applications extends Tele_Controller
 
         if (!$sort || !in_array($sort, array('name', 'count')) || $sort == 'name') {
             $sort = 'host';
+            $dir = 'asc';
         }
         else{
             $sort="learning_so_far";
