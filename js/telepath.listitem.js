@@ -270,7 +270,7 @@ $.widget( "tele.listitem", {
 								
 								if(detail.key && detail.key == 'user' && detail.value && detail.value != '') {
 									var iconEl = $('<div>').addClass('tele-listitem-user-name');
-									li.append(iconEl).append('&nbsp&nbsp;').append(escapeHtml(detail.value));
+									li.append(iconEl).append('&nbsp&nbsp;').append(escapeHtml(decodeURIComponent(detail.value)));
 								} else {
 									li = false;
 								}
@@ -308,7 +308,7 @@ $.widget( "tele.listitem", {
 								if(parseInt(detail.value) > 0) {
 								
 									var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-alert');
-									var countEl = $('<div>').addClass('tele-listitem-count').html(escapeHtml(detail.value));
+									var countEl = $('<div>').addClass('tele-listitem-count').html(detail.value);
 									li.addClass('tele-listitem-alerts-count');
 									li.append(iconEl).append(countEl);
 								
@@ -325,7 +325,7 @@ $.widget( "tele.listitem", {
 								if(parseInt(detail.value) > 0) {
 								
 									var iconEl = $('<div>').addClass('tele-listitem-icon').addClass('tele-icon-actions');
-									var countEl = $('<div>').addClass('tele-listitem-count').html(escapeHtml(detail.value));
+									var countEl = $('<div>').addClass('tele-listitem-count').html(detail.value);
 									li.addClass('tele-listitem-actions-count');
 									li.append(iconEl).append(countEl);
 								
@@ -341,7 +341,7 @@ $.widget( "tele.listitem", {
 								if (parseInt(detail.value)>0){
 
 									var iconEl = $('<div>').addClass('tele-listitem-icon tele-icon-case');
-									var countEl = $('<div>').addClass('tele-listitem-count').html(escapeHtml(detail.value));
+									var countEl = $('<div>').addClass('tele-listitem-count').html(detail.value);
 									li.addClass('tele-listitem-cases-count');
 									li.append(iconEl).append(countEl);
 

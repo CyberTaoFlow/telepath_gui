@@ -44,43 +44,43 @@ $.widget( "tele.teleBrowser", {
 					{
 						item.type = 'param';
 					}
-					treeData.push({ children: false, text: item.name, icon: 'tele-icon-' + item.type, data: item });
+					treeData.push({ children: false, text: escapeHtml(item.name), icon: 'tele-icon-' + item.type, data: item });
 					});
 				}
 
 				callback.call(that, treeData);
-				
+
 			});
 			return;
-			
+
 		}
-		
+
 		var searchTerm = $('input', window.teleBrowseSearch).val();
-		
+
 		// Perform search
 		if(searchTerm != '' && $('input', window.teleBrowseSearch).attr('complete') != 'true') {
-		
+
 			telepath.ds.get('/applications/get_search', { search: searchTerm, /*context: 'applications',*/ mode: that.options.mode  }, function(data) {
-					
+
 					// EXPANDING SEARCH , SHOW MIXED
-					
+
 					var treeData = telepath.config.applications.formatSearchData(data.items);
 					callback.call(that, treeData);
 					$('input', window.teleBrowseSearch).attr('complete', 'true');
-					
-					
+
+
 			});
-			
+
 			return;
-			
+
 		}
-		
-		if(obj.id == '#') { 
-			
+
+		if(obj.id == '#') {
+
 			telepath.ds.get('/applications/get_expand', { context: 'applications' }, function(data) {
-				
+
 				// EXPANDING ROOT , SHOW APPS
-				
+
 				var treeData = telepath.config.applications.formatData(data.items,false);
 
 				function enable_expand(treeData) {
@@ -93,29 +93,29 @@ $.widget( "tele.teleBrowser", {
 					});
 				}
 				enable_expand(treeData);
-				
+
 				if(that.options.mode == 'param') {
 					treeData.unshift({ icon: 'tele-icon-global', text: 'Global Headers', children: true, data: { 'type': 'global' } });
 				}
-				
+
 				callback.call(that, treeData);
-				
+
 			});
-		
+
 		} else { // Expanding paths
-			
+
 			if(obj.data.type == 'global') {
-				
+
 				var treeData = [];
-				
+
 				$.each(telepath.global_headers, function (i, x) {
 					treeData.push({ children: false, text: x , icon: 'tele-icon-param', data: { type: 'param', global: true, name: x } });
 				});
-				
+
 				callback.call(that, treeData);
-				
+
 				return;
-			
+
 			}
 			if(obj.data.type == 'app') {
 
@@ -145,7 +145,7 @@ $.widget( "tele.teleBrowser", {
 
 				});
 			}
-			
+
 			if(obj.data.type == 'page' && that.options.mode != 'page') {
 
 
@@ -167,7 +167,7 @@ $.widget( "tele.teleBrowser", {
 					else if(data.items) {
 						$.each(data.items, function(i, item) {
 							item.type = 'param';
-							treeData.push({ children: false, text: item.name , icon: 'tele-icon-param', data: item });
+							treeData.push({ children: false, text: escapeHtml(item.name) , icon: 'tele-icon-param', data: item });
 						});
 					}
 
