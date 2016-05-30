@@ -48,7 +48,7 @@ class M_Suspects extends CI_Model {
 //		} else {
 //			return 0.85;
 //		}
-		return 0.85;
+		return 0.80;
 
 	}
 	
