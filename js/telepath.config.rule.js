@@ -31,7 +31,7 @@ telepath.config.rule = {
 		
 		if(rule_name == 'new') {
 				
-			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], action_notifications: true, action_syslog: false, action_injection: false, action_email: false, action_email_owner: true, category: telepath.config.rules.selectedCategory, new_rule: true };
+			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], action_notifications: true, action_syslog: false, action_injection: false, action_email: false, db_save: true, action_email_owner: true, category: telepath.config.rules.selectedCategory, new_rule: true };
 			this.showRule();
 			
 		} else {
@@ -91,7 +91,7 @@ telepath.config.rule = {
 		var cond = $('<div>').teleRule({ data: this.data });
 		this.container.append(cond);
 		
-		var title2 = $('<div>').addClass('tele-title-1').text('Actions and Parameters');
+		var title2 = $('<div>').addClass('tele-title-1').text('Actions');
 		this.container.append(title2);
 		
 		this.notification = $('<div>').teleCheckbox({ 
@@ -124,13 +124,13 @@ telepath.config.rule = {
 		
 		var cmd_captcha_checked = false;
 		var cmd_block_checked = false;
-		
+
 		if(this.data.cmd && this.data.cmd.length > 0) {
 			$.each(this.data.cmd, function (i,x) {
-				if(x == 'captcha') {
+				if (x == 'captcha') {
 					cmd_captcha_checked = true;
 				}
-				if(x == 'block') {
+				if (x == 'block') {
 					cmd_block_checked = true;
 				}
 			});
@@ -145,7 +145,12 @@ telepath.config.rule = {
 			label: 'Block Access', 
 			checked: cmd_block_checked
 		}).appendTo(this.container);
-				
+
+		this.db_save = $('<div>').teleCheckbox({
+			label: 'Save to database',
+			checked: this.data.db_save,
+		}).appendTo(this.container);
+
 		if(!this.data.action_email_field) {
 			this.data.action_email_field = '';
 		}
@@ -322,7 +327,11 @@ telepath.config.rule = {
 			if(that.cmd_block.data('teleTeleCheckbox').options.checked) {
 				ruleData.cmd.push('block');
 			}
-				
+
+			if(that.db_save.data('teleTeleCheckbox').options.checked) {
+				ruleData.db_save=true;
+			}
+
 			// Spinning thingy..
 			$('.tele-icon-rule-edit').append(telepath.loader).css({ backgroundColor: 'white' });
 
