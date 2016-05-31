@@ -11,7 +11,12 @@ telepath.cases = {
 		
 	},
 	refresh: function(callback) {
-		
+
+		this.container = $('.tele-panel-cases .tele-panel-cases-inner');
+		$('.tele-block, .tele-loader', this.container).remove();
+		this.container.append(telepath.loader);
+
+
 		var that = this;
 		
 		telepath.ds.get('/cases/get_cases', {
@@ -46,7 +51,7 @@ telepath.cases = {
 		var that = this;
 		this.data = data;
 		
-		$('.tele-block', this.container).remove();
+		$('.tele-block, .tele-loader', this.container).remove();
 		
 		// Create List
 		this.list = $('<div>');

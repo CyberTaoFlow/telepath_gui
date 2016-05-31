@@ -209,12 +209,15 @@ telepath.casePanel = {
 		this.panelTitle.html('Loading Case # ' + caseID);
 		
 		this.container.append(this.panelTopBar);
-		this.container.append('<img class="loader" src="img/loader.gif">');
+		this.container.append(telepath.loader);
 	
 		this.getData(caseID);
 				
 	},
 	refresh: function (callback) {
+
+		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar, .tele-loader", this.container).remove();
+		this.container.append(telepath.loader);
 
 		telepath.ds.get('/cases/get_case', {
 			start: telepath.range.start,
@@ -241,8 +244,8 @@ telepath.casePanel = {
 		var that = this;
 		this.data = data;
 		
-		$('.loader', this.container).remove();
-		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar", this.container).remove();
+		$('.tele-loader', this.container).remove();
+		//$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar", this.container).remove();
 
 		this.panelTopBar.empty();
 

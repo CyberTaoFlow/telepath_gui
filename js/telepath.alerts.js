@@ -26,7 +26,7 @@ telepath.alerts = {
 		
 		this.panelTitle = panelTitle;
 		
-		container.append(panelTopBar).append(panelSubBar).append(telepath.loader);
+		container.append(panelTopBar).append(panelSubBar)/*.append(telepath.loader);*/
 
 		// Select all cases
 /*		var checkallEl = $('<a>').teleCheckbox({ callback: function (e) {
@@ -158,8 +158,11 @@ telepath.alerts = {
 	},
 
 	refresh: function (callback) {
+		var container = $('.tele-panel-alerts');
+		$('.tele-alerts-block, .tele-alert-graphs-block, .loader', container).remove();
+		container.append(telepath.loader);
 
-		telepath.ds.get('/alerts/index', {
+			telepath.ds.get('/alerts/index', {
 			sort: this.sort,
 			dir: this.dir,
 			search: this.searchString,
