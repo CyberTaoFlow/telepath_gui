@@ -951,7 +951,7 @@ telepath.sessionflow = {
 		//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
 		table.append(getRow('Application:', escapeHtml(this.requestInfo.host)));
 		table.append(getRow('IP:', this.requestInfo.ip_orig));
-		table.append(getRow('Location:', (this.requestInfo.country_code!='00')?'<span class="flag flag-' + this.requestInfo.country_code + '"></span>':'' +
+		table.append(getRow('Location:', (this.requestInfo.country_code!='00'?'<span class="flag flag-' + this.requestInfo.country_code + '"></span>':'') +
 							'<span class="tele-country">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
 		if(this.requestInfo.username){
 			table.append(getRow('User:', escapeHtml(this.requestInfo.username)));
