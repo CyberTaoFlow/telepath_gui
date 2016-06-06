@@ -45,13 +45,11 @@ class Applications extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
 
-        if (!$sort || !in_array($sort, array('name', 'count')) || $sort == 'name') {
+        if (!$sort || !in_array($sort, array('host', 'learning_so_far'))) {
             $sort = 'host';
             $dir = 'asc';
         }
-        else{
-            $sort="learning_so_far";
-        }
+
 
 //        $res = $this->redisObj->get('cache_applications');
 

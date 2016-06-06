@@ -1,6 +1,6 @@
 telepath.config.applications = {
 
-	sort: 'name',
+	sort: 'host',
 	dir: true,
 
 	formatSearchData: function(data) {
@@ -90,7 +90,7 @@ telepath.config.applications = {
 
 		var that = this;
 
-		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, context: 'applications', learning_so_far: true, sort: telepath.config.applications.sort, dir: telepath.config.applications.dir }, function(data) {
+		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, learning_so_far: true, sort: telepath.config.applications.sort, dir: telepath.config.applications.dir }, function(data) {
 
 			var treeData = telepath.config.applications.formatData(data.items);
 
@@ -204,8 +204,8 @@ telepath.config.applications = {
 		var sortRadios = $('<div>').radios({
 			title: 'Sort By',
 			items: [
-				{id: 'name', icon: 'arrow', tip: 'ABC'},
-				{id: 'count', icon: 'bars', tip: 'Count'}
+				{id: 'host', icon: 'arrow', tip: 'ABC'},
+				{id: 'learning_so_far', icon: 'bars', tip: 'Count'}
 			],
 			selected: this.sort,
 			callback: function(e, id) {

@@ -1,6 +1,9 @@
 telepath.config.actions = {
 	
 	list: [],
+	sort: 'host',
+	dir: true,
+
 	getList: function() {
 		
 		var that = this;
@@ -23,6 +26,8 @@ telepath.config.actions = {
 				url  = '/applications/get_expand';
 				postData.type = 'root';
 				postData.actions = true;
+				postData.sort = telepath.config.actions.sort;
+				postData.dir = telepath.config.actions.dir;
 				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;
 			case 'app':
@@ -300,7 +305,28 @@ telepath.config.actions = {
 	initTools: function() {	
 		
 		var that = this;
-		
+
+		// Sort filters
+		var sortRadios = $('<div>').radios({
+			title: 'Sort By',
+			items: [
+				{id: 'host', icon: 'arrow', tip: 'ABC'},
+				{id: 'learning_so_far', icon: 'bars', tip: 'Count'}
+			],
+			selected: this.sort,
+			callback: function(e, id) {
+				if(that.sort == id) {
+					that.dir = !that.dir;
+				}
+				that.sort = id;
+				that.reload();
+			}
+		});
+
+		var rightPanel=$('<div>').attr('id', 'sort-radio').css('float','right').append(sortRadios);
+		$('.tele-panel-topbar').append(rightPanel);
+
+
 		// Search
 		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
 			that.searchString = txt;

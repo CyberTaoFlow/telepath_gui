@@ -77,7 +77,7 @@ $.widget( "tele.teleBrowser", {
 
 		if(obj.id == '#') {
 
-			telepath.ds.get('/applications/get_expand', { context: 'applications' }, function(data) {
+			telepath.ds.get('/applications/get_expand', { /*context: 'applications'*/ }, function(data) {
 
 				// EXPANDING ROOT , SHOW APPS
 
