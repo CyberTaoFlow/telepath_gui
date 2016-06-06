@@ -31,7 +31,7 @@ telepath.config.rule = {
 		
 		if(rule_name == 'new') {
 				
-			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], action_notifications: true, action_syslog: false, action_injection: false, action_email: false, db_save: true, action_email_owner: true, category: telepath.config.rules.selectedCategory, new_rule: true };
+			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], action_notifications: true, action_syslog: false, action_injection: false, action_email: false, disable_db_save: false, action_email_owner: true, category: telepath.config.rules.selectedCategory, new_rule: true };
 			this.showRule();
 			
 		} else {
@@ -146,9 +146,9 @@ telepath.config.rule = {
 			checked: cmd_block_checked
 		}).appendTo(this.container);
 
-		this.db_save = $('<div>').teleCheckbox({
-			label: 'Save to database',
-			checked: this.data.db_save,
+		this.disable_db_save = $('<div>').teleCheckbox({
+			label: 'Disable DB saving',
+			checked: this.data.disable_db_save,
 		}).appendTo(this.container);
 
 		if(!this.data.action_email_field) {
@@ -328,8 +328,8 @@ telepath.config.rule = {
 				ruleData.cmd.push('block');
 			}
 
-			if(that.db_save.data('teleTeleCheckbox').options.checked) {
-				ruleData.db_save=true;
+			if(that.disable_db_save.data('teleTeleCheckbox').options.checked) {
+				ruleData.disable_db_save=true;
 			}
 
 			// Spinning thingy..
