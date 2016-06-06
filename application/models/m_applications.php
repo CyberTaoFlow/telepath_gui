@@ -302,7 +302,7 @@ class M_Applications extends CI_Model {
 			'_source_include' => $include,
 			'sort' => [$sort.':'.$dir],
 			'body' => [
-				'size'=>999,
+				'size'=>99,
 			],
 		];
 
