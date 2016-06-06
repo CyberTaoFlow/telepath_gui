@@ -1,7 +1,2 @@
-vendor/elasticsearch/elasticsearch/src/Elasticsearch/Client.php
-/application/config/config.php
-tmp/
-application/databases/telepath_users.db
-/application/config/database.php
-.svn/
+/tmp
 upload/
