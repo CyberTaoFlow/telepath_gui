@@ -267,7 +267,7 @@ telepath.config.actions = {
 
 			telepath.config.actions.contentRight.empty();
 			telepath.config.actions.barRight.empty();
-			telepath.config.actions.createCat.hide();
+		//	telepath.config.actions.createCat.hide();
 			
 			if(data.node.data.type == 'action') {
 				telepath.config.action.editAction(data.node.data.raw);
@@ -275,7 +275,7 @@ telepath.config.actions = {
 			if(data.node.data.type == 'app') {
 				telepath.action.currentApp = data.node.data.id;
 				telepath.action.recorder.init();
-				telepath.config.actions.createCat.show();
+			//	telepath.config.actions.createCat.show();
 			}
 
 		})/*.on('ready.jstree', function(e, data) {
@@ -344,7 +344,7 @@ telepath.config.actions = {
 		//
 		//}}).hide();
 				
-		this.barLeft.append(this.search).append(this.createCat);
+		this.barLeft.append(this.search)/*.append(this.createCat)*/;
 
 		$("#search-button").on("click", function (event) {
 			that.searchString = '';
