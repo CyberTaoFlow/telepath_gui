@@ -72,31 +72,31 @@ telepath.action.recorder = {
 		this.recordTools.append(this.actionName);
 		
 		// Controls
-		var controls = [ 'record', 'stop', 'pause' ];
-		$.each(controls, function(i, control) {
+		var controls = ['stop', 'pause'];
+		$.each(controls, function (i, control) {
 			var controlEl = $('<div>').addClass('tele-control').addClass('tele-control-' + control).html('<div></div>').click(function () {
-			
-				switch(control) {
-					
+
+				switch (control) {
+
 					case 'stop':
-					
+
 						clearTimeout(that.timer);
 						//$('.tele-control', that.recordTools).remove();
 						telepath.action.recorder.init();
 
+						break;
+
+					case 'pause':
+						$(this).toggleClass('tele-control-pause');
+						$(this).toggleClass('tele-control-record');
+						that.paused = !that.paused;
 
 						break;
-					
-					case 'pause':
-						
-						that.paused = !that.paused;
-					
-					break;
-				
+
 				}
-			
+
 			});
-			
+
 			that.recordTools.append(controlEl);
 		});
 
