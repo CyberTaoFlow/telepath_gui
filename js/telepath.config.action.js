@@ -387,7 +387,7 @@ telepath.action.recorder = {
 		*/
 		
 		// Record Button
-		
+
 		that.input = input;
 		var record_cmd = $('<div>').addClass('tele-control-record-cmd').hover(function () {
 			$('*', this).addClass('hover');
@@ -397,10 +397,14 @@ telepath.action.recorder = {
 			if (record_lbl.html() == 'Start Recording') {
 				that.startRecording(type, $('input', that.input).val());
 				record_lbl.html('Stop Recording');
+				record_ico.toggleClass('tele-control-record');
+				record_ico.toggleClass('tele-control-stop');
 			} else {
 				clearInterval(that.timer);
 				that.progbarInner.css({width: 0});
 				record_lbl.html('Start Recording');
+				record_ico.toggleClass('tele-control-stop');
+				record_ico.toggleClass('tele-control-record');
 			}
 		});
 		
