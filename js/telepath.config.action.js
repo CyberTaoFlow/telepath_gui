@@ -127,7 +127,12 @@ telepath.action.recorder = {
 		// Restart timer, this time using timestamp of last request to receive only subsequent requests
 		// for now..
 		this.timer = setTimeout(function () {
-			telepath.ds.get('/actions/get_requests', { mode: that.recordType, value: that.recordValue, host: telepath.action.currentApp, offset: (parseInt(that.ts_offset) || 0) + 1 }, function(data) {
+			telepath.ds.get('/actions/get_requests', {
+				mode: that.recordType,
+				value: that.recordValue,
+				host: telepath.action.currentApp,
+				offset: (parseInt(that.ts_offset) || 0) + 1
+			}, function (data) {
 				// Process even if no items to reset timer iteration
 				that.processRequests(data.items);
 			});
@@ -169,7 +174,12 @@ telepath.action.recorder = {
 			
 			// Request (No time being sent, we don't know when was the last request we're actually tracking)
 			// Lockon = true, only get latest TS
-			telepath.ds.get('/actions/get_requests', { mode: that.recordType, value: that.recordValue, host: telepath.action.currentApp, lockon: true }, function(data) {
+			telepath.ds.get('/actions/get_requests', {
+				mode: that.recordType,
+				value: that.recordValue,
+				host: telepath.action.currentApp,
+				lockon: true
+			}, function (data) {
 				if(data.total > 0) {
 				
 					// Have requests matching recording parameters, initialize recording.
@@ -564,18 +574,43 @@ telepath.config.action = {
 				telepath.dialog({ type: 'alert', title: 'Business Actions', msg: 'Missing action name' });
 				return;
 			}
-			
-			// Post to server
-			telepath.ds.get('/actions/set_flow', {
-				app: telepath.action.currentApp,
-				flow_name: flow_name,
-				json: JSON.stringify(cleanData)
-			}, function(data) {
-			
-				telepath.config.actions.reload();
-				
+
+			// Check if name already exists
+			telepath.ds.get('/actions/check_existing_action_name', {
+				host: telepath.action.currentApp,
+				name: flow_name
+			}, function (data) {
+				if (data.items) {
+					telepath.dialog({
+						type: 'dialog',
+						title: 'Business Actions',
+						msg: 'This action name already exists. Do you want to override it?',
+						callback: function () {
+							// Post to server
+							telepath.ds.get('/actions/set_flow', {
+								app: telepath.action.currentApp,
+								flow_name: flow_name,
+								json: JSON.stringify(cleanData)
+							}, function (data) {
+								telepath.config.actions.reload();
+							});
+						}
+					});
+				}
+				else {
+					// Post to server
+					telepath.ds.get('/actions/set_flow', {
+						app: telepath.action.currentApp,
+						flow_name: flow_name,
+						json: JSON.stringify(cleanData)
+					}, function (data) {
+						telepath.config.actions.reload();
+					});
+				}
 			});
-			
+
+
+
 			// Notify user
 		});
 		

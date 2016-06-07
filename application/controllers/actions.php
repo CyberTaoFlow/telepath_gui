@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-/**
- * @property  M_Config M_Config
- */
+
 class Actions extends Tele_Controller
 {
 
@@ -66,7 +64,6 @@ class Actions extends Tele_Controller
 
         telepath_auth(__CLASS__, 'get_action');
 
-        $ret = array();
         $host = $this->input->post('host');
         $domain=$this->input->post('domain');
 
@@ -82,6 +79,30 @@ class Actions extends Tele_Controller
         }
 
         return_success(array('actions'=>$actions,'subdomains'=>$subdomains));
+    }
+
+    public function check_existing_action_name()
+    {
+
+        telepath_auth(__CLASS__, 'get_action');
+
+        $host = $this->input->post('host');
+        $name = $this->input->post('name');
+
+        $actions = $this->M_Actions->get_app_actions($host);
+
+        $exist = false;
+        foreach ($actions as $action) {
+            if ($action['action_name'] == $name) {
+                $exist = true;
+                break;
+            }
+        }
+
+        return_success($exist);
+
+
+
     }
 
 
