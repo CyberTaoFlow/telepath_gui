@@ -269,6 +269,13 @@
   color: #333333;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.popover-title:hover {
+    text-overflow: inherit;
+    overflow: visible;
 }
 
 .popover-title.not-round {

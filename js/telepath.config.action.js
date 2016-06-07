@@ -63,7 +63,12 @@ telepath.action.recorder = {
 		}
 		
 		// Name
-		this.actionName = $('<div>').teleInput({ value: action_name, label: 'Name' });
+		this.actionName = $('<div>').teleInput({
+			value: action_name,
+			label: 'Name:',
+			labelCSS: {width: 48, 'margin-left': 23},
+			width: 220
+		});
 		this.recordTools.append(this.actionName);
 		
 		// Controls

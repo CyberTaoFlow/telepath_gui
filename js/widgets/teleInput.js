@@ -72,6 +72,9 @@ $.widget("tele.teleInput", {
         if (this.options.margintop) {
             this.input.css({'margin-top': this.options.margintop});
         }
+       if (this.options.marginleft) {
+            this.input.css({'margin-left': this.options.marginleft});
+        }
 
     }
 
