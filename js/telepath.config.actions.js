@@ -334,15 +334,15 @@ telepath.config.actions = {
 		}});
 		
 		// Create
-		that.createCat = $('<div>').btn({ icon: 'plus', text: 'New Category', callback: function () {
-			
-			telepath.dialog({ msg: 'Enter new name for action category', type: 'prompt', callback: function(name) {
-			
-				
-				
-			}});
-			
-		}}).hide();
+		//that.createCat = $('<div>').btn({ icon: 'plus', text: 'New Category', callback: function () {
+		//
+		//	telepath.dialog({ msg: 'Enter new name for action category', type: 'prompt', callback: function(name) {
+		//
+		//
+		//
+		//	}});
+		//
+		//}}).hide();
 				
 		this.barLeft.append(this.search).append(this.createCat);
 
