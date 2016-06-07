@@ -76,9 +76,11 @@ telepath.action.recorder = {
 					case 'stop':
 					
 						clearTimeout(that.timer);
-						$('.tele-control', that.recordTools).remove();
-					
-					break;
+						//$('.tele-control', that.recordTools).remove();
+						telepath.action.recorder.init();
+
+
+						break;
 					
 					case 'pause':
 						
@@ -592,7 +594,14 @@ telepath.config.action = {
 								flow_name: flow_name,
 								json: JSON.stringify(cleanData)
 							}, function (data) {
+								// Notify user
+								telepath.dialog({
+									type: 'alert',
+									title: 'Business Actions',
+									msg: 'The Business Action was successfully recorded'
+								});
 								telepath.config.actions.reload();
+								telepath.action.recorder.init();
 							});
 						}
 					});
@@ -604,14 +613,18 @@ telepath.config.action = {
 						flow_name: flow_name,
 						json: JSON.stringify(cleanData)
 					}, function (data) {
+						// Notify user
+						telepath.dialog({
+							type: 'alert',
+							title: 'Business Actions',
+							msg: 'The Business Action was successfully recorded'
+						});
 						telepath.config.actions.reload();
+						telepath.action.recorder.init();
 					});
 				}
 			});
 
-
-
-			// Notify user
 		});
 		
 		// BIND Cancel -- Clear all, show recorder
