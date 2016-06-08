@@ -53,6 +53,8 @@ telepath.action.recorder = {
 	requests: [],
 	paused: false,
 	ts_offset: 0,
+	// set this variable when the user click on an application in the left panel to check if the record is on
+	timer: false,
 	initRecordingTools: function(action_name) {
 		
 		var that = this;
@@ -149,6 +151,7 @@ telepath.action.recorder = {
 	startRecording: function(type) {
 		
 		var that = this;
+		this.timer = true;
 		this.timerValue = 0;
 		this.recordType = type;
 		clearInterval(this.timer);
@@ -226,6 +229,7 @@ telepath.action.recorder = {
 			
 			if(that.timerValue > 99) {
 				clearInterval(that.timer);
+				that.timer=false;
 				telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'No matching requests, tracking timed out.' });
 			}
 		
@@ -238,6 +242,8 @@ telepath.action.recorder = {
 	init: function () {
 		
 		$('.popover').remove();
+
+		this.timer=false;
 		
 		// Trackers
 		this.trackers = [
@@ -402,6 +408,7 @@ telepath.action.recorder = {
 			} else {
 				clearInterval(that.timer);
 				that.progbarInner.css({width: 0});
+				that.timer=false;
 				record_lbl.html('Start Recording');
 				record_ico.toggleClass('tele-control-stop');
 				record_ico.toggleClass('tele-control-record');
