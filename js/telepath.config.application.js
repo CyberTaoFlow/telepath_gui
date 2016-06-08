@@ -45,13 +45,13 @@ telepath.config.application = {
 		app_data.move_to_production = $('input', this.move_to_production).val();
 		
 		// DISPLAY NAME
-		app_data.display_name = $('input', this.AD_display_name).val();
-		$('input', this.AD_display_name).css({ borderColor: '#555' });
-		if(app_data.display_name.length > 64) {
-			$('input', this.AD_display_name).css({ borderColor: 'red' });
-			telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application display name too long' });
-			return false;
-		}
+		//app_data.display_name = $('input', this.AD_display_name).val();
+		//$('input', this.AD_display_name).css({ borderColor: '#555' });
+		//if(app_data.display_name.length > 64) {
+		//	$('input', this.AD_display_name).css({ borderColor: 'red' });
+		//	telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application display name too long' });
+		//	return false;
+		//}
 		
 		// COOKIES
 		app_data.AppCookieName = [];
@@ -359,9 +359,9 @@ telepath.config.application = {
 		var title = $('<div>').addClass('tele-title-1').html('Application Details').appendTo('#tele-app-details');
 		
 		this.AD_app_domain   = $('<div>').teleInput({ label: 'Application Host', value: that.app_data.host });
-		this.AD_display_name = $('<div>').teleInput({ label: 'Display Name', value: that.app_data.display_name });
+		//this.AD_display_name = $('<div>').teleInput({ label: 'Display Name', value: that.app_data.display_name });
 		
-		$('#tele-app-details').append(this.AD_app_domain).append(this.AD_display_name);
+		$('#tele-app-details').append(this.AD_app_domain)/*.append(this.AD_display_name)*/;
 
 
 		this.c_mode = $('<div>').addClass('tele-config-system-tab tele-config-system-mode');
