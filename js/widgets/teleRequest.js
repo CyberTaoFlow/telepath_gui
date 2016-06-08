@@ -16,7 +16,7 @@ $.widget( "tele.teleRequest", {
 		var that = this;
 		
 		// Title
-		this.pageTitle = $('<div>').addClass('tele-request-page-title').html(this.options.data.title);
+		this.pageTitle = $('<div>').addClass('tele-request-page-title').html(this.options.data.title).attr('title',this.options.data.title);
 		
 		// Rewrite (because recording format and actions format differs)
 		if(this.options.data.pagename) {
@@ -27,7 +27,7 @@ $.widget( "tele.teleRequest", {
 		}
 				
 		// Path
-		this.pagePath  = $('<div title='+this.options.data.uri+'>').addClass('tele-request-page-path').html(this.options.data.uri);
+		this.pagePath  = $('<div>').addClass('tele-request-page-path').html(this.options.data.uri).attr('title',this.options.data.uri);
 		
 		// Edit
 		/*this.requestEdit  = $('<div>').btn({ icon: 'edit', callback: function () {}});*/
