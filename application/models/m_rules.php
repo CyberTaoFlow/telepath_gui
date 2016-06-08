@@ -129,7 +129,7 @@ class M_Rules extends CI_Model {
 		#$res = $this->elasticClient->deleteByQuery($query);
                 delete_by_query($this->elasticClient, $query );
 		
-		$params = ['body' => $data, 'index' => 'telepath-rules', 'type' => 'rules'];
+		$params = ['body' => $data, 'index' => 'telepath-rules', 'type' => 'rules', 'id' => $data['uid']];
 		$this->elasticClient->index($params);
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-rules'));
 
