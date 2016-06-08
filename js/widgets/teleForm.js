@@ -108,7 +108,7 @@ $.widget( "tele.teleForm", {
 		if(this.options.buttons) {
 		
 			this.buttonsEl = $('<div>').addClass('tele-form-buttons');
-			this.applyBtn  = $('<a href="#" class="tele-button tele-button-apply">Apply</a>');
+			this.applyBtn  = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
 			this.cancelBtn = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
 			
 			this.buttonsEl.append(this.applyBtn).append(this.cancelBtn);

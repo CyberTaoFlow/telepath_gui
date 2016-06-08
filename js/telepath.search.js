@@ -77,7 +77,7 @@ telepath.search = {
         });
 
         that.buttonsEl = $('<div>').addClass('tele-form-buttons');
-        that.applyBtn = $('<a href="#" class="tele-button tele-button-apply">Apply</a>');
+        that.applyBtn = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
         that.cancelBtn = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
 
         that.buttonsEl.append(that.applyBtn).append(that.cancelBtn);
