@@ -471,7 +471,7 @@ class M_Cases extends CI_Model {
 
 		ignore_user_abort(true);
 
-		// If it's a script that always run, we take the time before the iterations
+		// If it's a cron task, we take the time before the iterations
 		if ($range){
 			$update_time = time()-200;
 			$this->load->model('M_Config');
@@ -483,7 +483,7 @@ class M_Cases extends CI_Model {
 
 			$params = [
 //				"search_type" => "scan",    // use search_type=scan
-				"scroll" => "1m",          // h ow long between scroll requests. should be small!
+				"scroll" => "1m",          // how long between scroll requests.
 				"size" => 9999,               // how many results *per shard* you want back
 				"index" => $index_name,
 				"type" => 'http',

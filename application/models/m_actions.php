@@ -218,7 +218,7 @@ class M_Actions extends CI_Model {
 
 		// sanity check (Yuli)
 		if ($mode == 'IP') {
-			// we need to check if IP has correct format
+			// we need to check if IP hass correct format
 			// we will silently ignore this request returning empty result
 			if (filter_var($value, FILTER_VALIDATE_IP) === false) {
 				$empty_result = array();
