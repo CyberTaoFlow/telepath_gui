@@ -451,22 +451,25 @@ class M_Dashboard extends CI_Model {
 //		$params = append_application_query($params, $apps);
 //		$params = append_access_query($params);
 
-		$results   = $this->elasticClient->search($params);
-//		$data = array();
+		$results = $this->elasticClient->search($params);
+		$data = array();
 		if (!empty($results) && isset($results['aggregations']) && isset($results['aggregations']['host']) && isset
 			($results['aggregations']['host']['buckets']) && isset ($results['aggregations']['score'])
 		) {
-//		{
-//			foreach( $results['aggregations']['score']['buckets'] as $bucket) {
-//				$data[]=$bucket['doc_count'];
-//			}
-//		}
 			$results['aggregations']['host']['buckets'][] = [
 				'key' => 'All Applications',
 				"score" => $results['aggregations']['score']
 			];
+
+			foreach ($results['aggregations']['host']['buckets'] as $bucket) {
+				$key = $bucket['key'];
+				foreach ($bucket['score']['buckets'] as $score) {
+					$data[$key][] = $score['doc_count'];
+				}
+			}
+
 		}
-		return $results['aggregations']['host']['buckets'];
+		return $data;
 
 	}
 
