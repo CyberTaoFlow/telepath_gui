@@ -15,12 +15,10 @@ class M_Nginx extends CI_Model {
 		$certs_dir  = '/opt/telepath/openresty/nginx/certs/';
 		$fields     = 'app_id,app_domain,app_ips,certificate,private_key,ssl_flag,ssl_server_port';
 		
-		
+		$params['index']='telepath-domains';
+		$params['type']='domains';
 		$params['body'] = [
-			'size'   => 100,
-				'query' => [ "bool" => [ "must" => [
-					[ 'term' => [ '_type' => 'application' ] ] 
-				] ]	]
+			'size'   => 999
 		];
 		
 		$apps_dirty = get_elastic_results($this->elasticClient->search($params));
@@ -40,7 +38,7 @@ class M_Nginx extends CI_Model {
 			}
 			
 			// Cant proxy application without destination IP
-			if($app['app_ips'] == '') {
+			if(!isset($app['app_ips']) || $app['app_ips'] == '') {
 				continue;
 			}
 			
