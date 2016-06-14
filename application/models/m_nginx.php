@@ -1,7 +1,7 @@
 <?php
 
 class M_Nginx extends CI_Model {
-	
+
 	function __construct()
 	{
 		parent::__construct();
@@ -10,7 +10,7 @@ class M_Nginx extends CI_Model {
 		$this->elasticClient = new Elasticsearch\Client();
 	}
 
-	function gen_config() {
+	function old_gen_config() {
 		
 		$certs_dir  = '/opt/telepath/openresty/nginx/certs/';
 		$fields     = 'app_id,app_domain,app_ips,certificate,private_key,ssl_flag,ssl_server_port';
@@ -18,7 +18,7 @@ class M_Nginx extends CI_Model {
 		$params['index']='telepath-domains';
 		$params['type']='domains';
 		$params['body'] = [
-			'size'   => 999
+			'size'   => 9999
 		];
 		
 		$apps_dirty = get_elastic_results($this->elasticClient->search($params));
@@ -108,7 +108,104 @@ class M_Nginx extends CI_Model {
 		return $this->load->view('nginx', array('apps' => $apps_clean, 'certs_dir' => $certs_dir), true);
 		
 	}
-	
+
+	function gen_config($apps)
+	{
+
+		$certs_dir = '/opt/telepath/openresty/nginx/certs/';
+
+		foreach ($apps as $app) {
+
+			$key_file = $certs_dir . 'application_' . md5($app['host']) . '_certificate.crt';
+			$cert_file = $certs_dir . 'application_' . md5($app['host']) . '_private_key.key';
+
+
+			// Wipe clean the current certificates files
+			if (file_exists($key_file)) unlink($key_file);
+			if (file_exists($cert_file)) unlink($cert_file);
+
+			// If our domain name is somehow empty, we cant proxy it
+			if ($app['host'] == '') {
+				continue;
+			}
+
+			// Cant proxy application without destination IP
+			if (!isset($app['app_ips']) || $app['app_ips'] == '') {
+				continue;
+			}
+
+			// Double Check, Cant proxy application without destination IP
+			$app_ips = explode(',', $app['app_ips']);
+			if (count($app_ips) == 0 || (count($app_ips) == 1 && $app_ips[0] == '')) {
+				continue;
+			}
+
+			// Copy back to array just the clean valid values
+			$app['app_ips'] = [];
+			foreach ($app_ips as $ip) {
+				if (filter_var($ip, FILTER_VALIDATE_IP)) {
+					$app['app_ips'][] = $ip;
+				}
+			}
+
+			// Just to make sure..
+			if (count($app['app_ips']) == 0) {
+				continue;
+			}
+
+			// If its SSL but we have no certificates, we can't proxy it
+			if (intval($app['ssl_flag']) == 1 && ($app['app_ssl_certificate'] == '' || $app['app_ssl_private'] == '')) {
+				continue;
+			}
+
+			// If its SSL but we have no port, default to 443
+			if (intval($app['ssl_flag']) == 1 && (!isset($app['ssl_server_port']) || intval($app['ssl_server_port']) == 0)) {
+				$app['ssl_server_port'] = '443';
+			}
+
+			// Attempt decoding certificates and store them into a directory
+			if (intval($app['ssl_flag']) == 1) {
+
+				$certificate = $app['app_ssl_certificate']; //base64_decode($app['app_ssl_certificate'], true);
+				$private_key = $app['app_ssl_private']; //base64_decode($app['app_ssl_private'], true);
+
+				// If decode failed, we can't proxy it...
+				if (!$certificate || !$private_key) {
+					continue;
+				}
+
+				// Save our certificates as files
+
+				file_put_contents($key_file, $certificate);
+				file_put_contents($cert_file, $private_key);
+
+				// Validate write, under no circumstance we want nginx crashing due to bad config
+				if (!file_exists($key_file) || !file_exists($cert_file)) {
+					continue;
+				}
+
+			}
+
+		}
+
+		return $this->load->view('nginx', array('apps' => $app, 'certs_dir' => $certs_dir), true);
+
+
+	}
+
+	function del_config($host)
+	{
+		$certs_dir = '/opt/telepath/openresty/nginx/certs/';
+
+		$key_file = $certs_dir . 'application_' . md5($host) . '_certificate.crt';
+		$cert_file = $certs_dir . 'application_' . md5($host) . '_private_key.key';
+
+		// Wipe clean the current certificates files
+		if (file_exists($key_file)) unlink($key_file);
+		if (file_exists($cert_file)) unlink($cert_file);
+
+	}
+
 }
 
 ?>

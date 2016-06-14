@@ -184,7 +184,7 @@ class Applications extends Tele_Controller
 
         // REWRITE OUR NGINX.CONF
         $this->load->model('M_Nginx');
-        $conf = $this->M_Nginx->gen_config();
+        $conf = $this->M_Nginx->gen_config([$data]);
 
         $logfile = $this->config->item('telepath_ui_log');
 
@@ -329,10 +329,7 @@ class Applications extends Tele_Controller
 
         // REWRITE OUR NGINX.CONF
         $this->load->model('M_Nginx');
-        $conf = $this->M_Nginx->gen_config();
-        $logfile = $this->config->item('telepath_ui_log');
-
-        file_put_contents($logfile, $conf);
+        $this->M_Nginx->del_config($app_id);
 
         return_success();
 
