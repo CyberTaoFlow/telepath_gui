@@ -46,7 +46,15 @@ telepath.config.applications = {
 			var children = false;
 			if (count) {
 			//	text += '&nbsp;(' + row.learning_so_far + ')';
-				children = (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0) ? row.subdomains : false;
+				if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0) {
+					children = [];
+					$.each(row.subdomains, function (i, subdomain) {
+						children.push({text: subdomain, state: {disabled: true}});
+					})
+				} else {
+					children = false;
+				}
+
 			}
 
 			var obj = {

@@ -928,3 +928,9 @@
   font-size: 21px;
 }
 
+/*custom css*/
+
+.jstree-default .jstree-disabled, .jstree-wholerow[unselectable="on"], li[aria-disabled="true"] .jstree-ocl {
+  cursor: default;
+}
+
