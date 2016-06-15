@@ -208,14 +208,15 @@ telepath.sessionflow = {
 		}
 
 	},
-	init: function(SID, IP, list, is_alert, alerts_names, searchkey) {
+	init: function(SID, IP, alerts_names, is_alert,  searchkey, list) {
 	
 		this.session = false;	
 		this.SID  = SID;
 		this.IP  = IP;
-		this.list = list;
-		this.searchkey = searchkey;
 		this.alerts_names = alerts_names;
+		this.searchkey = searchkey;
+		this.list = list;
+
 
 		if (searchkey)
 		{

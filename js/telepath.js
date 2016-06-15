@@ -174,6 +174,15 @@ telepath.main = {
                 telepath.dashboard.init();
                 $('.tele-nav-dashboard a').addClass('active');
 
+                // check if there is an anchor in URL, to display a specific alert on loading
+                if (location.hash) {
+                    var params = location.hash.split("/");
+                    var alerts = [];
+                    alerts["key"]=params[2];
+                    telepath.sessionflow.init(params[0].substr(1), params[1], alerts, "alert", "");
+                }
+
+
 
                 /*
                  var paramBrowse = $('<div>').teleBrowse();
