@@ -285,11 +285,16 @@ $.widget( "tele.listitem", {
 								li.append(mailTo);
 							
 							break;
-							
+
 							case 'country':
-								
-								if(detail.value.length == 2) {
-								
+
+								if (detail.value == '00') {
+
+									li = false;
+
+								}
+								else if(detail.value.length == 2) {
+
 									li.append('<span class="flag flag-' + escapeHtml(detail.value) + '"></span>');
 									li.append('<span class="tele-country">' + telepath.countries.a2n(detail.value) + '</span>');
 									
