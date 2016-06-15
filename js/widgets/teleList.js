@@ -136,8 +136,15 @@ $.widget( "tele.teleList", {
 			}
 			that.options.callbacks.hover_out(this, formattedItem);
 		}).data('formattedItem',formattedItem);
-		
-		// Append to local Store
+
+		$('.tele-listitem-title, .tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
+			var search = $(this).text();
+			telepath.header.searchInput.val(search)
+			telepath.search.init(search);
+		});
+
+
+				// Append to local Store
 		that.items.push(newItem);
 		
 	},
