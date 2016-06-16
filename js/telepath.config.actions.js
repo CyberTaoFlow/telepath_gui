@@ -107,7 +107,6 @@ telepath.config.actions = {
 						
 					});
 
-					$('.tele-loader', telepath.config.actions.list).remove();
 					telepath.config.actions.loading = false;
 					
 				break;
@@ -242,14 +241,6 @@ telepath.config.actions = {
 		//that.contentLeftWrap
 	
 		that.contentLeft.empty().append(that.appTree);
-	
-		$(that.contentLeft).mCustomScrollbar({
-			scrollButtons:{	enable: false },
-			scrollInertia: 150,
-			advanced: {
-				updateOnContentResize: true
-			}
-		});
 
 		$(that.contentLeft).mCustomScrollbar({
 			callbacks: {

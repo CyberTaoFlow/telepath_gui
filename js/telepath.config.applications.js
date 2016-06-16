@@ -113,7 +113,6 @@ telepath.config.applications = {
 			// update the offset counter with the new loading
 			telepath.config.applications.offset = (data.items.finished) ? 'finished' : telepath.config.applications.offset + data.items.data.length;
 			telepath.config.applications.loading = false;
-			$('.tele-loader', telepath.config.applications.list).remove();
 			$(".tele-search-input").attr("disabled", false);
 		});
 
@@ -156,14 +155,6 @@ telepath.config.applications = {
 					}
 
 					that.loading = true;
-
-					$('.mCSB_container', that.list).append($(telepath.loader).css({
-						float: 'left',
-						clear: 'both',
-						'bottom': 30,
-						position: 'absolute'
-					}));
-
 
 					var anotherTree = $('<div>');
 					var treedata = telepath.config.applications.expand;
