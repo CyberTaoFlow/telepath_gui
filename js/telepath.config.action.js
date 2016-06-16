@@ -611,40 +611,12 @@ telepath.config.action = {
 						title: 'Business Actions',
 						msg: 'This action name already exists. Do you want to override it?',
 						callback: function () {
-							// Post to server
-							telepath.ds.get('/actions/set_flow', {
-								app: telepath.action.currentApp,
-								flow_name: flow_name,
-								json: JSON.stringify(cleanData)
-							}, function (data) {
-								// Notify user
-								telepath.dialog({
-									type: 'alert',
-									title: 'Business Actions',
-									msg: 'The Business Action was successfully recorded'
-								});
-								telepath.config.actions.reload();
-								telepath.action.recorder.init();
-							});
+							telepath.config.action.postToServer(flow_name, cleanData);
 						}
 					});
 				}
 				else {
-					// Post to server
-					telepath.ds.get('/actions/set_flow', {
-						app: telepath.action.currentApp,
-						flow_name: flow_name,
-						json: JSON.stringify(cleanData)
-					}, function (data) {
-						// Notify user
-						telepath.dialog({
-							type: 'alert',
-							title: 'Business Actions',
-							msg: 'The Business Action was successfully recorded'
-						});
-						telepath.config.actions.reload();
-						telepath.action.recorder.init();
-					});
+					telepath.config.action.postToServer(flow_name, cleanData);
 				}
 			});
 
@@ -657,9 +629,26 @@ telepath.config.action = {
 			telepath.action.recorder.init();
 		});
 	
+	},
+	postToServer: function (flow_name, cleanData) {
+		// Post to server
+		telepath.ds.get('/actions/set_flow', {
+			app: telepath.action.currentApp,
+			flow_name: flow_name,
+			json: JSON.stringify(cleanData)
+		}, function (data) {
+			// Notify user
+			telepath.dialog({
+				type: 'alert',
+				title: 'Business Actions',
+				msg: 'The Business Action was successfully recorded'
+			});
+			telepath.config.actions.reload();
+			telepath.action.recorder.init();
+		});
 	}
 
-}
+};
 
 /* DEPR */
 
