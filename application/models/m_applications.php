@@ -91,7 +91,7 @@ class M_Applications extends CI_Model {
 
 		if(isset($data['app_ssl_certificate']) && $data['app_ssl_certificate'] != '') {
 			$cert_data = openssl_x509_parse($data['app_ssl_certificate']);
-			$data['ssl_data'] = $cert_data;
+			$data['ssl_data']['subject'] = $cert_data['subject'];
 		}
 
 
