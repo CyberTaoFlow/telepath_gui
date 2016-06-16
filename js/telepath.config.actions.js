@@ -224,42 +224,48 @@ telepath.config.actions = {
 		});*/
 
 		that.ruleTree = $('<div>');
-	
+
 		that.ruleTree.jstree({
-		core : { data : telepath.config.actions.expand },
-		plugins: ["json_data","wholerow", "theme", "grid", "search"],
-		grid: {
-			columns: [
-				{width: 370 },
-				{value: function (node) {
-					/*
-					return $('<div>').btn({ icon: 'edit', callback: function () {
-						telepath.config.actions.editCat(node.id);
-					}});
-					*/
-					
-				}, width: 40 },
-				{value: function (node) {
+			core: {data: telepath.config.actions.expand},
+			plugins: ["json_data", "wholerow", "theme", "grid", "search"],
+			grid: {
+				columns: [
+					{width: 370},
+					{
+						value: function (node) {
+							/*
+							 return $('<div>').btn({ icon: 'edit', callback: function () {
+							 telepath.config.actions.editCat(node.id);
+							 }});
+							 */
 
-					if(node.type == 'action') {
-						return $('<div>').btn({ icon: 'delete', callback: function () {
-							telepath.config.actions.deleteFlow(node.raw);
-						}});
+						}, width: 40
+					},
+					{
+						value: function (node) {
+
+							if (node.type == 'action') {
+								return $('<div>').btn({
+									icon: 'delete', callback: function () {
+										telepath.config.actions.deleteFlow(node.raw);
+									}
+								});
+							}
+
+
+						}, width: 40
 					}
-
-
-				}, width: 40 }
-			],
-			resizable:true,
-		}/*,
-			search: {
-				"fuzzy":false,
-				"case_insensitive": true,
-				"show_only_matches" : true,
-				search_callback : function (str, node) {
-					if(node.text === str) { return true; }
-				}
-			}*/
+				],
+				resizable: true,
+			}/*,
+			 search: {
+			 "fuzzy":false,
+			 "case_insensitive": true,
+			 "show_only_matches" : true,
+			 search_callback : function (str, node) {
+			 if(node.text === str) { return true; }
+			 }
+			 }*/
 		}).on('changed.jstree', function (e, data) {
 			// check if the record is on
 			if (telepath.action.recorder.timer) {
@@ -270,46 +276,30 @@ telepath.config.actions = {
 					callback: function () {
 						clearInterval(telepath.action.recorder.timer);
 						telepath.action.recorder.timer = false;
-
-						data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
-						data.instance.element.find('#'+data.selected[0]).children(":first").css("background-color", "rgba(189, 189, 189, 0.85)");
-
-						telepath.config.actions.contentRight.empty();
-						telepath.config.actions.barRight.empty();
-						//	telepath.config.actions.createCat.hide();
-
-						if (data.node.data.type == 'action') {
-							telepath.config.action.editAction(data.node.data.raw);
-						}
-						if (data.node.data.type == 'app') {
-							telepath.action.currentApp = data.node.data.id;
-							telepath.action.recorder.init();
-							//	telepath.config.actions.createCat.show();
-						}
+						that.ruleTree.trigger("restart", data);
 					}
-
 				});
 			}
 			else {
-				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
-				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
-
-				telepath.config.actions.contentRight.empty();
-				telepath.config.actions.barRight.empty();
-				//	telepath.config.actions.createCat.hide();
-
-				if (data.node.data.type == 'action') {
-					telepath.config.action.editAction(data.node.data.raw);
-				}
-				if (data.node.data.type == 'app') {
-					telepath.action.currentApp = data.node.data.id;
-					telepath.action.recorder.init();
-					//	telepath.config.actions.createCat.show();
-				}
+				$(this).trigger("restart", data);
 			}
+		}).on('restart', function (e, data) {
+			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+			data.instance.element.find('#' + data.selected[0]).children(":first").css("background-color", "rgba(189, 189, 189, 0.85)");
 
+			telepath.config.actions.contentRight.empty();
+			telepath.config.actions.barRight.empty();
+			//	telepath.config.actions.createCat.hide();
 
-		})
+			if (data.node.data.type == 'action') {
+				telepath.config.action.editAction(data.node.data.raw);
+			}
+			if (data.node.data.type == 'app') {
+				telepath.action.currentApp = data.node.data.id;
+				telepath.action.recorder.init();
+				//	telepath.config.actions.createCat.show();
+			}
+		});
 		/*.on('ready.jstree', function(e, data) {
 			data.instance.search(that.searchString);
 		});*/
