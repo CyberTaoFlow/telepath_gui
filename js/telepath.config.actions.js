@@ -28,6 +28,7 @@ telepath.config.actions = {
 				postData.actions = true;
 				postData.sort = telepath.config.actions.sort;
 				postData.dir = telepath.config.actions.dir;
+				postData.offset = telepath.config.actions.offset;
 				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;
 			case 'app':
@@ -55,8 +56,11 @@ telepath.config.actions = {
 			switch(postData.type) {
 			
 				case 'root':
-				
-					$.each(data, function(i, row) {
+
+					telepath.config.actions.offset = (data.finished) ? 'finished' : telepath.config.actions.offset + data.data.length;
+
+
+					$.each(data.data, function(i, row) {
 					
 						var text = row.host;
 						//var children = [{ children: true, text: 'Root Domain', data: {id: row.host, type: 'app', ssl: row.ssl_flag }}];
@@ -102,6 +106,9 @@ telepath.config.actions = {
 						treeData.push(obj);
 						
 					});
+
+					$('.tele-loader', telepath.config.actions.list).remove();
+					telepath.config.actions.loading = false;
 					
 				break;
 				case 'application':
@@ -158,7 +165,7 @@ telepath.config.actions = {
 
 			callback.call(that, treeData);
 			$(telepath.config.actions.contentLeftWrap).mCustomScrollbar('update');
-			
+
 		});
 		
 	},
@@ -190,7 +197,7 @@ telepath.config.actions = {
 			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
 
 		that.reload();
-		//that.ruleTree.jstree('search', that.searchString);
+		//that.appTree.jstree('search', that.searchString);
 
 	},
 
@@ -201,6 +208,9 @@ telepath.config.actions = {
 		}
 
 		var that = this;
+
+		// reset the offset
+		that.offset = 0;
 
 		/*$("#search-button").on("click", function (event) {
 			that.searchString = '';
@@ -223,96 +233,55 @@ telepath.config.actions = {
 			that.input();
 		});*/
 
-		that.ruleTree = $('<div>');
+		that.appTree = $('<div>');
+		var treedata = telepath.config.actions.expand;
+		that.createTree(that.appTree,treedata);
 
-		that.ruleTree.jstree({
-			core: {data: telepath.config.actions.expand},
-			plugins: ["json_data", "wholerow", "theme", "grid", "search"],
-			grid: {
-				columns: [
-					{width: 370},
-					{
-						value: function (node) {
-							/*
-							 return $('<div>').btn({ icon: 'edit', callback: function () {
-							 telepath.config.actions.editCat(node.id);
-							 }});
-							 */
-
-						}, width: 40
-					},
-					{
-						value: function (node) {
-
-							if (node.type == 'action') {
-								return $('<div>').btn({
-									icon: 'delete', callback: function () {
-										telepath.config.actions.deleteFlow(node.raw);
-									}
-								});
-							}
-
-
-						}, width: 40
-					}
-				],
-				resizable: true,
-			}/*,
-			 search: {
-			 "fuzzy":false,
-			 "case_insensitive": true,
-			 "show_only_matches" : true,
-			 search_callback : function (str, node) {
-			 if(node.text === str) { return true; }
-			 }
-			 }*/
-		}).on('changed.jstree', function (e, data) {
-			// check if the record is on
-			if (telepath.action.recorder.timer) {
-				telepath.dialog({
-					type: 'dialog',
-					title: 'Business Actions',
-					msg: 'Are you sure thay you want to stop the Business Action record?',
-					callback: function () {
-						clearInterval(telepath.action.recorder.timer);
-						telepath.action.recorder.timer = false;
-						that.ruleTree.trigger("restart", data);
-					}
-				});
-			}
-			else {
-				$(this).trigger("restart", data);
-			}
-		}).on('restart', function (e, data) {
-			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
-			data.instance.element.find('#' + data.selected[0]).children(":first").css("background-color", "rgba(189, 189, 189, 0.85)");
-
-			telepath.config.actions.contentRight.empty();
-			telepath.config.actions.barRight.empty();
-			//	telepath.config.actions.createCat.hide();
-
-			if (data.node.data.type == 'action') {
-				telepath.config.action.editAction(data.node.data.raw);
-			}
-			if (data.node.data.type == 'app') {
-				telepath.action.currentApp = data.node.data.id;
-				telepath.action.recorder.init();
-				//	telepath.config.actions.createCat.show();
-			}
-		});
-		/*.on('ready.jstree', function(e, data) {
-			data.instance.search(that.searchString);
-		});*/
-		
 		//that.contentLeftWrap = $('<div>');
 		//that.contentLeft.empty().append(that.contentLeftWrap);
 		//that.contentLeftWrap
 	
-		that.contentLeft.empty().append(that.ruleTree);
+		that.contentLeft.empty().append(that.appTree);
 	
 		$(that.contentLeft).mCustomScrollbar({
 			scrollButtons:{	enable: false },
 			scrollInertia: 150,
+			advanced: {
+				updateOnContentResize: true
+			}
+		});
+
+		$(that.contentLeft).mCustomScrollbar({
+			callbacks: {
+				onTotalScroll: function () {
+
+					if (that.loading || that.offset == 'finished') {
+						return;
+					}
+
+					that.loading = true;
+
+					$('.mCSB_container', that.list).append($(telepath.loader).css({
+						float: 'left',
+						clear: 'both',
+						'bottom': 30,
+						position: 'absolute'
+					}));
+
+					// add another jstree to the existing tree, because the create_node() function is very slow
+					var anotherData = telepath.config.actions.expand;
+					var anotherTree = $('<div>');
+					that.createTree(anotherTree, anotherData);
+					that.appTree.parent().append(anotherTree);
+
+
+
+				},
+			},
+			scrollButtons: {enable: false},
+			scrollInertia: 150,
+			onTotalScrollOffset: 200,
+			alwaysTriggerOffsets: false,
 			advanced: {
 				updateOnContentResize: true
 			}
@@ -394,5 +363,85 @@ telepath.config.actions = {
 				}, doneTypingInterval);
 			}
 		});
+	},
+	createTree: function(div,treedata){
+		div.jstree({
+			core: {data: treedata},
+			plugins: ["json_data", "wholerow", "theme", "grid", "search"],
+			grid: {
+				columns: [
+					{width: 370},
+					{
+						value: function (node) {
+							/*
+							 return $('<div>').btn({ icon: 'edit', callback: function () {
+							 telepath.config.actions.editCat(node.id);
+							 }});
+							 */
+
+						}, width: 40
+					},
+					{
+						value: function (node) {
+
+							if (node.type == 'action') {
+								return $('<div>').btn({
+									icon: 'delete', callback: function () {
+										telepath.config.actions.deleteFlow(node.raw);
+									}
+								});
+							}
+
+
+						}, width: 40
+					}
+				],
+				resizable: true,
+			}/*,
+			 search: {
+			 "fuzzy":false,
+			 "case_insensitive": true,
+			 "show_only_matches" : true,
+			 search_callback : function (str, node) {
+			 if(node.text === str) { return true; }
+			 }
+			 }*/
+		}).on('changed.jstree', function (e, data) {
+			// check if the record is on
+			if (telepath.action.recorder.timer) {
+				telepath.dialog({
+					type: 'dialog',
+					title: 'Business Actions',
+					msg: 'Are you sure thay you want to stop the Business Action record?',
+					callback: function () {
+						clearInterval(telepath.action.recorder.timer);
+						telepath.action.recorder.timer = false;
+						that.appTree.trigger("restart", data);
+					}
+				});
+			}
+			else {
+				$(this).trigger("restart", data);
+			}
+		}).on('restart', function (e, data) {
+			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+			data.instance.element.find('#' + data.selected[0]).children(":first").css("background-color", "rgba(189, 189, 189, 0.85)");
+
+			telepath.config.actions.contentRight.empty();
+			telepath.config.actions.barRight.empty();
+			//	telepath.config.actions.createCat.hide();
+
+			if (data.node.data.type == 'action') {
+				telepath.config.action.editAction(data.node.data.raw);
+			}
+			if (data.node.data.type == 'app') {
+				telepath.action.currentApp = data.node.data.id;
+				telepath.action.recorder.init();
+				//	telepath.config.actions.createCat.show();
+			}
+		});
+		/*.on('ready.jstree', function(e, data) {
+		 data.instance.search(that.searchString);
+		 });*/
 	}
-}
+};

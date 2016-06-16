@@ -270,7 +270,7 @@ class M_Applications extends CI_Model {
 	//new function
 //curl -XGET 'http://localhost:9200/telepath-20*/_search?pretty' -d '{"size":0,"aggs":{"host":{"terms":{"field":"host","size":999},"aggs":{"ip_resp":{"terms":{"field":"ip_resp"}}}}}}'
 	
-	function index($search = false, $learning_so_far=false, $sort, $dir, $fields=[ "host","subdomains" ] ) {
+	function index($search = false, $learning_so_far=false, $sort, $dir, $start=0 , $fields=[ "host","subdomains" ] ) {
 		
 		// Search specific records first
 
@@ -296,13 +296,18 @@ class M_Applications extends CI_Model {
 			$include=["host","subdomains"];
 		}
 
+
+		$size=150;
+
+
 		$params = [
 			'index' => 'telepath-domains',
 			'type' => 'domains',
 			'_source_include' => $include,
 			'sort' => [$sort.':'.$dir],
 			'body' => [
-				'size'=>99,
+				'size'=>$size,
+				'from'=>$start
 			],
 		];
 
@@ -312,6 +317,13 @@ class M_Applications extends CI_Model {
 		}
 
 		$res=$this->elasticClient->search($params);
+
+		// check if all the data is loaded
+		if ($start + $size >= $res['hits']['total']) {
+			$finished = true;
+		} else {
+			$finished = false;
+		}
 		$results = get_app_source($res,$learning_so_far);
 
 
@@ -381,7 +393,7 @@ class M_Applications extends CI_Model {
 //            return array_values($ans);*/
 //		}
 //			return $results['aggregations']['host']['buckets'];
-		return $results;
+		return ['data'=>$results, 'finished'=> $finished];
 		
 	}
 

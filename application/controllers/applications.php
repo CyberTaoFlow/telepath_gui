@@ -44,6 +44,7 @@ class Applications extends Tele_Controller
         $learning_so_far = $this->input->post('learning_so_far');
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
+        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
         if (!$sort || !in_array($sort, array('host', 'learning_so_far'))) {
             $sort = 'host';
@@ -61,7 +62,8 @@ class Applications extends Tele_Controller
 //        }
 
         // retrieve the apps
-        $data = $this->M_Applications->index($search, $learning_so_far, $sort, $dir);
+        $results = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $offset);
+        $data=$results['data'];
 
         // search in business actions
         if ($search && $actions){
@@ -85,8 +87,8 @@ class Applications extends Tele_Controller
         }
 
 //        $this->redisObj->set('cache_applications', json_encode($data), 600);
-
-        return_success($data);
+        // return the data and a boolean to indicate if all the data is loaded
+        return_success(['data'=>$data,'finished'=>$results['finished']]);
 
     }
 

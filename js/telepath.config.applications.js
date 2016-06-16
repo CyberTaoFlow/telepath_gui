@@ -11,8 +11,8 @@ telepath.config.applications = {
 			var children = false;
 
 			/*if(row.type == 'app' || row.type == 'page') {
-				children = true;
-			}*/
+			 children = true;
+			 }*/
 			if(row.type == 'app') {
 				children = true;
 			}
@@ -45,7 +45,7 @@ telepath.config.applications = {
 			var text = row.host;
 			var children = false;
 			if (count) {
-			//	text += '&nbsp;(' + row.learning_so_far + ')';
+				//	text += '&nbsp;(' + row.learning_so_far + ')';
 				if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0) {
 					children = [];
 					$.each(row.subdomains, function (i, subdomain) {
@@ -98,14 +98,25 @@ telepath.config.applications = {
 
 		var that = this;
 
-		telepath.ds.get('/applications/get_expand', { search: telepath.config.applications.searchString, learning_so_far: true, sort: telepath.config.applications.sort, dir: telepath.config.applications.dir }, function(data) {
+		telepath.ds.get('/applications/get_expand', {
+			search: telepath.config.applications.searchString,
+			learning_so_far: true,
+			sort: telepath.config.applications.sort,
+			dir: telepath.config.applications.dir,
+			offset: telepath.config.applications.offset
+		}, function (data) {
 
-			var treeData = telepath.config.applications.formatData(data.items);
+			var treeData = telepath.config.applications.formatData(data.items.data);
 
 			callback.call(that, treeData);
+
+			// update the offset counter with the new loading
+			telepath.config.applications.offset = (data.items.finished) ? 'finished' : telepath.config.applications.offset + data.items.data.length;
+			telepath.config.applications.loading = false;
+			$('.tele-loader', telepath.config.applications.list).remove();
 			$(".tele-search-input").attr("disabled", false);
 		});
-	
+
 	},
 
 	//change search icon and get result
@@ -127,6 +138,8 @@ telepath.config.applications = {
 
 		var that = this;
 
+		// reset the offset count on loading
+		that.offset = 0;
 
 		that.appTree = $('<div>');
 
@@ -135,8 +148,38 @@ telepath.config.applications = {
 		that.contentLeftWrap.append(that.appTree);
 
 		$(that.contentLeftWrap).mCustomScrollbar({
-			scrollButtons:{	enable: false },
+			callbacks: {
+				onTotalScroll: function () {
+
+					if (that.loading || that.offset=='finished') {
+						return;
+					}
+
+					that.loading = true;
+
+					$('.mCSB_container', that.list).append($(telepath.loader).css({
+						float: 'left',
+						clear: 'both',
+						'bottom': 30,
+						position: 'absolute'
+					}));
+
+
+					var anotherTree = $('<div>');
+					var treedata = telepath.config.applications.expand;
+
+					that.createTree(anotherTree,treedata);
+					that.appTree.parent().append(anotherTree);
+
+					$(".tele-search-input").attr("disabled", false);
+
+
+				}
+			},
+			scrollButtons: {enable: false},
 			scrollInertia: 150,
+			onTotalScrollOffset: 200,
+			alwaysTriggerOffsets: false,
 			advanced: {
 				updateOnContentResize: true
 			}
@@ -144,57 +187,8 @@ telepath.config.applications = {
 
 		that.data=telepath.config.applications.expand;
 
-		that.appTree.jstree({
-		core : { data : that.data, progressive_render: true },
-		plugins: ["json_data","wholerow", "theme", "grid", "contextmenu", "search"],
-		contextmenu: { items: telepath.contextMenu },
-		grid: {
-			columns: [
-				{ width: 320 },
-				{ width: 50, value: "count", cellClass: "learning-so-far" },
-				{ value: function (node) {
-					return $('<div>').btn({ icon: 'edit', callback: function (tree) {
-						$nodeParent = tree.element.parents('[role="treeitem"]');
+		that.createTree(that.appTree,that.data);
 
-						telepath.config.application.editApp(node.host, $nodeParent);
-					}});
-
-				}, width: 40 },
-				{value: function (node) {
-					return $('<div>').btn({ icon: 'delete', callback: function (tree) {
-
-						$nodeParent = tree.element.parents('[role="treeitem"]');
-
-						telepath.config.application.deleteApp(node.host, $nodeParent)
-					}});
-
-				}, width: 40 }
-			],
-			resizable:true
-		}/*,
-			search: {
-				"fuzzy":false,
-				"case_insensitive": true,
-				"show_only_matches" : true,
-				search_callback : function (str, node) {
-					if(node.text === str) { return true; }
-				}
-			}*/
-		}).on('changed.jstree', function (e, data) {
-			// console.log('App Changed');
-			// console.log(data);
-			if(data && data.node) {
-				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
-				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
-				telepath.config.application.editApp(data.node.data.host);
-			}
-		}).on('hover_node.jstree',function(e,data){
-			$("#"+data.node.id +' a').prop('title', data.node.text);
-			$("#"+data.node.id+' .learning-so-far' ).prop('title', 'Overall Transactions');
-		})
-		/*.on('ready.jstree', function(e, data) {
-			data.instance.search(that.searchString);
-		});*/
 
 	},
 
@@ -267,6 +261,64 @@ telepath.config.applications = {
 			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
 			that.input();
 		}
+	},
+	createTree: function(div,treedata){
+		div.jstree({
+			core: {data: treedata, progressive_render: true, check_callback: true},
+			plugins: ["json_data", "wholerow", "theme", "grid", "contextmenu", "search"],
+			contextmenu: {items: telepath.contextMenu},
+			grid: {
+				columns: [
+					{width: 320},
+					{width: 50, value: "count", cellClass: "learning-so-far"},
+					{
+						value: function (node) {
+							return $('<div>').btn({
+								icon: 'edit', callback: function (tree) {
+									$nodeParent = tree.element.parents('[role="treeitem"]');
+									telepath.config.application.editApp(node.host, $nodeParent);
+								}
+							});
+
+						}, width: 40
+					},
+					{
+						value: function (node) {
+							return $('<div>').btn({
+								icon: 'delete', callback: function (tree) {
+									$nodeParent = tree.element.parents('[role="treeitem"]');
+									telepath.config.application.deleteApp(node.host, $nodeParent)
+								}
+							});
+
+						}, width: 40
+					}
+				],
+				resizable: true
+			}/*,
+			 search: {
+			 "fuzzy":false,
+			 "case_insensitive": true,
+			 "show_only_matches" : true,
+			 search_callback : function (str, node) {
+			 if(node.text === str) { return true; }
+			 }
+			 }*/
+		}).on('changed.jstree', function (e, data) {
+			// console.log('App Changed');
+			// console.log(data);
+			if(data && data.node) {
+				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
+				telepath.config.application.editApp(data.node.data.host);
+			}
+		}).on('hover_node.jstree',function(e,data){
+			$("#"+data.node.id +' a').prop('title', data.node.text);
+			$("#"+data.node.id+' .learning-so-far' ).prop('title', 'Overall Transactions');
+		});
+		/*.on('ready.jstree', function(e, data) {
+		 data.instance.search(that.searchString);
+		 });*/
 	}
 };
 
