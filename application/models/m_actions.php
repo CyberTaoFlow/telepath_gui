@@ -70,7 +70,8 @@ class M_Actions extends CI_Model {
 		$params['sort'] = ['application'];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["action_name"], "query" => '*' . $text . '*',"lowercase_expanded_terms"=>false]]]],
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["action_name.search"], "query" => '*' .
+				$text . '*']]]],
 		];
 
 		$results = $this->elasticClient->search($params);
