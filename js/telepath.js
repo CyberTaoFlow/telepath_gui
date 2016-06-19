@@ -87,6 +87,7 @@ telepath.main = {
 
                 // Tree
                 "js/lib/jstree.min.js",
+            //    "js/lib/jstree.js",
                 "js/lib/jstreegrid.js",
                 "css/tree.css",
 
