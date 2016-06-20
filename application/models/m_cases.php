@@ -473,11 +473,20 @@ class M_Cases extends CI_Model {
 
 		// If it's a cron task, we take the time before the iterations
 		if ($range){
-			$update_time = time()-200;
+			$time=time();
+			$update_time = $time-200;
 			$this->load->model('M_Config');
+			$last_update = $this->M_Config->get_key('last_case_update_id');
+			// get the relevant index
+			$index1='telepath-'.date("Ymd",$time);
+			$index2='telepath-'.date("Ymd",$last_update);
+			$status['indices'][$index1]='';
+			$status['indices'][$index2]='';
+		}
+		else{
+			$status = $this->elasticClient->indices()->stats(['index' => 'telepath-20*']);
 		}
 
-		$status = $this->elasticClient->indices()->stats(['index' => 'telepath-20*']);
 		foreach ($status['indices'] as $index_name => $index_status) {
 			logger('Start index: ' . $index_name );
 
@@ -596,7 +605,7 @@ class M_Cases extends CI_Model {
 					$params['body']["sort"] = ["_doc"];
 
 					// If it's a script that always run, we have to query only the latest requests
-					if ($range && $last_update = $this->M_Config->get_key('last_case_update_id'))
+					if ($range && $last_update)
 						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gt' => $last_update]]];
 
 					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
