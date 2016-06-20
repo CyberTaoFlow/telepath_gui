@@ -2,23 +2,30 @@
 
 class M_Nginx extends CI_Model {
 
+	private $certs_dir;
+
+
 	function __construct()
 	{
 		parent::__construct();
 		// Connect elastic
 		//$params = array('hosts' => array('127.0.0.1:9200'));
 		$this->elasticClient = new Elasticsearch\Client();
+
+		$this->load->model('M_Config');
+		$this->certs_dir = $this->config->item('certs_dir');
 	}
 
 	function old_gen_config() {
-		
-		$certs_dir  = '/opt/telepath/openresty/nginx/certs/';
-		$fields     = 'app_id,app_domain,app_ips,certificate,private_key,ssl_flag,ssl_server_port';
+
+
+
+//		$fields     = 'app_id,app_domain,app_ips,certificate,private_key,ssl_flag,ssl_server_port';
 		
 		$params['index']='telepath-domains';
 		$params['type']='domains';
 		$params['body'] = [
-			'size'   => 9999
+			'size'   => 10000
 		];
 		
 		$apps_dirty = get_elastic_results($this->elasticClient->search($params));
@@ -28,7 +35,7 @@ class M_Nginx extends CI_Model {
 		
 		
 		// Wipe clean the current certificates directory
-		array_map('unlink', glob($certs_dir . "*"));
+		array_map('unlink', glob($this->certs_dir . "*"));
 		
 		foreach($apps_dirty as $app) {
 			
@@ -83,8 +90,8 @@ class M_Nginx extends CI_Model {
 				}
 				
 				// Save our certificates as files
-				$key_file  = $certs_dir . 'application_' . md5($app['host']) . '_certificate.crt';
-				$cert_file = $certs_dir . 'application_' . md5($app['host']) . '_private_key.key';
+				$key_file  = $this->certs_dir . 'application_' . md5($app['host']) . '_certificate.crt';
+				$cert_file = $this->certs_dir . 'application_' . md5($app['host']) . '_private_key.key';
 				
 				file_put_contents($key_file,  $certificate);
 				file_put_contents($cert_file, $private_key);
@@ -105,24 +112,24 @@ class M_Nginx extends CI_Model {
 			
 		}
 		
-		return $this->load->view('nginx', array('apps' => $apps_clean, 'certs_dir' => $certs_dir), true);
+		return $this->load->view('nginx', array('apps' => $apps_clean, 'certs_dir' => $this->certs_dir), true);
 		
 	}
 
-	function gen_config($apps)
+
+	function gen_config()
 	{
 
-		$certs_dir = '/opt/telepath/openresty/nginx/certs/';
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
+		$params['body'] = [
+			'size' => 10000
+		];
 
-		foreach ($apps as $app) {
+		$apps_dirty = get_elastic_results($this->elasticClient->search($params));
+		$apps_clean = array();
 
-			$key_file = $certs_dir . 'application_' . md5($app['host']) . '_certificate.crt';
-			$cert_file = $certs_dir . 'application_' . md5($app['host']) . '_private_key.key';
-
-
-			// Wipe clean the current certificates files
-			if (file_exists($key_file)) unlink($key_file);
-			if (file_exists($cert_file)) unlink($cert_file);
+		foreach ($apps_dirty as $app) {
 
 			// If our domain name is somehow empty, we cant proxy it
 			if ($app['host'] == '') {
@@ -163,21 +170,12 @@ class M_Nginx extends CI_Model {
 				$app['ssl_server_port'] = '443';
 			}
 
-			// Attempt decoding certificates and store them into a directory
+			// Check certificates
 			if (intval($app['ssl_flag']) == 1) {
 
-				$certificate = $app['app_ssl_certificate']; //base64_decode($app['app_ssl_certificate'], true);
-				$private_key = $app['app_ssl_private']; //base64_decode($app['app_ssl_private'], true);
-
-				// If decode failed, we can't proxy it...
-				if (!$certificate || !$private_key) {
-					continue;
-				}
-
-				// Save our certificates as files
-
-				file_put_contents($key_file, $certificate);
-				file_put_contents($cert_file, $private_key);
+				// Check our certificates files
+				$key_file = $this->certs_dir . 'application_' . md5($app['host']) . '_certificate.crt';
+				$cert_file = $this->certs_dir . 'application_' . md5($app['host']) . '_private_key.key';
 
 				// Validate write, under no circumstance we want nginx crashing due to bad config
 				if (!file_exists($key_file) || !file_exists($cert_file)) {
@@ -186,24 +184,51 @@ class M_Nginx extends CI_Model {
 
 			}
 
+			// Cleanup the data array
+			unset($app['app_ssl_certificate']);
+			unset($app['app_ssl_private']);
+
+			// All checks out, append to clean list
+			$apps_clean[] = $app;
+
 		}
 
-		return $this->load->view('nginx', array('apps' => $app, 'certs_dir' => $certs_dir), true);
+		return $this->load->view('nginx', array('apps' => $apps_clean, 'certs_dir' => $this->certs_dir), true);
 
 
 	}
 
-	function del_config($host)
-	{
-		$certs_dir = '/opt/telepath/openresty/nginx/certs/';
 
-		$key_file = $certs_dir . 'application_' . md5($host) . '_certificate.crt';
-		$cert_file = $certs_dir . 'application_' . md5($host) . '_private_key.key';
+	function del_certs($host)
+	{
+
+		$key_file = $this->certs_dir . 'application_' . md5($host) . '_certificate.crt';
+		$cert_file = $this->certs_dir . 'application_' . md5($host) . '_private_key.key';
 
 		// Wipe clean the current certificates files
 		if (file_exists($key_file)) unlink($key_file);
 		if (file_exists($cert_file)) unlink($cert_file);
 
+	}
+
+	function create_certs($app)
+	{
+
+		$key_file = $this->certs_dir . 'application_' . md5($app['host']) . '_certificate.crt';
+		$cert_file = $this->certs_dir . 'application_' . md5($app['host']) . '_private_key.key';
+
+		// Wipe clean the current certificates files
+		if (file_exists($key_file)) unlink($key_file);
+		if (file_exists($cert_file)) unlink($cert_file);
+
+		// Store certificates into a directory
+		if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
+
+			// Save our certificates as files
+			file_put_contents($key_file, $app['app_ssl_certificate']);
+			file_put_contents($cert_file, $app['app_ssl_private']);
+
+		}
 	}
 
 }

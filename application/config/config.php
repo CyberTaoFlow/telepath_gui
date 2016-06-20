@@ -373,6 +373,8 @@ $config['telepath_ui_log']='/tmp/telepath_ui_log';
 
 $config['nginx_config_file']='/opt/telepath/openresty/nginx/conf/nginx.conf';
 
+$config['certs_dir']  = '/opt/telepath/openresty/nginx/certs/';
+
 $config['scripts']='/opt/telepath/scripts';
 
 $config['atms_config']='/opt/telepath/conf/atms.conf';

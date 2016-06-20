@@ -131,25 +131,32 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $host = $this->input->post('host', true);
-        $context = $this->input->post('context', true);
+    //    $context = $this->input->post('context', true);
 
         $app = $this->M_Applications->get($host);
+
+        if (isset($app['app_ssl_certificate'])) {
+            unset($app['app_ssl_certificate']);
+        }
+        if (isset($app['app_ssl_private'])) {
+            unset($app['app_ssl_private']);
+        }
 
         if (!$app) $app = array();
 
 
 
-        if ($context == 'actions') {
-
-            $this->load->model('M_Actions');
-            $actions = $this->M_Actions->get_actions($host);
-            $app['actions'] = $actions;
-
-            if (!isset($app['action_categories'])) {
-                $app['action_categories'] = array();
-            }
-
-        }
+//        if ($context == 'actions') {
+//
+//            $this->load->model('M_Actions');
+//            $actions = $this->M_Actions->get_actions($host);
+//            $app['actions'] = $actions;
+//
+//            if (!isset($app['action_categories'])) {
+//                $app['action_categories'] = array();
+//            }
+//
+//        }
 
         return_success($app);
 
@@ -176,21 +183,31 @@ class Applications extends Tele_Controller
 
         $data = $this->input->post();
         $data['host'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['host']));
-	if(empty($data['subdomains'])) {
-		$data['subdomains']=[];
-	}
+        if (empty($data['subdomains'])) {
+            $data['subdomains'] = [];
+        }
+
+        // store the old data to check for a change
+        $old_data = $this->M_Applications->get($data['host']);
+
         $this->M_Applications->set($data);
+
+        $data = $this->M_Applications->get($data['host']);
 
         $this->load->model('M_Config');
         $this->M_Config->update('app_list_was_changed_id',$data['host']);
 
-        // REWRITE OUR NGINX.CONF
-        $this->load->model('M_Nginx');
-        $conf = $this->M_Nginx->gen_config([$data]);
-
-        $logfile = $this->config->item('telepath_ui_log');
-
-        file_put_contents($logfile, $conf);
+        // if there was a change in the SSL configuration, we need to update the certificates and update our nginx.conf
+        if ($old_data['ssl_flag'] != $data['ssl_flag'] || $old_data['app_ssl_certificate'] != $data['app_ssl_certificate']
+            || $old_data['app_ssl_private'] != $data['app_ssl_private'] || $old_data['ssl_server_port'] !=
+            $data['ssl_server_port'] || $old_data['app_ips'] != $data['app_ips']
+        ) {
+            $this->load->model('M_Nginx');
+            $this->M_Nginx->create_certs($data);
+            $conf = $this->M_Nginx->gen_config();
+            $nginx_config_file = $this->config->item('nginx_config_file');
+            file_put_contents($nginx_config_file, $conf);
+        }
 
         return_success();
 
@@ -326,12 +343,23 @@ class Applications extends Tele_Controller
         // if(in_array($app_id, $this->acl->allowed_apps) || $this->acl->all_apps())
         //$result = $this->Apps->app_delete($app_id);
 
+        // if the deleted applications had an SSL authentication for reverse proxy, we need to delete the
+        // certificates and REWRITE OUR NGINX.CONF
+        $app = $this->M_Applications->get($app_id);
+        if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
+            $this->load->model('M_Nginx');
+            $this->M_Nginx->del_certs($app_id);
+            $conf = $this->M_Nginx->gen_config();
+            $this->load->model('M_Config');
+            $nginx_config_file = $this->config->item('nginx_config_file');
+            file_put_contents($nginx_config_file, $conf);
+        }
+
         // remove it from elastic search
         $this->M_Applications->delete($app_id);
 
-        // REWRITE OUR NGINX.CONF
-        $this->load->model('M_Nginx');
-        $this->M_Nginx->del_config($app_id);
+
+
 
         return_success();
 

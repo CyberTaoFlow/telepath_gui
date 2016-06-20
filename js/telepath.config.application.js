@@ -300,8 +300,8 @@ telepath.config.application = {
 		// will go inside if this host is really an application	
 		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
 
-			if (data.items && data.items[0]) {
-				that.app_data = data.items[0];
+			if (data.items) {
+				that.app_data = data.items;
 
 				//if (!data.app_data.cookie_suggestions)
 

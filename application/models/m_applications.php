@@ -86,6 +86,7 @@ class M_Applications extends CI_Model {
 		if(intval($data['ssl_flag']) == 0) {
 			$data['app_ssl_certificate'] = '';
 			$data['app_ssl_private'] = '';
+			$data['ssl_server_port'] = '';
 			$data['ssl_data'] = [];
 		}
 
@@ -143,6 +144,7 @@ class M_Applications extends CI_Model {
 
 		if ($exists){
 			$this->elasticClient->delete($params);
+			$this->elasticClient->indices()->refresh(array('index' => 'telepath-domains'));
 		}
 
 		# Delete all records where HTTP host is used the same ias $host, Yuli
@@ -186,18 +188,18 @@ class M_Applications extends CI_Model {
 //			$app['form_authentication_redirect_response_range'] = '';
 			$app['host'] = $host;
 			$app['cookie_suggestion'] = ['PHPSESSID', 'PHPSESSIONID', 'JSESSIONID', 'ASPSESSIONID', 'ASP.NET_SessionId', 'VisitorID', 'SESS'];
+			$app['ssl_flag'] = 0;
+			$app['app_ssl_certificate'] = '';
+			$app['app_ssl_private'] = '';
+			$app['ssl_server_port'] = '';
+			$app['ssl_data'] = [];
 		} else {
 
 			$results = $this->elasticClient->get($params);
 
 			$app = $results['_source'];
 
-			if (isset($app['app_ssl_certificate'])) {
-				unset($app['app_ssl_certificate']);
-			}
-			if (isset($app['app_ssl_private'])) {
-				unset($app['app_ssl_private']);
-			}
+
 //		if(!isset($app['cookie_suggestion'])) { $app['cookie_suggestion'] = ''; }
 			if (!isset($app['AppCookieName'])) {
 				$app['AppCookieName'] = '';
@@ -235,7 +237,7 @@ class M_Applications extends CI_Model {
 		$app['ip_suggestion'] = $this->get_ip_suggestion($host);
 
 
-		return array($app);
+		return $app;
 
 	}
 
