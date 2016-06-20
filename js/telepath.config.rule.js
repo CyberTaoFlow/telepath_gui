@@ -94,12 +94,12 @@ telepath.config.rule = {
 		var title2 = $('<div>').addClass('tele-title-1').text('Actions');
 		this.container.append(title2);
 		
-		this.notification = $('<div>').teleCheckbox({ 
+		this.action_notifications = $('<div>').teleCheckbox({
 			label: 'Notification', 
 			checked: this.data.action_notifications
 		}).appendTo(this.container);
 		
-		this.syslog = $('<div>').teleCheckbox({ 
+		this.action_syslog = $('<div>').teleCheckbox({
 			label: 'Syslog', 
 			checked: this.data.action_syslog
 		}).appendTo(this.container);
@@ -109,12 +109,12 @@ telepath.config.rule = {
 			checked: this.data.action_injection
 		}).appendTo(this.container);*/
 		
-		this.email = $('<div>').teleCheckbox({ 
+		this.action_email = $('<div>').teleCheckbox({
 			label: 'Email', 
 			checked: this.data.action_email
 		}).appendTo(this.container);
 		
-		this.email_owner = $('<div>').teleCheckbox({ 
+		this.action_email_owner = $('<div>').teleCheckbox({
 			label: 'Email rule owner', 
 			checked: this.data.action_email_owner
 		}).appendTo(this.container);
@@ -148,7 +148,7 @@ telepath.config.rule = {
 
 		this.disable_db_save = $('<div>').teleCheckbox({
 			label: 'Disable DB saving',
-			checked: this.data.disable_db_save,
+			checked: this.data.disable_db_save
 		}).appendTo(this.container);
 
 		if(!this.data.action_email_field) {
@@ -307,7 +307,20 @@ telepath.config.rule = {
 				telepath.dialog({ title: 'Case Editor', msg: 'Must have at least one condition' });
 				return;
 			}
-		
+
+			if (that.action_notifications.data('teleTeleCheckbox').options.checked) {
+				ruleData.action_notifications = true;
+			}
+			if (that.action_syslog.data('teleTeleCheckbox').options.checked) {
+				ruleData.action_syslog = true;
+			}
+			if (that.action_email.data('teleTeleCheckbox').options.checked) {
+				ruleData.action_email = true;
+			}
+			if (that.action_email_owner.data('teleTeleCheckbox').options.checked) {
+				ruleData.action_email_owner = true;
+			}
+
 			// Get rule script execution config
 			ruleData.cmd = [];
 			// Toggle enabled
