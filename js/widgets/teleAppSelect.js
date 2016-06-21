@@ -139,6 +139,8 @@ $.widget( "tele.appSelect", {
 					result.push($(this).val());				
 				}
 			});
+
+			result=eliminateDuplicates(result);
 			
 			that.popup.remove();
 			// console.log(result);

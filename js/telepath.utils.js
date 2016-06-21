@@ -557,7 +557,7 @@ function escapeHtml(str) {
   var div = document.createElement('div');
   div.appendChild(document.createTextNode(str));
   return div.innerHTML;
-};
+}
 
 // UNSAFE with unsafe strings; only use on previously-escaped ones!
 function unescapeHtml(escapedStr) {
@@ -565,4 +565,19 @@ function unescapeHtml(escapedStr) {
   div.innerHTML = escapedStr;
   var child = div.childNodes[0];
   return child ? child.nodeValue : '';
-};
+}
+
+function eliminateDuplicates(arr) {
+  var i,
+      len=arr.length,
+      out=[],
+      obj={};
+
+  for (i=0;i<len;i++) {
+    obj[arr[i]]=0;
+  }
+  for (i in obj) {
+    out.push(i);
+  }
+  return out;
+}
