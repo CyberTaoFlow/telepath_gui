@@ -339,6 +339,7 @@ telepath.dashboard = {
 		// Applications
 		
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
+			$('.jqvmap-label').hide();
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
 			telepath.dashboard.refresh(function () {
 				$('.tele-icon-loader', filterApps).addClass('tele-icon-application').removeClass('tele-icon-loader');
