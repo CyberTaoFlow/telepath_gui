@@ -18,7 +18,6 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         $text = $this->input->post('text', true);
-        $this->load->model('M_Applications');
         return_success($this->M_Applications->get_subdomain_autocomplete($text));
 
     }
@@ -30,7 +29,6 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        $this->load->model('M_Applications');
         return_success($this->M_Applications->get_index());
     }
 
