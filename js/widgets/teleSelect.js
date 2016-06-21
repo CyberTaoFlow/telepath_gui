@@ -174,6 +174,7 @@ $.widget("tele.teleSelect", {
                     telepath.autocomplete.get(input, that.type);
                 }, 500);
                 value.text = input.val();
+                input.val('');
                 input.data('tele-select', value);
             });
 
