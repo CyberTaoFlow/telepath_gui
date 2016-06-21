@@ -40,6 +40,7 @@ $.widget( "tele.teleList", {
 		data: false,
 		formatter: false,
 		searchkey: '',
+		clickable: true,
 		callbacks: {}
     },
     _create: function() {
@@ -137,13 +138,14 @@ $.widget( "tele.teleList", {
 			that.options.callbacks.hover_out(this, formattedItem);
 		}).data('formattedItem',formattedItem);
 
-		$('.tele-listitem-title, .tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
-			var search = $(this).text();
-			telepath.header.searchInput.val(search)
-			telepath.search.init(search);
-		});
-
-
+		if(this.options.clickable){
+			$('.tele-listitem-title, .tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
+				var search = $(this).text();
+				telepath.header.searchInput.val(search)
+				telepath.search.init(search);
+			});
+		}
+		
 				// Append to local Store
 		that.items.push(newItem);
 		

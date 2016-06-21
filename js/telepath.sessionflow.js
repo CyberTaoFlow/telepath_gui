@@ -64,7 +64,8 @@ telepath.sessionflow = {
 		this.similaritiesList.teleList({
 			data: data.hits.hits,
 			title: 'Similar Requests', 
-			'height': height,
+			height: height,
+			clickable: false,
 			formatter: function(row) {
 				return telepath.sessionflow.formatData(row);
 			},
@@ -471,7 +472,7 @@ telepath.sessionflow = {
 												  .text(action_name);
 
 			this.newList  = $('<ul class="tele-list">');
-			
+
 			this.actionContainer.append(this.actionContainerIcon)
 								.append(this.actionContainerTitle)
 								.append(this.newList);
@@ -491,7 +492,15 @@ telepath.sessionflow = {
 		this.newList.append(newListItem);
 		newListItem.listitem(item);
 		this.printed++;
-	
+
+		$('.tele-title-2', newListItem).click(function () {
+			telepath.overlay.destroy();
+			var search = $(this).text();
+			telepath.header.searchInput.val(search)
+			telepath.search.init(search);
+		});
+
+
 	},
 	rowFormatter: function(item) {
 		
@@ -960,6 +969,20 @@ telepath.sessionflow = {
 		}
 
 
+		$('tr:nth-child(n+3) .tele-alert-info-value', table).hover(function () {
+			var search = $(this).text();
+			if (search != 'Unknown') {
+				$(this).css('cursor', 'pointer');
+			}
+		});
+		$('tr:nth-child(n+3) .tele-alert-info-value', table).click(function () {
+			var search = $(this).text();
+			if (search != 'Unknown') {
+				telepath.overlay.destroy();
+				telepath.header.searchInput.val(search);
+				telepath.search.init(search);
+			}
+		});
 		//if(alert.user && alert.user != '') {
 		//	table.append(getRow('User:', alert.user));
 		//}
