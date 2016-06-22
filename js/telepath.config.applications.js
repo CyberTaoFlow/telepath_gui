@@ -103,6 +103,7 @@ telepath.config.applications = {
 			learning_so_far: true,
 			sort: telepath.config.applications.sort,
 			dir: telepath.config.applications.dir,
+			size: 150,
 			offset: telepath.config.applications.offset
 		}, function (data) {
 

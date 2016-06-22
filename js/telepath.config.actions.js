@@ -28,6 +28,7 @@ telepath.config.actions = {
 				postData.actions = true;
 				postData.sort = telepath.config.actions.sort;
 				postData.dir = telepath.config.actions.dir;
+				postData.size = 150;
 				postData.offset = telepath.config.actions.offset;
 				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;

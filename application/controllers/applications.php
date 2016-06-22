@@ -42,6 +42,7 @@ class Applications extends Tele_Controller
         $learning_so_far = $this->input->post('learning_so_far');
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
+        $size = $this->input->post('size');
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
         if (!$sort || !in_array($sort, array('host', 'learning_so_far'))) {
@@ -60,7 +61,7 @@ class Applications extends Tele_Controller
 //        }
 
         // retrieve the apps
-        $results = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $offset);
+        $results = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $size, $offset);
         $data=$results['data'];
 
         // search in business actions
