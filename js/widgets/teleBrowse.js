@@ -31,9 +31,9 @@ $.widget( "tele.teleBrowse", {
 			this.options.label = this.options.mode == 'param' ? 'Select Parameter' : 'Select Page';
 		}
 		
-		this.input  = $('<div>').teleInput({ label: this.options.label, value: this.options.value }).click(function () {
+		this.input  = $('<div>').teleInput({ label: this.options.label, value: this.options.value })/*.click(function () {
 			that.openBrowser();
-		});
+		});*/
 		this.button = $('<div>').btn({ text: 'Browse', callback: function () {
 			that.openBrowser();
 		} });
