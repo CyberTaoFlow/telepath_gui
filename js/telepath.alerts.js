@@ -132,6 +132,7 @@ telepath.alerts = {
 		});
 
 		$("#search-button").on("click", function (event) {
+			clearTimeout(typingTimer);
 			that.searchString = '';
 			$(".tele-panel-alerts .tele-search-input").prop("value", telepath.alerts.searchString);
 			that.input();
