@@ -78,15 +78,12 @@ $.widget( "tele.vMap", {
 			values: country_rate,
 			scaleColors: scaleColors,
 			normalizeFunction: 'polynomial',
-			onRegionClick: function(x, y) {
-			
+			onRegionClick: function (x, y) {
+
 				telepath.alerts.searchString = 'country_code:' + y.toUpperCase();
 				$('.tele-nav-alerts a').click();
-				setTimeout(function () {
-					$('.tele-panel-alerts .tele-search-input').val(telepath.alerts.searchString);
-					$('.jqvmap-label').remove();
-				}, 100);
-				
+				$('.jqvmap-label').remove();
+
 			},
 			onLabelShow: function(event, label, code) {
 				

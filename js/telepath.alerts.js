@@ -115,7 +115,6 @@ telepath.alerts = {
 		container.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange)
 			.append('<div class="tele-navsep"></div>').append(filterApps);
 		
-		telepath.alerts.refresh();
 
 		var typingTimer;                //timer identifier
 		var doneTypingInterval = 1000;
@@ -130,7 +129,7 @@ telepath.alerts = {
 			}
 		});
 
-		$("#search-button").on("click", function (event) {
+		$(".tele-search").on("click",'.icon-delete-input2', function (event) {
 			clearTimeout(typingTimer);
 			that.searchString = '';
 			$(".tele-panel-alerts .tele-search-input").prop("value", telepath.alerts.searchString);
@@ -138,10 +137,12 @@ telepath.alerts = {
 		});
 
 		// insert the value search to the input box (Moshe)
-		if (telepath.alerts.searchString)
-		{
-			$('.tele-panel-alerts .tele-search-input').prop("value",telepath.alerts.searchString);
+		if (telepath.alerts.searchString) {
+			$('.tele-panel-alerts .tele-search-input').prop("value", telepath.alerts.searchString);
 			that.input();
+		}
+		else {
+			telepath.alerts.refresh();
 		}
 	},
 
