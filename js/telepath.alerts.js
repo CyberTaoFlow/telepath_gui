@@ -5,6 +5,7 @@ telepath.alerts = {
 	data: [],
 	searchString: '',
 	filter: [],
+	allData: true, // indicate if all the data is shown, without alert filter
 	init: function () {
 		
 		var that = this;
@@ -12,8 +13,6 @@ telepath.alerts = {
 		// Add Common HTML
 		var container = $('.tele-panel-alerts');
 		container.empty();
-
-		this.filter=[];
 
 		var panelTopBar = $('<div>').addClass('tele-panel-topbar');
 		var panelSubBar = $('<div>').addClass('tele-panel-subtitle');
@@ -402,7 +401,11 @@ telepath.alerts = {
 				return;
 			if (obj.series.label ){
 				that.filter=[];
-				that.filter.push(obj.series.label)
+				that.filter.push(obj.series.label);
+				// if there is only one alert, we don't change the allData variable
+				if (that.data.distribution_chart.length != that.filter.length) {
+					that.allData = false;
+				}
 			}
 			that.refresh()
 
@@ -410,11 +413,32 @@ telepath.alerts = {
 
 		function legendClick(){
 			$('.legend tr').on('click',function(){
+				// fill the filter array
+				if(that.allData){
+					that.filter = [];
+					$.each(that.data.distribution_chart, function(i, val){
+						that.filter.push(val.label);
+					})
+				}
+
 				var item = $(this).children('.legendLabel').text();
 				if (($.inArray(item , that.filter)!=-1)){
 					that.filter.splice( $.inArray(item, that.filter), 1 );
-				}else {
-					that.filter.push(item)
+					that.allData = false;
+				} else {
+					that.filter.push(item);
+					// the alert filter need to correspond to the current data (needed if the user has changed date
+					// range or app filter)
+					that.filter = $.grep(that.filter, function (n, i) {
+						var item = $.grep(that.data.distribution_chart, function (item) {
+							return item.label == n;
+						});
+						return item.length > 0;
+					});
+					// set the allData variable to true if all the alerts are shown
+					if (that.data.distribution_chart.length == that.filter.length) {
+						that.allData = true;
+					}
 				}
 				that.refresh()
 
@@ -425,17 +449,12 @@ telepath.alerts = {
 		function set_legend(){
 
 			$('.legend tr').css({"cursor":"pointer"});
-			if (that.filter.length>0){
+			if (that.filter.length>0 && that.allData == false){
 				$.each($('.legend tr'),function (i, val){
 					if ($.inArray(val.children[1].innerText , that.filter)==-1){
 						$( this).children(".legendColorBox").children().html('<div style="width:4px;height:0;border:5px solid #999;overflow:hidden; "></div>');
 						$( this ).css({"opacity": "0.5"});
 					}
-				})
-			}
-			else {
-				$.each(that.data.distribution_chart, function(i, val){
-					that.filter.push(val.label);
 				})
 			}
 		}
