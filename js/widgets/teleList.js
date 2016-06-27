@@ -139,9 +139,17 @@ $.widget( "tele.teleList", {
 		}).data('formattedItem',formattedItem);
 
 		if(this.options.clickable){
-			$('.tele-listitem-title, .tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
+			$('.tele-listitem-info li b, .tele-country, .tele-user', newItem).css('cursor','url(img/search_icon.png), pointer');
+
+			$('.tele-listitem-info li b, .tele-country, .tele-user', newItem).hover(function(){
+				$(this).css('color','#4174a7');
+			},function(){
+				$(this).css('color','#333333');
+			});
+
+			$('.tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
 				var search = $(this).text();
-				telepath.header.searchInput.val(search)
+				telepath.header.searchInput.val(search);
 				telepath.search.init(search);
 			});
 		}

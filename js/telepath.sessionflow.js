@@ -493,12 +493,13 @@ telepath.sessionflow = {
 		newListItem.listitem(item);
 		this.printed++;
 
-		$('.tele-title-2', newListItem).click(function () {
-			telepath.overlay.destroy();
-			var search = $(this).text();
-			telepath.header.searchInput.val(search)
-			telepath.search.init(search);
-		});
+		// We don't need to search alerts
+		//$('.tele-title-2', newListItem).click(function () {
+		//	telepath.overlay.destroy();
+		//	var search = $(this).text();
+		//	telepath.header.searchInput.val(search)
+		//	telepath.search.init(search);
+		//});
 
 
 	},
@@ -972,8 +973,11 @@ telepath.sessionflow = {
 		$('tr:nth-child(n+3) .tele-alert-info-value', table).hover(function () {
 			var search = $(this).text();
 			if (search != 'Unknown') {
-				$(this).css('cursor', 'pointer');
+				$(this).css('cursor', 'url(img/search_icon.png), pointer');
+				$(this).css('color','#4174a7');
 			}
+		},function(){
+			$(this).css('color','#333333');
 		});
 		$('tr:nth-child(n+3) .tele-alert-info-value', table).click(function () {
 			var search = $(this).text();
