@@ -99,6 +99,10 @@ class Cron extends Tele_Controller
                 $row_syslog = substr($row_syslog, 0, -1);
             }
 
+            // add link to the specific alert
+            $row_syslog .= '|'.$this->config->base_url().'#'.$alert['sid'].'/'.$alert['ip_orig'].'/'.urlencode
+                ($alert['alerts'][0]['name']);
+
             echo $row_syslog;
 
             $syslog->SetContent($row_syslog);

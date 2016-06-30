@@ -179,7 +179,7 @@ telepath.main = {
                 if (location.hash) {
                     var params = location.hash.split("/");
                     var alerts = [];
-                    alerts["key"]=params[2];
+                    alerts["key"]=decodeURIComponent(params[2]);
                     telepath.sessionflow.init(params[0].substr(1), params[1], alerts, "alert", "");
                 }
 
