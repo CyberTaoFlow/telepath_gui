@@ -248,7 +248,7 @@ td {
   margin-right: 13px;
 }
 
-.tele-panel-topbar a,
+.tele-panel-topbar a, .tele-panel-topbar a.tele-dropdown-value,
 .tele-panel-topbar a:visited {
 	color: white;
 	text-decoration: none;
