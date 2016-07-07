@@ -130,6 +130,10 @@ $.widget( "tele.daterange", {
 						that.options.state = telepath.range.state;
 						that.options.start = telepath.range.start;
 						that.options.end = telepath.range.end;
+						if(that.button) {
+							that.button.remove();
+						}
+						that.createButton();
 					});
 
 				}
@@ -169,6 +173,10 @@ $.widget( "tele.daterange", {
 						that.options.start = telepath.range.start;
 						that.options.end   = telepath.range.end;
 						that.options.change(telepath.range.start, telepath.range.end);
+						if(that.button) {
+							that.button.remove();
+						}
+						that.createButton();
 					});
 				}
 
@@ -247,12 +255,12 @@ $.widget( "tele.daterange", {
 		var that = this;
 
 		if (telepath.range.state == 'range') {
-			var text = date_format('d/m/Y', this.options.start) + ' - ' + date_format('d/m/Y', this.options.end);
+			var text =date_format('d/m/Y', this.options.start) + ' - ' + date_format('d/m/Y', this.options.end);
 		}
-		else if (telepath.range.state == 'data')
-			var text = 'All Data';
+		else if (telepath.range.state=='data')
+			var text='All Data' ;
 		else
-			var text = 'Last ' + telepath.range.state[0].toUpperCase() + telepath.range.state.slice(1);
+			var text='Last '+ telepath.range.state[0].toUpperCase() + telepath.range.state.slice(1);
 
 		this.button = $('<a>').attr('href', '#').btn({
 			icon: 'daterange',
