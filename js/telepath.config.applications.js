@@ -3,7 +3,40 @@ telepath.config.applications = {
 	sort: 'host',
 	dir: true,
 
-	formatSearchData: function(data) {
+	formatSearchData: function (data, mode) {
+
+		var treeData = [];
+		$.each(data, function (host, row) {
+
+			var children = true;
+			var opened = false;
+
+			if (row) {
+				opened = true;
+				children = [];
+				$.each(row, function (name, b) {
+					var obj = (mode == 'page') ? {type: mode, host: host, path: name} : {type: mode, name: name};
+					children.push({data: obj, text: name, icon: 'tele-icon-' + mode});
+				});
+
+			}
+
+			var obj = {
+				children: children,
+				name: host,
+				text: host,
+				data: {type: 'app', text: host},
+				icon: 'tele-icon-app',
+				state: {opened: opened}
+			};
+
+			treeData.push(obj);
+
+		});
+		return treeData;
+
+	},
+	oldFormatSearchData: function(data) {
 
 		var treeData = [];
 		$.each(data, function(i, row) {

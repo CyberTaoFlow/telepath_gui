@@ -64,7 +64,7 @@ $.widget( "tele.teleBrowser", {
 
 					// EXPANDING SEARCH , SHOW MIXED
 
-					var treeData = telepath.config.applications.formatSearchData(data.items);
+					var treeData = telepath.config.applications.formatSearchData(data.items,that.options.mode);
 					callback.call(that, treeData);
 					$('input', window.teleBrowseSearch).attr('complete', 'true');
 

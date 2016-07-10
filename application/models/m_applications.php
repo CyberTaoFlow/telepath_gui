@@ -429,7 +429,7 @@ class M_Applications extends CI_Model {
 //		}
 //	}
 	
-	function get_search($search, $mode) {
+	function old_get_search($search, $mode) {
 
 		$params['index'] = 'telepath-20*';
 		$params['type']='http';
@@ -493,6 +493,61 @@ class M_Applications extends CI_Model {
 		return array_values($out);
 	
 	}
+
+	function get_search($search, $mode)
+	{
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+
+		if ($mode == 'page')
+			$field = "uri";
+		if ($mode == 'param')
+			$field = "parameters.name";
+		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
+		$params['body'] = [
+			'size' => 9999,
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["host", $field], "query" => '*' . $search . '*']]]],
+		];
+		$params['body']['highlight']['fields'] = ['host' => new \stdClass(), $field => new \stdClass()];
+		$params['body']['highlight']['pre_tags'] = [''];
+		$params['body']['highlight']['post_tags'] = [''];
+
+
+		$params = append_access_query($params);
+		$results = $this->elasticClient->search($params);
+
+		if (empty($results['hits']['hits'])) {
+			return array();
+		}
+
+		$data = [];
+
+		foreach ($results['hits']['hits'] as $res) {
+			$result = $res['highlight'];
+			$host = $res['_source']['host'];
+
+			if ($mode == 'page' && isset($result['uri'])) {
+
+				$data[$host][$res['_source']['uri']] = '';
+
+			} elseif ($mode == 'param' && isset($result['parameters.name'])) {
+				foreach ($result['parameters.name'] as $param){
+					$data[$host][$param] = '';
+				}
+
+			} elseif (isset($result['host'])) {
+
+				$data[$host] = '';
+
+			}
+
+
+		}
+
+		return $data;
+
+	}
 	
 	function get_page($host, $path, $mode = '') {
 
@@ -547,7 +602,7 @@ class M_Applications extends CI_Model {
 
 		$params['index'] = 'telepath-20*';
 		$params['body'] = [
-			'size'   => 1,
+			'size' => 1,
 			'aggs'   => [ 'canonical_url' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
 			'query' => [ "bool" => [ "must" => [ 'term' => [ "host" => $host ]	] ] ]
 		];
