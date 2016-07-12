@@ -84,7 +84,8 @@ telepath.header = {
 		telepath.header.resize();
 		
 		// Notifications
-		this.notifications = $('<div>').notifications();
+		// For now this feature doesn't work
+//		this.notifications = $('<div>').notifications();
 		
 		// Config Button
 		this.configDiv = $('<div>').addClass('tele-config');
@@ -115,7 +116,7 @@ telepath.header = {
 		}).hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });
 		
 		// Append
-		$('.tele-header-right').append(this.notifications).append(this.configDiv).append(this.logoutCmd);
+		$('.tele-header-right')/*.append(this.notifications)*/.append(this.configDiv).append(this.logoutCmd);
 		
 	},
 	bindHooks: function () {
