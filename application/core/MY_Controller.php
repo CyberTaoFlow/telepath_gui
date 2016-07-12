@@ -143,6 +143,24 @@ class Tele_Controller extends CI_Controller
 
     }
 
+    public function _get_time_first_data(){
+        $params['index']='telepath-20*';
+        $params['body'] = array(
+            'size' => 0,
+            'aggs' => [
+                'min_time' => [
+                    'min' => [
+                        'field' => 'ts'
+                    ]
+                ]
+            ]
+        );
+        $results = $this->elasticClient->search($params);
+
+        return $results['aggregations']['min_time']['value'];
+
+    }
+
     public function _set_time_range()
     {
 
