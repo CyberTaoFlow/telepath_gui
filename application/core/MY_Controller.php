@@ -143,7 +143,7 @@ class Tele_Controller extends CI_Controller
 
     }
 
-    public function _get_time_first_data(){
+    public function _get_first_data_time(){
         $params['index']='telepath-20*';
         $params['body'] = array(
             'size' => 0,

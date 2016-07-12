@@ -61,9 +61,9 @@ class Telepath extends Tele_Controller
         $this->_set_full_time_range();
     }
 
-    public function get_time_first_data()
+    public function get_first_data_time()
     {
-        return_success($this->_get_time_first_data()) ;
+        return_success($this->_get_first_data_time()) ;
     }
 
     public function set_time_range()

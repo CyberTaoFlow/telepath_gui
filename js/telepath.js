@@ -213,7 +213,7 @@ telepath.main = {
         });
 
     });
-        telepath.ds.get('/telepath/get_time_first_data', {}, function(data) {
+        telepath.ds.get('/telepath/get_first_data_time', {}, function(data) {
 
             // Set global variable to hold the time of the first telepath data
             telepath.fullRangeStart = data.items;
