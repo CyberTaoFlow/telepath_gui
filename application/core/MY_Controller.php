@@ -84,7 +84,7 @@ class Tele_Controller extends CI_Controller
 
     }
 
-    public function _set_full_time_range($local=false)
+    public function _set_full_time_range()
     {
 
         $this->user_id = $this->ion_auth->get_user_id();
@@ -127,11 +127,6 @@ class Tele_Controller extends CI_Controller
         }
 
         $parsed['time_range'] = array( 'start' => $results['aggregations']['grades_stats']['min'], 'end' => $results['aggregations']['grades_stats']['max']);
-
-
-        if ($local){
-            return $parsed['time_range'];
-        }
 
         $parsed['time_range']['state']='range';
         $user = $this->ion_auth->update($this->user_id, array('extradata' => json_encode($parsed)));
@@ -251,9 +246,7 @@ class Tele_Controller extends CI_Controller
 
                 case 'data':
 
-                    $time = $this->_set_full_time_range(true);
-
-                    $data = array('state' => 'data', 'start' => $time['start'], 'end' => $time['end']);
+                    $data = array('state' => 'data', 'start' => $this->_get_first_data_time(), 'end' => time());
 
                     break;
 
