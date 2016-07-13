@@ -56,10 +56,11 @@ class Telepath extends Tele_Controller
         $this->_get_app_filter();
     }
 
-    public function set_full_time_range()
+    //not used
+    /*public function set_full_time_range()
     {
         $this->_set_full_time_range();
-    }
+    }*/
 
     public function get_first_data_time()
     {

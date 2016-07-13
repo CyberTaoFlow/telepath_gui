@@ -196,10 +196,10 @@ $.widget( "tele.daterange", {
 
 		var that = this;
 		var from_date = new Date();
-		$('.tele-darerange-container').addClass('disabled');
+		//$('.tele-darerange-container').addClass('disabled');
 		if (that.options.state =='range'){
 				$('.tele-darerange-container').removeClass('disabled');
-				telepath.ds.get('/telepath/set_full_time_range', { }, function(data) {
+				/*telepath.ds.get('/telepath/set_full_time_range', { }, function(data) {
 
 					// Globally
 
@@ -208,18 +208,30 @@ $.widget( "tele.daterange", {
 
 					// Locally
 
-					that.options.start = telepath.range.start;
-					that.options.end   = telepath.range.end;
+					$(".tele-daterange-to").val(date_format('d/m/Y',data.items.end));
+					$(".tele-daterange-to-hour").val(date_format('H:i',data.items.end));
+					$(".tele-daterange-from").val(date_format('d/m/Y', data.items.start));
+					$(".tele-daterange-from-hour").val(date_format('H:i', data.items.start));
 
 
-				});
+				});*/
+
+			//when select range state show data from the range of all data
+			
+			$(".tele-daterange-to").val(date_format('d/m/Y',Date.now()/1000));
+			$(".tele-daterange-to-hour").val(date_format('H:i',Date.now()/1000));
+			$(".tele-daterange-from").val(date_format('d/m/Y', telepath.fullRangeStart));
+			$(".tele-daterange-from-hour").val(date_format('H:i', telepath.fullRangeStart));
 
 		}
+		else {
+			$('.tele-darerange-container').addClass('disabled');
+			$(".tele-daterange-to").val(date_format('d/m/Y',telepath.range.end));
+			$(".tele-daterange-to-hour").val(date_format('H:i',telepath.range.end));
+			$(".tele-daterange-from").val(date_format('d/m/Y', telepath.range.start));
+			$(".tele-daterange-from-hour").val(date_format('H:i', telepath.range.start));
+		}
 
-		$(".tele-daterange-to").val(date_format('d/m/Y',telepath.range.end));
-		$(".tele-daterange-to-hour").val(date_format('H:i',telepath.range.end));
-		$(".tele-daterange-from").val(date_format('d/m/Y', telepath.range.start));
-		$(".tele-daterange-from-hour").val(date_format('H:i', telepath.range.start));
 
 	},
 	updateUI: function() {
