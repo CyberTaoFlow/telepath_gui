@@ -150,8 +150,26 @@ class Actions extends Tele_Controller
         // When this flag is set only return TS of last request
         $lockon = ($this->input->post('lockon') == 'true') ? true : false;
 
+        // if it's the first request, we need to update an elasticsearch variable for the Redis fast line
+        $init = ($this->input->post('init') == 'true') ? true : false;
+
+        if ($init){
+            $this->load->model('M_Config');
+            $this->M_Config->update('hybrid_record_id', $value, true);
+        }
+
+
         return $this->M_Actions->get_requests($mode, $value, $host, $offset, $lockon);
 
+    }
+
+    public function end_record()
+    {
+        telepath_auth(__CLASS__, 'set_action');
+
+        $this->load->model('M_Config');
+        $this->M_Config->update('hybrid_record_id', 0, true);
+        return_success();
     }
 
     public function get_suggest()
