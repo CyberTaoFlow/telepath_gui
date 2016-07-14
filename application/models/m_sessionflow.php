@@ -69,11 +69,12 @@ class M_Sessionflow extends CI_Model {
 	
 	}
 	
-	public function get_session_stats($SID, $key = '', $range = null) {
+	public function get_session_stats($SID, $key = '',$state='', $range = null) {
                 $params['index'] = 'telepath-20*';
                 $params['type'] = 'http';
-		$search_count = 0;
-		if ($key)
+        $suspect_count = 0;
+        $search_count =0;
+		if ($key || $state)
 		{	
 			$params['body'] = [
 				'size' => 0,
@@ -83,13 +84,46 @@ class M_Sessionflow extends CI_Model {
 //							[ 'term' => [ '_type' => 'http' ] ],
 							[ 'term' => [ 'sid' => $SID ] ],
 							#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
-							[ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ]
+//							[ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ]
                         	                ]
 					],
 				],
 			];
-			$results = $this->elasticClient->search($params);
-			$search_count = $results['hits']['total'];
+            if ($state=='Suspect'){
+				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
+				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+
+				$results = $this->elasticClient->search($params);
+
+				$suspect_count = $results['hits']['total'];
+            }
+            if ($key){
+
+				$params['body']['query']['bool']['must'] =  [];
+				$params['body']['query']['bool']['must_not'] =  [];
+
+
+				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+
+				$results = $this->elasticClient->search($params);
+
+				$search_count = $results['hits']['total'];
+            }
+
+
+			/*$results = $this->elasticClient->search($params);
+
+            if ($key && $state=='Suspect'){
+                $search_count = $results['hits']['total'];
+				$suspect_count = $results['hits']['total'];
+            }
+            elseif ($state=='Suspect'){
+                $suspect_count = $results['hits']['total'];
+            }
+            else{
+                $search_count = $results['hits']['total'];
+            }*/
 		}
 
 		$params['body'] = [
@@ -155,6 +189,7 @@ class M_Sessionflow extends CI_Model {
 				"session_start" => $results['aggregations']['min_ts']['value'],
 				"session_end"   => $results['aggregations']['max_ts']['value'],
 				"search_count"  => $search_count,
+				"suspect_count" => $suspect_count,
 				"total" 	=> $results['hits']['total']
 			);
 		}
@@ -192,6 +227,12 @@ class M_Sessionflow extends CI_Model {
 					$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 					break;
 				}
+            break;
+            case 'Suspect':
+                $params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
+                $params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+                $params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+                break;
 			default:
 			case 'All':
 				// Do nothing, no filter

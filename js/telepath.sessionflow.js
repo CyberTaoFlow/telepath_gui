@@ -209,34 +209,42 @@ telepath.sessionflow = {
 		}
 
 	},
-	init: function(SID, IP, alerts_names, is_alert,  searchkey, list) {
-	
-		this.session = false;	
+	init: function(SID, IP, alerts_names, state,  searchkey, list) {
+
+		this.session = false;
 		this.SID  = SID;
 		this.IP  = IP;
 		this.alerts_names = alerts_names;
 		this.searchkey = searchkey;
 		this.list = list;
+		this.suspect= '';
 
-
-		if (searchkey)
+		if (searchkey && state =='suspect')
 		{
 			this.filter = 'Search';
+			this.suspect = 'Suspect';
+		}else if (searchkey )
+		{
+			this.filter = 'Search';
+
 		}
-		else if(is_alert && is_alert == 'alert') {
+		else if(state && state == 'alert') {
 			this.filter = 'Alerts';
+		}else if(state && state == 'suspect') {
+			this.filter = 'Suspect';
+			this.suspect = 'Suspect';
 		} else {
 			this.filter = 'All';
 		}
-		
-		
+
+
 		if (telepath.access.admin || telepath.access.perm.Sessionflow_get){
 			this.buildUI();
 			this.loadSession(this.SID);
 		}else{
 			telepath.dialog({msg:'Access denied. No permissions to view Session Flow.'});
 		};
-		
+
 
 	},
 	loadSession: function() {
@@ -248,7 +256,7 @@ telepath.sessionflow = {
 		that.session = {};
 		
 		// Load session stats, then items
-		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey }, function (data) {
+		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.suspect }, function (data) {
 			
 			that.session.stats = data.items;
 			
@@ -354,9 +362,10 @@ telepath.sessionflow = {
 		var count_alerts  = this.session.stats.alerts_count;
 		var count_actions = this.session.stats.actions_count;
 		var search_count  = this.session.stats.search_count;
-		
+		var suspect_count  = this.session.stats.suspect_count;
+
 		var statsEl = $('<div>').addClass('tele-alert-stats');
-		$.each({'All': count_all, 'Search': search_count, 'Alerts': count_alerts, 'Actions': count_actions }, function(key, stat) {
+		$.each({'All': count_all, 'Search': search_count, 'Alerts': count_alerts, 'Actions': count_actions, Suspect: suspect_count}, function(key, stat) {
 			
 			// Add filter if we have numeric vaue only, Yuli
 			if (stat > 0)

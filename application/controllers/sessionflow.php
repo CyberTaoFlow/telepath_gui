@@ -19,6 +19,7 @@ class Sessionflow extends Tele_Controller
         // Read input
         $SID = $this->input->post('sid');
         $key = $this->input->post('searchkey');
+        $state = $this->input->post('state');
         $range = $this->_get_range();
 
         if (!empty($key) && substr($key, -1) != '*')
@@ -26,7 +27,7 @@ class Sessionflow extends Tele_Controller
             $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
         }
 
-        $stats = $this->M_Sessionflow->get_session_stats($SID, $key, $range);
+        $stats = $this->M_Sessionflow->get_session_stats($SID, $key,$state,$range);
         return_success($stats);
 
     }
