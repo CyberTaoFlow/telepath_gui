@@ -877,6 +877,8 @@ telepath.sessionflow = {
 				callback: function (widget) {
 					telepath.alert.filters[filter.type] = widget.options.checked;
 					this.alertObj.printParams();
+                    //filtering for the second table
+                    $('.tele-listitem-inner.selected').click();
 			}});
 			that.filtersContainer.append(filter_el);
 		});
