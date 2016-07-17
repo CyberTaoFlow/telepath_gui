@@ -162,7 +162,7 @@ telepath.sessionflow = {
 						table.append(getRow('User:', escapeHtml(similarity.username)));
 					}
 					
-					table.append(getRow('Similarity:', similarity._score + '%'));
+					table.append(getRow('Similarity:', parseInt(similarity._score + '%')));
 					
 					//if(alert.user && alert.user != '') {
 					//	table.append(getRow('User:', alert.user));
