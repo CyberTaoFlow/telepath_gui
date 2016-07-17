@@ -177,7 +177,7 @@ telepath.action.recorder = {
 			// console.log('Tracking ' + type + ' - ' + value);
 		}
 		
-		function tick() {
+		function tick(init) {
 			
 			that.timerValue += 5;
 			that.progbarInner.css({ width: that.timerValue + '%' }); 
@@ -188,7 +188,8 @@ telepath.action.recorder = {
 				mode: that.recordType,
 				value: that.recordValue,
 				host: telepath.action.currentApp,
-				lockon: true
+				lockon: true,
+				init: init
 			}, function (data) {
 				if(data.total > 0) {
 				
@@ -231,14 +232,18 @@ telepath.action.recorder = {
 				clearInterval(that.timer);
 				that.timer=false;
 				telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'No matching requests, tracking timed out.' });
+				that.endRecord();
 			}
 		
 		}
 		
-		this.timer = setInterval(function () { tick(); }, 3000);
-		tick();
+		this.timer = setInterval(function () { tick(false); }, 3000);
+		tick(true);
 
 	},
+	endRecord: function(){
+		telepath.ds.get('/actions/end_record', {}, function (data) {});
+			},
 	init: function () {
 		
 		$('.popover').remove();
@@ -412,6 +417,7 @@ telepath.action.recorder = {
 				record_lbl.html('Start Recording');
 				record_ico.toggleClass('tele-control-stop');
 				record_ico.toggleClass('tele-control-record');
+				that.endRecord();
 			}
 		});
 		
