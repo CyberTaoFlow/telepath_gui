@@ -11,6 +11,12 @@
 	top: 130px;
 }
 
+.tele-map .tele-loader{
+	background: transparent url('../img/map-loader.gif') 50% 0% no-repeat;
+	position: absolute;
+	top: 130px;
+}
+
 body {
 	background-color: rgb(214,214,214);
 }
