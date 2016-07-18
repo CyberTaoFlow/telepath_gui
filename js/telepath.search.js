@@ -405,7 +405,7 @@ telepath.search = {
                 if (that.results[type] && that.results[type].length > 0) {
 
                     var select;
-
+                    $('.tele-'+type+'-block').empty();
                     switch (type) {
                         case 'alerts':
                             select = 0;
