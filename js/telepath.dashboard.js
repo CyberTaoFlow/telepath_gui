@@ -101,7 +101,7 @@ telepath.dashboard = {
 	
 		if(telepath.access.admin || telepath.access.perm.Cases_get) {
 			this.divs +=1;
-			this.casesList = $('<div>').addClass('tele-dashboard-block');
+			this.casesList = $('<div>').addClass('tele-dashboard-block cases');
 			$('.tele-panel-dashboard').append(this.casesList);
 
 			this.casesList.teleList({
@@ -125,7 +125,7 @@ telepath.dashboard = {
 	
 		if(telepath.access.admin || telepath.access.perm.Alerts_get) {
 			this.divs +=1;
-			this.alertsList = $('<div>').addClass('tele-dashboard-block');
+			this.alertsList = $('<div>').addClass('tele-dashboard-block alerts');
 			$('.tele-panel-dashboard').append(this.alertsList);
 
 			this.alertsList.teleList({
@@ -150,7 +150,7 @@ telepath.dashboard = {
 		if(telepath.access.admin || telepath.access.perm.Suspects_get) {
 		
 			this.divs +=1;
-			this.suspectsList = $('<div>').addClass('tele-dashboard-block');
+			this.suspectsList = $('<div>').addClass('tele-dashboard-block suspects');
 			$('.tele-panel-dashboard').append(this.suspectsList);
 
 			this.suspectsList.teleList({
@@ -305,7 +305,10 @@ telepath.dashboard = {
 		
 			$('.tele-map').width('33%');
 			$('.tele-graph').width('67%');
+			$('.tele-dashboard-block').css({'display':'inline-block'});
 			$('.tele-dashboard-block').width(current_div + '%');
+			$('.tele-dashboard-block.cases').css({'float':'left'});
+			$('.tele-dashboard-block.suspects').css({'float':'right'});
 		
 		}
 	
