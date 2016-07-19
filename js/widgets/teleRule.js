@@ -183,6 +183,10 @@ $.widget( "tele.teleRule", {
 				that.buttonsWrap.append(extra.append(button));
 			});
 		}
+		else {
+			// for builtin rules we need only a small box
+			this.accordion.addClass('small');
+		}
 		
 		this.accordion.accordion();
 

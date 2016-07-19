@@ -394,6 +394,10 @@ body .jstree .tele-button {
 	min-height: 326px;
 }
 
+.tele-ruletype-accordion.small .ui-accordion-content.ui-accordion-content-active {
+	min-height: 80px;
+}
+
 .tele-ruletype-accordion .ui-accordion-header,
 .tele-condition-accordion .ui-accordion-header {
 	padding: 14px 25px;
