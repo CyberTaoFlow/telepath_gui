@@ -160,7 +160,7 @@ telepath.caseOverlay = {
 					
 					telepath.overlay.destroy();
 					//telepath.casePanel.init(name);
-					telepath.cases.refresh(function () {});
+					telepath.cases.init();
 
 
 					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'update'  }, function (data) {
