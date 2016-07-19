@@ -145,11 +145,17 @@ class Rules extends Tele_Controller
                 'category' => "Credential-Stuffing",
                 'name' => "Credential-Stuffing"
             );
+        }elseif($category == "Web shell") {
+            $ans['items'][] = array(
+                'id' => "Web shell",
+                'category' => "Web shell",
+                'name' => "Webshell action"
+            );
         }
 
         if ($rules && is_array($rules) && !empty($rules)) {
             foreach ($rules as $rule) {
-                if(($category == "Brute-Force" || $category == "Credential-Stuffing") && isset($rule['builtin_rule']) && $rule['builtin_rule']){
+                if(($category == "Brute-Force" || $category == "Credential-Stuffing"|| $category == "Web shell") && isset($rule['builtin_rule']) && $rule['builtin_rule']){
                     continue;
                 }
                 $ans['items'][] = array(
