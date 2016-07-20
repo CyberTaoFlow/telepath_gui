@@ -49,8 +49,16 @@ $.widget( "tele.daterange", {
 			//minDate: 0,
 			numberOfMonths: [1,2],
 			beforeShowDay: function(date) {
-				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-from").val());
-				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-to").val());
+				if($(".tele-daterange-from").val()){
+					var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-from").val());
+					var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $(".tele-daterange-to").val());
+				}
+				else {
+					var date1 = new Date(telepath.range.start*1000);
+					var date2 = new Date(telepath.range.end*1000);
+				}
+
+
 				return [true, date1 && ((date.getTime() == date1.getTime()) || (date2 && date >= date1 && date <= date2)) ? "dp-highlight" : ""];
 			},
 			onSelect: function(dateText, inst) {
