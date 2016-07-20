@@ -24,15 +24,16 @@ $.widget( "tele.daterange", {
 		var that = this;
 
 		var el = '.tele-daterange:last';
-
-		if($(".tele-daterange-popup").size() == 0) {
-			$('body').append(telepath.templates['popup-daterange']);
-		}
-
+        
 		if($(".tele-daterange-popup").css('display') == 'block') {
 			$(".tele-daterange-popup").fadeOut();
 			return;
 		}
+		else {
+			$(".tele-daterange-popup").remove();
+			$('body').append(telepath.templates['popup-daterange']);
+		}
+
 
 		var top  = $(el).offset().top + $(el).height() + 20;
 		var left = ($(el).offset().left + ($(el).width() / 2)) - ($(".tele-daterange-popup").width() / 2);
