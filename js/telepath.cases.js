@@ -4,6 +4,7 @@ telepath.cases = {
 	dir: false,
 	data: [],
 	searchString: '',
+	loading: false,
 	init: function () {
 		
 		this.drawUI();
@@ -25,6 +26,7 @@ telepath.cases = {
 			dir: this.dir
 		}, function (data) {
 			// Hide deleted cases. Yuli
+			that.loading=false;
 			var cases = []
 			var index = 0;
 			for (index = 0; index < data.items.length; ++index) {
@@ -207,6 +209,10 @@ telepath.cases = {
 			], 
 			selected: this.sort,
 			callback: function(e, id) {
+				if (that.loading){
+					return
+				}
+				that.loading=true;
 				if(that.sort == id) {
 					that.dir = !that.dir;
 				}

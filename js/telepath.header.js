@@ -43,6 +43,10 @@ telepath.header = {
 
 		// Hook for icon click
 		$(this.searchIcon).click(function (e) {
+			if (telepath.search.loading){
+				return;
+			}
+			telepath.search.loading=true;
 			telepath.search.init(telepath.header.searchInput.val());
 			telepath.ui.resize();
 		});
@@ -135,6 +139,10 @@ telepath.header = {
 			if(id == 'dashboard' && telepath.dashboard.loading) {
 				return;
 			}
+			if(telepath[id].loading) {
+				return;
+			}
+			telepath[id].loading=true;
 			
 			$('.tele-panel').empty().hide().removeClass('active');
 			$("#file-upload").hide();

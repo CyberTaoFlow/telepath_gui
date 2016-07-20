@@ -5,6 +5,7 @@ telepath.suspects = {
 	data: [],
 	total: 0,
 	searchString: '',
+	loading:false,
 
 	rowFormatter: function(item,mode) {
 
@@ -100,6 +101,10 @@ telepath.suspects = {
 			],
 			selected: this.sort,
 			callback: function(e, id) {
+				if (that.loading){
+					return
+				}
+				that.loading=true;
 				if(that.sort == id) {
 					that.dir = !that.dir;
 				}
@@ -220,7 +225,8 @@ telepath.suspects = {
 			dir: this.dir,
 			search: this.searchString
 		}, function (data) {
-			
+
+			that.loading=false
 			that.count = data.count;
 			that.data  = data.items;
 			

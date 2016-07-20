@@ -6,6 +6,7 @@ telepath.alerts = {
 	searchString: '',
 	filter: [],
 	allData: true, // indicate if all the data is shown, without alert filter
+	loading: false,
 	init: function () {
 		
 		var that = this;
@@ -56,6 +57,10 @@ telepath.alerts = {
 			],
 			selected: this.sort,
 			callback: function(e, id) {
+				if (that.loading){
+					return
+				}
+				that.loading=true;
 				if(that.sort == id) {
 					that.dir = !that.dir;
 				}			
@@ -160,7 +165,7 @@ telepath.alerts = {
 
 	refresh: function (callback) {
 		var container = $('.tele-panel-alerts');
-		$('.tele-alerts-block, .tele-alert-graphs-block, .loader', container).remove();
+		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
 		container.append(telepath.loader);
 
 			telepath.ds.get('/alerts/index', {
@@ -169,6 +174,7 @@ telepath.alerts = {
 			search: this.searchString,
 			filters: this.filter
 		}, function (data) {
+			telepath.alerts.loading=false;
 			telepath.alerts.setData(data.items);
 			if(callback && typeof(callback) == 'function') {
 				callback();

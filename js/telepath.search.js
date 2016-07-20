@@ -14,6 +14,7 @@ telepath.search = {
     },
     sort: 'date',
     dir: false,
+    loading:false,
 
     options: false,
     searchTypes: [
@@ -393,6 +394,7 @@ telepath.search = {
 
         var that = this;
 
+        that.loading=false;
         //telepath.loader.remove();
         that.tabsEl.children('.tele-loader').remove();
 
