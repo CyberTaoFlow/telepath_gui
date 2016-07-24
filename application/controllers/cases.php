@@ -161,7 +161,13 @@ class Cases extends Tele_Controller
         $ans = array();
 
         $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps, $sort, $dir);
-        $similars = $this->M_Cases->get_similar_case_sessions($cid);
+        if($requests['items']){
+            $similars = $this->M_Cases->get_similar_case_sessions($cid);
+            if ($similars){
+                $ans['similars']=$similars;
+            }
+
+        }
        // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
 
         unset($requests['requests']);
@@ -169,7 +175,6 @@ class Cases extends Tele_Controller
         $ans = array_merge($ans, $requests);
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
         $ans['case'] = array('case_data' => $this->M_Cases->get_case_data($cid));
-        $ans['similars']=$similars;
 
         return_json($ans);
 

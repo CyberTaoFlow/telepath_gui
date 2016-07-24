@@ -447,14 +447,17 @@ telepath.casePanel = {
 		this.container.append(this.similarsListWrap);
 
 		// Init List
-		this.similarsList.teleList({
-			title: 'Related Sessions',
-			//height: 500,
-			data: this.data.similars.items,
-			formatter: function(row) {
-				return that.formatter(row);
-			}
-		});
+		if (this.data.similars){
+
+			this.similarsList.teleList({
+				title: 'Related Sessions',
+				//height: 500,
+				data: this.data.similars.items,
+				formatter: function(row) {
+					return that.formatter(row);
+				}
+			});
+		}
 
 		$(window).resize(function () { that._resize() });
 
