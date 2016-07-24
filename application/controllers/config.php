@@ -212,43 +212,53 @@ class Config extends Tele_Controller
 
         if (isset($config['whitelist'])) {
 
-            $whitelist = $this->M_Config->whitelist_set_ips($config['whitelist']);
-
-//			#$whitelist_new = explode(',', $config['ip_whitelist']);
-//			$whitelist_new = $config['whitelist'];
-//			$whitelist_old = $this->M_Config->whitelist_get_ips();
-//			$whitelist_del = array_diff_assoc($whitelist_old, $whitelist_new);
-//			$whitelist_add = array_diff_assoc($whitelist_new, $whitelist_old);
-//
-//			foreach($whitelist_del as $ip) {
-//				$this->M_Config->whitelist_delete_ip($ip);
-//			}
-//			foreach($whitelist_add as $ip) {
-//				$this->M_Config->whitelist_add_ip($ip);
-//			}
+            $whitelist = $config['whitelist'];
 
         }
+        else{
+            $whitelist=  [];
+        }
+
+        $this->M_Config->whitelist_set_ips($whitelist);
 
         if (isset($config['scheduler'])) {
 
-            $this->M_Config->set_scheduler($config['scheduler']);
+            $scheduler = $config['scheduler'];
 
 
         } else {
-            $this->M_Config->set_scheduler(array());
+
+            $scheduler  = [];
         }
+        $this->M_Config->set_scheduler($scheduler);
+
+
 
         if (isset($config['ip_balances'])) {
 
-            $ip_balances = $this->M_Config->set_ip_balances($config['ip_balances']);
-            //var_dump($ip_balances);
+            $ip_balances = $config['ip_balances'];
+
         }
+        else{
+
+            $ip_balances = [];
+
+        }
+
+        $this->M_Config->set_ip_balances($ip_balances);
 
         if (isset($config['header_balances'])) {
 
-            $header_balances = $this->M_Config->set_header_balances($config['header_balances']);
-            //var_dump($header_balances);
+            $header_balances = $config['header_balances'];
+
         }
+        else{
+
+            $header_balances=[];
+
+        }
+        $this->M_Config->set_header_balances($header_balances);
+
 
         foreach ($config as $key => $value) {
 
