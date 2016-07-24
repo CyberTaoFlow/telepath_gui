@@ -213,20 +213,22 @@ telepath.config.system = {
 
 		data.ip_balances=[];
 
-		$('.tele-ip-wrap-lb', this.ips).each(function () {
+		$('.tele-config-system-lb .tele-ip-wrap', this.ip_balances).each(function () {
 
-			var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
+			if ($('.tele-mini-toggle', this).data('tele-toggleFlip')) {
+				var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
 
-			var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
-			var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
+				var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
+				var ip_end = $('.tele-ip:last', this).data('tele-ip').getIP();
 
-			if(is_range) {
-				if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-					data.ip_balances.push({from: ip_start ,to: ip_end});
-				}
-			} else {
-				if(ip_start) {
-					data.ip_balances.push({from:ip_start, to: ip_start});
+				if (is_range) {
+					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
+						data.ip_balances.push({from: ip_start, to: ip_end});
+					}
+				} else {
+					if (ip_start) {
+						data.ip_balances.push({from: ip_start, to: ip_start});
+					}
 				}
 			}
 
@@ -243,23 +245,24 @@ telepath.config.system = {
 		// IP Whitelist
 		data.whitelist = [];
 
-		$('.tele-ip-wrap', this.whitelist).each(function () {
-					
-			var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
-			
-			var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
-			var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
-			
-			if(is_range) {
-				if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-					data.whitelist.push({from: ip_start ,to: ip_end});
-				}
-			} else {
-				if(ip_start) {
-					data.whitelist.push({from:ip_start,to: ip_start});
+		$('.tele-config-system-whitelist .tele-ip-wrap', this.whitelist).each(function () {
+
+			if ($('.tele-mini-toggle', this).data('tele-toggleFlip')) {
+				var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
+
+				var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
+				var ip_end = $('.tele-ip:last', this).data('tele-ip').getIP();
+
+				if (is_range) {
+					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
+						data.whitelist.push({from: ip_start, to: ip_end});
+					}
+				} else {
+					if (ip_start) {
+						data.whitelist.push({from: ip_start, to: ip_start});
+					}
 				}
 			}
-
 		});
 		
 		// De-Dupe
@@ -943,14 +946,21 @@ telepath.config.system = {
 		this.container.append(this.c_whitelist);
 		
 		
-		
-		$.each(this.data.whitelist, function (i, ip) {
-			that.c_whitelist.append(getRangeUI(ip, that.c_whitelist));
-		});
+
+		if (this.data.whitelist.length){
+			$.each(this.data.whitelist, function (i, ip) {
+				that.c_whitelist.append(getRangeUI(ip));
+			});
+		}
+		else {
+			that.c_whitelist.append(getRangeUI(''));
+		}
+
 		
 		// Another blank
-		this.c_whitelist.append(getRangeUI('', that.c_whitelist));
-		
+		this.c_whitelist.append(getRangeUI('last'));
+
+
 		
 		//this.whitelist = $('<div>').teleMulti({ values: .length > 0 ? this.data.whitelist : [ '' ], title: 'IP Whitelist', template: function(element, value) {
 		//	element.ip({ data: value });
@@ -1004,12 +1014,18 @@ telepath.config.system = {
 		this.c_lb = $('<div>').addClass('tele-config-system-lb');
 		//this.c_network.append(this.c_lb);
 
-		$.each(this.data.ip_balances, function (i, ip) {
-			that.c_lb.append(getRangeLB(ip, that.c_lb));
-		});
+		if(this.data.ip_balances.length){
+			$.each(this.data.ip_balances, function (i, ip) {
+				that.c_lb.append(getRangeUI(ip));
+			});
+		}
+		else{
+			that.c_lb.append(getRangeUI());
+		}
+
 
 		// Another blank
-		var another_ip_balancesthis= this.c_lb.append(getRangeLB('', that.c_lb));
+		var another_ip_balancesthis= this.c_lb.append(getRangeUI('last'));
 
 		var state;
 

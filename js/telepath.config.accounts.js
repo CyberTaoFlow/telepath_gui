@@ -83,54 +83,7 @@ telepath.config.accounts = {
 		
 		that.groupLeftWrap.append(that.limitApps);
 		
-		function getRangeUI(data) {
-			
-			if(!data) { data = ''; } else { data = data.trim() }
-			
-			var is_range = data.split('-').length > 1;
-								
-			var ipWrap   = $('<div>').addClass('tele-ip-group-wrap');
-			var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.split('-')[0] });
-			var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
-			
-			var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: is_range ? data.split('-')[1] : '' });
-			
-			if(!is_range) {
-				ipDash.hide();
-				ipEnd.hide();
-			}
-			
-			var ipAdd = $('<div>').addClass('tele-ip-add')
-									 .addClass('tele-icon')
-									 .addClass('tele-icon-plus')
-									 .hover(function () { $(this).addClass('hover'); }, 
-											function () { $(this).removeClass('hover'); })
-									 .click(function () { that.limitRanges.append(getRangeUI()); });
-			
-			var ipRemove = $('<div>').addClass('tele-ip-remove')
-									 .addClass('tele-icon')
-									 .addClass('tele-icon-minus')
-									 .hover(function () { $(this).addClass('hover'); }, 
-											function () { $(this).removeClass('hover'); })
-									 .click(function () { $(this).parent().remove(); });
-									 
-			var ipToggle = $('<div>').toggleFlip({ 
-			
-				left_value: 'Single', 
-				right_value: 'Range',
-				flip: function () {
-					ipEnd.toggle();
-					ipDash.toggle();
-				},
-				flipped: is_range
-				
-			});
-			
-			ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
-			return ipWrap;
-			
-		}
-				
+
 		that.permissions = $('<div>').addClass('tele-group-permissions').append('<div class="tele-title-1">Permissions</div>');
 
 		// Create tabs UI
@@ -263,18 +216,21 @@ telepath.config.accounts = {
 				case 'ranges':
 				
 					$('.tele-ip-wrap', that.limitRanges).each(function () {
-				
-						var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
-						var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
-						var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
-						
-						if(is_range) {
-							if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-								groupData.ranges.push(ip_start + '-' + ip_end);
-							}
-						} else {
-							if(ip_start) {
-								groupData.ranges.push(ip_start);
+
+						if ($('.tele-mini-toggle', this).data('tele-toggleFlip')) {
+
+							var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
+							var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
+							var ip_end = $('.tele-ip:last', this).data('tele-ip').getIP();
+
+							if (is_range) {
+								if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
+									groupData.ranges.push(ip_start + '-' + ip_end);
+								}
+							} else {
+								if (ip_start) {
+									groupData.ranges.push(ip_start);
+								}
 							}
 						}
 

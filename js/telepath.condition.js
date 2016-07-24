@@ -86,19 +86,21 @@ $.widget( "tele.condition", {
 			case 'IP':
 				result = '';
 				$('.tele-ip-wrap', this.options.element).each(function () {
-					
-					var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
-					
-					var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
-					var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
-					
-					if(is_range) {
-						if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-							result = result + ip_start + '-' + ip_end + ',';
-						}
-					} else {
-						if(ip_start) {
-							result = result + ip_start + ',';
+
+					if ($('.tele-mini-toggle', this).data('tele-toggleFlip')){
+						var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
+
+						var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
+						var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
+
+						if(is_range) {
+							if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
+								result = result + ip_start + '-' + ip_end + ',';
+							}
+						} else {
+							if(ip_start) {
+								result = result + ip_start + ',';
+							}
 						}
 					}
 
@@ -320,11 +322,11 @@ $.widget( "tele.condition", {
 			case 'IP':
 
 				$.each(that.options.data.value.split(','), function (i, ip) {
-					that.element.append(old_getRangeUI(ip, that.element));
+					that.element.append(old_getRangeUI(ip));
 				});
 				
 				// Another blank
-				this.element.append(getRangeUI('', that.element));
+				this.element.append(getRangeUI('last'));
 				
 			break;
 			

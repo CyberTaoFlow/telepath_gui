@@ -138,18 +138,21 @@ telepath.config.account = {
 				case 'ranges':
 				
 					$('.tele-ip-wrap', that.limitRanges).each(function () {
-				
-						var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
-						var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
-						var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
-						
-						if(is_range) {
-							if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
-								userData.ranges.push(ip_start + '-' + ip_end);
-							}
-						} else {
-							if(ip_start) {
-								userData.ranges.push(ip_start);
+
+						if ($('.tele-mini-toggle', this).data('tele-toggleFlip')) {
+
+							var is_range = $('.tele-mini-toggle', this).data('tele-toggleFlip').options.flipped;
+							var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
+							var ip_end = $('.tele-ip:last', this).data('tele-ip').getIP();
+
+							if (is_range) {
+								if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
+									userData.ranges.push(ip_start + '-' + ip_end);
+								}
+							} else {
+								if (ip_start) {
+									userData.ranges.push(ip_start);
+								}
 							}
 						}
 
@@ -311,113 +314,24 @@ telepath.config.account = {
 		
 		that.container.append(that.toggleType);
 		that.container.append(that.limitApps);
-			
-		function Old_getRangeUI(data) {
 
-			if(!data) { data = ''; } else { data = data.trim() }
-			
-			var is_range = data.split('-').length > 1;
-								
-			var ipWrap   = $('<div>').addClass('tele-ip-wrap');
-			var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.split('-')[0] });
-			var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
-			
-			var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: is_range ? data.split('-')[1] : '' });
-			
-			if(!is_range) {
-				ipDash.hide();
-				ipEnd.hide();
-			}
-			
-			var ipAdd = $('<div>').addClass('tele-ip-add')
-									 .addClass('tele-icon')
-									 .addClass('tele-icon-plus')
-									 .hover(function () { $(this).addClass('hover'); }, 
-											function () { $(this).removeClass('hover'); })
-									 .click(function () { that.limitRanges.append(getRangeUI()); });
-			
-			var ipRemove = $('<div>').addClass('tele-ip-remove')
-									 .addClass('tele-icon')
-									 .addClass('tele-icon-minus')
-									 .hover(function () { $(this).addClass('hover'); }, 
-											function () { $(this).removeClass('hover'); })
-									 .click(function () { $(this).parent().remove(); });
-									 
-			var ipToggle = $('<div>').toggleFlip({ 
-			
-				left_value: 'Single', 
-				right_value: 'Range',
-				flip: function () {
-					ipEnd.toggle();
-					ipDash.toggle();
-				},
-				flipped: is_range,
-				
+
+		//check if there is ip ranges
+		if(that.data.ranges.length){
+			// Load provided by settings
+			$.each(that.data.ranges, function (i, ip) {
+				that.limitRanges.append(old_getRangeUI(ip));
 			});
-			
-			ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
-			return ipWrap;
-			
+		}
+		//else get empty range
+		else{
+			that.limitRanges.append(getRangeUI(''));
 		}
 
-		function getRangeUI(data, container) {
-
-			//if(!data) { data = ''; } else { data = data.trim() }
-
-			var is_range= data.from!=data.to;
-
-			//var to = data.to?data.to:data.from;
-
-			var ipWrap   = $('<div>').addClass('tele-ip-wrap');
-			var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from });
-			var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
-
-			var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: data.to});
-
-			if(!is_range) {
-				ipDash.hide();
-				ipEnd.hide();
-			}
-
-			var ipAdd = $('<div>').addClass('tele-ip-add')
-				.addClass('tele-icon')
-				.addClass('tele-icon-plus')
-				.hover(function () { $(this).addClass('hover'); },
-				function () { $(this).removeClass('hover'); })
-				.click(function () { container.append(getRangeUI()); });
-
-			var ipRemove = $('<div>').addClass('tele-ip-remove')
-				.addClass('tele-icon')
-				.addClass('tele-icon-minus')
-				.hover(function () { $(this).addClass('hover'); },
-				function () { $(this).removeClass('hover'); })
-				.click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
-
-			var ipToggle = $('<div>').toggleFlip({
-
-				left_value: 'Single',
-				right_value: 'Range',
-				flip: function () {
-					ipEnd.toggle();
-					ipDash.toggle();
-				},
-				flipped: is_range
-			});
-
-			ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
-			return ipWrap;
-
-		}
-					
-					
-		// Load provided by settings
-		$.each(that.data.ranges, function (i, ip) {
-			that.limitRanges.append(getRangeUI(ip));
-		});
 					
 		// Another blank
 		
-		that.limitRanges.append(getRangeUI(''));
+		that.limitRanges.append(getRangeUI('last'));
 			
 		that.container.append(that.limitRanges);
 		

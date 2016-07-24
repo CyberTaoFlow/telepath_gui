@@ -7,13 +7,6 @@ function RangeRemove(that) {
 	}
 }
 
-function RangeRemoveLB(that) {
-  numRanges = $(that).parent().parent().children('.tele-ip-wrap-lb').length;
-  if (numRanges > 1)
-  {
-    $(that).parent().remove();
-  }
-}
 function old_getRangeUI(data) {
 
   if(!data) { data = ''; } else { data = data.trim() }
@@ -30,13 +23,6 @@ function old_getRangeUI(data) {
     ipDash.hide();
     ipEnd.hide();
   }
-
-  var ipAdd = $('<div>').addClass('tele-ip-add')
-      .addClass('tele-icon')
-      .addClass('tele-icon-plus')
-      .hover(function () { $(this).addClass('hover'); },
-      function () { $(this).removeClass('hover'); })
-      .click(function () { that.limitRanges.append(getRangeUI()); });
 
   var ipRemove = $('<div>').addClass('tele-ip-remove')
       .addClass('tele-icon')
@@ -57,21 +43,42 @@ function old_getRangeUI(data) {
 
   });
 
-  ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
+  ipWrap.append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
   return ipWrap;
 
 }
 
 
-function getRangeUI(data, container) {
-					
+function getRangeUI(data) {
+
 	if(!data) { data = ''; }
 
-  var is_range= data.from!=data.to;
+    var ipWrap   = $('<div>').addClass('tele-ip-wrap');
 
-	//var to = data.to?data.to:data.from;
-						
-	var ipWrap   = $('<div>').addClass('tele-ip-wrap');
+    if (data == 'last') {
+
+        var ipAdd = $('<div>').addClass('tele-ip-add')
+            .addClass('tele-icon')
+            .addClass('tele-icon-plus')
+            .hover(function () {
+                    $(this).addClass('hover');
+                },
+                function () {
+                    $(this).removeClass('hover');
+                })
+            .click(function () {
+                $(event.target).parent().before(getRangeUI());
+
+
+            });
+        ipWrap.append(ipAdd);
+    }
+
+    else {
+
+    var is_range= data.from!=data.to;
+
+
 	var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from});
 	var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
 	
@@ -82,24 +89,17 @@ function getRangeUI(data, container) {
 		ipDash.hide();
 		ipEnd.hide();
 	}
-	
-	var ipAdd = $('<div>').addClass('tele-ip-add')
-            .addClass('tele-icon')
-							 .addClass('tele-icon-plus')
-            .hover(function () { $(this).addClass('hover'); },
-                function () { $(this).removeClass('hover'); })
-							 .click(function () { container.append(getRangeUI()); });
-	
+
 	var ipRemove = $('<div>').addClass('tele-ip-remove')
             .addClass('tele-icon')
 							 .addClass('tele-icon-minus')
             .hover(function () { $(this).addClass('hover'); },
                 function () { $(this).removeClass('hover'); })
 							 .click(function () { RangeRemove(this); /* $(this).parent().remove(); */ });
-							 
-	var ipToggle = $('<div>').toggleFlip({ 
-	
-		left_value: 'Single', 
+
+	var ipToggle = $('<div>').toggleFlip({
+
+		left_value: 'Single',
 		right_value: 'Range',
 		flip: function () {
 			ipEnd.toggle();
@@ -108,10 +108,13 @@ function getRangeUI(data, container) {
 		flipped: is_range
 	});
 
-  
-	ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
+
+
+            ipWrap.append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
+        }
+
 	return ipWrap;
-	
+
 }
 
 function getStatusCodeRangeUI(data) {
@@ -162,56 +165,6 @@ function getStatusCodeRangeUI(data) {
 
 }
 
-function getRangeLB(data, container) {
-
-  if(!data) { data = ''; }
-
-  var is_range= data.from!=data.to;
-
-  //var to = data.to?data.to:data.from;
-
-  var ipWrap   = $('<div>').addClass('tele-ip-wrap-lb');
-  var ipStart  = $('<div>').addClass('tele-ip').ip({ data: data.from});
-  var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
-
-  var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: !is_range?'':data.to});
-
-  if(!is_range) {
-
-    ipDash.hide();
-    ipEnd.hide();
-  }
-
-  var ipAdd = $('<div>').addClass('tele-ip-add')
-      .addClass('tele-icon')
-      .addClass('tele-icon-plus')
-      .hover(function () { $(this).addClass('hover'); },
-      function () { $(this).removeClass('hover'); })
-      .click(function () { container.append(getRangeLB()); });
-
-  var ipRemove = $('<div>').addClass('tele-ip-remove')
-      .addClass('tele-icon')
-      .addClass('tele-icon-minus')
-      .hover(function () { $(this).addClass('hover'); },
-      function () { $(this).removeClass('hover'); })
-      .click(function () { RangeRemoveLB(this); /* $(this).parent().remove(); */ });
-
-  var ipToggle = $('<div>').toggleFlip({
-
-    left_value: 'Single',
-    right_value: 'Range',
-    flip: function () {
-      ipEnd.toggle();
-      ipDash.toggle();
-    },
-    flipped: is_range
-  });
-
-
-  ipWrap.append(ipAdd).append(ipRemove).append(ipToggle).append(ipStart).append(ipDash).append(ipEnd);
-  return ipWrap;
-
-}
 				
 function findAndRemove(array, property, value) {
    $.each(array, function(index, result) {
