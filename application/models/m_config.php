@@ -15,19 +15,24 @@ class M_Config extends CI_Model
 
     }
 
-    public function changed(){
-        $params = [
-            'index' => 'telepath-config',
-            'type' => 'config',
-            'id' => 'config_was_changed_id',
-            'body' => [
-                'doc' => [
-                    "value"=>"1"
-                ]
-            ]
-        ];
+    public function changed()
+    {
+//        $params = [
+//            'index' => 'telepath-config',
+//            'type' => 'config',
+//            'id' => 'config_was_changed_id',
+//            'body' => [
+//                'doc' => [
+//                    "value"=>"1"
+//                ]
+//            ]
+//        ];
+//
+//        $this->elasticClient->update($params);
 
-        $this->elasticClient->update($params);
+        $redisObj = new Redis();
+        $redisObj->connect('localhost', '6379');
+        $redisObj->lpush("C", "1");
     }
 
     public function sql_whitelist_get_ips()
