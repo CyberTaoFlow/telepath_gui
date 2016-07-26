@@ -52,7 +52,7 @@ class M_Suspects extends CI_Model {
 
 	}
 	
-	public function get($range, $apps, $sort, $sortorder, $start = 0, $limit = 100, $suspect_threshold, $search = '') {
+	public function get($range, $apps, $sort, $sortorder, $start = 0, $limit = 100, $suspect_threshold, $search = '', $distinct_ip=false) {
 		
 		//$suspect_threshold = $this->get_threshold();
 		//ROI CHECK THIS OUT (Yuli)
@@ -122,6 +122,20 @@ class M_Suspects extends CI_Model {
 				]
 			],
 		];
+		if ($distinct_ip) {
+			$params['body']["aggs"] = [
+				"sid" => [
+					"terms" => [
+						"field" => "ip_orig",
+						"size" => intval($limit) * 10,
+						"order" => [$sortfield => $sortorder]], // Allow up to 10 scrolls
+				],
+				"sid_count" => [
+					"cardinality" => ["field" => "sid"],
+				]
+
+			];
+		}
 
 		if ($sortfield == "date")
 		{
@@ -226,8 +240,12 @@ class M_Suspects extends CI_Model {
 									]
 								]
 							];
-
-						$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+						if ($distinct_ip){
+							$params2['body']['query']['bool']['must'][] = [ 'term' => ['ip_orig' => $sid['key'] ] ];
+						}
+						else{
+							$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+						}
 						$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 						$params2['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 						$params2['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
