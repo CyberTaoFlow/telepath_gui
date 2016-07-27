@@ -427,7 +427,7 @@ telepath.casePanel = {
 		// Create List
 		
 		this.list = $('<div>').addClass('tele-case-alerts-block');
-		this.listWrap = $('<div>').addClass('tele-wrapper').append(this.list).css({ display: 'inline-block' }).width('65%');
+		this.listWrap = $('<div>').addClass('tele-wrapper').append(this.list).css({ display: 'inline-block', float:'left' }).width('65%');
 
 		this.container.append(this.listWrap);
 		
@@ -442,7 +442,7 @@ telepath.casePanel = {
 
 
 		this.similarsList=$('<div>').addClass('tele-case-similar-block');
-		this.similarsListWrap = $('<div>').addClass('tele-wrapper').append(this.similarsList).css({ display: 'inline-block' }).width('35%');
+		this.similarsListWrap = $('<div>').addClass('tele-wrapper').append(this.similarsList).css({ display: 'inline-block', float:'left'  }).width('35%');
 
 		this.container.append(this.similarsListWrap);
 
