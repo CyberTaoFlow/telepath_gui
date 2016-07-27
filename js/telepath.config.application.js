@@ -105,7 +105,8 @@ telepath.config.application = {
 				app_data.form_flag = 1;
 				
 				// Username parameter is required here
-				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
+				//app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
+				app_data.form_param_name = $('.tele-input-input', this.usernameParameter).val();
 
 				// unknown
 				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
@@ -432,9 +433,10 @@ telepath.config.application = {
 			$('.tele-input-input', element).autocomplete({ 
 				autoFill: true,
 				source: that.app_data.cookie_suggestion,
-				minLength: 0
+				minLength: 0,
+				appendTo:'#tele-app-details'
 			}).focus(function () {
-				$(this).autocomplete('search', $(this).val());
+				$(this).autocomplete('search',"");
 			});
 			
 		} }).appendTo('#tele-app-details');
@@ -452,9 +454,10 @@ telepath.config.application = {
 			$('.tele-input-input', element).autocomplete({
 				autoFill: true,
 				source: that.app_data.ip_suggestion,
-				minLength: 0
+				minLength: 0,
+				appendTo:'#tele-app-details'
 			}).focus(function () {
-				$(this).autocomplete('search', $(this).val());
+				$(this).autocomplete('search',"");
 			}).keydown(function(e) {
 
 				var key = e.charCode || e.keyCode || 0;
@@ -579,9 +582,10 @@ telepath.config.application = {
 		$('.tele-input-input', this.SC_cookie_name).autocomplete({ 
 			autoFill: true,
 			source: that.app_data.cookie_suggestion,
-			minLength: 0
+			minLength: 0,
+			appendTo:'#tele-app-details'
 		}).focus(function () {
-			$(this).autocomplete('search', $(this).val());
+			$(this).autocomplete('search', '');
 		});
 		
 		SC_wrap.append('<div class="tele-form-hr">');

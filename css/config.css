@@ -168,6 +168,7 @@ body .jstree .tele-button {
 	background: #E6E6E6;
 	background-image: none;
 	top: 30px;
+	position: relative;
 }
 
 
