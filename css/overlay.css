@@ -161,7 +161,7 @@
 /* Alert View */
 .tele-alert-stats {
 	clear: left;
-	height: 30px;
+	min-height: 30px;
 	width: 400px;
 	margin: 0px 0px 10px 15px;
 	float: left;
