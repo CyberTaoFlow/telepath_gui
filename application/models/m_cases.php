@@ -286,7 +286,7 @@ class M_Cases extends CI_Model {
 			"aggs" => [
 				"sid" => [
 
-					"terms" => ["field" => "sid", "size" => 100,
+					"terms" => ["field" => "sid", "size" => 5,
 //						"order" => [ 'score' => 'desc' ]
 					],
 					"aggs" => [
