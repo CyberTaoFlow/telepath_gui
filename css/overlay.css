@@ -243,7 +243,7 @@
 	width: 30px;
 }
 .tele-alert-filters {
-	height: 35px;
+	min-height: 35px;
 	background-color: #CCCCCC;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
@@ -424,6 +424,8 @@
 
 .tele-similarities-list {
 	margin-top: 10px;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 .tele-similarities-list .tele-block-title,
@@ -437,4 +439,47 @@
 
 .tele-similarities-list .tele-list{
 	max-height: 600px;
+}
+
+@media (max-width: 1250px){
+	.tele-box-right{
+		/*width: 58%;*/
+	}
+	.tele-box-right{
+		float: right;
+		margin-right: 10px;
+		padding-right: 10px;
+	}
+	.tele-alert-params-table-wrap {
+		max-height: none;
+	}
+	.tele-alert-params-table {
+		font-size: 13px;
+	}
+	.tele-alert-details-info-time-wrap {
+		clear: both;
+	}
+
+	.tele-overlay-content{
+		/*padding: 0 5%;*/
+	}
+	.tele-alert-info-table {
+		width: 230px;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+}
+
+@media (max-width: 950px) {
+	.tele-box-left .mCSB_container{
+		margin-right: 0;
+	}
+	.tele-overlay-content{
+		padding: 0;
+	}
+	.tele-similarities-list .tele-list{
+		margin-left: 0;
+	}
+
 }

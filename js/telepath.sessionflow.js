@@ -53,8 +53,15 @@ telepath.sessionflow = {
 		
 		var height = this.overlay.contentEl.height() - this.requestScoreEl.outerHeight() - $('.tele-alert-info-table', this.overlay.contentEl).outerHeight() - 2*20 - 75;
 		//console.log(height);
-		
-		this.similaritiesList.css({ width: 380, 'height': height /* + " !important" */ }); // Weird :)
+
+		if (this.width < 1250) {
+			var height = this.overlay.contentEl.height() - this.requestScoreEl.outerHeight() - $('.tele-alert-info-table', this.overlay.contentEl).outerHeight()- 2*20 - 75 -75;
+			this.similaritiesList.css({ 'height': height });
+		}
+		else{
+			this.similaritiesList.css({ width: 380, 'height': height /* + " !important" */ }); // Weird :)
+		}
+
 
 		this.similaritiesList.on('teleList.afterUpdate', function (){
 
@@ -82,8 +89,13 @@ telepath.sessionflow = {
 					}
 					$('.tele-similarity-details').remove();
 					that.similarityDetails = $('<div>').addClass('tele-request-details tele-similarity-details').addClass('tele-popup-2').css({ marginTop: 20 });
-					that.boxMid.append(that.similarityDetails);
 
+					if (that.width < 1250) {
+						$('.tele-similarities-list.tele-block').before(that.similarityDetails.hide().fadeIn());
+					}
+					else{
+						that.boxMid.append(that.similarityDetails);
+					}
 					var wrap = $('<div>').addClass('tele-alert-details-info');
 					
 					that.requestData.score_average = parseFloat(that.requestData.score_average);
@@ -206,6 +218,7 @@ telepath.sessionflow = {
 			$('.tele-similarities-list .tele-block').height(height - 20);
 			//$('.tele-block .tele-list').height(offset - 50);
 			$('.tele-similarities-list .tele-list').mCustomScrollbar("update");
+			//$('.tele-box-right').mCustomScrollbar("update");
 		}
 
 	},
@@ -346,16 +359,37 @@ telepath.sessionflow = {
 		this.boxLeft  = $('<div>').addClass('tele-box-left');
 		this.boxMid   = $('<div>').addClass('tele-box-mid');
 		this.boxRight = $('<div>').addClass('tele-box-right');
-		this.container.append(this.boxLeft, this.boxMid, this.boxRight);
-		
+		//this.container.append(this.boxLeft, this.boxMid, this.boxRight);
+
+
+
 		// Dynamically this.overlay.titleEl.html('Alert #' + this.alertID);
-		
-		
-		var width = this.overlay.contentEl.width();
-		var mid_width = width - $(this.boxLeft).outerWidth() - $(this.boxRight).outerWidth() - 50;
-		this.boxMid.width(mid_width);
-		
-		
+
+		this.width = window.innerWidth;
+		if (this.width < 1250){
+			var width = this.overlay.contentEl.width();
+			this.container.append(this.boxLeft, this.boxRight);
+			var height = this.overlay.contentEl.height()-70;
+			var mid_width = width - $(this.boxLeft).outerWidth() - 50;
+			this.boxRight.css({'height':height}).width(mid_width)
+			$('.tele-box-right').mCustomScrollbar({
+				scrollButtons:{	enable: false },
+				scrollInertia: 200,
+				advanced: {
+					updateOnContentResize: true
+				},
+			});
+
+		}
+		else{
+			var width = this.overlay.contentEl.width();
+			this.container.append(this.boxLeft, this.boxMid, this.boxRight);
+			var mid_width = width - $(this.boxLeft).outerWidth() - $(this.boxRight).outerWidth() - 50;
+			this.boxMid.width(mid_width);
+
+		}
+
+
 		// Print Stats
 		// ---------------------------------------------------
 		var count_all     = this.session.stats.total;
@@ -414,8 +448,15 @@ telepath.sessionflow = {
 		
 		// Request Details
 		this.requestDetails = $('<div>').addClass('tele-request-details').addClass('tele-popup-2');
-		this.boxMid.prepend(this.requestDetails);
-		
+
+
+		if (this.width < 1250){
+			this.boxRight.append(this.requestDetails)
+		}
+		else{
+			this.boxMid.prepend(this.requestDetails);
+		}
+
 		// Print Requests
 		this.lastAction = -1;
 		this.printed = 0;
@@ -426,7 +467,13 @@ telepath.sessionflow = {
 			that.appendItem(req);
 			
 		}
-		var height = this.container.height() - statsEl.height() /*- durationEl.height()*/ - 100;
+		if (this.width < 1250){
+			var height = this.container.height() - statsEl.height() /*- durationEl.height()*/ - 70;
+		}
+		else{
+			var height = this.container.height() - statsEl.height() /*- durationEl.height()*/ - 100;
+		}
+
 		// Infinitely load additional alerts
 		$(this.actionsContainer).css({ 'height': height }); // Stats and times offset
 		
@@ -776,7 +823,7 @@ telepath.sessionflow = {
 			// console.log('RID ' + uid + ' was not found in requests');
 			return;
 		}
-		
+
 		
 		this.boxRight.empty();
 		
@@ -789,6 +836,12 @@ telepath.sessionflow = {
 		$('.tele-overlay-tools', this.overlay.headerEl).remove();
 		
 		this.printRequestInfo(this.boxRight);
+
+		if (this.width < 1250){
+			//$('.mCSB_container', this.boxRight).append(this.requestDetails)
+			this.boxRight.append(this.requestDetails)
+			this.boxRight.css({ "overflow-y": "scroll"})
+		}
 
 		// temporary dismiss this features
 		//if(alert !== false) {

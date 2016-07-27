@@ -33,8 +33,13 @@ $.widget( "tele.listitem", {
 		if(offset < 30) { offset += 20; }
 		
 		var innerWidth = $(this.element).width() - offset;
-		
-		$('.tele-listitem-inner', this.element).width(innerWidth  - 15 );
+		if (this.element.parent().parent().parent().parent().attr('class')=='tele-similarities-list tele-block' && window.innerWidth < 1250){
+			$('.tele-listitem-inner', this.element).width($('.tele-box-right').width()-80);
+		}
+		else{
+			$('.tele-listitem-inner', this.element).width(innerWidth  - 15 );
+		}
+
 		
 		var offset = 15;
 		
