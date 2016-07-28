@@ -137,39 +137,50 @@ class Actions extends Tele_Controller
 
         telepath_auth(__CLASS__, 'get_action');
 
-        // Mode, either IP, SID, PARAM or USER
+        $id = $this->input->post('id');
+
+        return $this->M_Actions->get_requests($id);
+
+    }
+
+    public function start_recording()
+    {
+
+        telepath_auth(__CLASS__, 'set_action');
+
+        // Mode, either IP, URL or Session (sha256_sid field) for USER
         $mode = $this->input->post('mode');
         // The value for the mode
         $value = $this->input->post('value');
         // Host on which to track, can be black for cross host sessions
         $host = $this->input->post('host');
-        // Offset timestamp - only return requests with timestamp greater than supplied (only new requests)
-        $offset = $this->input->post('offset');
-        // If no offset was provided assign 0 to keep query working
+        // Random id for Redis key
+        $id = mt_rand();
 
-        // When this flag is set only return TS of last request
-        $lockon = ($this->input->post('lockon') == 'true') ? true : false;
-
-        // if it's the first request, we need to update an elasticsearch variable for the Redis fast line
-        $init = ($this->input->post('init') == 'true') ? true : false;
-
-        if ($init){
-            $this->load->model('M_Config');
-            $this->M_Config->update('hybrid_record_id', $value, true);
+        // Send record message to Redis, to begin the fast lane record
+        if ($this->M_Actions->send_record_message($id, $mode, $value, $host)) {
+            return_success($id);
+        } else {
+            return_fail($id);
         }
 
-
-        return $this->M_Actions->get_requests($mode, $value, $host, $offset, $lockon);
-
     }
+
 
     public function end_record()
     {
         telepath_auth(__CLASS__, 'set_action');
 
-        $this->load->model('M_Config');
-        $this->M_Config->update('hybrid_record_id', 0, true);
-        return_success();
+        // Redis key
+        $id = $this->input->post('id');
+
+        // Send message to Redis to stop the fast lane, and delete the queue
+        $sent = $this->M_Actions->send_record_message($id);
+        $delete = $this->M_Actions->delete_record_queue($id);
+
+
+        return_success(['sent' => $sent, 'delete' => $delete]);
+
     }
 
     public function get_suggest()
@@ -180,32 +191,22 @@ class Actions extends Tele_Controller
         $host = $this->input->post('host');
         $mode = $this->input->post('mode');
 
-        $sessions = $this->M_Actions->__get_active_sessions($host);
         $res = array();
 
         switch ($mode) {
-            case 'IP':
 
-                // De-Dupe with unique keys
-                foreach ($sessions as $session) {
-                    $res[$session['ip_orig']] = true;
-                }
-                // Get keys
-                $res = array_keys($res);
+            //IP mode
+            case 'i':
+
+                $res = $this->M_Actions->__get_active_ips($host);
 
                 break;
 
-            case 'SID':
+            // user mode (sha256_sid field)
+            case 's':
 
-                // Javascript doesnt like arrays with numeric keys, it thinks its a really large array
-                foreach ($sessions as $session) {
-                    $res[] = $session['sid'] . '';
-                }
+                $res = $this->M_Actions->__get_active_users($host);
 
-                break;
-
-            case 'user':
-                // TODO::
                 break;
         }
 

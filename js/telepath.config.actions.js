@@ -204,7 +204,9 @@ telepath.config.actions = {
 	reload: function () {
 		
 		if(telepath.action.recorder.timer) {
-			clearTimeout(telepath.action.recorder.timer);
+			clearInterval(telepath.action.recorder.timer);
+			telepath.action.recorder.timer = false;
+			telepath.action.recorder.endRecord();
 		}
 
 		var that = this;
@@ -357,6 +359,7 @@ telepath.config.actions = {
 		});
 	},
 	createTree: function(div,treedata){
+		var that = this;
 		div.jstree({
 			core: {data: treedata},
 			plugins: ["json_data", "wholerow", "theme", "grid", "search"],
@@ -407,6 +410,7 @@ telepath.config.actions = {
 					msg: 'Are you sure thay you want to stop the Business Action record?',
 					callback: function () {
 						clearInterval(telepath.action.recorder.timer);
+						telepath.action.recorder.endRecord();
 						telepath.action.recorder.timer = false;
 						that.appTree.trigger("restart", data);
 					}

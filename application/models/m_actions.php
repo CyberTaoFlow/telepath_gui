@@ -195,7 +195,7 @@ class M_Actions extends CI_Model {
 		return_success();
 	}
 
-	function get_requests($mode, $value, $host, $offset, $lockon)
+	function old_get_requests($mode, $value, $host, $offset, $lockon)
 	{
 
 		telepath_auth(__CLASS__, 'get_action');
@@ -219,7 +219,7 @@ class M_Actions extends CI_Model {
 
 		// sanity check (Yuli)
 		if ($mode == 'IP') {
-			// we need to check if IP hass correct format
+			// we need to check if IP has correct format
 			// we will silently ignore this request returning empty result
 			if (filter_var($value, FILTER_VALIDATE_IP) === false) {
 				$empty_result = array();
@@ -295,6 +295,75 @@ class M_Actions extends CI_Model {
 
 	}
 
+	function send_record_message($id, $mode = "0", $value = "0", $host = "0")
+	{
+		telepath_auth(__CLASS__, 'set_action');
+
+		$redisObj = new Redis();
+		$redisObj->connect('localhost');
+
+		$array = [
+			'id' => $id,
+			'mode' => $mode,
+			'value' => $value,
+			'host' => $host,
+		];
+		$msg = msgpack_pack($array);
+
+		return $redisObj->lpush("E", $msg);
+
+	}
+
+
+	function delete_record_queue($id)
+	{
+		telepath_auth(__CLASS__, 'set_action');
+
+		$redisObj = new Redis();
+		$redisObj->connect('localhost');
+		return $redisObj->del($id);
+	}
+
+	function get_requests($id)
+	{
+
+		telepath_auth(__CLASS__, 'get_action');
+
+		$redisObj = new Redis();
+		$redisObj->connect('localhost');
+
+		$ans = [];
+		while (true) {
+
+			$res = $redisObj->lpop($id);
+
+			if (!$res) {
+				break;
+			}
+
+			$basic_request = msgpack_unpack($res);
+
+			// get URI
+			$request['uri'] = $basic_request['TU'];
+
+			// get POST and GET params
+			foreach(['TB','TQ'] as $param){
+				if (!empty($basic_request[$param])) {
+					parse_str($basic_request[$param], $params);
+					foreach ($params as $key => $value) {
+						$request['parameters'][] = ['name' => $key, 'value' => $value];
+					}
+				}
+			}
+
+			$ans[] = $request;
+
+		}
+
+		return_success($ans);
+
+	}
+
 	function __get_active_sessions($host)
 	{
 
@@ -335,6 +404,107 @@ class M_Actions extends CI_Model {
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach ($sid_buckets as $sid) {
 				$results[] = array("sid" => $sid['key'], "ts" => $sid['date']['value'], "ip_orig" => long2ip($sid['ip_orig']['value']));
+			}
+		}
+
+		return $results;
+
+	}
+
+	function __get_active_ips($host)
+	{
+
+		$scope = 300; // in last 5 minutes
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"ip_orig" => [
+					"terms" => ["field" => "ip_orig"]],
+
+			],
+			'query' => ['bool' =>
+				['must' => [
+					['term' => ['host' => $host]],
+					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
+				],
+				]]
+		];
+
+		$results = array();
+		$result = $this->client->search($params);
+
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["ip_orig"]) &&
+			isset($result["aggregations"]["ip_orig"]["buckets"]) &&
+			!empty($result["aggregations"]["ip_orig"]["buckets"])
+		) {
+
+			$ip_buckets = $result["aggregations"]["ip_orig"]["buckets"];
+			foreach ($ip_buckets as $ip) {
+				$results[] = $ip['key_as_string'];
+			}
+		}
+
+		return $results;
+
+	}
+
+	function __get_active_users($host)
+	{
+
+		$scope = 300; // in last 5 minutes
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"user" => [
+					"terms" =>
+						[
+							"field" => "username",
+							// request without username has empty string, we need to exclude it
+							"exclude" => [""]
+						],
+					"aggs" => [
+						// get the last 'sha256_sid' field
+						"sha256_sid" => [
+							"terms" => ["field" => "sha256_sid",
+								"size" => 1,
+								"order" => ["max_ts" => "desc"]
+							],
+							"aggs" => [
+								"max_ts" => [
+									"max" => ["field" => "ts"],
+								],
+							],
+						],
+					],
+				],
+			],
+			'query' => ['bool' =>
+				['must' => [
+					['term' => ['host' => $host]],
+					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
+				],
+				]
+			]
+		];
+
+		$results = array();
+		$result = $this->client->search($params);
+
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["user"]) &&
+			isset($result["aggregations"]["user"]["buckets"]) &&
+			!empty($result["aggregations"]["user"]["buckets"])
+		) {
+			$user_buckets = $result["aggregations"]["user"]["buckets"];
+			foreach ($user_buckets as $user) {
+				$results[] = ['label' => $user['key'], 'value' => $user['sha256_sid']['buckets'][0]['key']];
 			}
 		}
 

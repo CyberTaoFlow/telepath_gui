@@ -1,52 +1,5 @@
 telepath.action = {};
 
-
-telepath.action.tracker = {
-	
-	requests: [],
-	
-	min_ts: 0,
-	key: false,
-	value: false,
-	timer: false,
-	tick_value: 3000,
-	init: function(key, value, ts) {
-		
-		// Clear the timer
-		if(this.timer) {
-			clearTimeout(this.timer);
-			this.timer = false;
-		}
-		// Set parameters
-		
-		this.key    = key;
-		this.value  = value;
-		this.min_ts = ts;
-		
-	},
-	tick: function() {
-		
-		switch(key) {
-		
-			case 'param':
-			
-			break;
-			
-			case 'sid':
-				
-			break;
-			
-			case 'ip':
-				
-			break;
-			
-		}
-		
-	}
-	
-	
-}
-
 telepath.action.recorder = {
 	
 	new_flow: true,
@@ -55,6 +8,7 @@ telepath.action.recorder = {
 	ts_offset: 0,
 	// set this variable when the user click on an application in the left panel to check if the record is on
 	timer: false,
+	id: false,
 	initRecordingTools: function(action_name) {
 		
 		var that = this;
@@ -82,8 +36,7 @@ telepath.action.recorder = {
 
 					case 'stop':
 
-						clearTimeout(that.timer);
-						//$('.tele-control', that.recordTools).remove();
+						clearInterval(that.timer);
 						telepath.action.recorder.init();
 
 						break;
@@ -105,48 +58,24 @@ telepath.action.recorder = {
 		this.container.parent().prepend(this.recordTools);
 		
 	},
-	processRequests: function(requests, offset) {
-		
+	processRequests: function (requests) {
+
 		var that = this;
-		
-		if($('.tele-record-tools').size() == 0) {
-			this.initRecordingTools();
-		}
-		
-		if(requests.length > 0) {
-			$.each(requests, function(i, request) {
-				
-				// If paused, don't add the request, we want to continue getting requests so we know the last timestamp
-				if(!that.paused) {
-				
-					request.el = $('<div>').teleRequest({ data: request });
+
+		if (requests.length > 0) {
+			$.each(requests, function (i, request) {
+
+				// If paused, don't add the request, but we want to continue getting requests to pop them from the
+				// Redis queue
+				if (!that.paused) {
+					request.el = $('<div>').teleRequest({data: request});
 					$('.mCSB_container', that.container).append(request.el);
 					that.requests.push(request);
-				
 				}
-				
-				// Set max time to rcv subsequent
-				if(request.ts > that.ts_offset) {
-					that.ts_offset = request.ts;
-				}
-				
+
 			});
 		}
-		
-		// Restart timer, this time using timestamp of last request to receive only subsequent requests
-		// for now..
-		this.timer = setTimeout(function () {
-			telepath.ds.get('/actions/get_requests', {
-				mode: that.recordType,
-				value: that.recordValue,
-				host: telepath.action.currentApp,
-				offset: (parseInt(that.ts_offset) || 0) + 1
-			}, function (data) {
-				// Process even if no items to reset timer iteration
-				that.processRequests(data.items);
-			});
-		}, 3000);
-		
+
 	},
 	startRecording: function(type) {
 		
@@ -160,70 +89,61 @@ telepath.action.recorder = {
 		var value = $('input', this.input).val();
 		$('input', this.input).css({ borderColor: '#999' });
 		
-		if(type == 'URL') {
+		if(type == 'u') {
 			value = $('a', this.input).attr('href');
 			value = value.split('=')[1]; // ssl://sub.domain?hybridrecord = VALUE
 		}
 		
-		if((type == 'IP' || type == 'user' || type == 'SID') && value == '') {
+		if((type == 'i' || type == 's' ) && value == '') {
 			$('input', this.input).css({ borderColor: 'red' });
 			telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'Missing value' });
 			return;
 		}
 		
 		this.recordValue = value;
-		
-		if(telepath.debug) {
-			// console.log('Tracking ' + type + ' - ' + value);
-		}
-		
-		function tick(init) {
-			
+
+
+		function tick(id) {
+
 			that.timerValue += 5;
-			that.progbarInner.css({ width: that.timerValue + '%' }); 
-			
-			// Request (No time being sent, we don't know when was the last request we're actually tracking)
-			// Lockon = true, only get latest TS
+			that.progbarInner.css({width: that.timerValue + '%'});
+
 			telepath.ds.get('/actions/get_requests', {
-				mode: that.recordType,
-				value: that.recordValue,
-				host: telepath.action.currentApp,
-				lockon: true,
-				init: init
+				id: id
 			}, function (data) {
-				if(data.total > 0) {
-				
-					// Have requests matching recording parameters, initialize recording.
-					that.ts_offset = data.items.ts;
-					
-					if(that.recordType == 'URL') {
-						that.recordType  = 'SID';
-						that.recordValue = data.items.sid;
+				if (data.total > 0) {
+					// If it's the first time we have requests matching recording parameters, we need to initialize
+					// recording.
+					if (!that.dataLoaded) {
+						that.dataLoaded = true;
+
+						// Clearup
+						that.container.empty();
+
+						// Another inner container for padding
+						var tmp = $('<div>').addClass('tele-action-container');
+						that.container.append(tmp);
+						that.container = tmp;
+
+						that.initRecordingTools();
+
+						$('.tele-action-container').css({padding: 0, height: 400}).mCustomScrollbar({
+							scrollButtons: {enable: false},
+							scrollInertia: 150,
+							advanced: {
+								updateOnContentResize: true
+							}
+						});
+
+						that.showSaveLoad = telepath.config.action.showSaveLoad;
+						that.showSaveLoad();
+
 					}
-					
-					// Clearup
-					that.container.empty();
-					
-					// Another inner container for padding
-					var tmp = $('<div>').addClass('tele-action-container');
-					that.container.append(tmp);
-					that.container = tmp;
-					
-					clearInterval(that.timer);
+
+					// display recorded requests
 					that.processRequests(data.items);
-					
-					$('.tele-action-container').css({ padding: 0, height: 400 }).mCustomScrollbar({
-						scrollButtons:{	enable: false },
-						scrollInertia: 150,
-						advanced: {
-							updateOnContentResize: true
-						} 
-					});
-					
-					that.showSaveLoad = telepath.config.action.showSaveLoad;
-					that.showSaveLoad();
-					
-					
+
+
 				}
 			});
 				
@@ -236,27 +156,47 @@ telepath.action.recorder = {
 			}
 		
 		}
-		
-		this.timer = setInterval(function () { tick(false); }, 3000);
-		tick(true);
 
+
+		telepath.ds.get('/actions/start_recording', {
+			mode: that.recordType,
+			value: that.recordValue,
+			host: telepath.action.currentApp
+		}, function (data) {
+			if (data.total > 0) {
+				that.id = data.items;
+				that.dataLoaded = false;
+				tick(that.id);
+				that.timer = setInterval(function () {
+					tick(that.id);
+				}, 3000);
+			}
+		});
 	},
-	endRecord: function(){
-		telepath.ds.get('/actions/end_record', {}, function (data) {});
-			},
+	endRecord: function () {
+		var that = this;
+		if (that.id) {
+			telepath.ds.get('/actions/end_record', {id: that.id}, function (data) {
+				that.id = false;
+			});
+		}
+	},
 	init: function () {
 		
 		$('.popover').remove();
 
-		this.timer=false;
+		if (this.timer){
+			this.endRecord();
+			this.timer=false;
+		}
+
 		
 		// Trackers
 		this.trackers = [
-			{ type: 'URL', title: 'URL', desc: 'Record all activity from URL' },
-			{ type: 'user', title: 'Username', desc: 'Record all activity of a speciﬁc user' },
-			{ type: 'IP', title: 'IP', desc: 'Record all activity of a speciﬁc device' },
-			// Remove Session recording by SID for now, Yuli
-			//{ type: 'SID', title: 'Session', desc: 'Record all activity of a speciﬁc session' }
+			{ type: 'u', title: 'URL', desc: 'Record all activity from URL' },
+			// send 'sha256_sid' field of the user
+			{ type: 's', title: 'Username', desc: 'Record all activity of a speciﬁc user' },
+			{ type: 'i', title: 'IP', desc: 'Record all activity of a speciﬁc device' },
 		];
 		
 		// Containers
@@ -338,7 +278,7 @@ telepath.action.recorder = {
 		//trackerInfo.append(trackerTitle);
 		
 		var application_ssl       = false;
-		var application_subdomain = ''
+		var application_subdomain = '';
 		var application_domain    = telepath.action.currentApp;
 		var hybrid_record         = 'hybridrecord';
 		var hybrid_record_id      = Math.floor(Math.random() * (999999 - 100000 + 1)) + 99999; // 99-999K random seed
@@ -350,19 +290,16 @@ telepath.action.recorder = {
 		
 		switch(type) {
 				
-				case 'IP':
+				case 'i':
 					var input = $('<div>').teleInput({ label: 'Target IP:' });
 					trackerInfo.append(input);
 				break;
-				case 'user':
+				case 's':
 					var input = $('<div>').teleInput({ label: 'Target Username:' });
 					trackerInfo.append(input);
 				break;
-				case 'SID':
-					var input = $('<div>').teleInput({ label: 'Target Session:' });
-					trackerInfo.append(input);
-				break;
-				case 'URL':
+			//URL
+				case 'u':
 					var input = $('<div>').teleInput({ label: 'Target URL:', value: hybrid_link, link: true });
 					trackerInfo.append(input);
 				break;
@@ -371,18 +308,33 @@ telepath.action.recorder = {
 		
 		input.addClass('tele-workflow-tracker-input-' + type);
 		
-		if(type !== 'URL') {
+		if(type !== 'u') {
 		
 			$('.tele-input-input', input).autocomplete({ 
-				autoFill: true,
+				autoFocus: true,
 				source: function(request, response) {
 					telepath.ds.get('/actions/get_suggest', { mode: type, host: application_domain }, function(data) {
-						if(data.items) {
+						if(data.total > 0) {
 							response(data.items);
+						}
+						else{
+							if(type == 's'){
+								telepath.dialog({
+									type: 'alert',
+									title: 'Business Actions',
+									msg: 'You need to login before you start recording'
+								});
+							}
 						}
 					});
 				},
-				minLength: 0
+				minLength: 0,
+				change: function(event,ui) {
+					if (ui.item == null && type == 's') {
+						$(this).val('');
+						$(this).focus();
+					}
+				}
 			}).focus(function () {
 				$(this).autocomplete('search', $(this).val());
 			});
@@ -630,8 +582,8 @@ telepath.config.action = {
 		
 		// BIND Cancel -- Clear all, show recorder
 		this.cancelBtn.click(function () {
-			// Clear timer when cancel is clicked (Yuli)
-			clearInterval(that.timer);
+			// Clear timer when cancel is clicked
+			clearInterval(telepath.action.recorder.timer);
 			telepath.action.recorder.init();
 		});
 	
@@ -643,6 +595,7 @@ telepath.config.action = {
 			flow_name: flow_name,
 			json: JSON.stringify(cleanData)
 		}, function (data) {
+			clearInterval(telepath.action.recorder.timer);
 			// Notify user
 			telepath.dialog({
 				type: 'alert',
