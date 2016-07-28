@@ -231,6 +231,7 @@ telepath.sessionflow = {
 		this.searchkey = searchkey;
 		this.list = list;
 		this.suspect= '';
+		this.range= true;
 
 		if (searchkey && state =='suspect')
 		{
@@ -246,6 +247,9 @@ telepath.sessionflow = {
 		}else if(state && state == 'suspect') {
 			this.filter = 'Suspect';
 			this.suspect = 'Suspect';
+		} else if(state && state == 'case') {
+			this.range=false;
+			this.filter = 'All';
 		} else {
 			this.filter = 'All';
 		}
@@ -273,7 +277,7 @@ telepath.sessionflow = {
 			
 			that.session.stats = data.items;
 			
-			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP }, function (data) {
+			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP , range: that.range }, function (data) {
 				that.session.items = data.items;
 				that.showSession();
 			});
@@ -490,7 +494,7 @@ telepath.sessionflow = {
 					
 						var offset = that.session.items.length;
 						
-						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, offset: offset }, function (data) {
+						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, offset: offset, range: that.range }, function (data) {
 							
 							that.loading = false;
 							$('.tele-loader', that.actionsContainer).remove();

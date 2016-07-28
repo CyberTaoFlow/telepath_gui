@@ -196,7 +196,7 @@ class M_Sessionflow extends CI_Model {
 			
 	}
 	
-	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = null) {
+	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = false) {
 		$params['index'] = 'telepath-20*';
 		$params['type'] = 'http';
 		$params['body'] = array(
@@ -238,7 +238,7 @@ class M_Sessionflow extends CI_Model {
 				// Do nothing, no filter
 			break;
 		}
-		if(!empty($range)) {
+		if ($range) {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
                 }
 
