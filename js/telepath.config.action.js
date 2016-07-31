@@ -318,7 +318,7 @@ telepath.action.recorder = {
 							response(data.items);
 						}
 						else{
-							if(type == 's'){
+							if(type == 's' && !$('.tele-overlay-dialog').is(':visible')){
 								telepath.dialog({
 									type: 'alert',
 									title: 'Business Actions',
