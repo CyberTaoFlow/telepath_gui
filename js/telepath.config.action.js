@@ -138,10 +138,19 @@ telepath.action.recorder = {
 						that.showSaveLoad = telepath.config.action.showSaveLoad;
 						that.showSaveLoad();
 
+						// if URL mode is enabled, we don't display the first recorded request with the hybridrecord GET
+						// parameter
+						if (type != 'u'){
+							that.processRequests(data.items);
 					}
 
+					}
+					else {
 					// display recorded requests
 					that.processRequests(data.items);
+					}
+
+
 
 
 				}
