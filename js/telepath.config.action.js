@@ -164,7 +164,7 @@ telepath.action.recorder = {
 			});
 				
 			
-			if(that.timerValue > 99) {
+			if(that.timerValue > 99 && !that.dataLoaded) {
 				clearInterval(that.timer);
 				that.timer=false;
 				telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'No matching requests, tracking timed out.' });
