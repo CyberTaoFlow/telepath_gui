@@ -504,7 +504,7 @@ class M_Actions extends CI_Model {
 		) {
 			$user_buckets = $result["aggregations"]["user"]["buckets"];
 			foreach ($user_buckets as $user) {
-				$results[] = ['label' => $user['key'], 'value' => $user['sha256_sid']['buckets'][0]['key']];
+				$results[] = ['label' => $user['key'], 'sha256_sid' => $user['sha256_sid']['buckets'][0]['key']];
 			}
 		}
 

@@ -85,8 +85,15 @@ telepath.action.recorder = {
 		this.recordType = type;
 		clearInterval(this.timer);
 		that.progbarInner.css({ width: 0 }); 
-		
-		var value = $('input', this.input).val();
+
+		// in user mode we need to send the 'sha256_sid' field associated with the username
+		if(type == 's'){
+			var value = $('input', this.input).data('sha256_sid')
+		}
+		else{
+			var value = $('input', this.input).val();
+		}
+
 		$('input', this.input).css({ borderColor: '#999' });
 		
 		if(type == 'u') {
@@ -142,12 +149,12 @@ telepath.action.recorder = {
 						// parameter
 						if (type != 'u'){
 							that.processRequests(data.items);
-					}
+						}
 
 					}
 					else {
-					// display recorded requests
-					that.processRequests(data.items);
+						// display recorded requests
+						that.processRequests(data.items);
 					}
 
 
@@ -342,6 +349,12 @@ telepath.action.recorder = {
 					if (ui.item == null && type == 's') {
 						$(this).val('');
 						$(this).focus();
+					}
+				},
+				select: function(event,ui) {
+					// in user mode we need to send the 'sha256_sid' field associated with the username
+					if (type == 's'){
+						$(this).data('sha256_sid', ui.item.sha256_sid);
 					}
 				}
 			}).focus(function () {
