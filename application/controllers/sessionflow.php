@@ -43,6 +43,7 @@ class Sessionflow extends Tele_Controller
         $anchor_value=$this->input->post('sid');
         $filter = $this->input->post('filter');
         $alerts = $this->input->post('alerts');
+        $range = $this->input->post('range') == 'true';
 
         if($alerts && !empty($alerts)){
             $this->load->model('M_Rules');
@@ -64,7 +65,11 @@ class Sessionflow extends Tele_Controller
 
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
-        $range = $this->_get_range();
+
+        if ($range){
+            $range = $this->_get_range();
+        }
+
 
         $sessionflow = $this->M_Sessionflow->get_sessionflow($anchor_field, $anchor_value, $offset, 100, $filter, $key, $range);
         return_success($sessionflow);

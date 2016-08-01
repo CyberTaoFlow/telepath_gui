@@ -393,6 +393,11 @@ telepath.alerts = {
 			// tooltip: true,
 		};
 
+		if (window.innerWidth < 1200){
+			options.series.pie.margin=[50,0];
+			options.legend.margin=([50,400])
+		}
+
 		function pieHover(event, pos, obj) 
 		{
 			if (!obj)
@@ -473,7 +478,8 @@ telepath.alerts = {
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plothover', pieHover);
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plotclick', pieClick);
 			legendClick();
-			set_legend()
+			set_legend();
+			this._resize();
 		}, 100);
 		
 	},
@@ -532,6 +538,11 @@ telepath.alerts = {
 			},
 			// tooltip: true,
 		};
+
+		if (window.innerWidth < 1200){
+			options.series.pie.margin=[50,0];
+			options.legend.margin=([50,400])
+		}
 
 		function pieHover(event, pos, obj) 
 		{
@@ -592,12 +603,15 @@ telepath.alerts = {
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plothover', pieHover);
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plotclick', pieClick);
 			legendClick();
-			set_legend()
+			set_legend();
+			this._resize();
 		}, 100);
 
 		
 	},	
 	_resize: function () {
+
+		var that = this;
 		
 		if($('.tele-panel-alerts').children().size() == 0) return;
 		
@@ -634,6 +648,15 @@ telepath.alerts = {
 		$('.tele-panel-alerts .tele-block').width(width - magic - 15);
 		$('.tele-panel-alerts .tele-block .tele-list').width(width - magic - 25).height(offset - 50).mCustomScrollbar("update");
 		$('.tele-panel-alerts .tele-alert-graphs-block').height(offset - 50).mCustomScrollbar("update");
-		
+
+		if (window.innerWidth <1200 ){
+
+			this.graph = $('.tele-alert-graph-distribution-canvas.tele-graph');
+			this.legendHeight=$('.legend table').height();
+			this.pieGraphHeight=$('.tele-alert-graph-distribution-canvas.tele-graph .tele-graph-canvas-outer').height();
+			this.graph.height(that.pieGraphHeight + that.legendHeight - 50);
+			
+		}
+
 	}
 }

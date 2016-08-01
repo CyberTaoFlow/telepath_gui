@@ -79,56 +79,23 @@ class M_Suspects extends CI_Model {
 		//die;
 		$params['index'] = 'telepath-20*';
 		$params['type'] = 'http';
-		$params['body'] = [
-			'size' => 0,
-			"aggs" => [
-				"sid" => [ 
-					"terms" => [ "field" => "sid", "size" => intval($limit) * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
 
-
-// Disabe internal aggregation, Yuli
-/*
-					"aggs" => [
-						"country_code" => [ 
-							"terms" => [ "field" => "country_code", "size" => 1 ] 
-						],
-						"city" => [ 
-							"terms" => [ "field" => "city" , "size" => 1 ] 
-						],
-						"id" => [ 
-							"terms" => [ "field" => "_id" , "size" => 1 ] 
-						],
-						"ip_orig" => [
-							"min" => [ "field" => "ip_orig" ]
-						],
-						"host" => [
-							"terms" => [ "field" => "host" , "size" => 100 ]
-						],
-						"alerts_count" => [
-							"sum" => [ "field" => "alerts_count" ]
-						],
-						"score" => [
-							"avg" => [ "field" => "score_average" ]
-						],
-						"date" => [
-							"max" => [ "field" => "ts" ]
-						],
-					],
-*/
-				
-				],
-				"sid_count" => [
-					"cardinality" => [ "field" => "sid" ],
-				]
-			],
-		];
 		if ($distinct_ip) {
 			$params['body']["aggs"] = [
-				"sid" => [
+				"ip_orig" => [
 					"terms" => [
 						"field" => "ip_orig",
 						"size" => intval($limit) * 10,
-						"order" => [$sortfield => $sortorder]], // Allow up to 10 scrolls
+						"order" => [$sortfield => $sortorder]],
+					'aggs' => [
+						"sid" => [
+							'terms' => [
+								"field" => "sid",
+								"size" => 1
+							]
+						]
+					],
+					// Allow up to 10 scrolls
 				],
 				"sid_count" => [
 					"cardinality" => ["field" => "sid"],
@@ -136,6 +103,52 @@ class M_Suspects extends CI_Model {
 
 			];
 		}
+		else{
+			$params['body'] = [
+				'size' => 0,
+				"aggs" => [
+					"sid" => [
+						"terms" => [ "field" => "sid", "size" => intval($limit) * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
+
+
+// Disabe internal aggregation, Yuli
+						/*
+                                            "aggs" => [
+                                                "country_code" => [
+                                                    "terms" => [ "field" => "country_code", "size" => 1 ]
+                                                ],
+                                                "city" => [
+                                                    "terms" => [ "field" => "city" , "size" => 1 ]
+                                                ],
+                                                "id" => [
+                                                    "terms" => [ "field" => "_id" , "size" => 1 ]
+                                                ],
+                                                "ip_orig" => [
+                                                    "min" => [ "field" => "ip_orig" ]
+                                                ],
+                                                "host" => [
+                                                    "terms" => [ "field" => "host" , "size" => 100 ]
+                                                ],
+                                                "alerts_count" => [
+                                                    "sum" => [ "field" => "alerts_count" ]
+                                                ],
+                                                "score" => [
+                                                    "avg" => [ "field" => "score_average" ]
+                                                ],
+                                                "date" => [
+                                                    "max" => [ "field" => "ts" ]
+                                                ],
+                                            ],
+                        */
+
+					],
+					"sid_count" => [
+						"cardinality" => [ "field" => "sid" ],
+					]
+				],
+			];
+		}
+
 
 		if ($sortfield == "date")
 		{
@@ -169,21 +182,37 @@ class M_Suspects extends CI_Model {
 				
 		$count_offset = 0;
 		$count_insert = 0;
-		
-		if(isset($result["aggregations"]) && 
-		   isset($result["aggregations"]["sid"]) && 
-		   isset($result["aggregations"]["sid"]["buckets"]) && 
-		   !empty($result["aggregations"]["sid"]["buckets"])) {
-		   
+
+		if ($distinct_ip) {
+			if(isset($result["aggregations"]) &&
+				isset($result["aggregations"]["ip_orig"]) &&
+				isset($result["aggregations"]["ip_orig"]["buckets"]) &&
+				!empty($result["aggregations"]["ip_orig"]["buckets"])) {
+
+				$sid_buckets = $result["aggregations"]["ip_orig"]["buckets"];
+		}
+		}else {
+			if (isset($result["aggregations"]) &&
+				isset($result["aggregations"]["sid"]) &&
+				isset($result["aggregations"]["sid"]["buckets"]) &&
+				!empty($result["aggregations"]["sid"]["buckets"])
+			) {
+
 				$sid_buckets = $result["aggregations"]["sid"]["buckets"];
-				
-				
+			}
+		}
+		if($sid_buckets){
 				foreach($sid_buckets as $sid) {
 				
 					if($count_offset >= $start) {
 						// Create subrequest for agregated data
+						if ($distinct_ip) {
+							$sid_key = $sid['sid']["buckets"][0]['key'];
+						}
+						else{
+							$sid_key = $sid['key'];
+						}
 
-						$sid_key = $sid['key'];
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
@@ -241,7 +270,7 @@ class M_Suspects extends CI_Model {
 								]
 							];
 						if ($distinct_ip){
-							$params2['body']['query']['bool']['must'][] = [ 'term' => ['ip_orig' => $sid['key'] ] ];
+							$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['sid']["buckets"][0]['key'] ]];
 						}
 						else{
 							$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
@@ -259,7 +288,7 @@ class M_Suspects extends CI_Model {
 						{
 							$results['items'][] = array(
 								"sid"     => $sid_key,
-								"city"    => $sid['city']['buckets'][0]['key'], 
+								"city"    => $sid['city']['buckets'][0]['key'],
 								"alerts_count"  => $sid['alerts_count']['value'],
 								"cases_count"=> $sid['cases_count']['value'],
 								"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
