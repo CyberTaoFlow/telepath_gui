@@ -153,7 +153,7 @@ class Actions extends Tele_Controller
         // The value for the mode
         $value = $this->input->post('value');
         // Host on which to track, can be black for cross host sessions
-        $host = $this->input->post('host');
+        $host = extractRootDomain($this->input->post('host'));
         // Random id for Redis key
         $id = mt_rand();
 
