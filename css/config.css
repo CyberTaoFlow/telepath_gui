@@ -213,7 +213,7 @@ body .jstree .tele-button {
 	border-radius: 5px;
 	margin: 0px;
 	cursor: pointer;
-	
+
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius:  0px;
 }
@@ -256,13 +256,13 @@ body .jstree .tele-button {
 }
 
 .record-flow-table tr.even {
-	
+
 }
 .record-flow-table tr.odd td {
-	background-color: #EEEEEE;	
+	background-color: #EEEEEE;
 }
 
-.tele-rule-param-wrap {	
+.tele-rule-param-wrap {
 	border-right: 2px solid #555;
     float: left;
     height: 200px;
@@ -300,15 +300,15 @@ body .jstree .tele-button {
 }
 .tele-application-list,
 .tele-country-list {
-	
+
 	overflow: auto;
 	clear: both;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	
+
 	height: 330px;
 	width: 100%;
-	
+
 }
 
 .tele-condition-select .tele-country-list {
@@ -542,7 +542,7 @@ body .jstree .tele-button {
 }
 
 .tele-condition-advanced {
-	
+
 }
 .tele-condition-slider {
 	padding: 10px;
@@ -766,13 +766,14 @@ body .jstree .tele-button {
 	margin-top: 8px;
 	margin-bottom: 2px;
 }
-.tele-workflow-tracker-input-URL {
+/*URL*/
+.tele-workflow-tracker-input-u {
 	width: 500px;
 }
-.tele-workflow-tracker-input-URL .tele-input-label { 
+.tele-workflow-tracker-input-u .tele-input-label {
 	width: 140px;
 }
-.tele-workflow-tracker-input-URL input {
+.tele-workflow-tracker-input-u input {
 	width: 340px;
 }
 .tele-control-record-cmd {

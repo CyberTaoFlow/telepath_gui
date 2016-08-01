@@ -113,6 +113,9 @@ telepath.search = {
 
         this.initPanel();
 
+        // check if there is a record in process and stop it
+        telepath.config.actions.checkNotFinishedRecord();
+
     },
     initPanel: function () {
 

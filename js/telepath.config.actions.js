@@ -204,7 +204,9 @@ telepath.config.actions = {
 	reload: function () {
 		
 		if(telepath.action.recorder.timer) {
-			clearTimeout(telepath.action.recorder.timer);
+			clearInterval(telepath.action.recorder.timer);
+			telepath.action.recorder.timer = false;
+			telepath.action.recorder.endRecord();
 		}
 
 		var that = this;
@@ -284,6 +286,14 @@ telepath.config.actions = {
 		this.data=null;
 		this.initTools();
 		this.reload();
+
+		// if there is a record in process, before exit telepath we send a Redis stop message to stop the
+		// fast lane
+		window.onbeforeunload = function () {
+			if (telepath.action.recorder.timer) {
+				telepath.action.recorder.endRecord();
+			}
+		}
 	},
 	initTools: function() {	
 		
@@ -357,6 +367,7 @@ telepath.config.actions = {
 		});
 	},
 	createTree: function(div,treedata){
+		var that = this;
 		div.jstree({
 			core: {data: treedata},
 			plugins: ["json_data", "wholerow", "theme", "grid", "search"],
@@ -407,6 +418,7 @@ telepath.config.actions = {
 					msg: 'Are you sure thay you want to stop the Business Action record?',
 					callback: function () {
 						clearInterval(telepath.action.recorder.timer);
+						telepath.action.recorder.endRecord();
 						telepath.action.recorder.timer = false;
 						that.appTree.trigger("restart", data);
 					}
@@ -435,5 +447,12 @@ telepath.config.actions = {
 		/*.on('ready.jstree', function(e, data) {
 		 data.instance.search(that.searchString);
 		 });*/
+	},
+	checkNotFinishedRecord: function () {
+		if (telepath.action.recorder.timer) {
+			clearInterval(telepath.action.recorder.timer);
+			telepath.action.recorder.endRecord();
+			telepath.action.recorder.timer = false;
+		}
 	}
 };

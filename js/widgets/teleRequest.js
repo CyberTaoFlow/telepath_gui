@@ -14,9 +14,10 @@ $.widget( "tele.teleRequest", {
     _update: function() {
 		
 		var that = this;
-		
+
+		// disable the page title display, because we didn't get the title from the Redis message pack
 		// Title
-		this.pageTitle = $('<div>').addClass('tele-request-page-title').html(this.options.data.title).attr('title',this.options.data.title);
+		//this.pageTitle = $('<div>').addClass('tele-request-page-title').html(this.options.data.title).attr('title',this.options.data.title);
 		
 		// Rewrite (because recording format and actions format differs)
 		if(this.options.data.pagename) {
