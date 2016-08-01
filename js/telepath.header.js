@@ -97,7 +97,7 @@ telepath.header = {
 		this.configDiv.append(this.configCmd);
 		
 		this.configCmd.click(function () {
-			
+
 			// Cleanup other panels
 			$('.tele-panel').empty().hide();
 			$("#file-upload").hide();
@@ -108,6 +108,9 @@ telepath.header = {
 			telepath[id].init();
 			$('.tele-panel-' + id).show();
 			$(this).addClass('active');
+
+			// check if there is a record in process and stop it
+			telepath.config.actions.checkNotFinishedRecord();
 	
 		}).hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });
 		
@@ -158,6 +161,9 @@ telepath.header = {
 			setTimeout(function () {
 				$('.tele-popup, .popover').remove();
 			}, 100);
+
+			// check if there is a record in process and stop it
+			telepath.config.actions.checkNotFinishedRecord();
 			
 		});
 		

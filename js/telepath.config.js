@@ -75,6 +75,9 @@ telepath.config = {
 				$(window).resize(function () {
 					telepath.config[id].resizeLayout();
 				});
+
+				// check if there is a record in process and stop it
+				telepath.config.actions.checkNotFinishedRecord();
 				
 			}
 			var tabBtn = $('<div>').btn(tab).addClass('tele-config-tab');

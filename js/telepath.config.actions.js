@@ -286,6 +286,14 @@ telepath.config.actions = {
 		this.data=null;
 		this.initTools();
 		this.reload();
+
+		// if there is a record in process, before exit telepath we send a Redis stop message to stop the
+		// fast lane
+		window.onbeforeunload = function () {
+			if (telepath.action.recorder.timer) {
+				telepath.action.recorder.endRecord();
+			}
+		}
 	},
 	initTools: function() {	
 		
@@ -439,5 +447,12 @@ telepath.config.actions = {
 		/*.on('ready.jstree', function(e, data) {
 		 data.instance.search(that.searchString);
 		 });*/
+	},
+	checkNotFinishedRecord: function () {
+		if (telepath.action.recorder.timer) {
+			clearInterval(telepath.action.recorder.timer);
+			telepath.action.recorder.endRecord();
+			telepath.action.recorder.timer = false;
+		}
 	}
 };
