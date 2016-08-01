@@ -898,6 +898,14 @@ a.tele-panel-dashboard-refresh-value:hover {
 
 }
 
+@media (max-width: 1200px) {
+	.tele-alert-graph-distribution-canvas canvas{
+		margin-top: -40px;
+		margin-left: -20px;
+
+	}
+}
+
 .tele-pie-label {
 	font-size: 18px;
 	font-weight: normal;
