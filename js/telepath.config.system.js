@@ -690,9 +690,11 @@ telepath.config.system = {
 				e.preventDefault();
 			});
 
-			window.onbeforeunload = function () {
+			window.onbeforeunload = function (e) {
 			if ($('#file-upload .statusbar').length) {
-				return 'The upload process is not finished yet. You will lost the data.';
+				//From Chrome 51, Safari 9.1 and Firefox 4, a window’s onbeforeload property no
+				// longer supports a custom string.
+				e.returnValue =  'The upload process is not finished yet. You will lost the data.';
 			}
 		};
 
