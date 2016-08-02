@@ -325,8 +325,9 @@ telepath.search = {
         var searchSettingsObj = {
             search: this.searchStr,
             options: this.options,
-            range: telepath.range,
-            apps: telepath.appFilter,
+            // we get this data directly from the server
+            //range: telepath.range,
+            //apps: telepath.appFilter,
             is_country: this.countryFlag,
             sort: this.sort,
             dir: this.dir

@@ -36,7 +36,7 @@ class Search extends Tele_Controller
         return array(
             'search' => $key,
             'options' => $this->input->post('options'),
-            'range' => $this->input->post('range'),
+            'range' => $this->_get_range(),
             //'apps' 	  	 => $this->input->post('apps'),
             'apps' => $this->_get_apps(),
             'is_country' => $this->input->post('is_country') == 'true', // Comes as string, not boolean
