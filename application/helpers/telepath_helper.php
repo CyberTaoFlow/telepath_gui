@@ -397,12 +397,17 @@ function get_gap($range) {
 		return $x_display;
 	}
 
-function extractRootDomain ($url)
+function extractRootDomain($url)
 {
 	require 'vendor/tldextractphp/tldextractphp/tldextract.php';
 
 	$components = tldextract($url);
-	return $components['domain'].'.'.$components['tld'];
+	$root_domain = $components['domain'];
+	// add suffix if exists
+	if ($components['tld']) {
+		$root_domain .= '.' . $components['tld'];
+	}
+	return $root_domain;
 }
 
 
