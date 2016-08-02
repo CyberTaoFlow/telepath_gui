@@ -159,7 +159,7 @@ telepath.config.system = {
 		data.proxy_port_id = $('input', this.proxyPort).val();
 		
 		// SMTP
-		data.smtp      = $('input', this.smtpServer).val();
+		data.smtp_ip_id  = $('input', this.smtpServer).val();
 		data.smtp_port_id = $('input', this.smtp_port_id).val();
 		data.rep_user  = $('input', this.smtpUser).val();
 		data.rep_pass_id  = $('input', this.smtpPass).val();
@@ -690,9 +690,11 @@ telepath.config.system = {
 				e.preventDefault();
 			});
 
-			window.onbeforeunload = function () {
+			window.onbeforeunload = function (e) {
 			if ($('#file-upload .statusbar').length) {
-				return 'The upload process is not finished yet. You will lost the data.';
+				//From Chrome 51, Safari 9.1 and Firefox 4, a window’s onbeforeload property no
+				// longer supports a custom string.
+				e.returnValue =  'The upload process is not finished yet. You will lost the data.';
 			}
 		};
 
