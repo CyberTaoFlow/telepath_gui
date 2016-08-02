@@ -28,7 +28,7 @@ class Config extends Tele_Controller
     public function testmail()
     {
 
-        $smtp_ip_id = $this->input->post('smtp_ip_id', TRUE);
+        $smtp = $this->input->post('smtp_ip_id', TRUE);
         $port = $this->input->post('smtp_port_id', TRUE);
         $user = $this->input->post('smtp_user', TRUE);
         $pass = $this->input->post('smtp_pass', TRUE);
@@ -36,7 +36,7 @@ class Config extends Tele_Controller
 
         $test_config = array(
             'protocol' => 'sendmail',
-            'smtp_host' => smtp_ip_id,
+            'smtp_host' => $smtp,
             'smtp_port_id' => $port,
             'smtp_user' => $user,
             'smtp_pass' => $pass,

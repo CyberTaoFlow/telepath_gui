@@ -159,7 +159,7 @@ telepath.config.system = {
 		data.proxy_port_id = $('input', this.proxyPort).val();
 		
 		// SMTP
-		data.smtp      = $('input', this.smtpServer).val();
+		data.smtp_ip_id  = $('input', this.smtpServer).val();
 		data.smtp_port_id = $('input', this.smtp_port_id).val();
 		data.rep_user  = $('input', this.smtpUser).val();
 		data.rep_pass_id  = $('input', this.smtpPass).val();

@@ -72,7 +72,7 @@ class CI_Email {
 	var	$_attach_name	= array();
 	var	$_attach_type	= array();
 	var	$_attach_disp	= array();
-	var	$_protocols		= array('mail', 'sendmail', 'smtp_ip_id');
+	var	$_protocols		= array('mail', 'sendmail', 'smtp');
 	var	$_base_charsets	= array('us-ascii', 'iso-2022-');	// 7-bit charsets (excluding language suffix)
 	var	$_bit_depths	= array('7bit', '8bit');
 	var	$_priorities	= array('1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)');
@@ -274,7 +274,7 @@ class CI_Email {
 
 		switch ($this->_get_protocol())
 		{
-			case 'smtp_ip_id'		:
+			case 'smtp'		:
 				$this->_recipients = $to;
 			break;
 			case 'sendmail'	:
@@ -307,7 +307,7 @@ class CI_Email {
 
 		$this->_set_header('Cc', implode(", ", $cc));
 
-		if ($this->_get_protocol() == "smtp_ip_id")
+		if ($this->_get_protocol() == "smtp")
 		{
 			$this->_cc_array = $cc;
 		}
@@ -341,7 +341,7 @@ class CI_Email {
 			$this->validate_email($bcc);
 		}
 
-		if (($this->_get_protocol() == "smtp_ip_id") OR ($this->bcc_batch_mode && count($bcc) > $this->bcc_batch_size))
+		if (($this->_get_protocol() == "smtp") OR ($this->bcc_batch_mode && count($bcc) > $this->bcc_batch_size))
 		{
 			$this->_bcc_array = $bcc;
 		}
@@ -1434,7 +1434,7 @@ class CI_Email {
 			$bcc = $this->_str_to_array($chunk[$i]);
 			$bcc = $this->clean_email($bcc);
 
-			if ($this->protocol != 'smtp_ip_id')
+			if ($this->protocol != 'smtp')
 			{
 				$this->_set_header('Bcc', implode(", ", $bcc));
 			}
@@ -1509,7 +1509,7 @@ class CI_Email {
 						return FALSE;
 					}
 			break;
-			case 'smtp_ip_id'	:
+			case 'smtp'	:
 
 					if ( ! $this->_send_with_smtp())
 					{
