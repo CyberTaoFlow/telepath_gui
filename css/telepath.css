@@ -177,6 +177,11 @@ td {
 	background-position: -395px -906px;
 }
 
+.text-autocomplete{
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .tele-config {
 	float: left;
 }

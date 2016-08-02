@@ -59,6 +59,38 @@ telepath.header = {
 			}
 		});
 
+		$(this.searchInput).autocomplete({
+			autoFill: true,
+			source: function(request, response) {
+				telepath.ds.get('/search/getAutoComplete', { search: telepath.header.searchInput.val() }, function(data) {
+					if(data.items) {
+						response(data.items);
+					}
+				});
+			},
+
+			open: function(event, ui) {
+				$(this).autocomplete("widget").css({
+					"width": $('.tele-search-top').width()
+				});
+			},
+
+
+		}).focus(function () {
+			$(this).autocomplete('search', telepath.header.searchInput.val());
+		});
+
+		$.ui.autocomplete.prototype._renderItem = function (ul, item) {
+
+			item.label = item.label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(telepath.header.searchInput.val())
+				+ ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<span style='font-weight: normal'>$1</span>");
+			return $("<li></li>")
+				.data("item.autocomplete", item)
+				.append("<a class='text-autocomplete' style='font-weight: bold;  font-family: "+"Roboto Condensed Regular;"+"'>" + item.label +"</a>")
+				.appendTo(ul);
+		};
+
+
 		// Hook for dropdown arrow
 		this.searchDD.click(function () {
 

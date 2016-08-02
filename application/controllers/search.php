@@ -76,5 +76,11 @@ class Search extends Tele_Controller
         return_json($this->M_Search->search('requests', $this->_getSettings(), $suspect_threshold));
     }
 
+    function getAutoComplete(){
+        $search = $this->input->post('search');
+
+        return $this->M_Search->getAutoComplete($search);
+
+    }
 
 }
