@@ -60,7 +60,6 @@ telepath.header = {
 		});
 
 		$(this.searchInput).autocomplete({
-			autoFill: true,
 			source: function(request, response) {
 				telepath.ds.get('/search/getAutoComplete', { search: telepath.header.searchInput.val() }, function(data) {
 					if(data.items) {
@@ -68,7 +67,13 @@ telepath.header = {
 					}
 				});
 			},
-
+			select: function (event, ui){
+				if (event.keyCode == 13) {
+					return
+				}
+				telepath.search.init(ui.item.label);
+				telepath.ui.resize();
+			},
 			open: function(event, ui) {
 				$(this).autocomplete("widget").css({
 					"width": $('.tele-search-top').width()
