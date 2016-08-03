@@ -282,40 +282,51 @@ class M_Search extends CI_Model {
 		return $results;
 	
 	}
-	function getAutoComplete($search){
 
-		$param = [
+	function getAutoComplete($search, $range, $apps)
+	{
+
+		$params = [
 			"body" => [
-				"size" =>0,
+				"size" => 0,
 				"aggs" => [
 					"autocomplete" => [
 						"terms" => [
 							"field" => "_all",
 							"size" => 5,
 							"include" => [
-								"pattern" => $search.'.*'
+								"pattern" => $search . '.*'
 							]
 						]
 					]
 				],
 				"query" => [
-					"prefix" => [
-						"_all" => [
-							"value" => $search
+					'bool' => [
+						'must' => [
+							[
+								"prefix" => [
+									"_all" => [
+										"value" => $search
+									]
+								]
+							],
+							['range' => ['ts' => ['gte' => $range['start'], 'lte' => $range['end']]]],
 						]
 					]
+
 				]
 			]
 		];
 
-		$result=$this->elasticClient->search($param);
+		$params = append_application_query($params, $apps);
+
+		$result = $this->elasticClient->search($params);
 
 
-		$data=[];
-		if(!empty($result) && isset($result['aggregations']['autocomplete'])) {
+		$data = [];
+		if (!empty($result) && isset($result['aggregations']['autocomplete'])) {
 
-			foreach ($result['aggregations']['autocomplete']['buckets'] as $bucket)
-			{
+			foreach ($result['aggregations']['autocomplete']['buckets'] as $bucket) {
 				$data[] = $bucket['key'];
 			}
 
