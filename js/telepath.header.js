@@ -71,7 +71,7 @@ telepath.header = {
 				if (event.keyCode == 13) {
 					return
 				}
-				telepath.search.init(ui.item.label);
+				telepath.search.init(ui.item.value);
 				telepath.ui.resize();
 			},
 			open: function(event, ui) {
