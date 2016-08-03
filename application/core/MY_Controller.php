@@ -150,9 +150,20 @@ class Tele_Controller extends CI_Controller
                 ]
             ]
         );
-        $results = $this->elasticClient->search($params);
+        $result = $this->elasticClient->search($params);
 
-        return $results['aggregations']['min_time']['value'];
+        if(isset($result["aggregations"]) &&
+            isset($result["aggregations"]["min_time"]) &&
+            isset($result["aggregations"]["min_time"]["value"]) &&
+            !empty($result["aggregations"]["min_time"]["value"])) {
+            $min_time = $result['aggregations']['min_time']['value'];
+        }
+        else{
+            // if there is no data, send default one day ago
+            $min_time = time() - 86400;
+        }
+
+        return $min_time;
 
     }
 
