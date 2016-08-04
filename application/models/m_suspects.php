@@ -183,10 +183,11 @@ class M_Suspects extends CI_Model {
 		$count_offset = 0;
 		$count_insert = 0;
 
+		$sid_buckets = false;
+
 		if ($distinct_ip) {
 			if(isset($result["aggregations"]) &&
 				isset($result["aggregations"]["ip_orig"]) &&
-				isset($result["aggregations"]["ip_orig"]["buckets"]) &&
 				!empty($result["aggregations"]["ip_orig"]["buckets"])) {
 
 				$sid_buckets = $result["aggregations"]["ip_orig"]["buckets"];
@@ -194,7 +195,6 @@ class M_Suspects extends CI_Model {
 		}else {
 			if (isset($result["aggregations"]) &&
 				isset($result["aggregations"]["sid"]) &&
-				isset($result["aggregations"]["sid"]["buckets"]) &&
 				!empty($result["aggregations"]["sid"]["buckets"])
 			) {
 
