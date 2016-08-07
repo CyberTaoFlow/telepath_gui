@@ -46,7 +46,7 @@ class ExtractorTest extends PHPUnit_Framework_TestCase {
 	}
 
     public function testLocalHost() {
-        $this->assertExtract('', 'wiki', '', 'http://wiki/');
+        $this->assertExtract('', '', 'wiki', 'http://wiki/');
         $this->assertExtract('wiki', 'bizarre', '', 'http://wiki.bizarre');
 	}
 
