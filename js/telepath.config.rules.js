@@ -88,7 +88,7 @@ telepath.config.rules = {
 				}
 
 				if(data.node.data.type == 'group') {
-					telepath.config.rule.editRule(data.node.data.name, data.node.data.category);
+					telepath.config.rule.editRule(data.node.data.id);
 				}
 			}
 		}).css({ height: this.contentLeft.css('height') });

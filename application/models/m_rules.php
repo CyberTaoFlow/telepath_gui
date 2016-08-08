@@ -86,6 +86,13 @@ class M_Rules extends CI_Model {
 		foreach($data['criteria'] as $i => $val) {
 			$data['criteria'][$i] = json_decode($val, true);
 		}
+
+		foreach($data as $i => $val) {
+			if ($val =='true'||$val =='false'){
+				$data[$i] = true ? $val=='true': ($val=='false' ? false:$val);
+			}
+
+		}
 		
 		$params = ['body' => $data, 'index' => 'telepath-rules', 'type' => 'rules'];
 		$this->elasticClient->index($params);
@@ -93,8 +100,24 @@ class M_Rules extends CI_Model {
 		return $data;
 		
 	}
+
+	public function set_rule($id, $data){
+
+		$params = [
+			'index' => 'telepath-rules',
+			'type' => 'rules',
+			'id' => $id,
+			'body' =>$data
+
+		];
+
+		$this->elasticClient->index($params);
+
+		return $data;
+
+	}
 	
-	public function set_rule($data) {
+	public function old_set_rule($data) {
 		foreach($data['criteria'] as $i => $val) {
 			$data['criteria'][$i] = json_decode($val, true);
 		}
@@ -192,7 +215,7 @@ class M_Rules extends CI_Model {
 	
 	}
 	
-	public function get_rules($category = false) {
+	public function get_rules($category = false, $ids=false) {
 		
 		$ret = array();
 	
@@ -204,13 +227,21 @@ class M_Rules extends CI_Model {
 			$params['body']['query']['match']['category'] = $category;
 		}
 
+		if ($ids){
+			$params['body']['fields']= '_id';
+
+			$results = $this->elasticClient->search($params);
+
+			return $results['hits']['hits'];
+		}
+
 		$results   = get_elastic_results($this->elasticClient->search($params));
 		usort($results, "cmp_name");
 		return $results;
 			
 	}
 	
-	public function get_rule($name, $category=false) {
+	public function get_rule_by_name($name, $category=false) {
 		
 		$ret = array();
 	
@@ -219,6 +250,7 @@ class M_Rules extends CI_Model {
 		
 		$params['body']['query']['bool']['must'][] = ['match' => ['name' => $name]];
 		if($category){
+			$params['body']['size'] = 1;
 			$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
 		}
 
@@ -227,6 +259,19 @@ class M_Rules extends CI_Model {
 		return $results;
 	
 	}
+
+	public function get_rule_by_id($id) {
+
+		$params['index'] = 'telepath-rules';
+		$params['type']  = 'rules';
+		$params['id']= $id;
+
+		$results   = $this->elasticClient->get($params);
+
+		return $results['_source'];
+
+	}
+
 	
 	public function add_category($cat) {
 		
@@ -387,7 +432,6 @@ class M_Rules extends CI_Model {
 	public function get_rule_groups($assoc = false) {}
 	public function get_group_by_id($group_id) {}
 	public function get_rules_by_group_id($group_id) {}
-	public function get_rule_by_name($name) {}
 	public function get_category_by_name($name) {}
 	public function get_category_by_id($id) {}
 	public function create_category($category_name) {}

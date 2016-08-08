@@ -99,7 +99,7 @@ $.widget( "tele.teleTree", {
 						child = {
 							children: false,
 							text: row.name,
-							data: {id: row.name, type: 'group', name: row.name, category: row.category}
+							data: {id: row.id, type: 'group', name: row.name, category: row.category}
 						};
 						obj.children.push(child)
 					});
@@ -114,7 +114,7 @@ $.widget( "tele.teleTree", {
 					var obj = {
 						children: true,
 						text: row.name,
-						data: {id: row.name, type: postData.type, name: row.name, category: row.category}
+						data: {id: row.id, type: postData.type, name: row.name, category: row.category}
 					};
 
 					if (that.options.type == "rules") {

@@ -11,7 +11,7 @@ telepath.config.rule = {
 				});
 			}});		
 	},
-	editRule: function(rule_name, rule_category) {
+	editRule: function(id) {
 	
 		var that = this;
 		
@@ -29,7 +29,7 @@ telepath.config.rule = {
 
 		//this.container.append('<h3 style="tele-title-1">Rule Editor</h3><br>');
 		
-		if(rule_name == 'new') {
+		if(id == 'new') {
 				
 			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], action_notifications: true, action_syslog: false, action_injection: false, action_email: false, disable_db_save: false, action_email_owner: true, category: telepath.config.rules.selectedCategory, new_rule: true };
 			this.showRule();
@@ -37,19 +37,20 @@ telepath.config.rule = {
 		} else {
 			
 			// Load Application
-			this.loadRule(rule_name, rule_category);
+			this.loadRule(id);
 			
 		}
 
 	},
-	loadRule: function (rule_name, rule_category) {
+	loadRule: function (id) {
 		
 		var that = this;
-		this.rule_name = rule_name;
-		this.rule_category = rule_category;
+		//this.rule_name = rule_name;
+		//this.rule_category = rule_category;
 		
-		telepath.ds.get('/rules/get_rule', { name: rule_name, category: rule_category }, function(data) {
+		telepath.ds.get('/rules/get_rule', { id: id}, function(data) {
 			that.data = data.items[0];
+			that.data.id=id
 			that.showRule();
 		});
 		
@@ -85,7 +86,9 @@ telepath.config.rule = {
 			this.container.append(title1);
 		} else {
 			var title1 = $('<div>').addClass('tele-title-1').text('Built in system rule');
-			this.container.append(title1);	
+			this.container.append(title1);
+			$('input' ,ruleName).prop( "disabled", true );
+			$('input' ,ruleDesc).prop( "disabled", true );
 		}	
 			// Condition list
 		var cond = $('<div>').teleRule({ data: this.data });
@@ -373,11 +376,11 @@ telepath.config.rule = {
 			
 			} else {
 
-				ruleData.uid = that.data.uid;
+				ruleData.id = that.data.id;
 
 				var found=false;
 				$.each(telepath.config.rules.categories,function(i,val){
-					if(ruleData.name== val.name && ruleData.uid != val.id){
+					if( val.id!="Login Brute-Force" && val.id!="Credential-Stuffing" && val.id!="Web shell" && ruleData.name== val.name && ruleData.id != val.id){
 						telepath.dialog({ title: 'Case Editor', msg: 'Rule name already exists' });
 						found=true
 					}
@@ -387,7 +390,7 @@ telepath.config.rule = {
 					return
 				}
 				// Update
-				telepath.ds.get('/rules/set_rule', { ruleData: ruleData }, function(data) {
+				telepath.ds.get('/rules/set_rule', { ruleData: ruleData, builtin_rule: that.data.builtin_rule }, function(data) {
 					that.data = data.items;
 
 					that.showRule(); // Reload
@@ -395,7 +398,7 @@ telepath.config.rule = {
 					if(data.success){
 						$('.jstree-clicked').text(ruleData.name);
 						telepath.dialog({msg:'Successfully updated a rule'});
-						telepath.config.rule.editRule(ruleData.name, ruleData.category);
+						telepath.config.rule.editRule(ruleData.id);
 						telepath.config.rules.init();
 					}
 				});

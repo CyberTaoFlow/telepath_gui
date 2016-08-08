@@ -39,7 +39,7 @@ class Rules extends Tele_Controller
 
     }
 
-    public function set_rule()
+    public function old_set_rule()
     {
 
         telepath_auth(__CLASS__, 'set_rules');
@@ -52,6 +52,76 @@ class Rules extends Tele_Controller
         return_success($data);
 
     }
+
+
+    public function set_rule()
+    {
+
+        telepath_auth(__CLASS__, 'set_rules');
+        $data = $this->input->post('ruleData');
+        $builtin_rule = $this->input->post('builtin_rule')=='true';
+        $id = $data['id'];
+        $result=[];
+        unset($data['id']);
+
+        foreach($data as $i => $val) {
+            if ($val =='true'||$val =='false'){
+                $data[$i] = true ? $val=='true': ($val=='false' ? false:$val);
+            }
+
+        }
+
+        foreach($data['criteria'] as $i => $val) {
+            $data['criteria'][$i] = json_decode($val, true);
+        }
+
+        if ($builtin_rule){
+            if ($data['category'] == 'Brute-Force' || $data['category'] == 'Credential-Stuffing' || $data['category'] == 'Web shell') {
+                $rules = $this->M_Rules->get_rules($data['category'], true);
+            }
+
+            else {
+                $rules = $this->M_Rules->get_rule_by_name($data['name'],$data['category']);
+                $rules= [$rules['uid']];
+            }
+
+            foreach ($rules as $rule) {
+
+                $r= $this->M_Rules->get_rule_by_id($rule['_id']);
+
+                // fix enable
+                foreach ($r['criteria'] as $i => $val)
+                {
+                    $enable = $val['enable'];
+                    foreach ($data['criteria'] as $i2 => $val2)
+                    {
+                        if ($val["kind"] == $val2["kind"])
+                        {
+                            $enable = $val2["enable"];
+                        }
+                    }
+                    $r['criteria'][$i]['enable'] = $enable;
+                }
+
+                $data['criteria'] = $r['criteria'];
+                //$data['name'] = $r['name'];
+
+                $this->M_Rules->set_rule($rule['_id'], $data);
+            }
+        }
+
+         else {
+            $result = $this->M_Rules->set_rule($id, $data);
+        }
+
+
+        $this->load->model('M_Config');
+        $this->M_Config->update('rules_table_was_changed_id', '1');
+
+        return_success($result);
+
+    }
+
 
     public function add_rule()
     {
@@ -135,19 +205,19 @@ class Rules extends Tele_Controller
 
         if ($category == "Brute-Force") {
             $ans['items'][] = array(
-                'id' => "Login Brute-Force",
+                'id' => $rules[0]['uid'],
                 'category' => "Brute-Force",
                 'name' => "Login Brute-Force"
             );
         } elseif($category == "Credential-Stuffing") {
             $ans['items'][] = array(
-                'id' => "Credential-Stuffing",
+                'id' => $rules[0]['uid'],
                 'category' => "Credential-Stuffing",
                 'name' => "Credential-Stuffing"
             );
         }elseif($category == "Web shell") {
             $ans['items'][] = array(
-                'id' => "Web shell",
+                'id' => $rules[0]['uid'],
                 'category' => "Web shell",
                 'name' => "Webshell action"
             );
@@ -179,13 +249,12 @@ class Rules extends Tele_Controller
 
         telepath_auth(__CLASS__, 'get_rules');
 
-        $rule_name = $this->input->post('name', true);
-        $rule_cat = $this->input->post('category', true);
+        $rule_id = $this->input->post('id', true);
 
-        $rule = $this->M_Rules->get_rule($rule_name, $rule_cat);
+        $rule = $this->M_Rules->get_rule_by_id($rule_id);
 
         if ($rule) {
-            return_success($rule);
+            return_success([$rule]);
         }
 
     }
