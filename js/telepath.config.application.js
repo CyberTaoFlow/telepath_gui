@@ -548,33 +548,36 @@ telepath.config.application = {
 			userID_val = 'Digest';
 		}
 
-
+		this.SC_wrap = $('<div>');
 
 		this.userIdentification = $('<div>').teleRadios({
 			title: 'Authentication',
 			checked: userID_val,
-			radios: [ 
+			radios: [
 				//{ key: 'Automatic', label: 'Automatic' },
 				{ key: 'Form', label: 'Form' },
 				{ key: 'Basic', label: 'Basic' },
 				{ key: 'Digest', label: 'Digest' },
 				{ key: 'NTLM', label: 'NTLM' },
-				{ key: '', label: 'None' }
+				{ key: 'None', label: 'None' }
 			], callback: function(radio) {
-				
+
 				that.usernameParameter.hide();
-				
+				that.SC_wrap.show();
+				that.SC_wrap.show();
 				switch(radio.key) {
 					case 'Form':
 						that.usernameParameter.show();
-					break;
+						break;
+					case 'None':
+						that.SC_wrap.hide();
+						that.SC_wrap.hide();
+						break
 				}
-				
-		}}).css({ 'float': 'left', clear: 'both', width: 300, inputFirst: true }).appendTo('#tele-app-auth');
-		
+
+			}}).css({ 'float': 'left', clear: 'both', width: 300, inputFirst: true }).appendTo('#tele-app-auth');
 		// AUTHENTICATION -- Success Criteria
-		
-		var SC_wrap = $('<div>');		
+
 		
 		this.SC_cookie_name   = $('<div>').teleInput({ label: 'Name', value: that.app_data.cookie_name });
 		this.SC_cookie_value  = $('<div>').teleInput({ label: 'Value', value: that.app_data.cookie_value });
@@ -626,11 +629,11 @@ telepath.config.application = {
 			$(this).autocomplete('search', '');
 		});
 		
-		SC_wrap.append('<div class="tele-form-hr">');
-		
-		SC_wrap.append(this.SC_cookie_toggle).append(this.SC_cookie_name).append(this.SC_cookie_value).append(this.SC_cookie_flag);
+		this.SC_wrap.append('<div class="tele-form-hr">');
 
-		SC_wrap.append('<div class="tele-form-hr">');
+		this.SC_wrap.append(this.SC_cookie_toggle).append(this.SC_cookie_name).append(this.SC_cookie_value).append(this.SC_cookie_flag);
+
+		this.SC_wrap.append('<div class="tele-form-hr">');
 		
 		// SC_redirect
 				
@@ -690,7 +693,7 @@ telepath.config.application = {
 
 			}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');
 
-		SC_wrap.append(this.SC_body_toggle).append(this.SC_body_input);
+		this.SC_wrap.append(this.SC_body_toggle).append(this.SC_body_input);
 		
 	/*	var SC_toggle_val = that.app_data.form_authentication_flag == '1' ? 'On' : 'Off';
 		
@@ -713,8 +716,8 @@ telepath.config.application = {
 				}
 				
 		}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');*/
-		SC_wrap.appendTo('#tele-app-auth');
-		
+		this.SC_wrap.appendTo('#tele-app-auth');
+
 		// SSL
 		var app_ssl_wrap   = $('<div>').addClass('tele-app-ssl-wrap');
 		var app_ssl_toggle_val = that.app_data.ssl_flag == '1' ? 'On' : 'Off';
