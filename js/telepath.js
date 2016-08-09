@@ -36,98 +36,6 @@ telepath.appFilter = [{ key: -1, label: 'All Applications' }];
 
 telepath.main = {
 
-    loadResources: function(callback) {
-
-        yepnope({
-            load: [
-                // Widgets
-                "css/widgets.css",
-                "js/widgets/teleAppSelect.js",
-                "js/widgets/teleInput.js",
-                "js/widgets/telePassword.js",
-                "js/widgets/teleCheckbox.js",
-                "js/widgets/teleList.js",
-                "js/widgets/teleForm.js",
-                "js/widgets/teleTree.js",
-                "js/widgets/teleRule.js",
-                "js/widgets/teleRadios.js",
-                "js/widgets/teleBrowse.js",
-                "js/widgets/teleBrowser.js",
-                "js/widgets/teleSelect.js",
-                "js/widgets/teleMulti.js",
-                "js/widgets/teleRange.js",
-                "js/widgets/teleFile.js",
-                "js/widgets/teleSearch.js",
-                "js/widgets/teleRequest.js",
-                "js/widgets/teleCountry.js",
-                // Dropdown (JQuery)
-                "js/lib/jquery.dropdown.js",
-                "css/jquery.dropdown.css",
-                // Bootstrap (Popover)
-                "js/lib/bootstrap.min.js",
-                "css/bootstrap.css",
-                // Notifications
-                "js/lib/jquery.pnotify.min.js",
-                // Custom Scroll
-                "js/lib/jquery.mousewheel.js",
-                "js/lib/jquery.mCustomScrollbar.js",
-                "css/jquery.mCustomScrollbar.css",
-                // Map
-                "js/lib/jquery.vmap.min.js",
-                "js/lib/jquery.vmap.world.js",
-                "js/lib/jquery.vmap.sampledata.js",
-                "css/jqvmap.css",
-
-                // Config Styles
-                "css/config.css",
-
-                // Scheduler
-                "js/lib/jquery.weekcalendar.js",
-                "css/jquery.weekcalendar.css",
-
-                // Tree
-                "js/lib/jstree.min.js",
-            //    "js/lib/jstree.js",
-                "js/lib/jstreegrid.js",
-                "css/tree.css",
-
-                // More code...
-                "js/telepath.sessionflow.js?1",
-                "js/telepath.handlers.js",
-                "js/telepath.rule.js",
-                "js/telepath.dialog.js",
-                "js/telepath.ipaddress.js",
-                "js/telepath.condition.js",
-                "js/telepath.condition.select.js",
-                "js/telepath.contextmenu.js",
-                "js/telepath.logmode.js",
-
-                // Config Scripts
-                "js/telepath.config.account.js",
-                "js/telepath.config.accounts.js",
-                // Action
-                "js/telepath.config.action.js",
-                "js/telepath.config.actions.js",
-                // Application
-                "js/telepath.config.application.js?",
-                "js/telepath.config.applications.js",
-                "js/telepath.config.notifications.js",
-                // Rule
-                "js/telepath.config.rule.js",
-                "js/telepath.config.rules.js",
-                // Users
-                "js/telepath.config.user.js",
-                "js/telepath.config.users.js",
-                "js/telepath.config.groups.js",
-                // System
-                "js/telepath.config.system.js"
-
-            ],
-            complete: function() {
-                callback();
-            }});
-
-    },
     init: function () {
 
 
@@ -159,7 +67,6 @@ telepath.main = {
             // console.log(telepath.range);
 
         // Load resources
-        telepath.main.loadResources(function () {
 
             // var el = $('<div>').teleMulti().addClass('HelloWorld');
             // $('body').append(el);
@@ -209,8 +116,6 @@ telepath.main = {
                  }, 1500);*/
 
             });
-
-        });
 
     });
         telepath.ds.get('/telepath/get_first_data_time', {}, function(data) {
