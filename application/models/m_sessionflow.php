@@ -99,9 +99,9 @@ class M_Sessionflow extends CI_Model {
 				$suspect_count = $results['hits']['total'];
             }
             if ($key){
-
-				$params['body']['query']['bool']['must'] =  [];
-				$params['body']['query']['bool']['must_not'] =  [];
+				// empty body to get results matching search key only
+				$params['body'] =  [];
+				$params['body']['query']['bool']['must'] =  [ 'term' => [ 'sid' => $SID ] ];
 
 
 				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
@@ -163,7 +163,9 @@ class M_Sessionflow extends CI_Model {
 				)
 			)
 		];
-		
+		if ($range)
+			$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
+
 		$results = $this->elasticClient->search($params);
 		
 		if(isset($results['aggregations'])) {
