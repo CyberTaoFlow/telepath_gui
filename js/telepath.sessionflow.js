@@ -494,8 +494,7 @@ telepath.sessionflow = {
 					
 						var offset = that.session.items.length;
 						
-						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, offset: offset, range: that.range }, function (data) {
-							
+						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP, offset: offset, range: that.range }, function (data) {
 							that.loading = false;
 							$('.tele-loader', that.actionsContainer).remove();
 						
