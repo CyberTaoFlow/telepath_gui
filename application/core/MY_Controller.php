@@ -317,8 +317,7 @@ class Tele_Controller extends CI_Controller
 //        $this->redisObj = new Redis();
 //        $this->redisObj->connect('localhost', '6379');
 
-        //load the library
-        $this->load->library('minify');
+
     }
 }
 
