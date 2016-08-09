@@ -104,10 +104,13 @@ class Rules extends Tele_Controller
                 }
 
                 $data['criteria'] = $r['criteria'];
-                //$data['name'] = $r['name'];
+                $data['name'] = $r['name'];
+                $data['builtin_rule'] = true;
 
                 $this->M_Rules->set_rule($rule['_id'], $data);
             }
+            $result = $this->M_Rules->get_rule_by_name($data['name'],$data['category']);
+            $result=  $result[0];
         }
 
          else {
