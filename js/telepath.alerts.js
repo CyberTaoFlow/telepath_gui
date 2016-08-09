@@ -251,13 +251,13 @@ telepath.alerts = {
 		graphOverTimeContainer.append(graphOverTimeTitle).append(graphOverTimeCanvas);
 		
 		var graphDistributionContainer = $('<div>').addClass('tele-alert-graph-distribution');
-		var graphDistributionTitle 	   = $('<h2>').html('Alert distribution');
+		var graphDistributionTitle 	   = $('<h2>').html('Total Events');
 		this.graphDistributionCanvas    = $('<div>').addClass('tele-alert-graph-distribution-canvas');
 		var showPercent    = $('<div>').attr('id','alert-distribution-showPercent');
 		var graphDistributionLegend    = $('<div>').attr('id','alert-distribution-legend');
 		
 		
-		var newToggle = $('<div>').toggleFlip({ left_value: 'Type', right_value: 'Business Action', flip: function (x) { 
+		var newToggle = $('<div>').toggleFlip({ left_value: 'Alerts', right_value: 'Business Actions', flip: function (x) {
 		
 			if(!x) {
 				$("#alert-distribution-showPercent").empty();
