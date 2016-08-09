@@ -92,41 +92,7 @@ telepath.config.application = {
 		app_data.form_flag   = 0;
 		app_data.digest_flag = 0;
 		
-		var mode = this.userIdentification.data('teleTeleRadios').options.checked;
-		
-		switch(mode) {
-			case 'NTLM':
-				app_data.ntlm = 1;
-			break;
-			case 'Basic':
-				app_data.basic_flag = 1;
-			break;
-			case 'Form':
-				app_data.form_flag = 1;
-				
-				// Username parameter is required here
-				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
 
-				// unknown
-				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
-
-				$('input', this.usernameParameter).css({ borderColor: '#555' });
-				if(!app_data.form_param_name || app_data.form_param_name == '' || app_data.form_param_name.length > 64 || parseInt(app_data.form_param_id) == 0) {
-					$('input', this.usernameParameter).css({ borderColor: 'red' });
-					telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application authentication username parameter is missing.' });
-					return false;
-				}
-				
-				//console.log(app_data);
-				
-			break;
-			case 'Digest':
-				app_data.digest_flag = 1;
-			break;
-			//default:
-			//	// By default automatic mode is selected
-			//break;
-		}
 
 		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
 		app_data.app_ssl_certificate = $('input', this.app_ssl_certificate).data('file');
@@ -156,7 +122,80 @@ telepath.config.application = {
 			app_data.subdomains='';
 			app_data.eta='1d 0h 0m';
 		}
+		var mode = this.userIdentification.data('teleTeleRadios').options.checked;
 
+		switch(mode) {
+			case 'NTLM':
+				app_data.ntlm = 1;
+
+				if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
+					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
+					telepath.dialog({
+						type: 'alert',
+						title: 'Application Settings',
+						msg: 'You need to fill cookie name or body value.'
+					});
+					return false;
+				}
+				break;
+			case 'Basic':
+				app_data.basic_flag = 1;
+
+				if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
+					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
+					telepath.dialog({
+						type: 'alert',
+						title: 'Application Settings',
+						msg: 'You need to fill cookie name or body value.'
+					});
+					return false;
+				}
+				break;
+			case 'Form':
+				app_data.form_flag = 1;
+
+				// Username parameter is required here
+				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
+
+				// unknown
+				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
+
+				$('input', this.usernameParameter).css({ borderColor: '#555' });
+				if(!app_data.form_param_name || app_data.form_param_name == '' || app_data.form_param_name.length > 64 || parseInt(app_data.form_param_id) == 0) {
+					$('input', this.usernameParameter).css({ borderColor: 'red' });
+					telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application authentication username parameter is missing.' });
+					return false;
+				}
+
+                if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
+					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
+					telepath.dialog({
+						type: 'alert',
+						title: 'Application Settings',
+						msg: 'You need to fill cookie name or body value.'
+					});
+					return false;
+				}
+				//console.log(app_data);
+
+				break;
+			case 'Digest':
+				app_data.digest_flag = 1;
+
+                if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
+					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
+					telepath.dialog({
+						type: 'alert',
+						title: 'Application Settings',
+						msg: 'You need to fill cookie name or body value.'
+					});
+					return false;
+				}
+				break;
+			//default:
+			//	// By default automatic mode is selected
+			//break;
+		}
 
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
 			telepath.config.applications.reload();
