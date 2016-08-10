@@ -542,14 +542,17 @@ telepath.config.application = {
 			userID_val = 'Form';
 			this.usernameParameter.show();
 		}
-		if(telepath.config.application.app_data.ntlm == '1') {
+		else if(telepath.config.application.app_data.ntlm == '1') {
 			userID_val = 'NTLM';
 		}
-		if(telepath.config.application.app_data.basic_flag == '1') {
+		else if(telepath.config.application.app_data.basic_flag == '1') {
 			userID_val = 'Basic';
 		}
-		if(telepath.config.application.app_data.digest_flag == '1') {
+		else if(telepath.config.application.app_data.digest_flag == '1') {
 			userID_val = 'Digest';
+		}
+		else{
+			userID_val = 'None';
 		}
 
 		this.SC_wrap = $('<div>');
