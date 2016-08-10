@@ -155,7 +155,7 @@ telepath.config.application = {
 				app_data.form_flag = 1;
 
 				// Username parameter is required here
-				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
+				app_data.form_param_name = $('input', this.usernameParameter).val();
 
 				// unknown
 				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
@@ -198,8 +198,12 @@ telepath.config.application = {
 		}
 
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
-			telepath.config.applications.reload();
-			//that.editApp(app_data.host);
+			if (data.success){
+				telepath.config.applications.reload();
+				//that.editApp(app_data.host);
+				telepath.dialog({msg:'Application successfully updated'});
+			}
+
 		});
 		
 	},
@@ -538,14 +542,17 @@ telepath.config.application = {
 			userID_val = 'Form';
 			this.usernameParameter.show();
 		}
-		if(telepath.config.application.app_data.ntlm == '1') {
+		else if(telepath.config.application.app_data.ntlm == '1') {
 			userID_val = 'NTLM';
 		}
-		if(telepath.config.application.app_data.basic_flag == '1') {
+		else if(telepath.config.application.app_data.basic_flag == '1') {
 			userID_val = 'Basic';
 		}
-		if(telepath.config.application.app_data.digest_flag == '1') {
+		else if(telepath.config.application.app_data.digest_flag == '1') {
 			userID_val = 'Digest';
+		}
+		else{
+			userID_val = 'None';
 		}
 
 		this.SC_wrap = $('<div>');
