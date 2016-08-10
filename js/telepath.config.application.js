@@ -198,8 +198,12 @@ telepath.config.application = {
 		}
 
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
-			telepath.config.applications.reload();
-			//that.editApp(app_data.host);
+			if (data.success){
+				telepath.config.applications.reload();
+				//that.editApp(app_data.host);
+				telepath.dialog({msg:'Application successfully updated'});
+			}
+
 		});
 		
 	},
