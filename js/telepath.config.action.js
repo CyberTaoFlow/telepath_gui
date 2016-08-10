@@ -84,27 +84,27 @@ telepath.action.recorder = {
 		this.timerValue = 0;
 		this.recordType = type;
 		clearInterval(this.timer);
-		that.progbarInner.css({ width: 0 }); 
+		that.progbarInner.css({ width: 0 });
 
-		// in user mode we need to send the 'sha256_sid' field associated with the username
-		if(type == 's'){
-			var value = $('input', this.input).data('sha256_sid')
-		}
-		else{
-			var value = $('input', this.input).val();
+		switch (type) {
+			case 'u':
+				var value = $('a', this.input).attr('href').split('=')[1]; // ssl://sub.domain?hybridrecord = VALUE
+				break;
+			case 's':
+				// in user mode we need to send the 'sha256_sid' field associated with the username
+				var value = $('input', this.input).data('sha256_sid');
+				break;
+			case 'i':
+				var value = $('input', this.input).val();
+				break;
 		}
 
 		$('input', this.input).css({ borderColor: '#999' });
-		
-		if(type == 'u') {
-			value = $('a', this.input).attr('href');
-			value = value.split('=')[1]; // ssl://sub.domain?hybridrecord = VALUE
-		}
-		
-		if((type == 'i' || type == 's' ) && value == '') {
-			$('input', this.input).css({ borderColor: 'red' });
-			telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'Missing value' });
-			return;
+
+		if (!value) {
+			$('input', this.input).css({borderColor: 'red'});
+			telepath.dialog({type: 'alert', title: 'Business Action', msg: 'Missing value'});
+			return false;
 		}
 		
 		this.recordValue = value;
@@ -188,6 +188,8 @@ telepath.action.recorder = {
 				}, 3000);
 			}
 		});
+
+		return true;
 	},
 	endRecord: function () {
 		var that = this;
@@ -379,15 +381,14 @@ telepath.action.recorder = {
 		}, function () {
 			$('*', this).removeClass('hover');
 		}).click(function () {
-			if (record_lbl.html() == 'Start Recording') {
-				that.startRecording(type, $('input', that.input).val());
+			if (record_lbl.html() == 'Start Recording' && that.startRecording(type)) {
 				record_lbl.html('Stop Recording');
 				record_ico.toggleClass('tele-control-record');
 				record_ico.toggleClass('tele-control-stop');
 			} else {
 				clearInterval(that.timer);
 				that.progbarInner.css({width: 0});
-				that.timer=false;
+				that.timer = false;
 				record_lbl.html('Start Recording');
 				record_ico.toggleClass('tele-control-stop');
 				record_ico.toggleClass('tele-control-record');
