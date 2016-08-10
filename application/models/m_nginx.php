@@ -14,6 +14,9 @@ class M_Nginx extends CI_Model {
 
 		$this->load->model('M_Config');
 		$this->certs_dir = $this->config->item('certs_dir');
+		if (!file_exists($this->certs_dir)){
+			exec('sudo mkdir -m 777 '.$this->certs_dir);
+		}
 	}
 
 	function old_gen_config() {
