@@ -155,7 +155,7 @@ telepath.config.application = {
 				app_data.form_flag = 1;
 
 				// Username parameter is required here
-				app_data.form_param_name = this.usernameParameter.teleBrowse('option', 'text');
+				app_data.form_param_name = $('input', this.usernameParameter).val();
 
 				// unknown
 				//app_data.form_param_id   = this.usernameParameter.teleBrowse('option', 'id');
