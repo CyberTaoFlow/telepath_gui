@@ -202,11 +202,12 @@ class Applications extends Tele_Controller
             $data['ssl_server_port'] || $old_data['app_ips'] != $data['app_ips']
         ) {
             $this->load->model('M_Nginx');
-            $this->M_Nginx->create_certs($data);
+            $certs_created = $this->M_Nginx->create_certs($data);
             $conf = $this->M_Nginx->gen_config();
             $nginx_config_file = $this->config->item('nginx_config_file');
-            file_put_contents($nginx_config_file, $conf);
-        }
+            $confid_updated = file_put_contents($nginx_config_file, $conf);
+            return_success(['certs_created' => $certs_created, 'confid_updated' => $confid_updated]);
+    }
 
         return_success();
 

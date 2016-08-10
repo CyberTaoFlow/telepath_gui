@@ -225,10 +225,15 @@ class M_Nginx extends CI_Model {
 		if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
 
 			// Save our certificates as files
-			file_put_contents($key_file, $app['app_ssl_certificate']);
-			file_put_contents($cert_file, $app['app_ssl_private']);
+			$created1 = file_put_contents($key_file, $app['app_ssl_certificate']);
+			$created2 = file_put_contents($cert_file, $app['app_ssl_private']);
+
+			return ($created1 && $created2);
 
 		}
+
+		return false;
+
 	}
 
 }
