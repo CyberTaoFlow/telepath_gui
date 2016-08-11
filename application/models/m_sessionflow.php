@@ -104,7 +104,7 @@ class M_Sessionflow extends CI_Model {
 				$params['body']['query']['bool']['must'] =  [ 'term' => [ 'sid' => $SID ] ];
 
 
-				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' , "lowercase_expanded_terms"=>false] ];
 
 				$results = $this->elasticClient->search($params);
 
@@ -226,7 +226,7 @@ class M_Sessionflow extends CI_Model {
 			case 'Search':
 				if ($key)
 				{
-					$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+					$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND', "lowercase_expanded_terms"=>false ] ];
 					break;
 				}
             break;
