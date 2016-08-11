@@ -271,7 +271,7 @@ telepath.config.accounts = {
 		this.cmdImportGroup = $('<div>').btn({ icon: 'import', text: 'Import Group' });
 		this.cmdNewUser     = $('<div>').btn({ icon: 'plus', text: 'New User' });
 		
-		this.barLeft.append(leftTitle).append(this.cmdNewGroup); // .append(this.cmdImportGroup);
+		this.barLeft.append(leftTitle).append(this.cmdNewUser).append(this.cmdNewGroup); // .append(this.cmdImportGroup);
 		
 		this.cmdDeleteUsers = $('<div>').btn({ icon: 'delete', text: 'Delete', callback: function () {
 			var selected = that.list.data('tele-teleList').getSelected();
@@ -297,7 +297,7 @@ telepath.config.accounts = {
 								})}});
 		}});
 	
-		this.barRight.append(this.cmdDeleteUsers).append(rightTitle).append(this.cmdNewUser);
+		this.barRight.append(this.cmdDeleteUsers).append(rightTitle);
 		
 		this.contentLeft.append(telepath.loader);
 		this.contentRight.append(telepath.loader);
