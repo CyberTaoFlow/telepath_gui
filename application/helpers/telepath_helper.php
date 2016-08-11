@@ -399,13 +399,13 @@ function get_gap($range) {
 
 function extractRootDomain($url)
 {
-	require 'vendor/tldextractphp/tldextractphp/tldextract.php';
+	require FCPATH .'vendor/tldextractphp/tldextract.php';
 
 	$components = tldextract($url);
-	$root_domain = $components['domain'];
+	$root_domain =  $components->domain;
 	// add suffix if exists
-	if ($components['tld']) {
-		$root_domain .= '.' . $components['tld'];
+	if ($suffix = $components->tld) {
+		$root_domain .= '.' . $suffix;
 	}
 	return $root_domain;
 }
