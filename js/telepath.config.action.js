@@ -180,7 +180,7 @@ telepath.action.recorder = {
 			host: telepath.action.currentApp
 		}, function (data) {
 			if (data.total > 0) {
-				that.id = data.items;
+				that.id = data.items.id;
 				that.dataLoaded = false;
 				tick(that.id);
 				that.timer = setInterval(function () {

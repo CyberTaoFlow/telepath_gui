@@ -159,7 +159,7 @@ class Actions extends Tele_Controller
 
         // Send record message to Redis, to begin the fast lane record
         if ($this->M_Actions->send_record_message($id, $mode, $value, $host)) {
-            return_success($id);
+            return_success(['id' => $id, 'mode' => $mode, 'value' => $value, 'host' => $host]);
         } else {
             return_fail($id);
         }
