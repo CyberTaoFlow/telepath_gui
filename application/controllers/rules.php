@@ -64,6 +64,15 @@ class Rules extends Tele_Controller
         $result=[];
         unset($data['id']);
 
+
+        $rules_category = $this->M_Rules->get_rules($data['category']);
+
+        foreach ($rules_category as $rule){
+            if ($rule['name'] == $data['name']&& $rule['uid'] != $id){
+                return_fail('Rule name already exists');
+            }
+        }
+
         foreach($data as $i => $val) {
             if ($val =='true'||$val =='false'){
                 $data[$i] = true ? $val=='true': ($val=='false' ? false:$val);
@@ -131,6 +140,16 @@ class Rules extends Tele_Controller
 
         telepath_auth(__CLASS__, 'set_rules');
         $data = $this->input->post('ruleData');
+
+
+        $rules_category = $this->M_Rules->get_rules($data['category']);
+
+        foreach ($rules_category as $rule){
+            if ($rule['name'] == $data['name']){
+                return_fail('Rule name already exists');
+            }
+        }
+
         $data = $this->M_Rules->add_rule($data);
 
         $this->load->model('M_Config');

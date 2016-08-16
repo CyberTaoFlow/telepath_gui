@@ -372,6 +372,8 @@ telepath.config.rule = {
 					telepath.config.rules.init();
 					telepath.dialog({msg:'Successfully created a rule'});
 					
+				},function(data){
+					telepath.dialog({ title: 'Case Editor', msg: data.error });
 				});
 			
 			} else {
@@ -401,6 +403,8 @@ telepath.config.rule = {
 						telepath.config.rule.editRule(ruleData.id);
 						telepath.config.rules.init();
 					}
+				}, function (data) {
+					telepath.dialog({title: 'Case Editor', msg: data.error});
 				});
 			
 			}
