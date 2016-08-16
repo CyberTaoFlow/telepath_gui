@@ -132,6 +132,8 @@ telepath.ui = {
 
     init: function() {
 
+        $('.loader').remove();
+
         $(window).resize(function () {
             telepath.ui.resize();
         });

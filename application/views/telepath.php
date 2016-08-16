@@ -117,6 +117,6 @@ if($logged_in && $can_access) {
 </head>
 
 <body>
-
+<img class="loader" src="img/loader.gif">
 </body>
 </html>
