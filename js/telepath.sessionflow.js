@@ -306,7 +306,7 @@ telepath.sessionflow = {
 			
 			$('.tele-listitem', this.list).each(function () {
 				var itemRID = $(this).data('tele-listitem').options.itemID;
-				if(itemRID == that.RID) {
+				if(itemRID == that.SID) {
 					index = total;
 				}
 				that.RIDS.push(itemRID);
