@@ -87,10 +87,10 @@ telepath.config.application = {
 		/* *************************************************************** */
 		$('#tele-app-auth').click();
 		
-		app_data.ntlm        = 0;
-		app_data.basic_flag  = 0;
-		app_data.form_flag   = 0;
-		app_data.digest_flag = 0;
+		app_data.ntlm_mode        = 0;
+		app_data.basic_mode  = 0;
+		//app_data.form_flag   = 0;
+		app_data.digest_mode = 0;
 		
 
 
@@ -126,7 +126,7 @@ telepath.config.application = {
 
 		switch(mode) {
 			case 'NTLM':
-				app_data.ntlm = 1;
+				app_data.ntlm_mode = 1;
 
 				if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
 					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
@@ -139,7 +139,7 @@ telepath.config.application = {
 				}
 				break;
 			case 'Basic':
-				app_data.basic_flag = 1;
+				app_data.basic_mode = 1;
 
 				if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
 					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
@@ -180,7 +180,7 @@ telepath.config.application = {
 
 				break;
 			case 'Digest':
-				app_data.digest_flag = 1;
+				app_data.digest_mode = 1;
 
                 if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
 					&& (!app_data.body_value_mode || (!app_data.body_value_html || app_data.body_value_html == ''))) {
@@ -308,10 +308,10 @@ telepath.config.application = {
                                 app_ips: '',
                                 form_param_name: '',
                                 form_param_id: '',
-                                ntlm: 0,
-                                basic_flag: 0,
+                                ntlm_mode: 0,
+                                basic_mode: 0,
                                 form_flag: 0,
-                                digest_flag: 0,
+                                digest_mode: 0,
                                 cookie_mode: 0,
                                 cookie_name: '',
                                 cookie_value: '',
@@ -542,13 +542,13 @@ telepath.config.application = {
 			userID_val = 'Form';
 			this.usernameParameter.show();
 		}
-		else if(telepath.config.application.app_data.ntlm == '1') {
+		else if(telepath.config.application.app_data.ntlm_mode == '1') {
 			userID_val = 'NTLM';
 		}
-		else if(telepath.config.application.app_data.basic_flag == '1') {
+		else if(telepath.config.application.app_data.basic_mode == '1') {
 			userID_val = 'Basic';
 		}
-		else if(telepath.config.application.app_data.digest_flag == '1') {
+		else if(telepath.config.application.app_data.digest_mode == '1') {
 			userID_val = 'Digest';
 		}
 		else{
