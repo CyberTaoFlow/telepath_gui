@@ -1863,7 +1863,7 @@ class Rules extends Tele_Controller
                 }
                 $ans['items'][$rule['_source']['category']][] = array(
                     'id' => $rule['_id'],
-                    'category' => $rule['fields']['_src'][0]['category'],
+                    'category' => $rule['_source']['category'],
                     'name' => $rule['_source']['name']
                 );
 
