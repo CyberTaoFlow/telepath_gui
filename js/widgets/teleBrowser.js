@@ -50,7 +50,7 @@ $.widget( "tele.teleBrowser", {
 
 				callback.call(that, treeData);
 
-			});
+			}, false, false, true);
 			return;
 
 		}
@@ -69,7 +69,7 @@ $.widget( "tele.teleBrowser", {
 					$('input', window.teleBrowseSearch).attr('complete', 'true');
 
 
-			});
+			}, false, false, true);
 
 			return;
 
@@ -100,7 +100,7 @@ $.widget( "tele.teleBrowser", {
 
 				callback.call(that, treeData);
 
-			});
+			}, false, false, true);
 
 		} else { // Expanding paths
 
@@ -143,7 +143,7 @@ $.widget( "tele.teleBrowser", {
 
 					callback.call(that, treeData);
 
-				});
+				}, false, false, true);
 			}
 
 			if(obj.data.type == 'page' && that.options.mode != 'page') {
@@ -173,7 +173,7 @@ $.widget( "tele.teleBrowser", {
 
 					callback.call(that, treeData);
 
-				});
+				}, false, false, true);
 
 
 			}

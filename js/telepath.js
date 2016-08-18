@@ -44,12 +44,12 @@ telepath.main = {
             telepath.global_headers = data.items;
             // console.log('GLOBAL HEADERS::');
             // console.log(telepath.global_headers);
-        });
+        }, false, false, true);
         telepath.ds.get('/rules/get_cmds', {}, function (data) {
             telepath.rule_cmds = data.items;
             // console.log('CMD EXEC::');
             // console.log(telepath.rule_cmds);
-        });
+        },false, false, true);
 
 
         telepath.ds.get('/telepath/get_app_filter', {}, function (data) {
@@ -60,7 +60,7 @@ telepath.main = {
             //     console.log('DEBUG FROM OFFICE');
             //}
 
-        });
+        },false, false, true);
         telepath.ds.get('/telepath/get_time_range', {}, function (data) {
             telepath.range = data.items;
             // console.log('TIME RANGE::');
@@ -78,6 +78,8 @@ telepath.main = {
                 telepath.templates = data;
                 telepath.ui.init();
                 telepath.header.init();
+
+
 
                 telepath.dashboard.init();
                 $('.tele-nav-dashboard a').addClass('active');
@@ -117,13 +119,13 @@ telepath.main = {
 
             });
 
-    });
+    }, false, false, true);
         telepath.ds.get('/telepath/get_first_data_time', {}, function(data) {
 
             // Set global variable to hold the time of the first telepath data
             telepath.fullRangeStart = data.items;
 
-        });
+        },false, false, true);
     }
 
 };
@@ -165,6 +167,8 @@ telepath.ui = {
         });
 
         $('.tele-panel-dashboard').addClass('active');
+
+        telepath.activePage = 'dashboard';
 
         $(window).resize(function () {
             telepath.ui.resize();

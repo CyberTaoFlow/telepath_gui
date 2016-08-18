@@ -88,7 +88,7 @@ telepath.suspects = {
 			end: telepath.range.end, 
 			change: function(start, end) { 
 			
-				telepath.suspects.refresh(function () {	});
+				that.hardRefresh(function () {	});
 			
 		}});
 
@@ -117,7 +117,7 @@ telepath.suspects = {
 		// Applications
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			telepath.suspects.refresh(function () {
+			that.hardRefresh(function () {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
@@ -162,8 +162,8 @@ telepath.suspects = {
 		
 		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
 			$('.tele-panel-suspects .tele-search-input').val('');
-			telepath.suspects.searchString = '';
-			telepath.suspects.refresh();
+			that.searchString = '';
+			that.refresh();
 			// console.log('Delete')
 		});
 		//searchSuspects.append(resetInput);
@@ -236,8 +236,12 @@ telepath.suspects = {
 				callback();
 			}
 			
-		});
+		}, false, false, true);
 
+	},
+	hardRefresh: function(callback){
+		telepath.dashboard.deleteCache(callback);
+		this.refresh();
 	},
 	_resize: function () {
 		
@@ -284,7 +288,7 @@ telepath.suspects = {
 					offset: offset,
 					}, function (data) {
 						callback(data);
-				});
+				}, false, false, true);
 			}
 		} });
 		

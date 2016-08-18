@@ -239,7 +239,7 @@ telepath.listitem.generic = {
 
 					$('.popover-title:first').html('Anomaly Scores');
 					$('.popover-content .tele-loader').after($('<div>').anomalyScore({request: data.items})).remove();
-				});
+				}, false, false, true);
 			}
 
 		},

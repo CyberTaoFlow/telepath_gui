@@ -33,7 +33,7 @@ telepath.dashboard = {
 			telepath.dashboard.data.items.map = data.items.map;
 			telepath.dashboard.map.vMap({ data: telepath.dashboard.data.items.map, title: data.items.map_mode=='traffic'?'Traffic over time':'Alerts over time'});
 			$(window).trigger('resize');
-		}, null, telepath.dashboard.reloadFlag);
+		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_chart', { }, function (data, flag) {
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
@@ -44,7 +44,7 @@ telepath.dashboard = {
 			telepath.dashboard.data.items.chart = data.items.chart;
 			telepath.dashboard.drawGraph();
 			$(window).trigger('resize');
-		}, null, telepath.dashboard.reloadFlag);
+		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_suspects', { sort: this.sort, dir: this.dir }, function (data, flag) {
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
@@ -55,7 +55,7 @@ telepath.dashboard = {
 			telepath.dashboard.data.items.suspects = data.items.suspects;
 			telepath.dashboard.initSuspects();
 			$(window).trigger('resize');
-		}, null, telepath.dashboard.reloadFlag);
+		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_alerts', { sort: this.sort, dir: this.dir }, function (data, flag) {
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
@@ -66,7 +66,7 @@ telepath.dashboard = {
 			telepath.dashboard.data.items.alerts = data.items.alerts;
 			telepath.dashboard.initAlerts();
 			$(window).trigger('resize');
-		}, null, telepath.dashboard.reloadFlag);
+		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_cases', {}, function (data, flag) {
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
@@ -169,6 +169,18 @@ telepath.dashboard = {
 	refresh: function(callback) {
 		this.init();
 	},
+	hardRefresh: function(){
+		this.deleteCache();
+		this.refresh();
+	},
+	deleteCache: function (){
+		var keys = Object.keys(localStorage);
+		for (var i = 0; i < keys.length; i += 1) {
+			if (keys[i].indexOf('telecache') === 0) {
+				localStorage.removeItem(keys[i]);
+			}
+		}
+	},
 	init: function () {
 		
 		//if(this.loading > 0) {
@@ -178,8 +190,8 @@ telepath.dashboard = {
 		
 		var that = this;
 
-		this.getData();
 		this.resetContainer();
+		this.getData();
 		this.showFilters();
 		this.resize();
 	
@@ -237,12 +249,12 @@ telepath.dashboard = {
 					telepath.ds.get('/dashboard', { mode: 'map_traffic' }, function(data) { 
 						telepath.dashboard.data.items.map = data.items.traffic;
 						that.map.vMap({ data: data.items.traffic, title: 'Traffic over time' });
-					});
+					}, false, false, true);
 				} else {
 					telepath.ds.get('/dashboard', { mode: 'map_alerts' }, function(data) { 
 						telepath.dashboard.data.items.map = data.items.map;
 						that.map.vMap({ data: data.items.map, title: 'Alerts over time' });
-					});
+					}, false, false, true);
 				}
 			}});
 			
@@ -324,7 +336,9 @@ telepath.dashboard = {
 			clearInterval(this.refreshTimer);
 		}
 		this.refreshTimer = setInterval(function () {
-			telepath.dashboard.refresh();
+			if (telepath.activePage == 'dashboard'|| telepath.activePage == 'alerts' || telepath.activePage == 'suspects'){
+				eval ('telepath.' + telepath.activePage + '.hardRefresh()');
+			}
 		}, this.refreshInterval * 60000); // In minutes, need millisecond format
 		
 	},
@@ -344,7 +358,7 @@ telepath.dashboard = {
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
 			$('.jqvmap-label').hide();
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			telepath.dashboard.refresh(function () {
+			telepath.dashboard.hardRefresh(function () {
 				$('.tele-icon-loader', filterApps).addClass('tele-icon-application').removeClass('tele-icon-loader');
 			});
 		}});
@@ -361,7 +375,7 @@ telepath.dashboard = {
 		if (!telepath.dashboard.loading){
 			$(this).addClass('loader');
 			var that = this;
-			telepath.dashboard.refresh(function () {
+			telepath.dashboard.hardRefresh(function () {
 				$(that).removeClass('loader');
 			});
 		}
@@ -375,7 +389,7 @@ telepath.dashboard = {
 			change: function(start, end) { 
 				telepath.dashboard.reloadFlag = Date.now();
 				cmdRefreshButton.addClass('loader');
-				telepath.dashboard.refresh(function () {
+				telepath.dashboard.hardRefresh(function () {
 					cmdRefreshButton.removeClass('loader');
 				});
 

@@ -370,7 +370,7 @@ telepath.search = {
                     that.container.empty();
                     var p = $('<p>').text(data['error']);
                     that.container.append(p);
-                });
+                }, false, true);
 
 
             }

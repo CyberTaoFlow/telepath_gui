@@ -104,14 +104,14 @@ telepath.alerts = {
 			telepath.range.start = start;
 			telepath.range.end = end;
 			
-			telepath.alerts.refresh();
+			telepath.alerts.hardRefresh();
 			
 		}});
 		
 		// Applications
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			telepath.alerts.refresh(function () {
+			telepath.alerts.hardRefresh(function () {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
@@ -179,8 +179,12 @@ telepath.alerts = {
 			if(callback && typeof(callback) == 'function') {
 				callback();
 			}
-		});
+		}, false, false, true);
 
+	},
+	hardRefresh: function(callback){
+		telepath.dashboard.deleteCache(callback);
+		this.refresh();
 	},
 	setData: function(data) {
 		
@@ -226,7 +230,7 @@ telepath.alerts = {
 					filters: that.filter
 				}, function (data) {
 					callback(data);
-				});
+				}, false, false, true);
 				
 			}
 		}
