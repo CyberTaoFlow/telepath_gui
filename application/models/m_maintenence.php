@@ -5,9 +5,6 @@ class M_Maintenence extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
-		// ElasticSearch Library
-		require '../../vendor/autoload.php';
-		$this->elasticClient = new Elasticsearch\Client();
 	}
 
 	function log($str) {
