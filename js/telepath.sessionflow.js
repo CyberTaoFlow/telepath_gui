@@ -370,7 +370,7 @@ telepath.sessionflow = {
 		// Dynamically this.overlay.titleEl.html('Alert #' + this.alertID);
 
 		this.width = window.innerWidth;
-		if (this.width < 1250){
+		if (this.width <= 1250){
 			var width = this.overlay.contentEl.width();
 			this.container.append(this.boxLeft, this.boxRight);
 			var height = this.overlay.contentEl.height()-70;
@@ -454,7 +454,7 @@ telepath.sessionflow = {
 		this.requestDetails = $('<div>').addClass('tele-request-details').addClass('tele-popup-2');
 
 
-		if (this.width < 1250){
+		if (this.width <= 1250){
 			this.boxRight.append(this.requestDetails)
 		}
 		else{
@@ -471,7 +471,7 @@ telepath.sessionflow = {
 			that.appendItem(req);
 			
 		}
-		if (this.width < 1250){
+		if (this.width <= 1250){
 			var height = this.container.height() - statsEl.height() /*- durationEl.height()*/ - 70;
 		}
 		else{
