@@ -59,7 +59,7 @@ telepath.header = {
 			}
 		});
 
-		$(this.searchInput).autocomplete({
+		/*$(this.searchInput).autocomplete({
 			source: function(request, response) {
 				telepath.ds.get('/search/getAutoComplete', { search: telepath.header.searchInput.val() }, function(data) {
 					if(data.items) {
@@ -93,7 +93,7 @@ telepath.header = {
 				.data("item.autocomplete", item)
 				.append("<a class='text-autocomplete' style='font-weight: bold;  font-family: "+"Roboto Condensed Regular;"+"'>" + item.label +"</a>")
 				.appendTo(ul);
-		};
+		};*/
 
 
 		// Hook for dropdown arrow
