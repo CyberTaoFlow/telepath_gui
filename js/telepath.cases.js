@@ -74,7 +74,7 @@ telepath.cases = {
 		});
 
 		// Update title + Create Add Button
-		this.panelTitle.html( this.data.length + ' Cases');
+		this.panelTitle.html( thousandsFormat(this.data.length) + ' Cases');
 		
 		// Bind resize hooks
 		setTimeout(function () {

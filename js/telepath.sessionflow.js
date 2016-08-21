@@ -420,7 +420,7 @@ telepath.sessionflow = {
 				}
 				
 				statsEl.append($('<div>').addClass('tele-alert-stat').append(stat_filter)
-					.append($('<div>').addClass('tele-alert-stat-value').html(stat)));
+					.append($('<div>').addClass('tele-alert-stat-value').html(thousandsFormat(stat)).attr('title', stat).tooltip()));
 			}
 			
 		});

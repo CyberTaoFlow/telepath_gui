@@ -356,7 +356,7 @@ telepath.search = {
                     }
 
                     that.results[type] = data.items;
-                    $('.tele-search-tab[rel="' + type + '"] span').html(data.total);
+                    $('.tele-search-tab[rel="' + type + '"] span').html(thousandsFormat(data.total));
 
                     if (that.count==4)
                         that.selectTab();
