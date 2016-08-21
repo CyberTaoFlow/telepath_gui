@@ -5,7 +5,6 @@ class M_Maintenence extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
-		$this->elasticClient = new Elasticsearch\Client();
 	}
 
 	function log($str) {

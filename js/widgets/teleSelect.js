@@ -59,7 +59,7 @@ telepath.autocomplete = {
             if (data.items) {
                 telepath.autocomplete.render(element, data.items);
             }
-        }, 'Failed autocomplete');
+        }, 'Failed autocomplete', false, true);
 
     },
     render: function (element, items) {

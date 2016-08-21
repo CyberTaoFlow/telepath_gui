@@ -280,9 +280,9 @@ telepath.sessionflow = {
 			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP , range: that.range }, function (data) {
 				that.session.items = data.items;
 				that.showSession();
-			});
+			}, false, false, true);
 			
-		});
+		}, false, false, true);
 
 	},
 	buildUI: function() {
@@ -505,7 +505,7 @@ telepath.sessionflow = {
 								});
 							}
 							 
-						});
+						}, false, false, true);
 				},
 			},
 			onTotalScrollOffset:200,

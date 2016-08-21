@@ -186,7 +186,7 @@ telepath.alert = {
 		// Load the alert
 		telepath.ds.get('/alerts/get_alert', { RID: RID }, function (data) {
 			telepath.alert.showAlert(data.items);
-		});
+		},false, false, true);
 
 	},
 	init: function(alertID, index) {
@@ -240,7 +240,7 @@ telepath.alert = {
 		
 		telepath.ds.get('/alerts/get_alert', { SID: alertItem.SID, epoch: alertItem.date }, function (data) {
 			telepath.alert.showAlert(data.items);
-		});
+		},false, false, true);
 		
 	},
 	formatData: function(item) {
@@ -487,7 +487,7 @@ telepath.alert = {
 			}}).appendTo(that.requestDetails);
 			
 			
-		});
+		}, false, false, true);
 		
 		telepath.ds.get('/alerts/get_session_flow_params', 
 			{ 
@@ -498,7 +498,7 @@ telepath.alert = {
 			
 			that.expandRequestData(data);
 			
-		});
+		}, false, false, true);
 		
 	}, 
 	expandRequestData: function(data) {

@@ -194,6 +194,8 @@ telepath.header = {
 			telepath.header.configCmd.removeClass('active');
 			$('.tele-nav a.active').removeClass('active');
 			$(this).addClass('active');
+
+			telepath.activePage = id;
 			
 			setTimeout(function () {
 				$('.tele-popup, .popover').remove();
