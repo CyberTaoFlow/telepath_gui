@@ -94,7 +94,7 @@ class M_Alerts extends CI_Model {
 		
 	}
 	
-	public function get_action_distribution_chart($range, $apps, $search = '', $filter=[]) {
+	public function old_get_action_distribution_chart($range, $apps, $search = '', $filter=[]) {
 	
 		$dist   = array();
 		$result = array();
@@ -168,7 +168,118 @@ class M_Alerts extends CI_Model {
 		return $results;
 
 	}
-	
+
+	public function get_action_distribution_chart($range, $apps, $search = '', $filter = [])
+	{
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				/*"actions" => [
+                    "terms" => [ "field" => "business_actions.name", "size" => 999 ],
+                ],*/
+				"sid" => [
+					"terms" => ["field" => "sid",
+						"size" => 999
+					]
+				],
+			]
+		];
+
+
+		$params['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
+
+		if (!empty($range)) {
+			$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
+		}
+
+		global $query;
+		$query = '';
+
+		if (count($filter) > 1) {
+			$query .= 'alerts.name:"' . implode('" OR "', $filter) . '"';
+		} elseif (count($filter) == 1 && $filter != false) {
+			$query .= 'alerts.name:"' . implode('" OR "', $filter) . '"';
+		}
+
+
+		if ($search && strlen($search) > 1) {
+
+			if (count($filter) > 0 && $filter != false) {
+				$query .= ' AND (' . $search . ')';
+			} else {
+				$query .= $search;
+			}
+
+		}
+
+		if ($query)
+			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+
+		$params = append_application_query($params, $apps);
+		$params = append_access_query($params);
+
+		$result = $this->elasticClient->search($params);
+
+		$results = array();
+		$results2 = [];
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid"]) &&
+			isset($result["aggregations"]["sid"]["buckets"]) &&
+			!empty($result["aggregations"]["sid"]["buckets"])
+		) {
+
+			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
+			foreach ($sid_buckets as $sid) {
+				$params2 = [];
+				$params2['index'] = 'telepath-20*';
+				$params2['type'] = 'http';
+				$params2['body'] = [
+					"size" => 0,
+					"aggs" => [
+						"actions" => [
+							"terms" => ["field" => "business_actions.name", "size" => 999]
+						]
+					]
+				];
+
+				$params2['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
+				$params2['body']['query']['bool']['must'][] = ['term' => ['sid' => $sid['key']]];
+				if (!empty($range)) {
+					$params2['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
+				}
+				$result2 = $this->elasticClient->search($params2);
+
+				if (isset($result2["aggregations"]) &&
+					isset($result2["aggregations"]["actions"]) &&
+					isset($result2["aggregations"]["actions"]["buckets"]) &&
+					!empty($result2["aggregations"]["actions"]["buckets"])
+				) {
+
+					$action_buckets = $result2["aggregations"]["actions"]["buckets"];
+
+					foreach ($action_buckets as $key => $value) {
+						if (isset($results [$value['key']])) {
+							$results [$value['key']] += $value['doc_count'];
+						} else {
+							$results [$value['key']] = $value['doc_count'];
+						}
+					}
+				}
+			}
+
+			foreach ($results as $key => $value) {
+				$results2[] = [
+					'label' => $key,
+					"data" => $value
+				];
+			}
+		}
+		return $results2;
+	}
+
 	public function get_distribution_chart($range, $apps, $search = '') {
 	
 		$dist   = array();
