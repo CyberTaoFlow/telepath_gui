@@ -829,18 +829,23 @@ telepath.sessionflow = {
 
 		
 		this.boxRight.empty();
-		
+
+		this.headerRight = $('<div>').addClass('tele-overlay-header-right');
+
+		this.boxRight.append(this.headerRight);
+
+		this.printRequestInfo(this.headerRight);
+
 		// Request scores
-		this.printRequestScores(req, this.boxRight);
-		
+		this.printRequestScores(req, this.headerRight);
+
 		// Alert information
 		var alert = req.alerts_count > 0;
-		
-		$('.tele-overlay-tools', this.overlay.headerEl).remove();
-		
-		this.printRequestInfo(this.boxRight);
 
-		if (this.width < 1250){
+		$('.tele-overlay-tools', this.overlay.headerEl).remove();
+
+
+		if (this.width <= 1250){
 			//$('.mCSB_container', this.boxRight).append(this.requestDetails)
 			this.boxRight.append(this.requestDetails)
 			this.boxRight.css({ "overflow-y": "scroll"})

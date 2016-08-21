@@ -1345,31 +1345,23 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
   }
   .tele-graph-canvas{top: 0px;}
 }
-@media (max-width: 1250px) {
+
+@media (max-width: 1250px){
 	.tele-request-details {
 		height: auto;
-	/*	opacity: 0;
-		transform: translateY(10px);
-		animation:
-				openSpace 1s 1s ease forwards,
-				moveIn 1s 1s ease forwards;*/
 	}
-	/*@keyframes openSpace {
-		to {
-			height: auto;
-		}
-	}
-	@keyframes moveIn {
-		to {
-			height: auto;
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}*/
+}
 
 
-	.tele-anomaly-score {
-		margin: auto;
-		width: 280px;
+@media (max-width: 1250px) and (min-width: 1100px){
+
+	.tele-overlay .tele-anomaly-wrap{
+		zoom: 0.8;
+		width: 70px;
+	}
+
+	.tele-overlay .tele-anomaly-score {
+		padding: 5px;
+
 	}
 }
