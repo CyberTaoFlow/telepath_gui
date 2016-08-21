@@ -21,13 +21,14 @@ $.widget( "tele.anomalyScore", {
 		
 		var that = this;
 		
-		var scoreTypes = [ 'speed', 'direction', 'query', 'location' ];
+		var scoreTypes = [ 'reputation', 'speed', 'direction', 'query', 'location'];
 		
 		this.options.speed 	   = this.options.request.score_landing;
 		this.options.direction = this.options.request.score_flow;
 		this.options.query 	   = this.options.request.score_query;
 		this.options.location  = this.options.request.score_geo;
-		
+		this.options.reputation  = this.options.request.ip_score;
+
 		//delete this.options.request;
 		
 		//console.log(this.options);

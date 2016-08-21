@@ -151,6 +151,18 @@ class M_Sessionflow extends CI_Model {
 				"business_actions_count" => [
 					"sum" => [ "field" => "business_actions_count" ]
 				],
+				"last_score" => [
+					"terms" => [
+						"field" => "ip_score",
+						"size" => 1,
+						"order"=>["max_ts" => "desc" ]
+					],
+					'aggs'=>[
+						'max_ts'=>[
+							"max" => [ "field" => "ts"]
+						]
+					]
+				],
 				"min_ts" => [ "min" => [ "field" => "ts" ] ],
 				"max_ts" => [ "max" => [ "field" => "ts" ] ]
 				
@@ -190,6 +202,7 @@ class M_Sessionflow extends CI_Model {
 				"alerts_count"  => $results['aggregations']['alerts_count']['value'],
 				"session_start" => $results['aggregations']['min_ts']['value'],
 				"session_end"   => $results['aggregations']['max_ts']['value'],
+				'ip_score'=>$results['aggregations']['last_score']['buckets'][0]['key'],
 				"search_count"  => $search_count,
 				"suspect_count" => $suspect_count,
 				"total" 	=> $results['hits']['total']
