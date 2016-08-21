@@ -252,7 +252,7 @@ telepath.casePanel = {
 		// Case Title
 		this.panelTitle   = $('<div>').addClass('tele-panel-title');
 		this.panelTopBar.append(this.panelTitle);
-		this.panelTitle.html(this.data['case']['case_data']['case_name'] + ' | ' + this.data.count + ' Sessions');
+		this.panelTitle.html(this.data['case']['case_data']['case_name'] + ' | ' + thousandsFormat(this.data.count) + ' Sessions');
 		
 		// Case Favorite Flag
 		this.favEl = $('<a>').cb({ icon: 'favorites', checked: data['case']['favorite'] == '1', callback: function(widget) {

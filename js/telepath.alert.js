@@ -322,7 +322,7 @@ telepath.alert = {
 		$.each(reqStats, function(key, stat) {
 			var statEl  = $('<div>').addClass('tele-alert-stat');
 			var statKey = $('<div>').addClass('tele-alert-stat-key').html(key);
-			var statValue = $('<div>').addClass('tele-alert-stat-value').html(stat);
+			var statValue = $('<div>').addClass('tele-alert-stat-value').html(thousandsFormat(stat));
 			statEl.append(statKey).append(statValue);
 			statsEl.append(statEl);
 		});
