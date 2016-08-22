@@ -101,8 +101,9 @@ class M_Sessionflow extends CI_Model {
             if ($key){
 				// empty body to get results matching search key only
 				$params['body'] =  [];
-				$params['body']['query']['bool']['must'] =  [ 'term' => [ 'sid' => $SID ] ];
+				$params['body']['query']['bool']['must'][] =  [ 'term' => [ 'sid' => $SID ] ];
 
+				$params['body']['query']['bool']['must'][] =[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
 
 				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' , "lowercase_expanded_terms"=>false] ];
 
