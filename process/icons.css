@@ -330,6 +330,50 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-arrow.hover { background-position: -295px -143px; }
 .tele-icon-arrow.selected { background-position: -295px -143px; }
 
+
+
+
+.tele-icon-alphabetical{ background-position: -484px -383px;     width: 25px;}
+.tele-icon-alphabetical.hover { background-position: -453px -383px;     width: 25px;}
+.tele-icon-alphabetical.selected { background-position: -514px -354px;     width: 25px;}
+
+
+.tele-icon.selected:after {
+	content: "";
+	background: url("../img/icon_map.png") -539px -383px;
+	float: left;
+	height: 32px;
+	padding: 0 6px;
+	margin-left: 30px;
+}
+.tele-icon-alphabetical.selected:after,
+.tele-icon-alphabetical:after{
+	margin-left: 15px;
+}
+.tele-icon.selected.up:after {  background-position:  -508px -383px;  }
+
+.tele-icon.selected.up:hover:after,
+.tele-icon.selected.up:active:after
+{
+	background-position: -538px -353px;
+}
+
+.tele-icon.selected.down:after { background-position: -522px -383px; }
+
+.tele-icon.selected.down:hover:after,
+.tele-icon.selected.down:active:after
+{
+	background-position:  -551px -353px;
+}
+
+.tele-icon-arrow-up { background-position: -531px -383px;     width: 11px;}
+.tele-icon-arrow-up.hover { background-position: -521px -383px;     width: 11px;}
+.tele-icon-arrow-up.selected { background-position: -521px -383px;     width: 11px;}
+
+.tele-icon-arrow-down { background-position: -538px -383px;     width: 11px;}
+.tele-icon-arrow-down.hover { background-position: -508px -383px;     width: 11px;}
+.tele-icon-arrow-down.selected { background-position: -508px -383px;     width: 11px;}
+
 .tele-icon-caseConfig { background-position: -325px -293px; }
 .tele-icon-caseConfig.hover { background-position: -295px -293px; }
 
