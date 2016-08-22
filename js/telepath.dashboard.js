@@ -316,7 +316,7 @@ telepath.dashboard = {
 		} else {
 		
 			$('.tele-map').width('33%');
-			$('.tele-graph').width('67%');
+			$('.tele-dashboard-block .tele-graph').width('67%');
 			$('.tele-dashboard-block').css({'display':'inline-block'});
 			$('.tele-dashboard-block').width(current_div + '%');
 			$('.tele-dashboard-block.cases').css({'float':'left'});
