@@ -9,8 +9,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<meta charset="utf-8">
 	<title>Telepath 3.0</title>
 	
-	<link rel="stylesheet" href="css/reset.css">
-	<link rel="stylesheet" href="css/login.css">
+	<link rel="stylesheet" href="process/reset.css">
+	<link rel="stylesheet" href="process/login.css">
 		
 	<script src="js/lib/jquery-1.11.0.min.js"></script>
 	<script src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
