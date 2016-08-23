@@ -320,7 +320,8 @@ telepath.config.application = {
                                 //redirect_status_code: '',
 								operation_mode: '1',
 								eta: '1d 0h 0m',
-								top_level_domain: '1'
+								top_level_domain: '1',
+								move_to_production: 1000000
 		};
 	
 		if(app_id == 'new') {
