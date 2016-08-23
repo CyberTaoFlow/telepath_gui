@@ -245,7 +245,6 @@ class M_Alerts extends CI_Model {
 					]
 				];
 
-				$params2['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
 				$params2['body']['query']['bool']['must'][] = ['term' => ['sid' => $sid['key']]];
 				if (!empty($range)) {
 					$params2['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
