@@ -418,7 +418,7 @@ class M_Rules extends CI_Model {
 		$params['_source_include'] = ['category','name'];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category', 'name'], "query" => '*' . $search . '*', "lowercase_expanded_terms"=>false]]]],
+			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category.search', 'name.search'], "query" => '*'. $search . '*']]]],
 
 		];
 

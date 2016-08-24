@@ -1877,7 +1877,7 @@ class Rules extends Tele_Controller
 
         if ($rules && is_array($rules) && !empty($rules)) {
             foreach ($rules as $rule) {
-                if (!preg_match('/'.$search.'/',$rule['_source']['name'])){
+                if (!preg_match('/'.$search.'/i',$rule['_source']['name'])){
                     continue;
                 }
                 $ans['items'][$rule['_source']['category']][] = array(
