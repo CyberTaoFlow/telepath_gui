@@ -96,8 +96,8 @@ telepath.suspects = {
 		var sortRadios = $('<div>').radios({
 			title: 'Sort By',
 			items: [
-				{id: 'date', icon: 'time', tip: 'Time'},
-				{id: 'count', icon: 'bars', tip: 'Count'}
+				{id: 'date', icon: 'time', tip: 'Time', dir: that.dir},
+				{id: 'count', icon: 'bars', tip: 'Count', dir: that.dir}
 			],
 			selected: this.sort,
 			callback: function(e, id) {
@@ -108,6 +108,11 @@ telepath.suspects = {
 				if(that.sort == id) {
 					that.dir = !that.dir;
 				}
+				$.each(e.options.items, function(i,v){
+					if (v.id==id){
+						e.options.items[i].dir=that.dir;
+					}
+				});
 				that.sort = id;
 				that.refresh();
 			}

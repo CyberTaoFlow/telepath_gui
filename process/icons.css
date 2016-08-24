@@ -344,22 +344,22 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 	float: left;
 	height: 32px;
 	padding: 0 6px;
-	margin-left: 30px;
+	margin-left: 28px;
 }
 .tele-icon-alphabetical.selected:after,
 .tele-icon-alphabetical:after{
 	margin-left: 15px;
 }
-.tele-icon.selected.up:after {  background-position:  -508px -383px;  }
-
+/*.tele-icon.selected.up:after {  background-position:  -508px -383px;  }*/
+.tele-icon.selected.up:after,
 .tele-icon.selected.up:hover:after,
 .tele-icon.selected.up:active:after
 {
 	background-position: -538px -353px;
 }
 
-.tele-icon.selected.down:after { background-position: -522px -383px; }
-
+/*.tele-icon.selected.down:after { background-position: -522px -383px; }*/
+.tele-icon.selected.down:after,
 .tele-icon.selected.down:hover:after,
 .tele-icon.selected.down:active:after
 {

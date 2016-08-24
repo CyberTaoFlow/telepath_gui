@@ -1013,11 +1013,12 @@ a.tele-panel-dashboard-refresh-value:hover {
 	float: left;
 	color: white;
 	opacity: 0.8;
-	margin-right: 20px;
+	margin-right: 5px;
 }
 .tele-radio {
 	float: left;
 	cursor: pointer;
+	margin-left: 12px;
 }
 .tele-radio .tele-icon {
 	

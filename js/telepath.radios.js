@@ -47,6 +47,17 @@ $.widget( "tele.radios", {
 			if(item.id == that.options.selected) {
 				itemTitle.addClass('selected');
 				itemIcon.addClass('selected');
+
+				if(typeof item.dir!= 'undefined'){
+					if(item.dir){
+						itemIcon.removeClass('down');
+						itemIcon.addClass('up');
+					}
+					else{
+						itemIcon.removeClass('up');
+						itemIcon.addClass('down');
+					}
+				}
 			}
 			
 			itemWrap.append(itemIcon).append(itemTitle);
@@ -54,10 +65,11 @@ $.widget( "tele.radios", {
 			that.element.append(itemWrap);
 			
 			itemWrap.click(function () {
-				that._setOption('selected', item.id);
 				if(that.options.callback) {
 					that.options.callback(that, item.id);
 				}
+				that._setOption('selected', item.id);
+
 			});
 			
 		});
