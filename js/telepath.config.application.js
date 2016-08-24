@@ -43,6 +43,12 @@ telepath.config.application = {
 		}
 
 		app_data.move_to_production = $('input', this.move_to_production).val();
+
+		if(app_data.move_to_production == '') {
+			telepath.dialog({ type: 'alert', title: 'Application Settings', msg: 'Application move to production field cant be empty' });
+			$('input', this.move_to_production).css({ borderColor: 'red' });
+			return false;
+		}
 		
 		// DISPLAY NAME
 		//app_data.display_name = $('input', this.AD_display_name).val();
