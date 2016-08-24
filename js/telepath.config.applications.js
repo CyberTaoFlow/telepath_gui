@@ -148,7 +148,7 @@ telepath.config.applications = {
 			telepath.config.applications.offset = (data.items.finished) ? 'finished' : telepath.config.applications.offset + data.items.data.length;
 			telepath.config.applications.loading = false;
 			$(".tele-search-input").attr("disabled", false);
-		}, false, false, true);
+		}, false, false, false);
 
 	},
 

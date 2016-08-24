@@ -166,7 +166,7 @@ telepath.config.actions = {
 			callback.call(that, treeData);
 			$(telepath.config.actions.contentLeftWrap).mCustomScrollbar('update');
 
-		}, false, false, true);
+		}, false, false, false);
 		
 	},
 	data: [],
