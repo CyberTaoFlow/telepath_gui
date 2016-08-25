@@ -1186,9 +1186,7 @@ $.widget( "tele.teleRule", {
 			
 			break;
 			case 'pattern':
-				
-				var patTitle  = $('<div>').addClass('tele-title-1').html('Anchor');
-				
+
 				var changingWindow = $('<div>').addClass('tele-pattern-changing');
 				
 				// console.log(data);
