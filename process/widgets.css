@@ -132,6 +132,12 @@
 	margin-bottom: 0px;
 }
 
+.tele-pattern-changing .tele-label{
+	display: inline-block;
+	float: left;
+	margin: 8px 25px 0 0;
+}
+
 .tele-rule-editor .tele-multi .tele-multi-value .tele-browse .tele-input{
 	width: 390px;
 }
@@ -656,6 +662,11 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 .tele-rule-editor .tele-multi .tele-multi-value{
 	width: 320px;
 }
+
+.tele-pattern-changing .tele-multi .tele-multi-value{
+	width: 250px;
+}
+
 
 .tele-multi.tele-rule-alert-param .tele-multi-value{
 	width: 520px;

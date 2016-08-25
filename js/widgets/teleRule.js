@@ -1244,8 +1244,9 @@ $.widget( "tele.teleRule", {
 					var action_data = [ { text: data.domain + ' :: ' + data.action_name, raw: { application: data.domain, action_name: data.action_name } } ];
 
 				}
-				var actionSelect = $('<div>').teleSelect({ type: 'action', values: action_data, click: function () { } }).hide();
-				$('input', actionSelect).css({ width: 300 });
+				var actionSelect = $('<div>').teleSelect({ label:'Business action', type: 'action', values: action_data,
+					click: function () { } }).hide().css({width: 370});
+				$('input', actionSelect).css({ width: 250 });
 				$('.tele-multi-control', actionSelect).hide();
 								
 				changingWindow.append(otherBrowse).append(pageBrowse).append(paramBrowse).append(actionSelect);
