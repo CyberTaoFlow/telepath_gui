@@ -660,17 +660,33 @@ body .jstree .tele-button {
 	margin-top: 5px;
 }
 
-.tele-rule-bind, .tele-response-settings {
+.tele-response-settings {
 	margin-left: 20px;
 	border-right: 2px solid #555;
 	/* height: 130px; */
+}
+
+.tele-rule-bind{
+	margin-left: 20px;
 }
 
 .tele-rule-anchor {
 	float: left;
 	width: 165px;
 	/* height: 130px; */
-	border-right: 2px solid #555;
+	/*border-right: 2px solid #555;*/
+
+}
+
+.tele-rule-anchor:after,
+.tele-rule-bind:after{
+	content: '';
+	height: 100px;
+	width: 2px;
+	position: absolute;
+	right: 0;
+	top: 45px;
+	background-color: #555;
 }
 
 .tele-parameter-type {
@@ -720,6 +736,7 @@ body .jstree .tele-button {
 
 .tele-rule-anchor, .tele-rule-bind{
 	width: 250px;
+	position: relative;
 }
 
 

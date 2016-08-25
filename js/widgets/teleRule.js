@@ -1250,7 +1250,8 @@ $.widget( "tele.teleRule", {
 								
 				changingWindow.append(otherBrowse).append(pageBrowse).append(paramBrowse).append(actionSelect);
 				
-				var patAnchor = $('<div>').teleRadios({ 
+				var patAnchor = $('<div>').teleRadios({
+					title: 'Anchor',
 					radios: [ 
 						{ key: 'IP', label: 'IP Address' }, 
 						{ key: 'SID', label: 'Session ID' },
@@ -1273,7 +1274,8 @@ $.widget( "tele.teleRule", {
 										
 				}}).addClass('tele-rule-anchor');
 				
-				var patLinked = $('<div>').teleRadios({ 
+				var patLinked = $('<div>').teleRadios({
+					title: 'Variable',
 					radios: [ 
 						{ key: 'page', label: 'Page' }, 
 						{ key: 'parameter', label: 'Changing Parameter' },
@@ -1308,7 +1310,7 @@ $.widget( "tele.teleRule", {
 				
 		
 				patWindowWrap.append(patCount).append(patDuration).append(patGap);
-				ruleInner.append(patTitle).append(patAnchor).append(patLinked).append(changingWindow).append(patWindowWrap);
+				ruleInner.append(patAnchor).append(patLinked).append(changingWindow).append(patWindowWrap);
 				
 				// Load type
 				if(!data.type) {
