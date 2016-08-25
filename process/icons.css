@@ -280,14 +280,14 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-speed        { background-position: -80px -400px; }
 .tele-icon-query        { background-position: -240px -400px; }
 .tele-icon-location   { background-position: -233px -480px; }
-.tele-icon-direction { background-position: -80px -480px; }
+.tele-icon-navigation { background-position: -80px -480px; }
 .tele-icon-reputation{background: transparent url("../img/icon_map.png") -187px -436px }
 
 /*Checked*/
 .tele-icon-speed.active        { background-position: 0px -400px; }
 .tele-icon-query.active        { background-position: -160px -400px; }
 .tele-icon-location.active   { background-position: -153px -480px; }
-.tele-icon-direction.active { background-position: 0px -480px; }
+.tele-icon-navigation.active { background-position: 0px -480px; }
 .tele-icon-reputation.active {background: transparent url("../img/icon_map.png") -127px -438px }
 
 /* Other icons */

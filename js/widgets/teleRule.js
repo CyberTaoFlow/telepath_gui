@@ -1332,7 +1332,7 @@ $.widget( "tele.teleRule", {
 					{ k:'query',   v:'Query'   }, 
 					{ k:'landing', v:'Speed' },
 					{ k:'geo',     v:'Location'     },
-					{ k:'flow',    v:'Direction'    },
+					{ k:'flow',    v:'Navigation'    },
 					{ k:'presence',v:'Structure'    }
 
 				];
