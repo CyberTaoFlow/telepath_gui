@@ -446,7 +446,7 @@ $.widget( "tele.teleRule", {
 				}
 
 				if(json.time < 1) {
-					telepath.dialog({ title: 'Rule Editor', msg: 'Invalid time window' });
+					telepath.dialog({ title: 'Rule Editor', msg: 'Invalid time duration' });
 					$('.tele-pattern-time input', c).addClass('error');
 					return;
 				}
@@ -1301,13 +1301,13 @@ $.widget( "tele.teleRule", {
 				
 				var patWindowWrap = $('<div>').addClass('tele-rule-pattern-window');
 				var patCount = $('<div>').teleInput({ label: 'Count', value: data.count ? data.count : 3 }).addClass('tele-pattern-count');
-				var patWindow = $('<div>').teleInput({ label: 'Window', value: data.time ? data.time : 60 }).addClass('tele-pattern-time');
+				var patDuration = $('<div>').teleInput({ label: 'Duration', value: data.time ? data.time : 60 }).addClass('tele-pattern-time');
 				var patGaps   = [ 'Seconds', 'Minutes', 'Hours' ];
 				var patGap    = $('<select>').addClass('tele-rule-dropdown');
 				$.each(patGaps, function(i, opt) { patGap.append('<option value="' + opt + '">' + opt + '</option>'); });
 				
 		
-				patWindowWrap.append(patCount).append(patWindow).append(patGap);
+				patWindowWrap.append(patCount).append(patDuration).append(patGap);
 				ruleInner.append(patTitle).append(patAnchor).append(patLinked).append(changingWindow).append(patWindowWrap);
 				
 				// Load type
