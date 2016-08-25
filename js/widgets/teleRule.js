@@ -463,7 +463,7 @@ $.widget( "tele.teleRule", {
 					break;
 					case 'User':
 					break;
-					case 'Other':
+					case 'Custom':
 					
 						// 1. Collect param
 						$('.tele-browse-other input', c).removeClass('error');
@@ -479,7 +479,7 @@ $.widget( "tele.teleRule", {
 						}
 						
 						if(!param) {
-							telepath.dialog({ title: 'Rule Editor', msg: 'You must select anchor parameter for type: Other' });
+							telepath.dialog({ title: 'Rule Editor', msg: 'You must select anchor parameter for type: Custom parameter' });
 							$('.tele-browse-other input', c).addClass('error');
 							return false;
 						}
@@ -495,11 +495,11 @@ $.widget( "tele.teleRule", {
 
 							if(param.type == 'param') {
 								if(param.global) {
-									json.Other = {
+									json.Custom = {
 										"paramname": param.paramname 
 									}
 								} else {
-									json.Other = {
+									json.Custom = {
 										"domain":    param.domain,
 										"pagename":  param.pagename,
 										"paramname": param.paramname 
@@ -1196,11 +1196,11 @@ $.widget( "tele.teleRule", {
 				
 				// OTHER BROWSE
 				
-				var browseOpt = { mode: 'param', label: 'Other (parameter)', type: 'param' };
+				var browseOpt = { mode: 'param', label: 'Custom parameter', type: 'param' };
 				
-				if(data.type == 'Other' && data.Other) {
-					browseOpt = $.extend(browseOpt, data.Other);
-					browseOpt.global = !data.Other.domain;
+				if(data.type == 'Custom' && data.Custom) {
+					browseOpt = $.extend(browseOpt, data.Custom);
+					browseOpt.global = !data.Custom.domain;
 				}
 				
 				var otherBrowse  = $('<div>').teleBrowse(browseOpt).hide().addClass('tele-browse-other');
@@ -1255,7 +1255,7 @@ $.widget( "tele.teleRule", {
 						{ key: 'IP', label: 'IP Address' }, 
 						{ key: 'SID', label: 'Session ID' },
 						{ key: 'User', label: 'User' },
-						{ key: 'Other', label: 'Other' }
+						{ key: 'Custom', label: 'Custom parameter' }
 					], callback: function(radio) {
 						
 						otherBrowse.hide();
@@ -1265,7 +1265,7 @@ $.widget( "tele.teleRule", {
 							case 'SID':
 							case 'User':
 							break;
-							case 'Other':
+							case 'Custom':
 								otherBrowse.show();
 							break;
 						}
