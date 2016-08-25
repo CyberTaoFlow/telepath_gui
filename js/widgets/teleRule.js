@@ -1328,7 +1328,7 @@ $.widget( "tele.teleRule", {
 				var behavTitle  = $('<div>').addClass('tele-title-1').html('Aspects are different characteristics of web users\' behavior');
 				
 				var behaviorTypes  = [ 
-					{ k:'average', v:'Average' },
+					{ k:'request', v:'Request' },
 					{ k:'query',   v:'Query'   }, 
 					{ k:'landing', v:'Speed' },
 					{ k:'geo',     v:'Location'     },
