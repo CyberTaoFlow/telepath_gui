@@ -4,14 +4,14 @@ telepath.ds = {
 
 	get: function (resource, params, success, error, flag, cache) {
 
-		var cachedData = localStorage.getItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)));
+	/*	var cachedData = localStorage.getItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)));
 		if (cache && cachedData ) {
 
 			if (typeof success == 'function') {
 				success(JSON.parse(cachedData), flag);
 			}
 		}
-		else {
+		else {*/
 
 
 			var dataType = 'json';
@@ -47,9 +47,9 @@ telepath.ds = {
 
 					// Success or Fail
 					if (data.success) {
-						if (cache) {
+						/*if (cache) {
 							localStorage.setItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)), JSON.stringify(data));
-						}
+						}*/
 						if (typeof success == 'function') {
 							success(data, this.flag);
 						}
@@ -76,8 +76,7 @@ telepath.ds = {
 
 			});
 
-		}
-
+		//}
 	}
 
 };
