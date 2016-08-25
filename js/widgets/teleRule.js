@@ -1339,7 +1339,8 @@ $.widget( "tele.teleRule", {
 				
 				var behavSelect = $('<select>').addClass('tele-rule-dropdown').addClass('tele-behavior-type');
 				var behavTitle2  = $('<div>').addClass('tele-title-2').html('Select aspect type');
-				
+				var behavTitle3  = $('<div>').addClass('tele-title-3').html('score');
+
 				if(!data.type) {
 					data.type = 'average';
 				}
@@ -1349,7 +1350,7 @@ $.widget( "tele.teleRule", {
 				this.personalBehavior = $('<div>').teleCheckbox({ label: 'Personal', checked: data.personal ? true : false }).addClass('tele-personal-behavior');
 				
 				
-				ruleInner.append(behavTitle).append(behavTitle2).append(behavSelect).append(this.personalBehavior);
+				ruleInner.append(behavTitle).append(behavTitle2).append(behavSelect).append(behavTitle3).append(this.personalBehavior);
 
 				// <select style="clear: both; float: left;background-color: #CECECE;border: 1px solid #CECECE;">
 				
