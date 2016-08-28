@@ -330,6 +330,7 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-arrow.hover { background-position: -295px -143px; }
 .tele-icon-arrow.selected { background-position: -295px -143px; }
 
+<<<<<<< HEAD:process/icons.css
 
 
 
@@ -374,6 +375,8 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-arrow-down.hover { background-position: -508px -383px;     width: 11px;}
 .tele-icon-arrow-down.selected { background-position: -508px -383px;     width: 11px;}
 
+=======
+>>>>>>> parent of 6fdff2b... GULP change css folder name:css/icons.css
 .tele-icon-caseConfig { background-position: -325px -293px; }
 .tele-icon-caseConfig.hover { background-position: -295px -293px; }
 
