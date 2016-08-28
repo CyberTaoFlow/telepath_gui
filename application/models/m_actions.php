@@ -346,15 +346,25 @@ class M_Actions extends CI_Model {
 			// get URI
 			$request['uri'] = $basic_request['TU'];
 
-			// get POST and GET params
-			foreach(['TB','TQ'] as $param){
-				if (!empty($basic_request[$param])) {
-					parse_str($basic_request[$param], $params);
-					foreach ($params as $key => $value) {
+			// get POST params
+			if (!empty($basic_request['TB'])) {
+				parse_str($basic_request['TB'], $params);
+				foreach ($params as $key => $value) {
+					$request['parameters'][] = ['name' => $key, 'value' => $value];
+				}
+			}
+
+
+			// get GET params
+			if (!empty($basic_request['TQ'])) {
+				parse_str($basic_request['TQ'], $params);
+				foreach ($params as $key => $value) {
+					if ($key != 'hybridrecord'){
 						$request['parameters'][] = ['name' => $key, 'value' => $value];
 					}
 				}
 			}
+
 
 			$ans[] = $request;
 
