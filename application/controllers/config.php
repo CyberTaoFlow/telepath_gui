@@ -35,7 +35,7 @@ class Config extends Tele_Controller
         $target = $this->input->post('test_mail', TRUE);
 
         $test_config = array(
-            'protocol' => 'sendmail',
+            'protocol' => 'smtp',
             'smtp_host' => $smtp,
             'smtp_port_id' => $port,
             'smtp_user' => $user,
