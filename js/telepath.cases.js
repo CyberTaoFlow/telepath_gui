@@ -54,6 +54,7 @@ telepath.cases = {
 	deleteCasesCache: function(){
 		// delete browser session storage cases cache
 		deleteCache('telecache/dashboard/get_cases');
+		deleteCache('telecache/dashboard/get_chart');
 		deleteCache('telecache/cases');
 	},
 	setData: function(data) {
