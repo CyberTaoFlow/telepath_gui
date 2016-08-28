@@ -62,7 +62,7 @@ class Cron extends Tele_Controller
 
         $alerts = $client->search($params);
 
-        echo 'Since ' . date(DATE_RFC2822, $ts_start) . ' Till ' . date(DATE_RFC2822) . ' there are ' . $alerts['hits']['total'] . ' alerts.. ' . "\n";
+        echo 'Since ' . date(DATE_RFC2822, $ts_start) . ' Till ' . date(DATE_RFC2822) . ' there are ' . $alerts['hits']['total'] . ' alerts. ' . "\n";
 
         if (!empty($alerts['hits']['hits'])) {
             $alerts = $alerts['hits']['hits'];
