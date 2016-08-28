@@ -31,7 +31,7 @@ telepath.config.rule = {
 		
 		if(id == 'new') {
 				
-			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], action_notifications: true, action_syslog: false, action_injection: false, action_email: false, disable_db_save: false, action_email_owner: true, category: telepath.config.rules.selectedCategory, new_rule: true };
+			this.data = { enable: true, name: '', desc: '', owner: '', score: 0, criteria: [], action_email_field: '', alert_param_ids: [], /*action_notifications: true, */action_syslog: false, action_injection: false, action_email: false, disable_db_save: false, /*action_email_owner: true,*/ category: telepath.config.rules.selectedCategory, new_rule: true };
 			this.showRule();
 			
 		} else {
@@ -97,10 +97,10 @@ telepath.config.rule = {
 		var title2 = $('<div>').addClass('tele-title-1').text('Actions');
 		this.container.append(title2);
 		
-		this.action_notifications = $('<div>').teleCheckbox({
+		/*this.action_notifications = $('<div>').teleCheckbox({
 			label: 'Notification', 
 			checked: this.data.action_notifications
-		}).appendTo(this.container);
+		}).appendTo(this.container);*/
 		
 		this.action_syslog = $('<div>').teleCheckbox({
 			label: 'Syslog', 
@@ -117,10 +117,10 @@ telepath.config.rule = {
 			checked: this.data.action_email
 		}).appendTo(this.container);
 		
-		this.action_email_owner = $('<div>').teleCheckbox({
+	/*	this.action_email_owner = $('<div>').teleCheckbox({
 			label: 'Email rule owner', 
 			checked: this.data.action_email_owner
-		}).appendTo(this.container);
+		}).appendTo(this.container);*/
 		
 		
 		// Captcha and Block CMD's
@@ -311,18 +311,18 @@ telepath.config.rule = {
 				return;
 			}
 
-			if (that.action_notifications.data('teleTeleCheckbox').options.checked) {
+			/*if (that.action_notifications.data('teleTeleCheckbox').options.checked) {
 				ruleData.action_notifications = true;
-			}
+			}*/
 			if (that.action_syslog.data('teleTeleCheckbox').options.checked) {
 				ruleData.action_syslog = true;
 			}
 			if (that.action_email.data('teleTeleCheckbox').options.checked) {
 				ruleData.action_email = true;
 			}
-			if (that.action_email_owner.data('teleTeleCheckbox').options.checked) {
+			/*if (that.action_email_owner.data('teleTeleCheckbox').options.checked) {
 				ruleData.action_email_owner = true;
-			}
+			}*/
 
 			// Get rule script execution config
 			ruleData.cmd = [];
