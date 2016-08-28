@@ -60,9 +60,10 @@ $.widget( "tele.teleRequest", {
 			// console.log(that.options.data);
 			that.showParameters();
 		});
-		} else {
-			this.element.append('<span style="font-size: 11px; margin-left: 27px; color: blue; clear: both; float: left;">No parameters</span>');
 		}
+		//else {
+		//	this.element.append('<span style="font-size: 11px; margin-left: 27px; color: blue; clear: both; float: left;">No parameters</span>');
+		//}
 				
 		
 		
