@@ -256,7 +256,9 @@ telepath.listitem.generic = {
 			telepath.ds.get('/cases/set_case_fav', {
 				cid: widget.options.dataID,
 				favorite: widget.options.favorite
-			}, function (data) {});
+			}, function (data) {
+				telepath.cases.deleteCasesCache();
+			});
 				
 		}
 	},
@@ -322,7 +324,7 @@ telepath.listitem.generic = {
 				//$('.popover').append('<div class="popover-title not-round">Related Info</div>');
 				//$('.popover').append('<div class="popover-content">Related info content</div>');
 			
-			});
+			},false, false, true);
 									
 		},
 		hover_out: function (el, id) {
@@ -340,7 +342,9 @@ telepath.listitem.generic = {
 			telepath.ds.get('/cases/set_case_fav', {
 				cid: widget.options.title,
 				favorite: widget.options.favorite
-			}, function (data) {});
+			}, function (data) {
+				telepath.cases.deleteCasesCache();
+			});
 				
 		}
 	

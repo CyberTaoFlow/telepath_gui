@@ -120,10 +120,22 @@ telepath.alerts = {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
+
+		// Refresh
+		var cmdRefresh = $('<div>').addClass('tele-refresh');
+		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+		cmdRefresh.append(cmdRefreshButton);
+
+		cmdRefreshButton.click(function () {
+			if (!telepath.alerts.loading) {
+				var that = this;
+				telepath.alerts.hardRefresh();
+			}
+		});
 		
 		// Append All
 		container.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange)
-			.append('<div class="tele-navsep"></div>').append(filterApps);
+			.append('<div class="tele-navsep"></div>').append(filterApps).append('<div class="tele-navsep"></div>').append(cmdRefresh);
 		
 
 		var typingTimer;                //timer identifier
@@ -188,8 +200,8 @@ telepath.alerts = {
 
 	},
 	hardRefresh: function(callback){
-		telepath.dashboard.deleteCache(callback);
-		this.refresh();
+		deleteCache('telecache');
+		this.refresh(callback);
 	},
 	setData: function(data) {
 		

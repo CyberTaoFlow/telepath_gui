@@ -554,3 +554,12 @@ function thousandsFormat(num, digits) {
 
   return num;
 }
+
+ function deleteCache(prefix){
+  var keys = Object.keys(sessionStorage);
+  for (var i = 0; i < keys.length; i += 1) {
+    if (keys[i].indexOf(prefix) === 0) {
+      sessionStorage.removeItem(keys[i]);
+    }
+  }
+}

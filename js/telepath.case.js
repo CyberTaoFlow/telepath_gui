@@ -132,7 +132,9 @@ telepath.caseOverlay = {
 						telepath.dialog({ title: 'Case Editor', msg: 'Already have a case with this name' });
 						return;
 						
-					}					
+					}
+
+					telepath.cases.deleteCasesCache();
 					
 					telepath.overlay.destroy();
 					//telepath.casePanel.init(name);
@@ -142,6 +144,7 @@ telepath.caseOverlay = {
 
 					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'add' }, function (data) {
 						// console.log('New case was flagged' + data);
+						telepath.cases.deleteCasesCache();
 						telepath.cases.refresh(function () {});
 					});
 						
@@ -157,7 +160,9 @@ telepath.caseOverlay = {
 						return;
 						
 					}
-					
+
+					telepath.cases.deleteCasesCache();
+
 					telepath.overlay.destroy();
 					//telepath.casePanel.init(name);
 					telepath.cases.init();
@@ -165,7 +170,8 @@ telepath.caseOverlay = {
 
 					telepath.ds.get('/cases/flag_requests_by_cases', { case: [name], range: false, method: 'update'  }, function (data) {
 						// console.log('Update the case:' + data);
-						telepath.cases.refresh(function () {});
+						telepath.cases.deleteCasesCache();
+						telepath.cases.refresh();
 					});
 					
 				});
@@ -232,8 +238,12 @@ telepath.casePanel = {
 			if(typeof(callback) == 'function') {
 				callback();
 			}
-		});
+		}, false, false, true);
 
+	},
+	hardRefresh: function(callback){
+		deleteCache('telecache');
+		this.refresh(callback);
 	},
 	getData: function(caseID) {
 		this.caseID = caseID;
@@ -260,7 +270,9 @@ telepath.casePanel = {
 			telepath.ds.get('/cases/set_case_fav', {
 				cid: that.caseID,
 				favorite: widget.options.checked
-			}, function (data) {});
+			}, function (data) {
+				telepath.cases.deleteCasesCache();
+			});
 		
 		}});
 		
@@ -364,14 +376,14 @@ telepath.casePanel = {
 			telepath.range.end = end;
 			
 			//telepath.cases.refresh(function () {});
-				that.refresh();
+				that.hardRefresh();
 			
 		}});
 		
 		// Applications
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			telepath.cases.refresh(function () {
+			telepath.cases.hardRefresh(function () {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
