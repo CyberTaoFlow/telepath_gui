@@ -354,14 +354,14 @@ td {
 }
 
 /* Dashboard - Refresh */
-.tele-panel-dashboard-refresh {
+.tele-refresh {
 	margin-top: 15px;
 	margin-right: 24px;
 	padding-left: 20px;
 	height: 20px;
 	float: left;
 }
-a.tele-panel-dashboard-refresh-button {
+a.tele-refresh-button {
 	background: url("../img/icons.png") no-repeat scroll -324px -58px rgba(0, 0, 0, 0);
 	height: 32px;
 	width: 32px;
@@ -371,26 +371,26 @@ a.tele-panel-dashboard-refresh-button {
 	margin-top: -5px;
 	margin-left: 15px;
 }
-a.tele-panel-dashboard-refresh-button:hover {
+a.tele-refresh-button:hover {
 	background-position: -362px -58px;
 }
-a.tele-panel-dashboard-refresh-button.loader {
+a.tele-refresh-button.loader {
 	background: transparent url("../img/loader_small.gif") 4px 0 no-repeat;
 }
-a.tele-panel-dashboard-refresh-button.loader:hover {
+a.tele-refresh-button.loader:hover {
 	background-position: 4px 0;
 }
 
-a.tele-panel-dashboard-refresh-text {
+a.tele-refresh-text {
 	float: left;
 	cursor: default;
 }
-a.tele-panel-dashboard-refresh-value {
+a.tele-refresh-value {
 	float: left;
 	margin-left: 15px;
 	width: 30px;
 }
-a.tele-panel-dashboard-refresh-value:hover {
+a.tele-refresh-value:hover {
 	color: #999;
 }
 

@@ -272,8 +272,8 @@ telepath.cases = {
 		}});
 
 		// Refresh
-		var cmdRefresh = $('<div>').addClass('tele-panel-dashboard-refresh');
-		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-panel-dashboard-refresh-button').html('&nbsp;');
+		var cmdRefresh = $('<div>').addClass('tele-refresh');
+		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
 		cmdRefresh.append(cmdRefreshButton);
 
 		cmdRefreshButton.click(function () {

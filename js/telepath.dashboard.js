@@ -12,12 +12,12 @@ telepath.dashboard = {
 	getData: function() {
 		
 		this.loading = true;
-		$('.tele-panel-dashboard-refresh-button').hide();
-		$('.tele-panel-dashboard-refresh').css('paddingRight','+=47px');
+		$('.tele-refresh-button').hide();
+		$('.tele-refresh').css('paddingRight','+=47px');
 		setTimeout(function () {
 			telepath.dashboard.loading = false;
-			$('.tele-panel-dashboard-refresh-button').fadeIn();
-			$('.tele-panel-dashboard-refresh').css('paddingRight','-=47px');
+			$('.tele-refresh-button').fadeIn();
+			$('.tele-refresh').css('paddingRight','-=47px');
 		}, 5000);
 		
 		var that = this;
@@ -357,10 +357,10 @@ telepath.dashboard = {
 		
 		
 		// Refresh
-		var cmdRefresh 			 = $('<div>').addClass('tele-panel-dashboard-refresh');
-		var cmdRefreshText       = $('<a>').attr('href', '#').addClass('tele-panel-dashboard-refresh-text').html('Refresh Rate');
-		this.cmdRefreshValue      = $('<a>').attr('href', '#').addClass('tele-panel-dashboard-refresh-value').html(this.refreshInterval + 'm');
-		var cmdRefreshButton     = $('<a>').attr('href', '#').addClass('tele-panel-dashboard-refresh-button').html('&nbsp;');
+		var cmdRefresh 			 = $('<div>').addClass('tele-refresh');
+		var cmdRefreshText       = $('<a>').attr('href', '#').addClass('tele-refresh-text').html('Refresh Rate');
+		this.cmdRefreshValue      = $('<a>').attr('href', '#').addClass('tele-refresh-value').html(this.refreshInterval + 'm');
+		var cmdRefreshButton     = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
 		cmdRefresh.append(cmdRefreshText).append(this.cmdRefreshValue).append(cmdRefreshButton);
 		
 		cmdRefreshButton.click(function () {
@@ -412,7 +412,7 @@ telepath.dashboard = {
 		// Append All
 		container.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps).append('<div class="tele-navsep"></div>').append(cmdRefresh);
 		
-		$('.tele-panel-dashboard-refresh-value').click(function () {
+		$('.tele-refresh-value').click(function () {
 			
 			$('body').append('<div class="tele-popup tele-refreshrate-popup"><input class="tele-refreshrate-slider" /></div>');
 			
