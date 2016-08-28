@@ -169,17 +169,9 @@ telepath.dashboard = {
 	refresh: function(callback) {
 		this.init();
 	},
-	hardRefresh: function(){
-		this.deleteCache();
-		this.refresh();
-	},
-	deleteCache: function (){
-		var keys = Object.keys(localStorage);
-		for (var i = 0; i < keys.length; i += 1) {
-			if (keys[i].indexOf('telecache') === 0) {
-				localStorage.removeItem(keys[i]);
-			}
-		}
+	hardRefresh: function(callback){
+		deleteCache('telecache');
+		this.refresh(callback);
 	},
 	init: function () {
 		

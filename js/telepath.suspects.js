@@ -245,8 +245,8 @@ telepath.suspects = {
 
 	},
 	hardRefresh: function(callback){
-		telepath.dashboard.deleteCache(callback);
-		this.refresh();
+		deleteCache('telecache');
+		this.refresh(callback);
 	},
 	_resize: function () {
 		
