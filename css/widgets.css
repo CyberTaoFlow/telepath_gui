@@ -689,7 +689,7 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 }
 
 .tele-rule-pattern-window select.tele-rule-dropdown{
-	margin-top: 6px;
+	margin-top: 10px;
 }
 
 .tele-rule-dropdown {
@@ -697,70 +697,8 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 	float: left;
 	background-color: #CECECE;
 	border: 1px solid #CECECE;
-	margin: 9px 15px;
-	width: 120px;
-	padding: 2px 10px;
-	/*border: 1px solid #000;*/
-	border-radius: 20px;
-	height: 25px;
-	/*margin-top: 5px;*/
-	/*padding-left: 12px;*/
+	margin: 12px 10px;
 }
-
-.tele-dropdown-options{
-	position: relative;
- }
-.tele-dropbtn {
-/*	background-color: #808083;
-	color: white;
-	padding: 16px;
-	font-size: 16px;
-	border: none;
-	cursor: pointer;*/
-	float: left;
-	background-color: #CECECE;
-	border: 1px solid #CECECE;
-	margin: 9px 15px;
-	width: 120px;
-	padding: 2px 10px;
-	border-radius: 20px;
-	height: 25px;
-}
-
-.tele-dropbtn:hover, .tele-dropbtn:focus {
-	background-color: #474749;
-}
-
-.tele-dropdown {
-	position: relative;
-	display: inline-block;
-}
-
-.tele-dropdown-content {
-	display: none;
-	position: absolute;
-	top: 57px;
-	/*left: 70px;*/
-	border-radius: 20%;
-	background-color: #f9f9f9;
-	min-width: 140px;
-	overflow: auto;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-
-.tele-dropdown-content a {
-	color: black;
-	padding: 12px 16px;
-	text-decoration: none;
-	display: block;
-	border-bottom: 1px solid #8f8e8e;
-}
-
-.tele-dropdown-content a:last-child {
-	border-bottom: 0;
-}
-
-.tele-dropdown-content a:hover {background-color: #f1f1f1}
 
 .tele-velocity-wrap{
 	display: inline-flex;

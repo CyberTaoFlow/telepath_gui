@@ -386,10 +386,10 @@
   background: rgba(189, 189, 189, 0.65);
 }
 
-.jstree-default .jstree-wholerow-clicked {
+/*.jstree-default .jstree-wholerow-clicked {
   background: rgba(189, 189, 189, 0.85);
-  /*background: #f7931e;*/
-}
+  !*background: #f7931e;*!
+}*/
 .jstree-default .jstree-node {
   min-height: 24px;
   line-height: 24px;

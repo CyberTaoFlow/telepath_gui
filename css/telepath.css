@@ -27,7 +27,7 @@ td {
   font-family: 'Roboto Condensed Regular';
   font-style: normal;
   font-weight: 400;
-  src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'), url(../css/Zd2E9abXLFGSr9G3YK2MsFzqCfRpIA3W6ypxnPISCPA.woff) format('woff');
+  src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'), url(Zd2E9abXLFGSr9G3YK2MsFzqCfRpIA3W6ypxnPISCPA.woff) format('woff');
 }
 
   .axisLabels {
@@ -468,7 +468,7 @@ a.tele-panel-dashboard-refresh-value:hover {
 	background: -o-linear-gradient(left, #C4E8B2 0%,#60BB3C 100%);
 	background: -ms-linear-gradient(left, #C4E8B2 0%,#60BB3C 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#C4E8B2', endColorstr='#60BB3C',GradientType=0 );
-	background: linear-gradient(to left, #C4E8B2 0%,#60BB3C 100%);
+	background: linear-gradient(left, #C4E8B2 0%,#60BB3C 100%);
 }
 
 .tele-dashboard-graph-filters {

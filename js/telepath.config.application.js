@@ -93,7 +93,7 @@ telepath.config.application = {
 		/* *************************************************************** */
 		$('#tele-app-auth').click();
 		
-		app_data.ntlm_mode        = 0;
+		//app_data.ntlm_mode        = 0;
 		app_data.basic_mode  = 0;
 		//app_data.form_flag   = 0;
 		app_data.digest_mode = 0;
@@ -131,7 +131,7 @@ telepath.config.application = {
 		var mode = this.userIdentification.data('teleTeleRadios').options.checked;
 
 		switch(mode) {
-			case 'NTLM':
+			/*case 'NTLM':
 				app_data.ntlm_mode = 1;
 
 				if ((!app_data.cookie_mode || (!app_data.cookie_name || app_data.cookie_name == ''))
@@ -143,7 +143,7 @@ telepath.config.application = {
 					});
 					return false;
 				}
-				break;
+				break;*/
 			case 'Basic':
 				app_data.basic_mode = 1;
 
@@ -314,7 +314,7 @@ telepath.config.application = {
                                 app_ips: '',
                                 form_param_name: '',
                                 form_param_id: '',
-                                ntlm_mode: 0,
+                                //ntlm_mode: 0,
                                 basic_mode: 0,
                                 form_flag: 0,
                                 digest_mode: 0,
@@ -549,9 +549,9 @@ telepath.config.application = {
 			userID_val = 'Form';
 			this.usernameParameter.show();
 		}
-		else if(telepath.config.application.app_data.ntlm_mode == '1') {
+		/*else if(telepath.config.application.app_data.ntlm_mode == '1') {
 			userID_val = 'NTLM';
-		}
+		}*/
 		else if(telepath.config.application.app_data.basic_mode == '1') {
 			userID_val = 'Basic';
 		}
@@ -572,7 +572,7 @@ telepath.config.application = {
 				{ key: 'Form', label: 'Form' },
 				{ key: 'Basic', label: 'Basic' },
 				{ key: 'Digest', label: 'Digest' },
-				{ key: 'NTLM', label: 'NTLM' },
+				//{ key: 'NTLM', label: 'NTLM' },
 				{ key: 'None', label: 'None' }
 			], callback: function(radio) {
 
@@ -644,6 +644,8 @@ telepath.config.application = {
 		});
 		
 		this.SC_wrap.append('<div class="tele-form-hr">');
+
+		this.SC_wrap.append('<div class="tele-title-1">Success Criteria</div>');
 
 		this.SC_wrap.append(this.SC_cookie_toggle).append(this.SC_cookie_name).append(this.SC_cookie_value).append(this.SC_cookie_flag);
 
