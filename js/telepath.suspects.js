@@ -126,9 +126,21 @@ telepath.suspects = {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
+
+		// Refresh
+		var cmdRefresh = $('<div>').addClass('tele-panel-dashboard-refresh');
+		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-panel-dashboard-refresh-button').html('&nbsp;');
+		cmdRefresh.append(cmdRefreshButton);
+
+		cmdRefreshButton.click(function () {
+			if (!telepath.suspects.loading) {
+				var that = this;
+				telepath.suspects.hardRefresh();
+			}
+		});
 		
 		// Append tools
-		this.panelTopBarRight.append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
+		this.panelTopBarRight.append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps).append('<div class="tele-navsep"></div>').append(cmdRefresh);
 		
 		// Sub bar items
 		// --------------------------------------
