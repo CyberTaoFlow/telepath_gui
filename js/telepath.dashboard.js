@@ -90,7 +90,7 @@ telepath.dashboard = {
 			telepath.dashboard.data.items.cases = cases;
 			telepath.dashboard.initCases();
 			$(window).trigger('resize');
-		}, null, telepath.dashboard.reloadFlag);
+		}, null, telepath.dashboard.reloadFlag,true);
 
 	},
 	

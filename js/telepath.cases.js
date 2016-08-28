@@ -39,13 +39,22 @@ telepath.cases = {
 			if(typeof(callback) == 'function') {
 				callback();
 			}
-		});
+		},false, false, true);
 
 		/*if (telepath.cases.searchString)
 		{
 			$('.tele-panel-cases .tele-search-input').prop("value",telepath.cases.searchString);
 		}*/
 
+	},
+	hardRefresh: function(callback){
+		deleteCache('telecache');
+		this.refresh(callback);
+	},
+	deleteCasesCache: function(){
+		// delete browser session storage cases cache
+		deleteCache('telecache/dashboard/get_cases');
+		deleteCache('telecache/cases');
 	},
 	setData: function(data) {
 		
@@ -181,6 +190,7 @@ telepath.cases = {
 					msg: 'Remove ' + selected.length + ' case(s)?',
 					callback: function () {
 						telepath.ds.get('/cases/del_cases', { cids: selected }, function (data) {
+							that.deleteCasesCache();
 							that.setData(data.items);
 
 							telepath.ds.get('/cases/flag_requests_by_cases', { case: selected, range: false, method: 'delete', repeat: false  }, function (data) {
@@ -248,14 +258,14 @@ telepath.cases = {
 			telepath.range.start = start;
 			telepath.range.end = end;
 			
-			telepath.cases.refresh(function () {});
+			that.hardRefresh();
 			
 		}});
 		
 		// Applications
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			telepath.cases.refresh(function () {
+			that.hardRefresh(function () {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
