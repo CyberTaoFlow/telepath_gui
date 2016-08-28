@@ -216,8 +216,17 @@ class M_Applications extends CI_Model {
 			if (!isset($app['eta'])) {
 				$app['eta'] = '';
 			}
-			if (!isset($app['app_ips'])) {
-				$app['app_ips'] = '';
+			if (!isset($app['ssl_flag'])) {
+				$app['ssl_flag'] = 0;
+			}
+			if (!isset($app['app_ssl_certificate'])) {
+				$app['app_ssl_certificate'] = '';
+			}
+			if (!isset($app['app_ssl_private'])) {
+				$app['app_ssl_private'] = '';
+			}
+			if (!isset($app['ssl_server_port'])) {
+				$app['ssl_server_port'] = '';
 			}
 //			if (!isset($app['form_authentication_redirect_response_range'])) {
 //				$app['form_authentication_redirect_response_range'] = '';
