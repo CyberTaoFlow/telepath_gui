@@ -5,9 +5,6 @@
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
 .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 80%;}
 
-.tele-user-permissions .tabs .tele-checkbox .tele-input-label{
-	width: 330px;
-}
 
 .tele-user-permissions .tele-perm-tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all .tabs{
 	clear: both;
@@ -167,8 +164,7 @@ body .jstree .tele-button {
 	border: none;
 	background: #E6E6E6;
 	background-image: none;
-	top: 30px;
-	position: relative;
+	top: 65px;
 }
 
 
@@ -506,7 +502,7 @@ body .jstree .tele-button {
 
 .tele-button-container-group{
 	clear: both;
-	margin-top: 50px;
+	margin-bottom: 50px;
 	text-align: center;
 }
 
@@ -973,19 +969,24 @@ body .jstree .tele-button {
 }
 
 .tele-group-permissions{
-    min-height: 300px;
+    min-height: 490px;
 }
-
+@media (max-width: 1400px) {
+	.tele-group-permissions{
+		margin-left: 15px;
+	}
+}
 .tele-group-permissions .tele-perm-tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all .tabs{
 	margin-left: -20px;
 }
 
 .tele-group-permissions .tele-perm-tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all ul{
-	margin-top: -55px;
+	margin-top: -70px;
 }
 
+.tele-user-permissions .tele-checkbox .tele-input-label,
 .tele-group-permissions .tele-checkbox .tele-input-label{
-	width: 310px;
+	width: 285px;
 }
 
 .tele-user-permissions {
@@ -1005,7 +1006,11 @@ body .jstree .tele-button {
     width: 50%;
 }
 
-.tele-config-system-steps {
+@media (max-width: 1200px) {
+	.tele-user-permissions,
+	.tele-user-groups-container{
+		width: 100%;
+	}
 }
 
 .tele-config-system-step.active .tele-config-system-step-index {

@@ -272,6 +272,14 @@
 	width: 50%;
 }
 
+@media (max-width: 1400px) {
+	.tele-group-wrap-left,
+	.tele-group-wrap-right {
+		width: 100%;
+	}
+
+}
+
 .tele-config-content-right .group-input{
 	margin-left: 15px;
     margin-top: 15px;
