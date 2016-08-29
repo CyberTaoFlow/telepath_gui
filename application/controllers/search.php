@@ -35,7 +35,7 @@ class Search extends Tele_Controller
         }
         return array(
             'search' => $key,
-            'options' => $this->input->post('options'),
+//            'options' => $this->input->post('options'),
             'range' => $this->_get_range(),
             //'apps' 	  	 => $this->input->post('apps'),
             'apps' => $this->_get_apps(),
