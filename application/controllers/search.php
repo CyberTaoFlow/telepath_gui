@@ -23,11 +23,11 @@ class Search extends Tele_Controller
         }
         # Automatically add * to the end of search string
         $key = $this->input->post('search');
-        if (substr($key, -1) != '*' && $key[0]!='"' && substr($key, -1) != '"' )
-        {
-            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
-
-        }
+//        if (substr($key, -1) != '*' && $key[0]!='"' && substr($key, -1) != '"' )
+//        {
+//            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
+//
+//        }
 
         $sort = $this->input->post('sort');
         if (!$sort || !in_array($sort, array('date', 'name', 'count', 'score'))) {
