@@ -24,10 +24,10 @@ class M_Alerts extends CI_Model {
 			
 			// LIM
 
-			$range['start'] = $range['start'] + ($x * $step);       // 4JS
-			$range['end']   = $range['start'] + (($x + 1) * $step); // 4JS
+			$scope_start = $range['start'] + ($x * $step);       // 4JS
+			$scope_end   = $range['start'] + (($x + 1) * $step); // 4JS
 
-			$params['index'] = range_to_indices($range);
+			$params['index'] = 'telepath-20*';
 			$params['type'] = 'http';
 			$params['body'] = [
 			'size'  => 0,
@@ -74,7 +74,7 @@ class M_Alerts extends CI_Model {
 				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 			// QUERY
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $range['start'], 'lte' => $range['end'] ] ] ];
+			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
 			
 			$params = append_application_query($params, $apps);
 			$params = append_access_query($params);
@@ -83,7 +83,7 @@ class M_Alerts extends CI_Model {
 			
 			if(!empty($results) && isset($results['aggregations']['sid'])) {
 				$val     = intval($results['aggregations']['sid']['value']);
-				$chart[] = array($range['end'] * 1000, $val);
+				$chart[] = array($scope_end * 1000, $val);
 			}
 							
 				
