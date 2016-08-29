@@ -294,7 +294,8 @@
 }
 .tele-radio-label {
 	margin-top: 2px;
-	width: 156px;
+	width: auto;
+	margin-right: 15px;
 }
 
 .tele-input-suffix {
