@@ -22,7 +22,7 @@ class Sessionflow extends Tele_Controller
         $state = $this->input->post('state');
         $range = $this->_get_range();
 
-        if (!empty($key) && substr($key, -1) != '*')
+        if (!empty($key) && substr($key, -1) != '*' && strpos($key, 'country_code') !== 0)
         {
             $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
         }
@@ -58,7 +58,7 @@ class Sessionflow extends Tele_Controller
         }
 
         $key = $this->input->post('searchkey');
-        if (!empty($key) && substr($key, -1) != '*')
+        if (!empty($key) && substr($key, -1) != '*' && strpos($key, 'country_code') !== 0)
         {
             $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
         }

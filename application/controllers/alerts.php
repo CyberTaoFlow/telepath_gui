@@ -19,7 +19,7 @@ class Alerts extends Tele_Controller
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $search = $this->input->post('search');
         $filters = $this->input->post('filters');
-        if ($search && substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' )
+        if ($search && substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' && strpos($search, 'country_code') !== 0)
         {
             $search = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$search))) . '*';
 
