@@ -27,8 +27,11 @@ $.widget( "tele.teleBrowse", {
 		
 		this.element.empty();
 		
-		if(!this.options.label) {
+		if(!this.options.label && this.options.label != 'none') {
 			this.options.label = this.options.mode == 'param' ? 'Select Parameter' : 'Select Page';
+		}
+		else{
+			this.options.label= '';
 		}
 		
 		this.input  = $('<div>').teleInput({ label: this.options.label, value: this.options.value })/*.click(function () {
