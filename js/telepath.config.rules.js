@@ -53,12 +53,17 @@ telepath.config.rules = {
 		 that.input();
 		 }
 
-
+		var typingTimer;                //timer identifier
+		var doneTypingInterval = 1000;
 		// add search on client site on key up event
 		$(".tele-config-bar-right .tele-search-input").keyup('input', function () {
-			that.searchString = $(this).val();
-			// console.log(that.searchString);
-			that.input();
+			clearTimeout(typingTimer);
+			if ($(".tele-config-bar-right .tele-search-input").val()){
+				typingTimer = setTimeout(function(){
+					that.searchString  = $(".tele-config-bar-right .tele-search-input").val();
+					that.input();
+				}, doneTypingInterval);
+			}
 		});
 	},
 
