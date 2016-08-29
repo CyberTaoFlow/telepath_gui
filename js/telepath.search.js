@@ -17,7 +17,7 @@ telepath.search = {
     loading:false,
 
     options: false,
-    searchTypes: [
+    /*searchTypes: [
         {id: 'cases', label: 'Request Data', desc: 'Search Cases'},					// Scope
         {id: 'alerts', label: 'Applications', desc: 'Search Alerts'},					// Scope
         {id: 'suspects', label: 'Request Data', desc: 'Search suspects'},				// Scope
@@ -28,7 +28,7 @@ telepath.search = {
         {id: 'attributes', label: 'Applications', desc: 'Search attribute names'},	// Variant
         {id: 'users', label: 'Request Data', desc: 'Search web application users'},	// Variant
         {id: 'users', label: 'Request Data', desc: 'Search in countries and cities'}	// Variant
-    ],
+    ],*/
 
 
     printTypes: function (element) {
@@ -56,7 +56,7 @@ telepath.search = {
         }
 
 
-        $.each(that.searchTypes, function (i, data) {
+        /*$.each(that.searchTypes, function (i, data) {
 
             var wrap = $('<div>').addClass('tele-search-filter').attr('id', 'tele-search-filter-' + data.id);
             //var title = $('<div>').addClass('tele-title-2').html(data.label);
@@ -75,7 +75,7 @@ telepath.search = {
             wrap.append(cb);
             element.append(wrap);
 
-        });
+        });*/
 
         that.buttonsEl = $('<div>').addClass('tele-form-buttons');
         that.applyBtn = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
@@ -86,13 +86,13 @@ telepath.search = {
 
         // BIND Validate
         that.applyBtn.click(function () {
-            $('.tele-search-filters').remove();
+            //$('.tele-search-filters').remove();
         });
 
         // BIND Cancel -- Simply reload
         that.cancelBtn.click(function () {
             that.options = that.defaults; // USE $.extend
-            $('.tele-search-filters').remove();
+            //$('.tele-search-filters').remove();
         });
 
     },

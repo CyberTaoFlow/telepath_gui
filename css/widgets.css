@@ -120,7 +120,9 @@
 #tele-app-auth .tele-app-auth-body {
 	width: 600px;
 }
-
+#tele-app-details{
+	position: relative;
+}
 .tele-rule-cmd-toggle .tele-input-label {
 	font-weight: bold;
 	font-size: 16px;
@@ -270,6 +272,14 @@
 	width: 50%;
 }
 
+@media (max-width: 1400px) {
+	.tele-group-wrap-left,
+	.tele-group-wrap-right {
+		width: 100%;
+	}
+
+}
+
 .tele-config-content-right .group-input{
 	margin-left: 15px;
     margin-top: 15px;
@@ -294,7 +304,8 @@
 }
 .tele-radio-label {
 	margin-top: 2px;
-	width: 156px;
+	width: auto;
+	margin-right: 15px;
 }
 
 .tele-input-suffix {
@@ -436,6 +447,8 @@ a.tele-input-input {
 
 .tele-rule-inner{
 	float: left;
+	clear: both;
+	padding-bottom: 25px;
 }
 
 .tele-rule-inner .tele-title-1{
@@ -662,11 +675,10 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 .tele-rule-editor .tele-multi .tele-multi-value{
 	width: 320px;
 }
-
+.tele-rule-inner .tele-multi .tele-multi-value,
 .tele-pattern-changing .tele-multi .tele-multi-value{
-	width: 250px;
+	width: auto;
 }
-
 
 .tele-multi.tele-rule-alert-param .tele-multi-value{
 	width: 520px;
