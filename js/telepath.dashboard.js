@@ -328,8 +328,11 @@ telepath.dashboard = {
 			clearInterval(this.refreshTimer);
 		}
 		this.refreshTimer = setInterval(function () {
-			if (telepath.activePage == 'dashboard'|| telepath.activePage == 'alerts' || telepath.activePage == 'suspects'){
+			if (telepath.activePage != 'config'){
 				eval ('telepath.' + telepath.activePage + '.hardRefresh()');
+			}
+			else{
+				deleteCache('telecache');
 			}
 		}, this.refreshInterval * 60000); // In minutes, need millisecond format
 		

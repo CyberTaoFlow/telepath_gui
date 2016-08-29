@@ -111,6 +111,8 @@ telepath.search = {
         this.container = $('.tele-panel-search');
         this.container.empty();
 
+        telepath.activePage = 'search';
+
         this.initPanel();
 
         // check if there is a record in process and stop it
@@ -171,8 +173,7 @@ telepath.search = {
                 //that.boll=false;
                 //Reset tab result count to 0
                 $('.tele-search-tab span').html('0');
-                telepath.search.refresh(function () {
-                });
+                telepath.search.hardRefresh();
 
             }
         });
@@ -181,14 +182,26 @@ telepath.search = {
         var filterApps = $('<div>').appSelect({
             callback: function (app_id) {
                 $('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-                telepath.search.refresh(function () {
+                telepath.search.hardRefresh(function () {
                     $('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
                 });
             }
         });
 
+        // Refresh
+        var cmdRefresh = $('<div>').addClass('tele-refresh');
+        var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+        cmdRefresh.append(cmdRefreshButton);
+
+        cmdRefreshButton.click(function () {
+            if (!telepath.search.loading) {
+                var that = this;
+                telepath.search.hardRefresh();
+            }
+        });
+
         // Append tools
-        this.panelTopBarRight.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps);
+        this.panelTopBarRight.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange).append('<div class="tele-navsep"></div>').append(filterApps).append('<div class="tele-navsep"></div>').append(cmdRefresh);
 
         // TABS
         // --------------------------------
@@ -397,6 +410,10 @@ telepath.search = {
         // Do charts / graphs / maps where acceptable
         // Profit?
 
+    },
+    hardRefresh: function(callback){
+        deleteCache('telecache');
+        this.refresh(callback);
     },
 
     selectTab: function () {

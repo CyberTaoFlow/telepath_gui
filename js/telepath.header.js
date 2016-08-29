@@ -145,6 +145,7 @@ telepath.header = {
 			telepath[id].init();
 			$('.tele-panel-' + id).show();
 			$(this).addClass('active');
+			telepath.activePage = id;
 
 			// check if there is a record in process and stop it
 			telepath.config.actions.checkNotFinishedRecord();
