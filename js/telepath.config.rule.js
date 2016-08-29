@@ -18,7 +18,7 @@ telepath.config.rule = {
 		this.container = $('<div>').css({ padding: 20 }).addClass('tele-rule-editor');
 		telepath.config.rules.contentRight.empty();
 		telepath.config.rules.contentRight.append(this.container);
-		telepath.config.rules.contentRight.mCustomScrollbar({ advanced:{ updateOnContentResize: true } });
+		telepath.config.rules.contentRight.mCustomScrollbar({ advanced:{ updateOnContentResize: true, autoScrollOnFocus: false } });
 	
 		// Containers
 		this.toolbar   = telepath.config.rules.barRight;

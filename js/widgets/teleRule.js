@@ -77,10 +77,10 @@ $.widget( "tele.teleRule", {
 		
 		that.accordion.accordion('destroy').accordion({ 
 
-			heightStyle: 'fill',
+			heightStyle: 'content',
 			collapsible: true,
 			active: false,
-			autoHeight: false,
+			autoHeight: true,
 			animate: false,
 			select: function( event, ui) {
 		
@@ -740,9 +740,8 @@ $.widget( "tele.teleRule", {
 		var triggerWrap  	  = $('<div>').addClass('tele-rule-trigger-wrap');
 		
 		this.ruleToggle       = $('<div>').teleCheckbox({ label: 'Enabled', checked: data.enable }).addClass('tele-rule-toggle');
-		this.ruleTriggerAlert = $('<div>').teleInput({ label: 'Trigger alert after', suffix: 'criteria matches per session', width: 30, value: data.aggregate }).addClass('tele-rule-trigger');
 
-		triggerWrap.append(this.ruleToggle).append(this.ruleTriggerAlert);
+		triggerWrap.append(this.ruleToggle);
 		container.append(triggerWrap);
 		// END Small Rule Bar
 		
@@ -753,9 +752,16 @@ $.widget( "tele.teleRule", {
 		if (this.options.data["builtin_rule"])
 		{
 			$(ruleInner).hide();
-			$(this.ruleTriggerAlert).hide();
 		}
-		
+
+		var title = $('<div>').addClass('tele-title-1').html('Thresholds');
+		//thresholds
+
+		this.ruleTriggerAlert = $('<div>').teleInput({ label: 'Trigger alert after',
+			suffix: 'criteria matches per session', width: 30, value: data.aggregate }).addClass('tele-rule-trigger');
+
+		ruleInner.append(title).append(this.ruleTriggerAlert);
+
 		switch(type) {
 			case 'parameter':
 				
@@ -1187,14 +1193,14 @@ $.widget( "tele.teleRule", {
 			break;
 			case 'pattern':
 
-				var changingWindow = $('<div>').addClass('tele-pattern-changing');
+				//var changingWindow = $('<div>').addClass('tele-pattern-changing');
 				
 				// console.log(data);
 				
 				
 				// OTHER BROWSE
 				
-				var browseOpt = { mode: 'param', label: 'Custom parameter', type: 'param' };
+				var browseOpt = { mode: 'param', label: 'none', type: 'param' };
 				
 				if(data.type == 'Custom' && data.Custom) {
 					browseOpt = $.extend(browseOpt, data.Custom);
@@ -1206,7 +1212,7 @@ $.widget( "tele.teleRule", {
 				
 				// PAGE BROWSE
 				
-				var browseOpt = { mode: 'page' , label: 'Repeating Page', type: 'page' };
+				var browseOpt = { mode: 'page' , label: 'none', type: 'page' };
 				
 				if(data.subtype == 'page' && data.pagename && data.domain) {
 					browseOpt.pagename = data.pagename;
@@ -1218,7 +1224,7 @@ $.widget( "tele.teleRule", {
 				
 				// PARAM BROWSE
 				
-				var browseOpt = { mode: 'param', label: 'Changing parameter' };
+				var browseOpt = { mode: 'param', label: 'none' };
 				
 				if(data.subtype == 'parameter' && data.paramname) {
 					browseOpt.paramname = data.paramname; 
@@ -1242,12 +1248,12 @@ $.widget( "tele.teleRule", {
 					var action_data = [ { text: data.domain + ' :: ' + data.action_name, raw: { application: data.domain, action_name: data.action_name } } ];
 
 				}
-				var actionSelect = $('<div>').teleSelect({ label:'Business action', type: 'action', values: action_data,
-					click: function () { } }).hide().css({width: 370});
+				var actionSelect = $('<div>').teleSelect({ /*label:'Business action',*/ type: 'action', values: action_data,
+					click: function () { } }).hide().css({width: 'auto'});
 				$('input', actionSelect).css({ width: 250 });
 				$('.tele-multi-control', actionSelect).hide();
 								
-				changingWindow.append(otherBrowse).append(pageBrowse).append(paramBrowse).append(actionSelect);
+				//changingWindow.append(otherBrowse).append(pageBrowse).append(paramBrowse).append(actionSelect);
 				
 				var patAnchor = $('<div>').teleRadios({
 					title: 'Anchor',
@@ -1318,8 +1324,13 @@ $.widget( "tele.teleRule", {
 				
 		
 				patWindowWrap.append(patCount).append(patDuration).append(patGap);
-				ruleInner.append(patAnchor).append(patLinked).append(changingWindow).append(patWindowWrap);
-				
+				ruleInner.append(patWindowWrap).append(patAnchor).append(patLinked);
+
+				$( ".tele-radio-wrap:contains('Custom parameter')").append(otherBrowse);
+				$( ".tele-radio-wrap:contains('Page')").append(pageBrowse);
+				$( ".tele-radio-wrap:contains('Changing Parameter')").append(paramBrowse);
+				$( ".tele-radio-wrap:contains('Repeating Business Action')").append(actionSelect);
+
 				// Load type
 				if(!data.type) {
 					data.type = 'IP';

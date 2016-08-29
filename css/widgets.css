@@ -436,6 +436,8 @@ a.tele-input-input {
 
 .tele-rule-inner{
 	float: left;
+	clear: both;
+	padding-bottom: 25px;
 }
 
 .tele-rule-inner .tele-title-1{
@@ -662,11 +664,10 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 .tele-rule-editor .tele-multi .tele-multi-value{
 	width: 320px;
 }
-
+.tele-rule-inner .tele-multi .tele-multi-value,
 .tele-pattern-changing .tele-multi .tele-multi-value{
-	width: 250px;
+	width: auto;
 }
-
 
 .tele-multi.tele-rule-alert-param .tele-multi-value{
 	width: 520px;

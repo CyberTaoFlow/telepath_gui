@@ -379,7 +379,7 @@ body .jstree .tele-button {
 	background-image: none;
 	background: white;
 	border: none;
-	padding: 0px 20px;
+	padding: 0 20px 15px;
 }
 
 .tele-ruletype-accordion .ui-accordion-content.ui-accordion-content-active,
@@ -388,12 +388,14 @@ body .jstree .tele-button {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	margin-bottom: 10px;
-	min-height: 270px;
+	/*min-height: 270px;*/
 }
 
+/*
 .tele-ruletype-accordion .ui-accordion-content.ui-accordion-content-active {
 	min-height: 326px;
 }
+*/
 
 .tele-ruletype-accordion.small .ui-accordion-content.ui-accordion-content-active {
 	min-height: 80px;
@@ -594,16 +596,23 @@ body .jstree .tele-button {
     height: 30px;
     margin: 10px -10px;
 }
-.tele-rule-trigger-wrap .tele-input {
+/*.tele-rule-trigger-wrap .tele-input {
 	margin-right: 0px;
 }
 .tele-rule-trigger-wrap .tele-input {
 	width: auto;
 	clear: none;
 	float: left;
+}*/
+
+.tele-rule-trigger.tele-input {
+	margin-right: 0px;
+	width: auto;
+	clear: none;
+	float: left;
 }
-.tele-rule-trigger-wrap .tele-input-label,
-.tele-rule-trigger-wrap .tele-input-suffix {
+.tele-rule-trigger .tele-input-label,
+.tele-rule-trigger .tele-input-suffix {
 	margin-top: 8px;
 }
 
@@ -611,17 +620,17 @@ body .jstree .tele-button {
 	margin-top: 1px;
 }
 
-.tele-rule-trigger-wrap .tele-input-label {
+.tele-rule-trigger .tele-input-label {
 	width: auto;
 	margin-right: 5px;
 	font-size: 15px;
-	margin-left: 12px;
+	/*margin-left: 12px;*/
 }
-.tele-rule-trigger-wrap .tele-input-suffix {
+.tele-rule-trigger .tele-input-suffix {
 	font-size: 15px;
 }
 
-.tele-rule-trigger-wrap .tele-input-input {
+.tele-rule-trigger .tele-input-input {
 	float: left;
 }
 
@@ -666,28 +675,14 @@ body .jstree .tele-button {
 	/* height: 130px; */
 }
 
-.tele-rule-bind{
-	margin-left: 20px;
-}
 
 .tele-rule-anchor {
-	float: left;
 	width: 165px;
 	/* height: 130px; */
 	/*border-right: 2px solid #555;*/
 
 }
 
-.tele-rule-anchor:after,
-.tele-rule-bind:after{
-	content: '';
-	height: 100px;
-	width: 2px;
-	position: absolute;
-	right: 0;
-	top: 45px;
-	background-color: #555;
-}
 
 .tele-parameter-type {
 	border-right: 2px solid #555;
@@ -706,7 +701,7 @@ body .jstree .tele-button {
 	/*font-size: 11px;*/
 }
 .tele-rule-trigger-wrap .tele-input-input {
-	margin-top: 5px;
+	margin-top: 9px;
     padding: 2px;
 	border-radius: 10px;
 	text-align: center;
@@ -735,10 +730,27 @@ body .jstree .tele-button {
 }
 
 .tele-rule-anchor, .tele-rule-bind{
-	width: 250px;
+	width: 465px;
 	position: relative;
+	float: left;
+	clear: both;
+	border-top: 1px solid #000;
 }
 
+.tele-rule-inner .tele-radio-wrap{
+	height: 22px;
+}
+
+.tele-rule-inner .tele-browse,
+.tele-rule-inner .tele-multi{
+	float: right;
+	margin-top: -6px;
+}
+
+.tele-rule-inner .tele-browse .tele-input{
+	width: auto;
+	margin-right: 10px;
+}
 
 .tele-radio-on-off .tele-radio-label {
 	width: 50px;
@@ -1184,7 +1196,8 @@ body .jstree .tele-button {
 
 .tele-pattern-changing {
 	float: left;
-	margin-left: 20px;
+	clear: both;
+	/*margin-left: 20px;*/
 }
 
 .error {
