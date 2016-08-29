@@ -1259,20 +1259,29 @@ $.widget( "tele.teleRule", {
 					], callback: function(radio) {
 						
 						otherBrowse.hide();
-						
+
+					var user =	$( ".tele-radio-wrap:contains('Changing Username')" );
+					var parameter =	$( ".tele-radio-wrap:contains('Changing Parameter')" );
+
+						user.show();
+						parameter.show();
+
 						switch(radio.key) {
 							case 'IP':
 							case 'SID':
+								break;
 							case 'User':
+								user.hide();
 							break;
 							case 'Custom':
 								otherBrowse.show();
+								parameter.hide();
 							break;
 						}
 					
 										
 				}}).addClass('tele-rule-anchor');
-				
+
 				var patLinked = $('<div>').teleRadios({
 					title: 'Variable',
 					radios: [ 
