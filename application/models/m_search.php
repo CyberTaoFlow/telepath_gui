@@ -41,7 +41,8 @@ class M_Search extends CI_Model {
 				break;
 		}
 
-		$params['index'] = 'telepath-20*';
+
+		$params['index'] = range_to_indices($settings['range']);
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -157,7 +158,7 @@ class M_Search extends CI_Model {
 		$results = array('items' => array());
 
 		$params2 = array();
-		$params2['index'] = 'telepath-20*';
+		$params2['index'] = range_to_indices($settings['range']);
 		$params2['type'] = 'http';
 		$params2['body'] = [
 			'size' => 0,

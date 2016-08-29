@@ -77,7 +77,7 @@ class M_Suspects extends CI_Model {
 		}
 		
 		//die;
-		$params['index'] = 'telepath-20*';
+		$params['index'] = range_to_indices($range);
 		$params['type'] = 'http';
 
 		if ($distinct_ip) {
@@ -216,7 +216,7 @@ class M_Suspects extends CI_Model {
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
-						$params2['index'] = 'telepath-20*';
+						$params2['index'] = range_to_indices($range);
 						$params2['type'] = 'http';
 						$params2['body'] = [
 								'size' => 0,

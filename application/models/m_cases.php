@@ -71,7 +71,7 @@ class M_Cases extends CI_Model {
 
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 
-		$params['index'] = 'telepath-20*';
+		$params['index'] = range_to_indices($range);
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -147,7 +147,7 @@ class M_Cases extends CI_Model {
 			
 		}
 
-		$params['index'] = 'telepath-20*';
+		$params['index'] = range_to_indices($range);
 		$params['type'] = 'http';
 		$params['_source']=false;
 		$params['body'] = [
@@ -730,7 +730,7 @@ class M_Cases extends CI_Model {
 
 		}
 
-		$params['index'] = 'telepath-20*';
+		$params['index'] = range_to_indices($range);
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -848,13 +848,13 @@ class M_Cases extends CI_Model {
 		for($x = 0; $x < $dots; $x++) {
 			
 			// LIM
-			
-			$scope_start = $range['start'] + ($x * $step);       // 4JS
-			$scope_end   = $range['start'] + (($x + 1) * $step); // 4JS
+
+			$range['start'] = $range['start'] + ($x * $step);       // 4JS
+			$range['end']   = $range['start'] + (($x + 1) * $step); // 4JS
 				
 			// QUERY
 
-			$params['index'] = 'telepath-20*';
+			$params['index'] = range_to_indices($range);
 			$params['type'] = 'http';
 			$params['body'] = array(
 				'size'  => 0,
@@ -875,7 +875,7 @@ class M_Cases extends CI_Model {
 			);
 			
 			$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases_name" => $cid ] ];
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
+			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $range['start'], 'lte' => $range['end'] ] ] ];
 			
 			
 			$params = append_application_query($params, $apps);
@@ -884,7 +884,7 @@ class M_Cases extends CI_Model {
 			$results   = $this->elasticClient->search($params);
 			if(!empty($results) && isset($results['aggregations']['sid'])) {
 				$val     = intval($results['aggregations']['sid']['value']);
-				$chart[] = array($scope_end * 1000, $val);
+				$chart[] = array($range['end'] * 1000, $val);
 			}
 							
 				
