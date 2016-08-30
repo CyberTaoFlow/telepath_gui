@@ -172,7 +172,7 @@ class M_Alerts extends CI_Model {
 	public function get_action_distribution_chart($range, $apps, $search = '', $filter = [])
 	{
 
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -234,7 +234,7 @@ class M_Alerts extends CI_Model {
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach ($sid_buckets as $sid) {
 				$params2 = [];
-				$params2['index'] = range_to_indices($range);
+				$params2['index'] = $range['indices'];
 				$params2['type'] = 'http';
 				$params2['body'] = [
 					"size" => 0,
@@ -285,7 +285,7 @@ class M_Alerts extends CI_Model {
 		$result = array();
 		$max    = 5;
 
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -357,7 +357,7 @@ class M_Alerts extends CI_Model {
 			break;
 		}
 
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -498,7 +498,7 @@ class M_Alerts extends CI_Model {
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
-						$params2['index'] = range_to_indices($range);
+						$params2['index'] = $range['indices'];
 						$params2['type'] = 'http';
 						$params2['body'] = [
 							'size' => 0,

@@ -274,7 +274,7 @@ class Tele_Controller extends CI_Controller
         else
             $data = array('state' => 'week', 'start' => strtotime('-1 week'), 'end' => time());
 
-
+        $data['indices'] = $this->range_to_indices($data);
 
 
         if ($local) {
@@ -282,6 +282,34 @@ class Tele_Controller extends CI_Controller
         }
 
         return_success($data);
+
+    }
+
+    // get a specific range, return the relevant indices
+    function range_to_indices($range)
+    {
+        if ($range['state'] != 'data' && $range['start'] > $this->_get_first_data_time()) {
+
+            $indices = [];
+
+            $period = new DatePeriod(
+                new DateTime(date("Y-m-d", $range['start'])),
+                new DateInterval('P1D'),
+                new DateTime(date("Y-m-d", $range['end'] + 86400)) // Add 1 day because the Period Class doesn't
+            // return the last day
+            );
+
+            foreach ($period as $date) {
+                $indices[] = 'telepath-' . $date->format("Ymd");
+            }
+
+            // Check if all indices exists
+            if ($this->elasticClient->indices()->exists(['index' => $indices])) {
+                return $indices;
+            }
+        }
+
+        return 'telepath-20*';
 
     }
 

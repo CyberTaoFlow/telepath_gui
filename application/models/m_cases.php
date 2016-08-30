@@ -71,7 +71,7 @@ class M_Cases extends CI_Model {
 
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -147,7 +147,7 @@ class M_Cases extends CI_Model {
 			
 		}
 
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['_source']=false;
 		$params['body'] = [
@@ -730,7 +730,7 @@ class M_Cases extends CI_Model {
 
 		}
 
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,

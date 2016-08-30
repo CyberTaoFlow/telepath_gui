@@ -410,31 +410,7 @@ function extractRootDomain($url)
 	return $root_domain;
 }
 
-// get a specific range, return the relevant indices
-function range_to_indices($range)
-{
-	if ($range['state'] == 'data' || empty($range)) {
 
-		return 'telepath-20*';
-
-	} else {
-
-		$indices = [];
-
-		$period = new DatePeriod(
-			new DateTime(date("Y-m-d", $range['start'])),
-			new DateInterval('P1D'),
-			new DateTime(date("Y-m-d", $range['end']))
-		);
-
-		foreach ($period as $date) {
-			$indices[] = 'telepath-' . $date->format("Ymd");
-		}
-		$indices[] = 'telepath-' . date("Ymd", $range['end']);
-
-		return $indices;
-	}
-}
 
 
 

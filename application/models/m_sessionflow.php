@@ -70,7 +70,7 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_session_stats($SID, $key = '',$state='', $range = null) {
-                $params['index'] = range_to_indices($range);
+                $params['index'] = $range['indices'];
                 $params['type'] = 'http';
         $suspect_count = 0;
         $search_count =0;
@@ -213,7 +213,7 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = false) {
-		$params['index'] = range_to_indices($range);
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => $limit,
