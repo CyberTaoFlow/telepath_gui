@@ -82,6 +82,7 @@ $js_array = [
     $js_path . "telepath.reports.js",
     $js_path . "widgets/teleAppSelect.js",
     $js_path . "widgets/teleInput.js",
+    $js_path . "widgets/teleOption.js",
     $js_path . "widgets/telePassword.js",
     $js_path . "widgets/teleCheckbox.js",
     $js_path . "widgets/teleList.js",
