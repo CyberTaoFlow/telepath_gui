@@ -71,7 +71,11 @@ class M_Cases extends CI_Model {
 
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -90,21 +94,16 @@ class M_Cases extends CI_Model {
 			'query' => array(
 				'bool' => array(
 					'must' => array(
-						array(
-							'range' => array(
-							  'ts' => array(
-								'gte' => intval($range['start']),
-								'lte' => intval($range['end'])
-							  )
-							)
-						),
-						array(
+							array(
 							'exists' => [ 'field' => 'cases_name' ]
 						)
 					)
 				)
 			)
 		);
+
+		$params = append_range_query($params, $range);
+
 //		if($search && strlen($search) > 1) {
 //			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
 //		}
@@ -147,7 +146,11 @@ class M_Cases extends CI_Model {
 			
 		}
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['_source']=false;
 		$params['body'] = [
@@ -209,9 +212,7 @@ class M_Cases extends CI_Model {
 
 		$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases_name" => $cid ] ];
 
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
+		$params = append_range_query($params, $range);
 
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -730,7 +731,11 @@ class M_Cases extends CI_Model {
 
 		}
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -799,10 +804,8 @@ class M_Cases extends CI_Model {
 
 		//$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases_name" => $cid ] ];
 
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
-
+		// todo: need to add $params['body']['query']['bool']['must'] for the append functions
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		$result = $this->elasticClient->search($params);

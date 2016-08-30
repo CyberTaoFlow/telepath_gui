@@ -70,8 +70,12 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_session_stats($SID, $key = '',$state='', $range = null) {
-                $params['index'] = $range['indices'];
-                $params['type'] = 'http';
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
+		$params['type'] = 'http';
         $suspect_count = 0;
         $search_count =0;
 		if ($key || $state)
@@ -103,7 +107,7 @@ class M_Sessionflow extends CI_Model {
 				$params['body'] =  [];
 				$params['body']['query']['bool']['must'][] =  [ 'term' => [ 'sid' => $SID ] ];
 
-				$params['body']['query']['bool']['must'][] =[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
+				$params = append_range_query($params, $range);
 
 				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 
@@ -176,8 +180,8 @@ class M_Sessionflow extends CI_Model {
 				)
 			)
 		];
-		if ($range)
-			$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
+
+		$params = append_range_query($params, $range);
 
 		$results = $this->elasticClient->search($params);
 		
@@ -213,7 +217,12 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = false) {
-		$params['index'] = $range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => $limit,
@@ -254,11 +263,8 @@ class M_Sessionflow extends CI_Model {
 				// Do nothing, no filter
 			break;
 		}
-		if ($range) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-                }
 
-		
+		$params = append_range_query($params, $range);
 		$params = append_access_query($params);
 		$results = get_elastic_results($this->elasticClient->search($params));
 

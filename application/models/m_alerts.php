@@ -112,10 +112,8 @@ class M_Alerts extends CI_Model {
 		];
 		
 		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-		
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
+
+		$params = append_range_query($params, $range);
 
 		global $query;
 		$query='';
@@ -172,7 +170,11 @@ class M_Alerts extends CI_Model {
 	public function get_action_distribution_chart($range, $apps, $search = '', $filter = [])
 	{
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -191,9 +193,7 @@ class M_Alerts extends CI_Model {
 
 		$params['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
 
-		if (!empty($range)) {
-			$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
-		}
+		$params = append_range_query($params, $range);
 
 		global $query;
 		$query = '';
@@ -234,7 +234,11 @@ class M_Alerts extends CI_Model {
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach ($sid_buckets as $sid) {
 				$params2 = [];
-				$params2['index'] = $range['indices'];
+				if ($range) {
+					$params2['index'] = $range['indices'];
+				} else {
+					$params2['index'] = 'telepath-20*';
+				}
 				$params2['type'] = 'http';
 				$params2['body'] = [
 					"size" => 0,
@@ -246,9 +250,9 @@ class M_Alerts extends CI_Model {
 				];
 
 				$params2['body']['query']['bool']['must'][] = ['term' => ['sid' => $sid['key']]];
-				if (!empty($range)) {
-					$params2['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
-				}
+
+				$params2 = append_range_query($params2, $range);
+
 				$result2 = $this->elasticClient->search($params2);
 
 				if (isset($result2["aggregations"]) &&
@@ -285,7 +289,11 @@ class M_Alerts extends CI_Model {
 		$result = array();
 		$max    = 5;
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -302,11 +310,8 @@ class M_Alerts extends CI_Model {
 		];
 		
 		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-		
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
 
+		$params = append_range_query($params, $range);
 
 		if($search)
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'OR' ] ];
@@ -357,7 +362,11 @@ class M_Alerts extends CI_Model {
 			break;
 		}
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -420,9 +429,7 @@ class M_Alerts extends CI_Model {
 //		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 
 
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
+		$params = append_range_query($params, $range);
 		
 		/*if($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
@@ -498,7 +505,11 @@ class M_Alerts extends CI_Model {
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
+					if ($range) {
 						$params2['index'] = $range['indices'];
+					} else {
+						$params2['index'] = 'telepath-20*';
+					}
 						$params2['type'] = 'http';
 						$params2['body'] = [
 							'size' => 0,
@@ -563,10 +574,10 @@ class M_Alerts extends CI_Model {
 							]
 						];
 						$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-						if(!empty($range)) {
-							$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-						}
-						$result2 = $this->elasticClient->search($params2);
+
+					$params2 = append_range_query($params2, $range);
+
+					$result2 = $this->elasticClient->search($params2);
 						$sid = $result2['aggregations'];
 
 						$results['items'][] = array(

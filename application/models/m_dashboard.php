@@ -81,7 +81,12 @@ class M_Dashboard extends CI_Model {
 	
 	public function get_gap_alerts($interval, $range, $apps = array()) {
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -98,7 +103,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 //						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
 						[ 'exists' => [ 'field' => 'alerts' ] ],
 
@@ -106,7 +110,8 @@ class M_Dashboard extends CI_Model {
 				]
 			]
 		);
-		
+
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		
@@ -129,7 +134,12 @@ class M_Dashboard extends CI_Model {
 	// Not used for now
 	public function get_gap_score_per_time($interval, $range, $apps = array()) {
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -151,7 +161,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 //						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
 						[ 'exists' => [ 'field' => 'score_average' ] ],
 
@@ -163,6 +172,7 @@ class M_Dashboard extends CI_Model {
 			]
 		);
 
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 
@@ -477,7 +487,12 @@ class M_Dashboard extends CI_Model {
 		
 		$result = array('case' => 0, 'noncase' => 0);
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -494,14 +509,14 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 //						[ 'range' => [ 'cases_count' => [ 'gte' => 1 ] ] ],
 						[ 'exists' => [ 'field' => 'cases_name' ] ],
 					]
 				]
 			]
 		);
-		
+
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		
@@ -530,7 +545,11 @@ class M_Dashboard extends CI_Model {
 	// Dashboard Functionality
 	function get_map($range, $apps, $map_mode) {
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size'  => 0,
@@ -544,13 +563,13 @@ class M_Dashboard extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
-					]
+					'must' => []
 				],
 			],
 		];
-		
+
+		$params = append_range_query($params, $range);
+
 		if($map_mode== 'alerts') {
 			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 		}
@@ -577,7 +596,12 @@ class M_Dashboard extends CI_Model {
 		
 		$result = array('case' => 0, 'noncase' => 0);
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -594,7 +618,6 @@ class M_Dashboard extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'range' => [ 'score_average' => [ ($suspects ? 'gte' : 'lt') => $suspect_threshold ] ] ],
 					],
 					'must_not'=>[
@@ -606,7 +629,7 @@ class M_Dashboard extends CI_Model {
 			]
 		);
 
-
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 		$results   = $this->elasticClient->search($params);

@@ -22,7 +22,33 @@
 		return $base;
 		
 	}
-	
+
+function append_range_query($base, $range)
+{
+
+	if (!empty($range) && $range['state'] != 'data' && isset($base['body']) && isset($base['body']['query']) && isset
+		($base['body']['query']['bool'])
+	) {
+		if ($range['state'] == 'range') {
+			$base['body']['query']['bool']['filter'][] = [
+				'range' => [
+					'ts' => ['gte' => $range['start'], 'lte' => $range['end']]
+				]
+			];
+		} else {
+			$base['body']['query']['bool']['filter'][] = [
+				'range' => [
+					'ts' => ['gte' => $range['start']]
+				]
+			];
+		}
+
+	}
+
+	return $base;
+
+}
+
 	function append_access_query($base, $debug = false) {
 		
 
