@@ -102,7 +102,7 @@ class M_Dashboard extends CI_Model {
 			),
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 //						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
 						[ 'exists' => [ 'field' => 'alerts' ] ],
 
@@ -160,7 +160,7 @@ class M_Dashboard extends CI_Model {
 			),
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 //						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
 						[ 'exists' => [ 'field' => 'score_average' ] ],
 
@@ -445,7 +445,7 @@ class M_Dashboard extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 //						[ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ],
 						[ 'exists' => [ 'field' => 'score_average' ] ],
 
@@ -508,7 +508,7 @@ class M_Dashboard extends CI_Model {
 			),
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 //						[ 'range' => [ 'cases_count' => [ 'gte' => 1 ] ] ],
 						[ 'exists' => [ 'field' => 'cases_name' ] ],
 					]
@@ -563,7 +563,6 @@ class M_Dashboard extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must' => []
 				],
 			],
 		];
@@ -571,7 +570,7 @@ class M_Dashboard extends CI_Model {
 		$params = append_range_query($params, $range);
 
 		if($map_mode== 'alerts') {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
+			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 		}
 		
 		$params = append_application_query($params, $apps);
@@ -617,7 +616,7 @@ class M_Dashboard extends CI_Model {
 			),
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 						[ 'range' => [ 'score_average' => [ ($suspects ? 'gte' : 'lt') => $suspect_threshold ] ] ],
 					],
 					'must_not'=>[

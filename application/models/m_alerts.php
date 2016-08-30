@@ -40,7 +40,7 @@ class M_Alerts extends CI_Model {
 			),
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 						 [ 'exists' => [ 'field' => 'alerts_count' ] ] ,
 					]
 				]
@@ -74,7 +74,8 @@ class M_Alerts extends CI_Model {
 				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 			// QUERY
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
+			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
+				$scope_end ] ] ];
 			
 			$params = append_application_query($params, $apps);
 			$params = append_access_query($params);
@@ -249,7 +250,7 @@ class M_Alerts extends CI_Model {
 					]
 				];
 
-				$params2['body']['query']['bool']['must'][] = ['term' => ['sid' => $sid['key']]];
+				$params2['body']['query']['bool']['filter'][] = ['term' => ['sid' => $sid['key']]];
 
 				$params2 = append_range_query($params2, $range);
 
@@ -419,7 +420,7 @@ class M_Alerts extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 						[ 'exists' => [ 'field' => 'alerts' ] ],
 					]
 				],
@@ -573,7 +574,7 @@ class M_Alerts extends CI_Model {
 								]
 							]
 						];
-						$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+						$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 
 					$params2 = append_range_query($params2, $range);
 

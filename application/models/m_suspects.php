@@ -164,7 +164,7 @@ class M_Suspects extends CI_Model {
 //		}
 //		$params['body']["aggs"]["sid"]["aggs"] = [ "cases_count" => [ "sum" => [ "field" => "cases_count" ] ] ];
 
-		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
+		$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 		$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 		$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 
@@ -277,12 +277,13 @@ class M_Suspects extends CI_Model {
 								]
 							];
 						if ($distinct_ip){
-							$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['sid']["buckets"][0]['key'] ]];
+							$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' =>
+								$sid['sid']["buckets"][0]['key'] ]];
 						}
 						else{
-							$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+							$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 						}
-						$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
+						$params2['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 						$params2['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 						$params2['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 

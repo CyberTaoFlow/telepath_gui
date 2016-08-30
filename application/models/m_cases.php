@@ -93,7 +93,7 @@ class M_Cases extends CI_Model {
 			),
 			'query' => array(
 				'bool' => array(
-					'must' => array(
+					'filter' => array(
 							array(
 							'exists' => [ 'field' => 'cases_name' ]
 						)
@@ -210,7 +210,7 @@ class M_Cases extends CI_Model {
 */
 		];
 
-		$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases_name" => $cid ] ];
+		$params['body']['query']['bool']['filter'][] = [ 'term' => [ "cases_name" => $cid ] ];
 
 		$params = append_range_query($params, $range);
 
@@ -505,7 +505,7 @@ class M_Cases extends CI_Model {
 
 				foreach ($cases_name as $case) {
 //					register_shutdown_function([$this, 'remove_update_flag'],$case,$method, $range);
-					$params['body']['query']['bool']['must'][] = ['term' => ["cases_name" => $case]];
+					$params['body']['query']['bool']['filter'][] = ['term' => ["cases_name" => $case]];
 					$params['body']["sort"] = ["_doc"];
 					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
 
@@ -607,7 +607,7 @@ class M_Cases extends CI_Model {
 
 					// If it's a script that always run, we have to query only the latest requests
 					if ($range && $last_update)
-						$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gt' => $last_update]]];
+						$params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gt' => $last_update]]];
 
 					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
 
@@ -870,15 +870,15 @@ class M_Cases extends CI_Model {
 				),
 				'query' => [
 					'bool' => [
-						'must' => [
+						'filter' => [
 							[ 'exists' => [ 'field' => 'cases_name' ] ]
 						]
 					]
 				]
 			);
 			
-			$params['body']['query']['bool']['must'][] = [ 'term' => [ "cases_name" => $cid ] ];
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
+			$params['body']['query']['bool']['filter'][] = [ 'term' => [ "cases_name" => $cid ] ];
+			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
 			
 			
 			$params = append_application_query($params, $apps);

@@ -84,7 +84,7 @@ class M_Sessionflow extends CI_Model {
 				'size' => 0,
 				'query' => [
 					'bool' => [
-						'must' => [
+						'filter' => [
 //							[ 'term' => [ '_type' => 'http' ] ],
 							[ 'term' => [ 'sid' => $SID ] ],
 							#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
@@ -94,7 +94,7 @@ class M_Sessionflow extends CI_Model {
 				],
 			];
             if ($state=='Suspect'){
-				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
+				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 
@@ -105,7 +105,7 @@ class M_Sessionflow extends CI_Model {
             if ($key){
 				// empty body to get results matching search key only
 				$params['body'] =  [];
-				$params['body']['query']['bool']['must'][] =  [ 'term' => [ 'sid' => $SID ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'term' => [ 'sid' => $SID ] ];
 
 				$params = append_range_query($params, $range);
 
@@ -174,7 +174,7 @@ class M_Sessionflow extends CI_Model {
 			],
 			'query' => array(
 				'bool' => array(
-					'must' => array(
+					'filter' => array(
 						[ 'term' => array('sid' => $SID) ],
 					)
 				)
@@ -229,7 +229,7 @@ class M_Sessionflow extends CI_Model {
 			'from' => $start,
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 						['term' => [$anchor_field => $anchor_value]],
 					]
 				]
@@ -254,7 +254,7 @@ class M_Sessionflow extends CI_Model {
 				}
             break;
             case 'Suspect':
-                $params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
+                $params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
                 $params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
                 $params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
                 break;
