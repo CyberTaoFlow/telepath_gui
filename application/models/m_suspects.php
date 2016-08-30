@@ -164,9 +164,8 @@ class M_Suspects extends CI_Model {
 		$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 		$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
+		$params = append_range_query($params, $range);
+
 		if($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
 		}
@@ -279,9 +278,8 @@ class M_Suspects extends CI_Model {
 						$params2['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 						$params2['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 
-						if(!empty($range)) {	
-							$params2["body"]["query"]["bool"]["must"][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-						}
+						$params2 = append_range_query($params2, $range);
+
 						$result2 = $this->elasticClient->search($params2);
 						$sid = $result2['aggregations'];
 						if (count($sid['city']['buckets']) > 0)

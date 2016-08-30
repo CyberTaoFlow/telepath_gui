@@ -101,12 +101,12 @@ class M_Search extends CI_Model {
                             ] 
                         ]
 					],
-					'filter' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
-					]
 				],
 			],
 		];
+
+
+		$params = append_range_query($params, $settings['range']);
 
 
 		switch($scope) {
@@ -225,8 +225,8 @@ class M_Search extends CI_Model {
 			]
 		];
 
-		$params2['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end'])]]];
 		$params2['body']['query']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],"default_operator" => 'AND']];
+		$params2 = append_range_query($params2, $settings['range']);
 
 		if(isset($result["aggregations"]) && 
 		   isset($result["aggregations"]["sid"]) && 
@@ -313,7 +313,6 @@ class M_Search extends CI_Model {
 									]
 								]
 							],
-							['range' => ['ts' => ['gte' => $range['start'], 'lte' => $range['end']]]],
 						]
 					]
 
@@ -321,6 +320,7 @@ class M_Search extends CI_Model {
 			]
 		];
 
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 
 		$result = $this->elasticClient->search($params);

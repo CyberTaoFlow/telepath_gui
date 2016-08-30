@@ -112,10 +112,8 @@ class M_Alerts extends CI_Model {
 		];
 		
 		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-		
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
+
+		$params = append_range_query($params, $range);
 
 		global $query;
 		$query='';
@@ -191,9 +189,7 @@ class M_Alerts extends CI_Model {
 
 		$params['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
 
-		if (!empty($range)) {
-			$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
-		}
+		$params = append_range_query($params, $range);
 
 		global $query;
 		$query = '';
@@ -246,9 +242,9 @@ class M_Alerts extends CI_Model {
 				];
 
 				$params2['body']['query']['bool']['must'][] = ['term' => ['sid' => $sid['key']]];
-				if (!empty($range)) {
-					$params2['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($range['start']), 'lte' => intval($range['end'])]]];
-				}
+
+				$params2 = append_range_query($params2, $range);
+
 				$result2 = $this->elasticClient->search($params2);
 
 				if (isset($result2["aggregations"]) &&
@@ -302,11 +298,8 @@ class M_Alerts extends CI_Model {
 		];
 		
 		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-		
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
 
+		$params = append_range_query($params, $range);
 
 		if($search)
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'OR' ] ];
@@ -420,9 +413,7 @@ class M_Alerts extends CI_Model {
 //		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 
 
-		if(!empty($range)) {
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-		}
+		$params = append_range_query($params, $range);
 		
 		/*if($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
@@ -563,10 +554,10 @@ class M_Alerts extends CI_Model {
 							]
 						];
 						$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-						if(!empty($range)) {
-							$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => intval($range['start']), 'lte' => intval($range['end']) ] ] ];
-						}
-						$result2 = $this->elasticClient->search($params2);
+
+					$params2 = append_range_query($params2, $range);
+
+					$result2 = $this->elasticClient->search($params2);
 						$sid = $result2['aggregations'];
 
 						$results['items'][] = array(
