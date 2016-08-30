@@ -170,7 +170,11 @@ class M_Alerts extends CI_Model {
 	public function get_action_distribution_chart($range, $apps, $search = '', $filter = [])
 	{
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -230,7 +234,11 @@ class M_Alerts extends CI_Model {
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach ($sid_buckets as $sid) {
 				$params2 = [];
-				$params2['index'] = $range['indices'];
+				if ($range) {
+					$params2['index'] = $range['indices'];
+				} else {
+					$params2['index'] = 'telepath-20*';
+				}
 				$params2['type'] = 'http';
 				$params2['body'] = [
 					"size" => 0,
@@ -281,7 +289,11 @@ class M_Alerts extends CI_Model {
 		$result = array();
 		$max    = 5;
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -350,7 +362,11 @@ class M_Alerts extends CI_Model {
 			break;
 		}
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -489,7 +505,11 @@ class M_Alerts extends CI_Model {
 						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
+					if ($range) {
 						$params2['index'] = $range['indices'];
+					} else {
+						$params2['index'] = 'telepath-20*';
+					}
 						$params2['type'] = 'http';
 						$params2['body'] = [
 							'size' => 0,

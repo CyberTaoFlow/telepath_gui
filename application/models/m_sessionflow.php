@@ -70,8 +70,12 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_session_stats($SID, $key = '',$state='', $range = null) {
-                $params['index'] = $range['indices'];
-                $params['type'] = 'http';
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
+		$params['type'] = 'http';
         $suspect_count = 0;
         $search_count =0;
 		if ($key || $state)
@@ -213,7 +217,12 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = false) {
+		if($range){
 			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => $limit,

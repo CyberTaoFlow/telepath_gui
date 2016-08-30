@@ -81,7 +81,12 @@ class M_Dashboard extends CI_Model {
 	
 	public function get_gap_alerts($interval, $range, $apps = array()) {
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -129,7 +134,12 @@ class M_Dashboard extends CI_Model {
 	// Not used for now
 	public function get_gap_score_per_time($interval, $range, $apps = array()) {
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -477,7 +487,12 @@ class M_Dashboard extends CI_Model {
 		
 		$result = array('case' => 0, 'noncase' => 0);
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -530,7 +545,11 @@ class M_Dashboard extends CI_Model {
 	// Dashboard Functionality
 	function get_map($range, $apps, $map_mode) {
 
-		$params['index'] = $range['indices'];
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size'  => 0,
@@ -577,7 +596,12 @@ class M_Dashboard extends CI_Model {
 		
 		$result = array('case' => 0, 'noncase' => 0);
 
-		$params['index']=$range['indices'];
+		if($range){
+			$params['index'] = $range['indices'];
+		}
+		else{
+			$params['index'] = 'telepath-20*';
+		}
 		$params['type']='http';
 		$params['body'] = array(
 			'size'  => 0,
