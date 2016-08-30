@@ -388,6 +388,7 @@ body .jstree .tele-button {
 	border-top-right-radius: 0px;
 	margin-bottom: 10px;
 	/*min-height: 270px;*/
+	overflow: visible;
 }
 
 /*
@@ -608,7 +609,7 @@ body .jstree .tele-button {
 	margin-right: 0px;
 	width: auto;
 	clear: none;
-	float: left;
+	float: none;
 }
 .tele-rule-trigger .tele-input-label,
 .tele-rule-trigger .tele-input-suffix {

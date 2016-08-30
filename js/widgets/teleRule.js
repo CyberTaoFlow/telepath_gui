@@ -295,7 +295,8 @@ $.widget( "tele.teleRule", {
 								break;
 
 							case 'fuzzylength':
-								json.length    = $('.tele-rule-string-inspection .tele-rule-dropdown').val();
+								//json.length    = $('.tele-rule-string-inspection .tele-rule-dropdown').val();
+								json.length    = $('.tele-rule-string-inspection .text-button').text();
 								break;
 
 							case 'exactlength':
@@ -617,7 +618,8 @@ $.widget( "tele.teleRule", {
 			case 'behaviour':
 			
 				json.kind     = 'b';
-				json.type     = $('.tele-behavior-type', c).val();
+				//json.type     = $('.tele-behavior-type', c).val();
+				json.type     = $('.text-button', c).text();
 				json.personal = $('.tele-personal-behavior .checked', c).size() > 0;
 				
 			break;
@@ -631,7 +633,8 @@ $.widget( "tele.teleRule", {
 					
 					case 'velocity':
 						
-						var range = $('.tele-geo-ts').val();
+						//var range = $('.tele-geo-ts').val();
+						var range = $('.tele-velocity-wrap .text-button').val();
 						var count = $('.tele-geo-ts-count input').val();
 						var distance= $('.rule-slider-length input').val();
 
@@ -701,8 +704,9 @@ $.widget( "tele.teleRule", {
 			case 'aspect':
 			
 				json.kind = 'B';
-				json.type = $(".tele-rule-dropdown", c).val();
-				
+				//json.type = $(".tele-rule-dropdown", c).val();
+				json.type = $(".tele-dropbtn", c).text();
+
 			break;
 			
 		}
@@ -721,7 +725,7 @@ $.widget( "tele.teleRule", {
 	},
 	editor: function(type, container, data) {
 		
-		container.addClass('loaded');
+		container.addClass('loaded clearfix');
 		
 		var that = this;
 		
@@ -848,12 +852,14 @@ $.widget( "tele.teleRule", {
 
 				// Fuz
 				var r_fuzzy_opt  = [ 'short', 'long', 'both' ];
-				var r_fuzzy_list = $('<select>').addClass('tele-rule-dropdown');
+				//var r_fuzzy_list = $('<select>').addClass('tele-rule-dropdown');
 
-				$.each(r_fuzzy_opt, function(i, opt) { 
+				var r_fuzzy_list =$('<div>').teleOption({label: '', options: r_fuzzy_opt });
+
+				/*$.each(r_fuzzy_opt, function(i, opt) {
 					var option = '<option value="' + opt + '">' + opt.charAt(0).toUpperCase() + opt.slice(1) + '</option>';
 					r_fuzzy_list.append(option); 
-				});
+				});*/
 				
 				//Length
 				var r_len_slider_div = $('<div>');
@@ -1146,8 +1152,8 @@ $.widget( "tele.teleRule", {
 						case 'fuzzylength':
 							
 							inspectionType.find('.tele-radio-radio[rel="fuzzylength"]').click();
-							r_fuzzy_list.val(data.str_length);
-						
+							//r_fuzzy_list.val(data.str_length);
+							$('.text-button', r_fuzzy_list).val(data.str_length)
 						break;
 						case 'exactlength':
 							
@@ -1319,10 +1325,12 @@ $.widget( "tele.teleRule", {
 				var patCount = $('<div>').teleInput({ label: 'Count', value: data.count ? data.count : 3 }).addClass('tele-pattern-count');
 				var patDuration = $('<div>').teleInput({ label: 'Duration', value: data.time ? data.time : 60 }).addClass('tele-pattern-time');
 				var patGaps   = [ 'Seconds', 'Minutes', 'Hours' ];
-				var patGap    = $('<select>').addClass('tele-rule-dropdown');
-				$.each(patGaps, function(i, opt) { patGap.append('<option value="' + opt + '">' + opt + '</option>'); });
-				
-		
+				//var patGap    = $('<select>').addClass('tele-rule-dropdown');
+				//$.each(patGaps, function(i, opt) { patGap.append('<option value="' + opt + '">' + opt + '</option>'); });
+
+				var patGap  = $('<div>').teleOption({options: patGaps, css:{float: 'left', 'margin-top': '1px'}});
+
+
 				patWindowWrap.append(patCount).append(patDuration).append(patGap);
 				ruleInner.append(patWindowWrap).append(patAnchor).append(patLinked);
 
@@ -1348,7 +1356,7 @@ $.widget( "tele.teleRule", {
 				
 				var behavTitle  = $('<div>').addClass('tele-title-1').html('Aspects are different characteristics of web users\' behavior');
 				
-				var behaviorTypes  = [ 
+				/*var behaviorTypes  = [
 					{ k:'request', v:'Request' },
 					{ k:'query',   v:'Query'   }, 
 					{ k:'landing', v:'Speed' },
@@ -1356,17 +1364,29 @@ $.widget( "tele.teleRule", {
 					{ k:'flow',    v:'Navigation'    },
 					{ k:'presence',v:'Structure'    }
 
+				];*/
+				var behaviorTypes = [
+					'Request',
+					'Query',
+					'Speed',
+					'Location',
+					'Navigation',
+					'Structure'
+
 				];
-				
-				var behavSelect = $('<select>').addClass('tele-rule-dropdown').addClass('tele-behavior-type');
+
+
+				//var behavSelect = $('<select>').addClass('tele-rule-dropdown').addClass('tele-behavior-type');
 				var behavTitle2  = $('<div>').addClass('tele-title-2').html('Select aspect type');
 				var behavTitle3  = $('<div>').addClass('tele-title-3').html('score');
 
 				if(!data.type) {
 					data.type = 'average';
 				}
-				
-				$.each(behaviorTypes, function(i, opt) { var selected = data.type == opt.k ? 'selected': ''; behavSelect.append('<option ' + selected + ' value="' + opt.k + '">' + opt.v + '</option>'); });
+
+				var behavSelect = $('<div>').teleOption({options: behaviorTypes, css:{float: 'left', 'margin-top': '7px'}});
+
+				//$.each(behaviorTypes, function(i, opt) { var selected = data.type == opt.k ? 'selected': ''; behavSelect.append('<option ' + selected + ' value="' + opt.k + '">' + opt.v + '</option>'); });
 				
 				this.personalBehavior = $('<div>').teleCheckbox({ label: 'Personal', checked: data.personal ? true : false }).addClass('tele-personal-behavior');
 				
@@ -1384,28 +1404,41 @@ $.widget( "tele.teleRule", {
 				var geoCountries = $('<div>').teleCountry().hide();
 				var geoVelocity  = $('<div>').addClass('tele-velocity-wrap');
 
-				var velocityTimeScopes  = [
+				/*var velocityTimeScopes  = [
 					{ k:'s', v:'Seconds' },
-					{ k:'m', v:'Minutes' }, 
+					{ k:'m', v:'Minutes' },
 					{ k:'h', v:'Hours' }
+				];*/
+
+				var velocityTimeScopes = [
+					'Seconds',
+					'Minutes',
+					'Hours'
 				];
-				var velocityTimeSelect = $('<select>').addClass('tele-geo-ts');
-				$.each(velocityTimeScopes, function(i, opt) { velocityTimeSelect.append('<option value="' + opt.k + '">' + opt.v + '</option>'); });
+				//var velocityTimeSelect = $('<select>').addClass('tele-geo-ts');
+				//$.each(velocityTimeScopes, function(i, opt) { velocityTimeSelect.append('<option value="' + opt.k + '">' + opt.v + '</option>'); });
 
 				if(!data.ts) {
 					data.ts = 60;
 				}
+				var selected;
 
 				if (data.ts%60==0&&data.ts!=60){
 					if (data.ts%3600==0){
-						velocityTimeSelect.val('h');
+						//velocityTimeSelect.val('h');
+						selected='Hours';
 						data.ts=data.ts/3600
 					}
 					else {
-						velocityTimeSelect.val('m');
+						//velocityTimeSelect.val('m');
+						selected='Minutes';
 						data.ts=data.ts/60
 					}
 				}
+
+				var velocityTimeSelect  = $('<div>').teleOption({options: velocityTimeScopes, selected: selected,
+					css:{ float: 'left'}, css:{float: 'left'}});
+
 
 				var g_time_input = $('<div>').teleInput({label:'KM in', width: 30, value: data.ts }).addClass('tele-geo-ts-count').css({'margin-right':'5px'});
 				$('input', g_time_input);
@@ -1466,11 +1499,10 @@ $.widget( "tele.teleRule", {
 			case 'aspect':
 				
 				var botTitle  = $('<div>').addClass('tele-title-2').html('Bot Type');
-				var botTypes  = [ 
-					{ k:'Known-Bot', v:'Known-Bot' }, 
-					{ k: 'Tor', v:'Tor' }
-				];				
-				var botSelect = $('<select>').addClass('tele-rule-dropdown');
+
+				var botTypes  = ['Known-Bot', 'tor'];
+
+			/*	var botSelect = $('<select>').addClass('tele-rule-dropdown');
 				
 				if(!data.type) {
 					data.type = 'Known-Bot';
@@ -1482,8 +1514,11 @@ $.widget( "tele.teleRule", {
 				
 				if(data && data.aspect) {
 					botSelect.val(data.aspect);
-				}
-				
+				}*/
+				$('<div>').teleOption({label: 'Bot Type', options: botTypes, selected: data.type ? data.type : '',
+					css: {float: 'left', 'margin-top': '12px'}, appendTo: ruleInner
+				});
+
 			break;
 		}
 		
