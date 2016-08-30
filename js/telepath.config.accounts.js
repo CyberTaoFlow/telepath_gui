@@ -16,14 +16,14 @@ telepath.config.accounts = {
 		
 		var that = this;
 
-		$('.mCSB_container', that.contentRight).empty();
+		that.contentRight.empty();
 		that.data = data;
 		
 		that.groupLeftWrap = $('<div>').addClass('tele-group-wrap-left');
 		that.groupRightWrap = $('<div>').addClass('tele-group-wrap-right');
 
-		$('.mCSB_container', that.contentRight).append(that.groupLeftWrap);
-		$('.mCSB_container', that.contentRight).append(that.groupRightWrap);
+		that.contentRight.append(that.groupLeftWrap);
+		that.contentRight.append(that.groupRightWrap);
 		
 		that.groupInputs = $('<div>').addClass('group-input')
 		that.groupName = $('<div>').teleInput({ label: 'Group name', value: data.group.name });
@@ -157,7 +157,7 @@ telepath.config.accounts = {
 		
 		that.groupLeftWrap.append(that.limitRanges);
 
-		$('.mCSB_container', that.contentRight).append(btnContain);
+		that.contentRight.append(btnContain);
 		
 
 
@@ -299,7 +299,7 @@ telepath.config.accounts = {
 		this.barRight.append(this.cmdDeleteUsers).append(rightTitle);
 		
 		this.contentLeft.append(telepath.loader);
-		$('.mCSB_container', this.contentRight).append(telepath.loader);
+		this.contentRight.append(telepath.loader);
 		
 		this.loadData();
 		
@@ -411,7 +411,7 @@ telepath.config.accounts = {
 		
 		// Create List
 		that.list = $('<div>');
-		$('.mCSB_container', this.contentRight).empty().append(that.list);
+		that.contentRight.empty().append(that.list);
 		
 		// Init List
 		that.list.teleList({ 

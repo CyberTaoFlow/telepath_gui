@@ -152,8 +152,9 @@ telepath.config = {
 		this.barRight 	  = $('<div>').addClass('tele-config-bar-right');
 		this.contentEl    = $('<div>').addClass('tele-config-content');
 		this.contentLeft  = $('<div>').addClass('tele-config-content-left');
-		this.contentRight = $('<div>').addClass('tele-config-content-right').mCustomScrollbar({
-			advanced:{ updateOnContentResize: true} });
+		this.contentRight = $('<div>').addClass('tele-config-content-right');
+		/*this.contentRight = $('<div>').addClass('tele-config-content-right').mCustomScrollbar({
+			advanced:{ updateOnContentResize: true} });*/
 		
 		this.barEl.append(this.barLeft).append(this.barRight);
 		this.contentEl.append(this.contentLeft).append(this.contentRight);

@@ -3,7 +3,7 @@ telepath.config.account = {
 	data: [],
 	init: function (id, container) {
 		
-		this.container = $('.mCSB_container',container);
+		this.container = container;
 		if(id != 'new') {
 			this.loadData(id);
 		}

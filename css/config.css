@@ -164,9 +164,12 @@ body .jstree .tele-button {
 	border: none;
 	background: #E6E6E6;
 	background-image: none;
-	top: 65px;
+	top: 30px;
+	position: relative;
 }
-
+.tele-group-wrap-right .ui-tabs.ui-widget-content {
+	top: 60px;
+}
 
 /* RECORD FLOW */
 
@@ -1002,7 +1005,7 @@ body .jstree .tele-button {
 
 .tele-user-groups-container{
 	float: right;
-    margin-top: 55px;
+    /*margin-top: 55px;*/
     width: 50%;
 }
 
