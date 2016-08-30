@@ -41,7 +41,8 @@ class M_Search extends CI_Model {
 				break;
 		}
 
-		$params['index'] = 'telepath-20*';
+
+		$params['index'] = range_to_indices($settings['range']);
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -93,13 +94,15 @@ class M_Search extends CI_Model {
 			'query' => [
 				'bool' => [
 					'must' => [
-						[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 						[
                             'query_string' => [
                                 "query" => $settings['search'],
 								"default_operator" => 'AND'
                             ] 
                         ]
+					],
+					'filter' => [
+						[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 					]
 				],
 			],
@@ -108,14 +111,14 @@ class M_Search extends CI_Model {
 
 		switch($scope) {
 			case 'alerts':
-				$params['body']['query']['bool']['must'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 				$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
 				//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 				//$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 			break;
 			case 'cases':
 				// Here we also need cases data
-				$params['body']['query']['bool']['must'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
 				$params['body']["aggs"]["sid"]["aggs"]["cases_names"] = [ "terms" => [ "field" => "cases_name", "size" => 100 ] ];
 				$params['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases_name' ] ] ] ];
@@ -123,7 +126,7 @@ class M_Search extends CI_Model {
 //				$params2['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
 			break;
 			case 'suspects':
-				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
+				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 //				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
@@ -131,7 +134,7 @@ class M_Search extends CI_Model {
 			break;
 			case 'requests':
 				// old method
-				$params['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
+				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ] ;
 //				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
@@ -157,7 +160,7 @@ class M_Search extends CI_Model {
 		$results = array('items' => array());
 
 		$params2 = array();
-		$params2['index'] = 'telepath-20*';
+		$params2['index'] = range_to_indices($settings['range']);
 		$params2['type'] = 'http';
 		$params2['body'] = [
 			'size' => 0,
@@ -222,7 +225,7 @@ class M_Search extends CI_Model {
 			]
 		];
 
-		$params2['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end'])]]];
+		$params2['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end'])]]];
 		$params2['body']['query']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],"default_operator" => 'AND']];
 
 		if(isset($result["aggregations"]) && 

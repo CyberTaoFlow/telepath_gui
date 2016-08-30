@@ -5,11 +5,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Dashboard extends Tele_Controller
 {
 
+    private $range;
+    private $apps;
+
     function __construct()
     {
         parent::__construct();
         $this->load->model('M_Dashboard');
         $this->load->model('M_Suspects');
+        $this->range = $this->_get_range();
+        $this->apps = $this->_get_apps();
 
     }
 
@@ -17,8 +22,8 @@ class Dashboard extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $range = $this->_get_range();
-        $apps = $this->_get_apps();
+        $range = $this->range;
+        $apps = $this->apps;
         $map_mode = $this->M_Dashboard->get_map_mode(true);
 
         $map = $this->M_Dashboard->get_map($range, $apps, $map_mode);
@@ -33,8 +38,8 @@ class Dashboard extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $range = $this->_get_range();
-        $apps = $this->_get_apps();
+        $range = $this->range;
+        $apps = $this->apps;
 
         $suspect_threshold = $this->M_Suspects->get_threshold();
 
@@ -49,8 +54,8 @@ class Dashboard extends Tele_Controller
     public function get_gap_score($learning=false)
     {
 //        telepath_auth(__CLASS__, __FUNCTION__);
-//        $range = $this->_get_range();
-//        $apps = $this->_get_apps();
+//        $range = $this->range;
+//        $apps = $this->apps;
         if(isset ($learning) && $learning=='learning'){
             $learning=true;
         }
@@ -69,8 +74,8 @@ class Dashboard extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $range = $this->_get_range();
-        $apps = $this->_get_apps();
+        $range = $this->range;
+        $apps = $this->apps;
 
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
@@ -92,8 +97,8 @@ class Dashboard extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $range = $this->_get_range();
-        $apps = $this->_get_apps();
+        $range = $this->range;
+        $apps = $this->apps;
 
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
@@ -113,8 +118,8 @@ class Dashboard extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        $range = $this->_get_range();
-        $apps = $this->_get_apps();
+        $range = $this->range;
+        $apps = $this->apps;
 
 //        $cases = $this->M_Dashboard->get_cases($range, $apps);
 
@@ -185,8 +190,8 @@ class Dashboard extends Tele_Controller
         $mode = $this->input->post('mode');
         if ($mode) {
 
-            $range = $this->_get_range();
-            $apps = $this->_get_apps();
+            $range = $this->range;
+            $apps = $this->apps;
 
             switch ($mode) {
 

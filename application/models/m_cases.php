@@ -71,7 +71,7 @@ class M_Cases extends CI_Model {
 
 	public function get($limit = 100, $range = false, $apps = array(), $search=null) {
 
-		$params['index'] = 'telepath-20*';
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = array(
 			'size'  => 0,
@@ -147,7 +147,7 @@ class M_Cases extends CI_Model {
 			
 		}
 
-		$params['index'] = 'telepath-20*';
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['_source']=false;
 		$params['body'] = [
@@ -730,7 +730,7 @@ class M_Cases extends CI_Model {
 
 		}
 
-		$params['index'] = 'telepath-20*';
+		$params['index'] = $range['indices'];
 		$params['type'] = 'http';
 		$params['body'] = [
 			'size' => 0,
@@ -848,7 +848,7 @@ class M_Cases extends CI_Model {
 		for($x = 0; $x < $dots; $x++) {
 			
 			// LIM
-			
+
 			$scope_start = $range['start'] + ($x * $step);       // 4JS
 			$scope_end   = $range['start'] + (($x + 1) * $step); // 4JS
 				
