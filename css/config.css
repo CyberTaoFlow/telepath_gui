@@ -387,7 +387,7 @@ body .jstree .tele-button {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	margin-bottom: 10px;
-	/*min-height: 270px;*/
+	min-height: 270px;
 	overflow: visible;
 }
 
