@@ -181,7 +181,7 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         $data = $this->input->post();
-        $data['host'] = str_replace(array('http://', 'https://'), array('', ''), strtolower($data['host']));
+        $data['host'] = str_replace(array('http://', 'https://'), array('', ''), $data['host']);
         if (empty($data['subdomains'])) {
             $data['subdomains'] = [];
         }
