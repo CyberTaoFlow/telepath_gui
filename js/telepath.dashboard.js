@@ -226,7 +226,7 @@ telepath.dashboard = {
 		$('.tele-panel-dashboard .tele-panel-subtitle-right .tele-mini-toggle').toggleFlip({flipped:telepath.dashboard.data.items.map =='traffic'}) ;
 		var container = $('.tele-panel-dashboard');
 		container.empty();
-		
+		$('.jqvmap-label').hide();
 		container.append('<div class="tele-panel-topbar"><div class="tele-panel-title">Dashboard</div><div class="tele-panel-topbar-right"></div></div>');
 		
 		if(!loading) {
