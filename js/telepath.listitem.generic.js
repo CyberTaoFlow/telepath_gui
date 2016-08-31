@@ -216,7 +216,7 @@ telepath.listitem.generic = {
 				var left=$(el).offset().left;
 				var placement;
 				if(left+422>$( window ).width()){
-					left-=10;
+					left-=100;
 					placement= 'left';
 				}
 				else{

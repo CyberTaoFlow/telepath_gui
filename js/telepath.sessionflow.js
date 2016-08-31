@@ -179,18 +179,22 @@ telepath.sessionflow = {
 					//if(alert.user && alert.user != '') {
 					//	table.append(getRow('User:', alert.user));
 					//}
-									
-					telepath.sessionflow.pop = $('<div>').css({ 
+
+					telepath.sessionflow.pop = $('<div>').css({
 						position: 'absolute', 
 						top: $(el).offset().top,
-						left: $(el).offset().left + 70
+						left: $(el).offset().left - 10
 					});
 				
 					$('body').append(telepath.sessionflow.pop);
-					$(telepath.sessionflow.pop).popover({ 
-					title: similarity.orig_ip, 
+					$(telepath.sessionflow.pop).popover({
+					//selector: '[rel=popover]',
+					placement: 'left',
+					title: similarity.orig_ip,
 					html: true,
 					content: '<table cellspacing="10">' + table.html() + '</table>',
+					template: '<div class="popover arrow-similar" role="tooltip"><div class="popover-arrow"></div>' +
+					'<h3 class="popover-title"></h3><div class="popover-content"></div></div>',
 					}).popover('show');
 									
 										
