@@ -80,9 +80,18 @@ $.widget( "tele.vMap", {
 			normalizeFunction: 'polynomial',
 			onRegionClick: function (x, y) {
 
-				telepath.alerts.searchString = 'country_code:' + y.toUpperCase();
-				$('.tele-nav-alerts a').click();
-				$('.jqvmap-label').remove();
+				if (telepath.dashboard.map_mode == "traffic"){
+					telepath.search.init('country_code:' + y.toUpperCase());
+					$('.jqvmap-label').remove();
+					$('.tele-search-top .tele-search-input').val('country_code:' + y.toUpperCase())
+				}
+				else {
+					telepath.alerts.searchString = 'country_code:' + y.toUpperCase();
+					$('.tele-nav-alerts a').click();
+					$('.jqvmap-label').remove();
+				}
+
+
 
 			},
 			onLabelShow: function(event, label, code) {

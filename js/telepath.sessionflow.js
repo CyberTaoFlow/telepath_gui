@@ -418,9 +418,12 @@ telepath.sessionflow = {
 				if(telepath.sessionflow.filter == key) {
 					stat_filter.addClass('active');
 				}
-				
-				statsEl.append($('<div>').addClass('tele-alert-stat').append(stat_filter)
-					.append($('<div>').addClass('tele-alert-stat-value').html(thousandsFormat(stat)).attr('title', stat).tooltip()));
+
+				var stateVal =$('<div>').addClass('tele-alert-stat-value').html(thousandsFormat(stat));
+				if(stat.toString().length > 3 ){
+					stateVal.attr('title', stat).tooltip();
+				}
+				statsEl.append($('<div>').addClass('tele-alert-stat').append(stat_filter).append(stateVal));
 			}
 			
 		});
