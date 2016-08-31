@@ -83,7 +83,8 @@ class Dashboard extends Tele_Controller
        // $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
 
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        $suspects = $this->M_Suspects->get($range, $apps, $sort, $dir, 0, 5, $suspect_threshold,'', $distinct_ip = true);
+        $suspects = $this->M_Suspects->get($range, $apps, $sort, $dir, 0, 5, $suspect_threshold,'', $distinct_ip =
+            false);
 
 
 
