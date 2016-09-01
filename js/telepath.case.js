@@ -197,8 +197,10 @@ telepath.casePanel = {
 	data: {},
 	sort: 'date',
 	dir: false,
+	displayed: [],
 	init: function (caseID) {
-		
+
+		this.displayed=[];
 		// Remove existing panels if any
 		$('.tele-panel-case').remove();
 		// Create new container
@@ -222,6 +224,8 @@ telepath.casePanel = {
 	},
 	refresh: function (callback) {
 
+		var that = this;
+
 		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar, .tele-loader", this.container).remove();
 		this.container.append(telepath.loader);
 
@@ -235,6 +239,9 @@ telepath.casePanel = {
 			//case_data: this.data.case.case_data
 		}, function (data) {
 			telepath.casePanel.loadData(data);
+			data.items.map(function (a) {
+				that.displayed.push(a.sid)
+			});
 			if(typeof(callback) == 'function') {
 				callback();
 			}
@@ -454,9 +461,33 @@ telepath.casePanel = {
 			//height: 500,
 			formatter: function(row) {
 				return that.formatter(row);
+			},
+
+			callbacks: {
+
+				scroll: function (offset, callback) {
+					telepath.ds.get('/cases/get_case', {
+						start: telepath.range.start,
+						end: telepath.range.end,
+						apps: telepath.appFilter,
+						sort: that.sort,
+						dir: that.dir,
+						cid : that.caseID,
+						displayed: that.displayed
+						//case_data: this.data.case.case_data
+					}, function (data) {
+						data.items.map(function (a) {
+							that.displayed.push(a.sid)
+						});
+						if(typeof(callback) == 'function') {
+							callback();
+						}
+					}, false, false, true);
+				}
 			}
 		});
 
+		this.list.mCustomScrollbar('update')
 
 		this.similarsList=$('<div>').addClass('tele-case-similar-block');
 		this.similarsListWrap = $('<div>').addClass('tele-wrapper').append(this.similarsList).css({ display: 'inline-block', float:'left'  }).width('35%');

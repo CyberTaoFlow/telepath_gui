@@ -143,6 +143,7 @@ class Cases extends Tele_Controller
         $cid = $this->input->post('cid');
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
+        $displayed = $this->input->post('displayed');
        // $case_data= $this->input->post('case_data');
 
         if (!$sort || !in_array($sort, array('date', 'type', 'count'))) {
@@ -160,7 +161,7 @@ class Cases extends Tele_Controller
         // Contains requests data to display
         $ans = array();
 
-        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps, $sort, $dir);
+        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps, $sort, $dir, $displayed);
         if($requests['items']){
             $similars = $this->M_Cases->get_similar_case_sessions($cid);
             if ($similars){
