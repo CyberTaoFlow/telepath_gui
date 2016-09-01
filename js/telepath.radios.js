@@ -50,12 +50,12 @@ $.widget( "tele.radios", {
 
 				if(typeof item.dir!= 'undefined'){
 					if(item.dir){
-						itemIcon.removeClass('down');
-						itemIcon.addClass('up');
-					}
-					else{
 						itemIcon.removeClass('up');
 						itemIcon.addClass('down');
+					}
+					else{
+						itemIcon.removeClass('down');
+						itemIcon.addClass('up');
 					}
 				}
 			}
