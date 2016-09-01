@@ -225,6 +225,11 @@ class M_Search extends CI_Model {
 			]
 		];
 
+		// add aggregation to check if there is a suspect request in normal session
+		if($scope == 'requests'){
+			$params2['body']['aggs']['max_score'] = ["max" => [ "field" => "score_average" ]];
+		}
+
 		$params2['body']['query']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],"default_operator" => 'AND']];
 		$params2 = append_range_query($params2, $settings['range']);
 
@@ -265,8 +270,11 @@ class M_Search extends CI_Model {
 						"user" => $sid['user']['buckets'][0]['key']
 					);
 
-					// if one session ID includes alerts requests and regular requests, we don't display it
-					if ($scope == 'requests' && ($item['alerts_count']>0 || $item['cases_count']>0) ){
+					// we don't want to see alerts and cases in suspects and normal requests (even if some requests
+					// contains alerts or cases) and not suspects in normal requests
+					if ((($scope == 'requests' || $scope == 'suspects') && ($item['alerts_count'] > 0 || $item['cases_count'] > 0))
+						|| ($scope == 'requests' && $sid['max_score']['value'] > $suspect_threshold)
+					) {
 						$result["aggregations"]["sid_count"]["value"]--;
 						continue;
 					}
