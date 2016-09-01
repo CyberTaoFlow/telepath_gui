@@ -281,7 +281,7 @@ class M_Applications extends CI_Model {
 	//new function
 //curl -XGET 'http://localhost:9200/telepath-20*/_search?pretty' -d '{"size":0,"aggs":{"host":{"terms":{"field":"host","size":999},"aggs":{"ip_resp":{"terms":{"field":"ip_resp"}}}}}}'
 	
-	function index($search = false, $learning_so_far=false, $sort, $dir, $size, $start=0 , $fields=[ "host","subdomains" ] ) {
+	function index($search = false, $learning_so_far=false, $sort, $dir, $size, $start=0 , $fields=["host.search", "subdomains"] ) {
 		
 		// Search specific records first
 
