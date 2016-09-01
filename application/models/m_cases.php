@@ -127,7 +127,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc' ) {
+	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc', $displayed ) {
 
 		
 		switch($sort) {
@@ -211,6 +211,11 @@ class M_Cases extends CI_Model {
 		];
 
 		$params['body']['query']['bool']['filter'][] = [ 'term' => [ "cases_name" => $cid ] ];
+
+		if ($displayed) {
+			$params['body']['query']['bool']['must_not'][] = ['terms' => ["sid" => $displayed]];
+		}
+
 
 		$params = append_range_query($params, $range);
 

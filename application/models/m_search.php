@@ -105,7 +105,7 @@ class M_Search extends CI_Model {
 			],
 		];
 		if ($settings['displayed']){
-			$params['body']['query']['bool']['must_not'][]=['terms'=>['sid'=> $settings['displayed'][0]]];
+			$params['body']['query']['bool']['must_not'][]=['terms'=>['sid'=> $settings['displayed']]];
 
 		}
 

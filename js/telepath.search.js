@@ -108,6 +108,13 @@ telepath.search = {
 
         this.searchStr = searchStr;
 
+        this.displayed = {
+            alerts: [],
+            cases: [],
+            suspects: [],
+            requests: []
+        };
+
         // Reset nav states, clear panels, set container
         telepath.header.configCmd.removeClass('active');
         $('.tele-nav a.active').removeClass('active');
@@ -382,7 +389,7 @@ telepath.search = {
                     that.results[type] = data.items;
                     $('.tele-search-tab[rel="' + type + '"] span').html(thousandsFormat(data.total));
 
-                    that.displayed[type].push(data.items.map(function(a) {return a.sid}));
+                    data.items.map(function(a) { that.displayed[type].push(a.sid)});
 
                     if (that.count==4)
                         that.selectTab();
@@ -536,6 +543,7 @@ telepath.search = {
                         displayed: that.displayed.cases
                     }, function (data) {
                         callback(data);
+                        data.items.map(function(a) { that.displayed.cases.push(a.sid)});
                     }, false, false, true)
                 }
             }
@@ -575,6 +583,7 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.alerts
                     }, function (data) {
+                        data.items.map(function(a) { that.displayed.alerts.push(a.sid)});
                         callback(data);
                     }, false, false, true)
                 }
@@ -612,6 +621,7 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.suspects
                     }, function (data) {
+                        data.items.map(function(a) { that.displayed.suspects.push(a.sid)});
                         callback(data);
                     }, false, false, true)
                 }
@@ -648,6 +658,7 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.requests
                     }, function (data) {
+                        data.items.map(function(a) { that.displayed.requests.push(a.sid)});
                         callback(data);
                     }, false, false, true)
                 }
