@@ -108,6 +108,13 @@ telepath.search = {
 
         this.searchStr = searchStr;
 
+        this.displayed = {
+            alerts: [],
+            cases: [],
+            suspects: [],
+            requests: []
+        };
+
         // Reset nav states, clear panels, set container
         telepath.header.configCmd.removeClass('active');
         $('.tele-nav a.active').removeClass('active');
