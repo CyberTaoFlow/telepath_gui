@@ -527,9 +527,9 @@ class M_Alerts extends CI_Model {
 								"city" => [
 									"terms" => [ "field" => "city" , "size" => 1 ]
 								],
-								"id" => [
-									"terms" => [ "field" => "_id" , "size" => 1 ]
-								],
+//								"id" => [
+//									"terms" => [ "field" => "_id" , "size" => 1 ]
+//								],
 								"ip_orig" => [
 									"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 								],
