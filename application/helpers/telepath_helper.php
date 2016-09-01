@@ -187,7 +187,7 @@ function get_app_source($results,$learning_so_far=false)
 			if (isset ($row['_source']['subdomains']) && !empty ($row['_source']['subdomains']) && isset ($row['highlight']['subdomains'])) {
 				$row['_source']['open'] = true;
 			}
-			if($learning_so_far){
+			if($learning_so_far and isset($row['_source']['learning_so_far'])){
 				$row['_source']['learning_so_far']=thousandsCurrencyFormat($row['_source']['learning_so_far']);
 			}
 
