@@ -786,8 +786,13 @@ telepath.sessionflow = {
 
 		if(alert !== false) {
 			result.icon   = 'alert';
-			alert = item.alerts[0];
-			result.description  = alert.name;
+			var alerts = '';
+			$.each(item.alerts, function (i, x) {
+				alerts += x.name + ', ';
+			});
+			result.description = alerts.slice(0,-2);
+			//alert = item.alerts[0];
+			//result.description  = alert.name;
 			result.progbarValue = item.score_average;
 		} else {
 			if(item.avg_score > 85) {

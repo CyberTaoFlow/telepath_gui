@@ -16,6 +16,12 @@
 	min-width: 60%;
 }
 
+.tele-alert-action .tele-listitem .tele-title-2, .tele-similarities-list .tele-listitem .tele-title-2{
+	overflow: hidden;
+	max-width: 79%;
+	height: 13px;
+}
+
 .tele-rounded-box,
 .tele-listitem-inner {
 	background-color: white;
