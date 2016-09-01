@@ -41,7 +41,9 @@ class Search extends Tele_Controller
             'apps' => $this->_get_apps(),
             'is_country' => $this->input->post('is_country') == 'true', // Comes as string, not boolean
             'sort' => $sort,
-            'dir' => $this->input->post('dir') == 'true' ? 'ASC' : 'DESC'
+            'dir' => $this->input->post('dir') == 'true' ? 'ASC' : 'DESC',
+            'displayed' => $this->input->post('displayed')
+
         );
 
     }

@@ -11,6 +11,10 @@
 	top: 130px;
 }
 
+.tele-panel-search .tele-list .tele-loader{
+	top: auto;
+}
+
 .tele-map .tele-loader{
 	background: transparent url('../img/map-loader.gif') 50% 0% no-repeat;
 	position: absolute;

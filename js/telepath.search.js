@@ -15,6 +15,12 @@ telepath.search = {
     sort: 'date',
     dir: false,
     loading:false,
+    displayed:{
+        alerts:[],
+        cases:[],
+        suspects:[],
+        requests:[]
+    },
 
     options: false,
     /*searchTypes: [
@@ -376,6 +382,8 @@ telepath.search = {
                     that.results[type] = data.items;
                     $('.tele-search-tab[rel="' + type + '"] span').html(thousandsFormat(data.total));
 
+                    that.displayed[type].push(data.items.map(function(a) {return a.sid}));
+
                     if (that.count==4)
                         that.selectTab();
 
@@ -464,6 +472,7 @@ telepath.search = {
 
     showCasesTab: function () {
 
+        var that = this;
         // Create List
         this.list = $('<div>').addClass('tele-cases-block');
         $('#tele-search-cases').append(this.list);
@@ -512,11 +521,31 @@ telepath.search = {
                 };
                 return result;
 
+            },
+
+            callbacks: {
+
+                scroll: function (offset, callback) {
+                    console.log('came here');
+                    telepath.ds.get('/search/cases', {
+                        search: that.searchStr,
+                        options: that.options,
+                        is_country: that.countryFlag,
+                        sort: that.sort,
+                        dir: that.dir,
+                        displayed: that.displayed.cases
+                    }, function (data) {
+                        callback(data);
+                    }, false, false, true)
+                }
             }
         });
-
+        this._resize('cases');
     },
     showAlertsTab: function () {
+
+        var that = this;
+
         if (!this.results.alerts)
             return;
         // Create List
@@ -533,11 +562,30 @@ telepath.search = {
                 //item.checkable = true;
                 return telepath.alert.rowFormatter(item);
 
+            },
+            callbacks: {
+
+                scroll: function (offset, callback) {
+                    console.log('came here');
+                    telepath.ds.get('/search/alerts', {
+                        search: that.searchStr,
+                        options: that.options,
+                        is_country: that.countryFlag,
+                        sort: that.sort,
+                        dir: that.dir,
+                        displayed: that.displayed.alerts
+                    }, function (data) {
+                        callback(data);
+                    }, false, false, true)
+                }
             }
         });
-
+        this._resize('alerts');
     },
     showSuspectsTab: function () {
+
+        var that = this;
+
         if (!this.results.suspects)
             return;
         // Create List
@@ -545,14 +593,36 @@ telepath.search = {
         $('#tele-search-suspects').append(this.list);
 
         // Init Suspects
-        this.list.teleList({data: this.results.suspects, searchkey: this.searchStr,
-        formatter: function(item){
-           // item.checkable = true;
-            return telepath.suspects.rowFormatter(item);
-        }});
+        this.list.teleList({
+            data: this.results.suspects, searchkey: this.searchStr,
+            formatter: function (item) {
+                // item.checkable = true;
+                return telepath.suspects.rowFormatter(item);
+            },
 
+            callbacks: {
+
+                scroll: function (offset, callback) {
+                    console.log('came here');
+                    telepath.ds.get('/search/suspect', {
+                        search: that.searchStr,
+                        options: that.options,
+                        is_country: that.countryFlag,
+                        sort: that.sort,
+                        dir: that.dir,
+                        displayed: that.displayed.suspects
+                    }, function (data) {
+                        callback(data);
+                    }, false, false, true)
+                }
+            }
+        });
+        this._resize('suspects');
     },
     showRequestsTab: function () {
+
+        var that= this;
+
         if (!this.results.requests)
             return;
         // Create List
@@ -560,12 +630,45 @@ telepath.search = {
         $('#tele-search-requests').append(this.list);
 
         // Init Suspects
-        this.list.teleList({data: this.results.requests, searchkey: this.searchStr,
-            formatter: function(item){
-             //   item.checkable = true;
+        this.list.teleList({
+            data: this.results.requests, searchkey: this.searchStr,
+            formatter: function (item) {
+                //   item.checkable = true;
                 return telepath.suspects.rowFormatter(item);
-            }});
+            },
 
+            callbacks: {
+
+                scroll: function (offset, callback) {
+                    telepath.ds.get('/search/requests', {
+                        search: that.searchStr,
+                        options: that.options,
+                        is_country: that.countryFlag,
+                        sort: that.sort,
+                        dir: that.dir,
+                        displayed: that.displayed.requests
+                    }, function (data) {
+                        callback(data);
+                    }, false, false, true)
+                }
+            }
+        });
+        this._resize('requests');
+        //$(window).trigger('resize');
+    },
+
+    _resize: function (name) {
+
+        var height = $(window).height();
+        var offset = height -
+            $('.tele-header').outerHeight() -
+            $('.tele-panel-topbar').outerHeight() -
+            $('.tele-panel-subtitle').outerHeight();
+
+        $('.ui-tabs-panel .tele-block .tele-list').height(offset - 160);
+
+        $('#tele-search-'+ name +' .tele-list').mCustomScrollbar('update');
+        $(window).trigger('resize');
     }
 
 }
