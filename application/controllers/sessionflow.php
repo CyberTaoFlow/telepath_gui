@@ -17,17 +17,36 @@ class Sessionflow extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         // Read input
-        $SID = $this->input->post('sid');
+        $anchor_field='sid';
+        $anchor_value=$this->input->post('sid');
         $key = $this->input->post('searchkey');
         $state = $this->input->post('state');
-        $range = $this->_get_range();
+        //$range = $this->_get_range();
+        $alerts = $this->input->post('alerts');
+        $range = $this->input->post('range') == 'true';
+
+        if($alerts && !empty($alerts)){
+            $this->load->model('M_Rules');
+            foreach($alerts as $alert){
+                $rule = $this->M_Rules->get_rule_by_name($alert['key']);
+                if (!empty($rule) && $rule[0]['criteria'][0]['type']=="IP") {
+                    $anchor_field='ip_orig';
+                    $anchor_value=$this->input->post('ip');
+                    break;
+                }
+            }
+        }
+
+        if ($range){
+            $range = $this->_get_range();
+        }
 
 //        if (!empty($key) && substr($key, -1) != '*' && strpos($key, 'country_code') !== 0)
 //        {
 //            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
 //        }
 
-        $stats = $this->M_Sessionflow->get_session_stats($SID, $key,$state,$range);
+        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $state, $range);
         return_success($stats);
 
     }

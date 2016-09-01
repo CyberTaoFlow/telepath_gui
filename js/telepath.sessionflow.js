@@ -277,7 +277,7 @@ telepath.sessionflow = {
 		that.session = {};
 		
 		// Load session stats, then items
-		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.suspect }, function (data) {
+		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.suspect, alerts: that.alerts_names, ip: that.IP , range: that.range }, function (data) {
 			
 			that.session.stats = data.items;
 			

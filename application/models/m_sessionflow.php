@@ -69,7 +69,7 @@ class M_Sessionflow extends CI_Model {
 	
 	}
 	
-	public function get_session_stats($SID, $key = '',$state='', $range = null) {
+	public function get_session_stats($anchor_field, $anchor_value, $key = '',$state='', $range = null) {
 		if ($range) {
 			$params['index'] = $range['indices'];
 		} else {
@@ -86,7 +86,7 @@ class M_Sessionflow extends CI_Model {
 					'bool' => [
 						'filter' => [
 //							[ 'term' => [ '_type' => 'http' ] ],
-							[ 'term' => [ 'sid' => $SID ] ],
+							[ 'term' => [$anchor_field => $anchor_value] ],
 							#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 //							[ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ]
                         	                ]
@@ -105,7 +105,7 @@ class M_Sessionflow extends CI_Model {
             if ($key){
 				// empty body to get results matching search key only
 				$params['body'] =  [];
-				$params['body']['query']['bool']['filter'][] =  [ 'term' => [ 'sid' => $SID ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'term' => [$anchor_field => $anchor_value] ];
 
 				$params = append_range_query($params, $range);
 
@@ -175,7 +175,7 @@ class M_Sessionflow extends CI_Model {
 			'query' => array(
 				'bool' => array(
 					'filter' => array(
-						[ 'term' => array('sid' => $SID) ],
+						[ 'term' => [$anchor_field => $anchor_value] ],
 					)
 				)
 			)
