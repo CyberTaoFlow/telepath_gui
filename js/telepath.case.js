@@ -200,7 +200,6 @@ telepath.casePanel = {
 	displayed: [],
 	init: function (caseID) {
 
-		this.displayed=[];
 		// Remove existing panels if any
 		$('.tele-panel-case').remove();
 		// Create new container
@@ -225,6 +224,8 @@ telepath.casePanel = {
 	refresh: function (callback) {
 
 		var that = this;
+
+		this.displayed = [];
 
 		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar, .tele-loader", this.container).remove();
 		this.container.append(telepath.loader);
