@@ -24,7 +24,9 @@ class Alerts extends Tele_Controller
             $search = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$search))) . '*';
 
         }
-        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+//        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+
+        $displayed = $this->input->post('displayed');
 
         if (!$sort || !in_array($sort, array('date', 'name', 'count', 'score'))) {
             $sort = 'date';
@@ -37,9 +39,9 @@ class Alerts extends Tele_Controller
 //        $filter = array();
 
         // Alerts Data
-        $alerts = $this->M_Alerts->get_alerts(/*false, false,*/ $sort, $dir, $offset, 15, /*$filter*/ $range, $apps, $search, $filters);
+        $alerts = $this->M_Alerts->get_alerts(/*false, false,*/ $sort, $dir, $displayed, 15, /*$filter*/ $range, $apps, $search, $filters);
 
-        if ($offset > 0) {
+        if ( $displayed ) {
             // We need just the alert items
             return_json($alerts);
         }

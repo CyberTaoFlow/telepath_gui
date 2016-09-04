@@ -6,6 +6,7 @@ telepath.suspects = {
 	total: 0,
 	searchString: '',
 	loading:false,
+	displayed: [],
 
 	rowFormatter: function(item,mode) {
 
@@ -231,6 +232,8 @@ telepath.suspects = {
 	},
 
 	refresh: function (callback) {
+
+		this.displayed =[];
 		
 		$('.tele-block, .tele-loader', this.container).remove();
 		this.container.append(telepath.loader);
@@ -243,7 +246,13 @@ telepath.suspects = {
 			search: this.searchString
 		}, function (data) {
 
-			that.loading=false
+			that.loading = false;
+			
+			if (typeof (data.items) != 'undefined') {
+				data.items.map(function (a) {
+					that.displayed.push(a.sid)
+				});
+			}
 			that.count = data.count;
 			that.data  = data.items;
 			
@@ -303,7 +312,15 @@ telepath.suspects = {
 					dir:    telepath.suspects.dir,
 					search: telepath.suspects.searchString,
 					offset: offset,
-					}, function (data) {
+					displayed: that.displayed
+				}, function (data) {
+
+					if (typeof (data.items) != 'undefined') {
+						data.items.map(function (a) {
+							that.displayed.push(a.sid)
+						});
+					}
+					that.loading = false;
 						callback(data);
 				}, false, false, true);
 			}

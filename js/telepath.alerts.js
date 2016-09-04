@@ -7,6 +7,7 @@ telepath.alerts = {
 	filter: [],
 	allData: true, // indicate if all the data is shown, without alert filter
 	loading: false,
+	displayed: [],
 	init: function () {
 		
 		var that = this;
@@ -181,8 +182,13 @@ telepath.alerts = {
 	},
 
 	refresh: function (callback) {
+
+		var that = this;
+
 		var container = $('.tele-panel-alerts');
 		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
+
+		this.displayed =[];
 		container.append(telepath.loader);
 
 			telepath.ds.get('/alerts/index', {
@@ -190,7 +196,13 @@ telepath.alerts = {
 			dir: this.dir,
 			search: this.searchString,
 			filters: this.filter
-		}, function (data) {
+			}, function (data) {
+
+				if (typeof (data.items) != 'undefined') {
+					data.items.alerts.items.map(function (a) {
+						that.displayed.push(a.sid)
+					});
+				}
 			telepath.alerts.loading=false;
 			telepath.alerts.setData(data.items);
 			if(callback && typeof(callback) == 'function') {
@@ -244,8 +256,14 @@ telepath.alerts = {
 					dir: telepath.alerts.dir,
 					search: telepath.alerts.searchString,
 					offset: offset,
-					filters: that.filter
+					filters: that.filter,
+					displayed: that.displayed
 				}, function (data) {
+					if (typeof (data.items) != 'undefined') {
+						data.items.map(function (a) {
+							that.displayed.push(a.sid)
+						});
+					}
 					callback(data);
 				}, false, false, true);
 				

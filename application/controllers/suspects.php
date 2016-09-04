@@ -21,7 +21,8 @@ class Suspects extends Tele_Controller
         }
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
-        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+//        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+        $displayed = $this->input->post('displayed');
 
         if (!$sort || !in_array($sort, array('date', 'count', 'alerts'))) {
             $sort = 'date';
@@ -29,7 +30,7 @@ class Suspects extends Tele_Controller
 
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        return_json($this->M_Suspects->get($range, $apps, $sort, $dir, $offset, 15, $suspect_threshold, $search));
+        return_json($this->M_Suspects->get($range, $apps, $sort, $dir, $displayed, 15, $suspect_threshold, $search));
 
     }
 

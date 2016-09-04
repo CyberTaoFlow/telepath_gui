@@ -342,7 +342,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts(/*$variable, $val,*/ $sort, $sortorder, $start, $limit = 100, $range = array(), $apps = array(), $search = '', $filter=[]) {
+	public function get_alerts(/*$variable, $val,*/ $sort, $sortorder, $displayed = false, $limit = 100, $range = array(), $apps = array(), $search = '', $filter=[]) {
 		
 		switch($sort) {
 		
@@ -426,7 +426,10 @@ class M_Alerts extends CI_Model {
 				],
 			],
 		];
-		
+		if ($displayed) {
+			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
+		}
+
 //		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 
 
@@ -500,7 +503,7 @@ class M_Alerts extends CI_Model {
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach($sid_buckets as $sid) {
 				
-				if($count_offset >= $start) {
+//				if($count_offset >= $displayed) {
 
 						$sid_key = $sid['key'];
 						$doc_count = $sid['doc_count'];
@@ -604,10 +607,10 @@ class M_Alerts extends CI_Model {
 							break;
 						}			
 					
-				} else {
+				/*} else {
 					$count_offset++;
 				}
-				
+				*/
 			}
 			
 			$count = $result["aggregations"]["sid_count"]["value"];

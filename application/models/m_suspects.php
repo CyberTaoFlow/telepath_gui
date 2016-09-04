@@ -52,7 +52,7 @@ class M_Suspects extends CI_Model {
 
 	}
 	
-	public function get($range, $apps, $sort, $sortorder, $start = 0, $limit = 100, $suspect_threshold, $search = '', $distinct_ip=false) {
+	public function get($range, $apps, $sort, $sortorder, $displayed = false, $limit = 100, $suspect_threshold, $search = '', $distinct_ip=false) {
 		
 		//$suspect_threshold = $this->get_threshold();
 		//ROI CHECK THIS OUT (Yuli)
@@ -153,6 +153,10 @@ class M_Suspects extends CI_Model {
 			];
 		}
 
+		if ($displayed) {
+			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
+		}
+
 
 		if ($sortfield == "date")
 		{
@@ -207,7 +211,7 @@ class M_Suspects extends CI_Model {
 		if($sid_buckets){
 				foreach($sid_buckets as $sid) {
 				
-					if($count_offset >= $start) {
+//					if($count_offset >= $start) {
 						// Create subrequest for agregated data
 						if ($distinct_ip) {
 							$sid_key = $sid['sid']["buckets"][0]['key'];
@@ -315,9 +319,9 @@ class M_Suspects extends CI_Model {
 							// can not return record details here !!!
 						}
 
-					} else {
+					/*} else {
 						$count_offset++;
-					}
+					}*/
 
 				}
 
