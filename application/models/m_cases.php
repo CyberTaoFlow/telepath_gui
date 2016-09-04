@@ -251,7 +251,15 @@ class M_Cases extends CI_Model {
 
 		$results['success'] = true;
 		$results['query']   = $params;
-		$results['count']   = intval($result["aggregations"]['sid_count']['value']);
+
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid_count"]) &&
+			!empty($result["aggregations"]["sid_count"]["value"])
+		) {
+			$results['count'] = intval($result["aggregations"]['sid_count']['value']);
+		} else {
+			$results['count'] = 0;
+		}
 
 		if(!empty($result['hits']['hits'])){
 			foreach ($result['hits']['hits'] as $key=>$val){
