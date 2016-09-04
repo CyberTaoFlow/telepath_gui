@@ -89,7 +89,7 @@ class M_Suspects extends CI_Model {
 				"ip_orig" => [
 					"terms" => [
 						"field" => "ip_orig",
-						"size" => intval($limit) * 10,
+						"size" => $limit,
 						"order" => [$sortfield => $sortorder]],
 					'aggs' => [
 						"sid" => [
@@ -112,7 +112,7 @@ class M_Suspects extends CI_Model {
 				'size' => 0,
 				"aggs" => [
 					"sid" => [
-						"terms" => [ "field" => "sid", "size" => intval($limit) * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
+						"terms" => [ "field" => "sid", "size" => $limit * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
 
 
 // Disabe internal aggregation, Yuli
@@ -374,7 +374,7 @@ class M_Suspects extends CI_Model {
 					"ip_orig" => [
 						"terms" => [
 							"field" => "ip_orig",
-							"size" => intval($limit) * 10,
+							"size" => $limit,
 							"order" => [$sortfield => $sortorder]],
 						'aggs' => [
 							"sid" => [
@@ -396,7 +396,7 @@ class M_Suspects extends CI_Model {
 				'size' => 0,
 				"aggs" => [
 					"sid" => [
-						"terms" => [ "field" => "sid", "size" => intval($limit) * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
+						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
                                             "aggs" => [
                                                 "country_code" => [
                                                     "terms" => [ "field" => "country_code", "size" => 1 ]

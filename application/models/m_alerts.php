@@ -374,7 +374,7 @@ class M_Alerts extends CI_Model {
 			"aggs" => [
 				"sid" => [ 
 				
-					"terms" => [ "field" => "sid", "size" => intval($limit) * 10, "order" => [ $sortfield => $sortorder ] ], // Allow up to 10 scrolls
+					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $sortorder ] ], // Allow up to 10 scrolls
 					"aggs" => [
 						"alerts_count" => [
 							"sum" => [ "field" => "alerts_count" ]
