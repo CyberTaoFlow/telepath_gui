@@ -127,7 +127,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc', $displayed ) {
+	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc', $displayed = false) {
 
 		
 		switch($sort) {
