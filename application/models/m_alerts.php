@@ -490,14 +490,13 @@ class M_Alerts extends CI_Model {
 	
 		$results = array('items' => array());
 		
-		$count = 0;
-		
-		$count_offset = 0;
-		$count_insert = 0;
-		
+//		$count = 0;
+//
+//		$count_offset = 0;
+//		$count_insert = 0;
+//
 		if(isset($result["aggregations"]) && 
 		   isset($result["aggregations"]["sid"]) && 
-		   isset($result["aggregations"]["sid"]["buckets"]) && 
 		   !empty($result["aggregations"]["sid"]["buckets"])) {
 		   
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
@@ -602,10 +601,10 @@ class M_Alerts extends CI_Model {
 							'ip_score'=>$sid['last_score']['buckets'][0]['key'],
 							"user" => $sid['user']['buckets'][0]['key']
 						);
-						$count_insert++;
-						if($count_insert >= $limit) {
-							break;
-						}			
+//						$count_insert++;
+//						if($count_insert >= $limit) {
+//							break;
+//						}
 					
 				/*} else {
 					$count_offset++;
