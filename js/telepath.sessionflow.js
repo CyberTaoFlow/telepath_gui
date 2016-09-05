@@ -428,7 +428,11 @@ telepath.sessionflow = {
 					telepath.sessionflow.filter = key;
 					telepath.sessionflow.loadSession();
 					$('.tele-alert-stat-key').removeClass('active');
-					$(this).addClass('active');
+					//$(this).addClass('active');
+					$( ".tele-alert-stat-key" ).filter( function ()
+					{
+						return $( this ).text().indexOf( key ) >= 0;
+					}).addClass('active');
 				});
 			
 				if(telepath.sessionflow.filter == key) {
