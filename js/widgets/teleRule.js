@@ -1005,9 +1005,11 @@ $.widget( "tele.teleRule", {
 				this.requestPOST   = $('<div>').teleCheckbox({ label: 'POST' });
 				this.requestGET    = $('<div>').teleCheckbox({ label: 'GET' });
 				this.requestHEADER = $('<div>').teleCheckbox({ label: 'HEADER' });
+				this.requestXML = $('<div>').teleCheckbox({ label: 'XML' });
+				this.requestJSON  = $('<div>').teleCheckbox({ label: 'JSON ' });
 				//this.requestTITLE = $('<div>').teleCheckbox({ label: 'TITLE' });
 				
-				requestWRAP.append(this.requestPOST).append(this.requestGET).append(this.requestHEADER);
+				requestWRAP.append(this.requestPOST).append(this.requestGET).append(this.requestHEADER).append(this.requestXML).append(this.requestJSON);
 
 				// Response settings
 				var responseSettings = $('<div>').teleRadios({
@@ -1101,6 +1103,12 @@ $.widget( "tele.teleRule", {
 										break;
 										case 'H':
 											$('.tele-checkbox-checkbox', that.requestHEADER).trigger('click');
+										break;
+										case 'X':
+											$('.tele-checkbox-checkbox', that.requestXML).trigger('click');
+										break;
+										case 'J':
+											$('.tele-checkbox-checkbox', that.requestJSON).trigger('click');
 										break;
 									}
 									

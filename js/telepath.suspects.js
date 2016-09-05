@@ -190,7 +190,7 @@ telepath.suspects = {
 		// Load Data
 		this.refresh();
 
-		var typingTimer;                //timer identifier
+		/*var typingTimer;                //timer identifier
 		var doneTypingInterval = 1000;
 
 		$(".tele-panel-suspects .tele-search-input").keyup('input', function () {
@@ -201,7 +201,7 @@ telepath.suspects = {
 					that.input();
 				}, doneTypingInterval);
 			}
-		});
+		});*/
 
 		$("#search-button").on("click", function (event) {
 			that.searchString = '';

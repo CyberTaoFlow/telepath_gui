@@ -140,7 +140,7 @@ telepath.alerts = {
 			.append('<div class="tele-navsep"></div>').append(filterApps).append('<div class="tele-navsep"></div>').append(cmdRefresh);
 		
 
-		var typingTimer;                //timer identifier
+		/*var typingTimer;                //timer identifier
 		var doneTypingInterval = 1000;
 
 		$('.tele-panel-alerts .tele-search-input').keyup('input', function () {
@@ -151,7 +151,7 @@ telepath.alerts = {
 					that.input();
 				}, doneTypingInterval);
 			}
-		});
+		});*/
 
 		$(".tele-search").on("click",'.icon-delete-input2', function (event) {
 			clearTimeout(typingTimer);
