@@ -122,8 +122,20 @@ telepath.sessionflow = {
 					// Title
 					var title = $('<div>').addClass('tele-alert-details-info-title');
 					that.printLink(that.requestData, title);
+
+					// Time
+					this.alertDetailsTimeWrap   = $('<div>').addClass('tele-alert-details-info-time-wrap');
+					this.alertDetailsTimeLabel  = $('<div>').addClass('tele-alert-details-info-time-label').text('Request time:');
+					this.alertDetailsTime  		= $('<div>').addClass('tele-alert-details-info-time').text(date_format('d/m/y | H:i:s', that.requestData.ts));
+					this.alertDetailsTimeWrap.append(this.alertDetailsTimeLabel).append(this.alertDetailsTime);
+
+					// Response status
+					this.alertDetailsResponseWrap   = $('<div>').addClass('tele-alert-details-info-response-wrap');
+					this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
+					this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( that.requestData.status_code);
+					this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
 					
-					wrap.append(title);
+					wrap.append(title).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap);
 					
 					that.similarityDetails.append(wrap);
 					
