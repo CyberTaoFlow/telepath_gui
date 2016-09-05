@@ -897,7 +897,7 @@ telepath.sessionflow = {
 				return;
 			}
 			that.showSimilarities(data);
-		}, null, telepath.sessionflow.reloadFlag);
+		}, null, telepath.sessionflow.reloadFlag, true);
 		
 		// Load param data
 		$('.tele-similarity-details').remove();
@@ -908,7 +908,7 @@ telepath.sessionflow = {
 				return;
 			}
 			that.expandRequestData(data.items);
-		}, null, telepath.sessionflow.reloadFlag);
+		}, null, telepath.sessionflow.reloadFlag, true);
 		
 	}, 
 	expandRequestData: function(data) {
