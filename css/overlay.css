@@ -401,7 +401,7 @@
   overflow: hidden;
   text-overflow:    ellipsis;
   padding: 5px;
-  cursor: pointer;
+  /*cursor: pointer;*/
   
 }
 .tele-param-score {
