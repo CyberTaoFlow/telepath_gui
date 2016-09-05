@@ -239,7 +239,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts($variable, $val, $sortfield, $sortorder, $start, $limit, $filter) {
+	public function sql_get_alerts($variable, $val, $sortfield, $sortorder, $start, $limit, $filter) {
 		
 		$count_queries = array();
 		$data_queries  = array();

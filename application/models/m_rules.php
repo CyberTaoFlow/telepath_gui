@@ -272,7 +272,33 @@ class M_Rules extends CI_Model {
 
 	}
 
-	
+	public function get_rules_by_anchor($anchor)
+	{
+
+		$params = [
+			'index' => 'telepath-rules',
+			'type' => 'rules',
+			'body' => [
+				'size' => 0,
+				'aggs' => ['rule_name' => ["terms" => ["field" => "name"],],],
+				'query' => ['match' => ['criteria.type' => $anchor]]
+			]
+		];
+
+		$result = $this->elasticClient->search($params);
+
+		$rules = [];
+
+		if(isset($result["aggregations"]) &&
+			isset($result["aggregations"]["rule_name"]) &&
+			!empty($result["aggregations"]["rule_name"]["buckets"])) {
+			foreach ( $result["aggregations"]["rule_name"]["buckets"] as $rule){
+				$rules[] = $rule['key'];
+			}
+		}
+		return $rules;
+	}
+
 	public function add_category($cat) {
 		
 		$cats = $this->__get_categories();

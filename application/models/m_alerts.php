@@ -342,7 +342,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts(/*$variable, $val,*/ $sort, $sortorder, $displayed = false, $limit = 100, $range = array(), $apps = array(), $search = '', $filter=[]) {
+	public function get_alerts($sort, $sortorder, $displayed = false, $displayed_ips = false, $limit = 100, $range = [], $apps = [], $ip_rules, $search = '', $filter = []) {
 		
 		switch($sort) {
 		
@@ -373,12 +373,12 @@ class M_Alerts extends CI_Model {
 			'size' => 0,
 			"aggs" => [
 				"sid" => [ 
-				
-					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $sortorder ] ], // Allow up to 10 scrolls
+
+					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $sortorder ] ],
 					"aggs" => [
-						"alerts_count" => [
-							"sum" => [ "field" => "alerts_count" ]
-						],
+//						"alerts_count" => [
+//							"sum" => [ "field" => "alerts_count" ]
+//						],
 /*
 						"country_code" => [ 
 							"terms" => [ "field" => "country_code", "size" => 1 ] 
@@ -388,20 +388,20 @@ class M_Alerts extends CI_Model {
 						],
 						"id" => [ 
 							"terms" => [ "field" => "_id" , "size" => 1 ] 
-						],
+						],*/
 						"ip_orig" => [
 							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 						],
-						"host" => [
+					/*	"host" => [
 							"terms" => [ "field" => "host" , "size" => 10 ]
 						],
 						"score" => [
 							"avg" => [ "field" => "alerts.score" ]
-						],
+						],*/
 						"alerts_names" => [
 							"terms" => [ "field" => "alerts.name", "size" => 10 ]
 						],
-						"actions_count" => [
+					/*	"actions_count" => [
 							"sum" => [ "field" => "business_actions_count" ]
 						],
 						"actions_names" => [
@@ -429,6 +429,11 @@ class M_Alerts extends CI_Model {
 		if ($displayed) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
 		}
+		if (!empty($displayed_ips)) {
+			$params['body']['query']['bool']['must_not'][] = ['terms' => ['ip_orig' => $displayed_ips]];
+		}
+
+
 
 //		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 
@@ -465,22 +470,25 @@ class M_Alerts extends CI_Model {
 
 		if ($sortfield == "date") {
 			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
-		} else if ($sortfield == "alerts_names") {
-			$params['body']["aggs"]["sid"]["aggs"]["alerts_names"] = ["terms" => ["field" => "alerts.name", "size" => 10]];
-		} else if ($sortfield == "last_score") {
-			$params['body']["aggs"]["sid"]["aggs"]["last_score"] = [
-				"terms" => [
-					"field" => "ip_score",
-					"size" => 1,
-					"order" => ["date" => "desc"]
-				],
-				'aggs' => [
-					'date' => [
-						"max" => ["field" => "ts"]
-					]
-				]
-			];
+		} else if ($sortfield == "alerts_count") {
+			$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = ["sum" => [ "field" => "alerts_count" ]];
 		}
+//		} else if ($sortfield == "alerts_names") {
+//			$params['body']["aggs"]["sid"]["aggs"]["alerts_names"] = ["terms" => ["field" => "alerts.name", "size" => 10]];
+//		} else if ($sortfield == "last_score") {
+//			$params['body']["aggs"]["sid"]["aggs"]["last_score"] = [
+//				"terms" => [
+//					"field" => "ip_score",
+//					"size" => 1,
+//					"order" => ["date" => "desc"]
+//				],
+//				'aggs' => [
+//					'date' => [
+//						"max" => ["field" => "ts"]
+//					]
+//				]
+//			];
+//		}
 
 		
 		$params = append_application_query($params, $apps);
@@ -505,7 +513,7 @@ class M_Alerts extends CI_Model {
 //				if($count_offset >= $displayed) {
 
 						$sid_key = $sid['key'];
-						$doc_count = $sid['doc_count'];
+						//$doc_count = $sid['doc_count'];
 
 						$params2 = array();
 					if ($range) {
@@ -576,9 +584,34 @@ class M_Alerts extends CI_Model {
 								]
 							]
 						];
-						$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 
-					$params2 = append_range_query($params2, $range);
+				$anchor = ['sid' => $sid['key']];
+
+				$continue = false;
+
+				if (isset($sid['alerts_names']) && !empty($sid['alerts_names']["buckets"])
+					&& isset($sid['ip_orig']) && !empty($sid['ip_orig']["buckets"])
+				) {
+					foreach ($sid['alerts_names']["buckets"] as $alert) {
+						if (in_array($alert['key'], $ip_rules)) {
+							$ip = $sid['ip_orig']["buckets"][0]['key_as_string'];
+							if (! in_array($ip, $displayed_ips)){
+								$anchor = ['ip_orig' => $ip];
+								$displayed_ips[] = $ip;
+							}else{
+								$continue = true;
+							}
+						}
+					}
+				}
+
+				if ($continue){
+					continue;
+				}
+
+				$params2['body']['query']['bool']['filter'][] = ['term' => $anchor];
+
+				$params2 = append_range_query($params2, $range);
 
 					$result2 = $this->elasticClient->search($params2);
 						$sid = $result2['aggregations'];
@@ -595,7 +628,7 @@ class M_Alerts extends CI_Model {
 							"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 							"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
 							"host"    => $sid['host']['buckets'],
-							"count"   => $doc_count,
+							"count"   => $sid['alerts_names']['buckets'],
 							"score"  => $sid['score']['value'],
 							"date"  => $sid['date']['value'],
 							'ip_score'=>$sid['last_score']['buckets'][0]['key'],
@@ -615,7 +648,21 @@ class M_Alerts extends CI_Model {
 			$count = $result["aggregations"]["sid_count"]["value"];
 				
 		}
+
 		if ($sort =='date') {
+			$sort_key = 'date';
+		}
+		elseif ($sort =='count') {
+			$sort_key = 'alerts_count';
+		}
+
+		if ($sortorder == 'ASC') {
+			$sortorder = SORT_ASC;
+		}
+		elseif ($sortorder == 'DESC') {
+			$sortorder =  SORT_DESC;
+		}
+
 			# Fix the problem we have with sort.
 			# When sorting alerts by date we are getting other requests
 			# with the same session id. As a result we need to perform
@@ -624,15 +671,16 @@ class M_Alerts extends CI_Model {
 			$ar = $results['items'];
 			foreach ($ar as $key => $row)
 			{
-				$temp[$key] = $row['date'];
+				$temp[$key] = $row[$sort_key];
 			}
-			array_multisort($temp, SORT_DESC, $ar);
+			array_multisort($temp, $sortorder, $ar);
 			$results['items'] = $ar;
-		}
+
 		
 		$results['success'] = true;
-		$results['query']   = $params;
-		$results['count']   = $count;
+		$results['query'] = $params;
+		$results['count'] = $count;
+		$results['displayed_ips'] = $displayed_ips;
 		return $results;
 		
 			
