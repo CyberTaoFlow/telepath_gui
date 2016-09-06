@@ -147,12 +147,47 @@ $.widget( "tele.teleList", {
 				$(this).css('color','#333333');
 			});
 
-			$('.tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
-				var search = $(this).text();
-				telepath.header.searchInput.val(search);
-				telepath.search.init(search);
-			});
-		}
+            $('.tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
+
+                var search = $(this).parent().text();
+
+                var field = '';
+
+                // check if displayed field name (before ":")
+                if (search.indexOf(":") > -1) {
+                    field = search.split(/\s{1}/)[0];
+                    search = search.split(/:\s{1}/)[1];
+
+                    // change field to elastic field name
+                    switch (field) {
+                        case "IP:":
+                            field = 'ip_orig:';
+                            break;
+                        case "rules:":
+                            field = 'alerts.name:';
+                            break;
+                    }
+                }
+                // user and country fields
+                else {
+                    if ($(this).attr("class") == 'tele-user') {
+                        field = 'username:';
+                        search = $.trim(search);
+                    }
+                    else {
+                        $.each(telepath.countries.map, function (k, val) {
+                            if (val.toLowerCase() == search.toLowerCase()) {
+                                search = k;
+                            }
+                        });
+                        field = 'country_code:';
+                    }
+                }
+
+                telepath.header.searchInput.val(field + '"' + search + '"');
+                telepath.search.init(field + '"' + search + '"');
+            });
+        }
 		
 				// Append to local Store
 		that.items.push(newItem);
