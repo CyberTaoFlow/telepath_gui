@@ -256,7 +256,7 @@ $.widget( "tele.condition", {
 											if (that.options.data.value.length > 0 && that.options.data.value.substr(that.options.data.value.length-1, 1) !== ',') {
 												that.options.data.value = that.options.data.value + ',';
 											}
-											that.options.data.value = that.options.data.value + node.category + '::' + node.id;
+											that.options.data.value = that.options.data.value + /*node.category + '::' +*/ node.name;
 										}
 										// remove last comma
 										if(that.options.data.value.substr(that.options.data.value.length-1, 1) == ',') {
