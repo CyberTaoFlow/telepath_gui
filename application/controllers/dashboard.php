@@ -106,8 +106,11 @@ class Dashboard extends Tele_Controller
 
 //        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
 
+        $this->load->model('M_Rules');
+        $ip_rules = $this->M_Rules->get_rules_by_anchor("IP");
+
         $this->load->model('M_Alerts');
-        $alerts = $this->M_Alerts->get_alerts(/*false, false,*/ $sort, $dir, 0, 5, $range, $apps);
+        $alerts = $this->M_Alerts->get_alerts($sort, $dir, false, [], 5, $range, $apps, $ip_rules);
 
         $data = array('alerts' => $alerts);
 

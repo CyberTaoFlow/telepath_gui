@@ -987,13 +987,15 @@ class CI_DB_active_record extends CI_DB_driver {
 		$query = $this->query($sql);
 		$this->_reset_select();
 
-		if ($query->num_rows() == 0)
-		{
-			return 0;
+        if ($query) {
+			if ($query->num_rows() == 0) {
+				return 0;
+			}
+			$row = $query->row();
+			return (int)$row->numrows;
+		} else {
+			return false;
 		}
-
-		$row = $query->row();
-		return (int) $row->numrows;
 	}
 
 	// --------------------------------------------------------------------
