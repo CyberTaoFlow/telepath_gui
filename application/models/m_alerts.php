@@ -498,8 +498,8 @@ class M_Alerts extends CI_Model {
 	
 		$results = array('items' => array());
 		
-//		$count = 0;
-//
+		$count = 0;
+
 //		$count_offset = 0;
 //		$count_insert = 0;
 //
