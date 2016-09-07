@@ -4,8 +4,10 @@ telepath.alerts = {
 	dir: false,
 	data: [],
 	searchString: '',
-	filter: [],
-	allData: true, // indicate if all the data is shown, without alert filter
+	alertsFilter: [],
+	actionsFilter: [],
+	allAlerts: true, // indicate if all the data is shown, without alert filter
+	allActions: true, // indicate if all the data is shown, without action filter
 	loading: false,
 	displayed: [],
 	displayed_ips: [],
@@ -197,7 +199,8 @@ telepath.alerts = {
 			sort: this.sort,
 			dir: this.dir,
 			search: this.searchString,
-			filters: this.filter
+			alertsFilter: that.alertsFilter,
+			actionsFilter: that.actionsFilter
 			}, function (data) {
 
 				if (typeof (data.items) != 'undefined') {
@@ -261,7 +264,8 @@ telepath.alerts = {
 					dir: telepath.alerts.dir,
 					search: telepath.alerts.searchString,
 					offset: offset,
-					filters: that.filter,
+					alertsFilter: that.alertsFilter,
+					actionsFilter: that.actionsFilter,
 					displayed: that.displayed,
 					displayed_ips: that.displayed_ips
 				}, function (data) {
@@ -285,7 +289,7 @@ telepath.alerts = {
 		this.panelTitle.html( thousandsFormat(data.alerts.count) + ' Sessions');
 		
 		if(parseInt(data.alerts.count) == 0) {
-			return;
+			//return;
 		}
 		
 		// Graphs Block
@@ -460,11 +464,11 @@ telepath.alerts = {
 			if (!obj)
 				return;
 			if (obj.series.label ){
-				that.filter=[];
-				that.filter.push(obj.series.label);
-				// if there is only one alert, we don't change the allData variable
-				if (that.data.distribution_chart.length != that.filter.length) {
-					that.allData = false;
+				that.alertsFilter=[];
+				that.alertsFilter.push(obj.series.label);
+				// if there is only one alert, we don't change the allAlerts variable
+				if (that.data.distribution_chart.length != that.alertsFilter.length) {
+					that.allAlerts = false;
 				}
 			}
 			that.refresh()
@@ -473,31 +477,31 @@ telepath.alerts = {
 
 		function legendClick(){
 			$('.legend tr').on('click',function(){
-				// fill the filter array
-				if(that.allData){
-					that.filter = [];
+				// fill the alertsFilter array
+				if(that.allAlerts){
+					that.alertsFilter = [];
 					$.each(that.data.distribution_chart, function(i, val){
-						that.filter.push(val.label);
+						that.alertsFilter.push(val.label);
 					})
 				}
 
 				var item = $(this).children('.legendLabel').text();
-				if (($.inArray(item , that.filter)!=-1)){
-					that.filter.splice( $.inArray(item, that.filter), 1 );
-					that.allData = false;
+				if (($.inArray(item , that.alertsFilter)!=-1)){
+					that.alertsFilter.splice( $.inArray(item, that.alertsFilter), 1 );
+					that.allAlerts = false;
 				} else {
-					that.filter.push(item);
+					that.alertsFilter.push(item);
 					// the alert filter need to correspond to the current data (needed if the user has changed date
 					// range or app filter)
-					that.filter = $.grep(that.filter, function (n, i) {
+					that.alertsFilter = $.grep(that.alertsFilter, function (n, i) {
 						var item = $.grep(that.data.distribution_chart, function (item) {
 							return item.label == n;
 						});
 						return item.length > 0;
 					});
-					// set the allData variable to true if all the alerts are shown
-					if (that.data.distribution_chart.length == that.filter.length) {
-						that.allData = true;
+					// set the allAlerts variable to true if all the alerts are shown
+					if (that.data.distribution_chart.length == that.alertsFilter.length) {
+						that.allAlerts = true;
 					}
 				}
 				that.refresh()
@@ -509,9 +513,9 @@ telepath.alerts = {
 		function set_legend(){
 
 			$('.legend tr').css({"cursor":"pointer"});
-			if (that.filter.length>0 && that.allData == false){
+			if (that.alertsFilter.length>0 && that.allAlerts == false ){
 				$.each($('.legend tr'),function (i, val){
-					if ($.inArray(val.children[1].innerText , that.filter)==-1){
+					if ($.inArray(val.children[1].innerText , that.alertsFilter)==-1){
 						$( this).children(".legendColorBox").children().html('<div style="width:4px;height:0;border:5px solid #999;overflow:hidden; "></div>');
 						$( this ).css({"opacity": "0.5"});
 					}
@@ -527,13 +531,15 @@ telepath.alerts = {
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plotclick', pieClick);
 			legendClick();
 			set_legend();
-			this._resize();
+			that._resize();
 		}, 100);
 		
 	},
 
 
 	show_action_distribution: function() {
+
+		var that = this;
 	
 		this.graphDistributionCanvas.empty();
 		
@@ -605,43 +611,72 @@ telepath.alerts = {
 			if (!obj)
 				return;
 			if (obj.series.label ){
-				that.filter=[];
-				that.filter.push(obj.series.label)
+				if (that.actionsFilter.length == 1 && obj.series.label == that.actionsFilter[0]){
+					that.actionsFilter = [];
+					that.allActions = true;
+				}
+				else {
+					that.actionsFilter = [];
+					that.actionsFilter.push(obj.series.label);
+					// if there is only one alert, we don't change the allAlerts variable
+					if (that.data.action_distribution_chart.length != that.actionsFilter.length) {
+						that.allActions = false;
+					}
+				}
+
 			}
 			that.refresh()
 
 		}
 
+
 		function legendClick(){
 			$('.legend tr').on('click',function(){
+				// fill the filter array
+				if(that.allActions){
+					that.actionsFilter = [];
+					$.each(that.data.action_distribution_chart, function(i, val){
+						that.actionsFilter.push(val.label);
+					})
+				}
+
 				var item = $(this).children('.legendLabel').text();
-				if (($.inArray(item , that.filter)!=-1)){
-					that.filter.splice( $.inArray(item, that.filter), 1 );
-				}else {
-					that.filter.push(item)
+				if (($.inArray(item, that.actionsFilter) != -1)) {
+					that.actionsFilter.splice($.inArray(item, that.actionsFilter), 1);
+					that.allActions = false;
+				} else {
+					that.actionsFilter.push(item);
+					// the alert filter need to correspond to the current data (needed if the user has changed date
+					// range or app filter)
+					that.actionsFilter = $.grep(that.actionsFilter, function (n, i) {
+						var item = $.grep(that.data.action_distribution_chart, function (item) {
+							return item.label == n;
+						});
+						return item.length > 0;
+					});
+					// set the allActions variable to true if all the alerts are shown
+					if (that.data.action_distribution_chart.length == that.actionsFilter.length) {
+						that.actionsFilter = [];
+						that.allActions = true;
+					}
 				}
 				that.refresh()
 
 			});
 		}
 
-
 		function set_legend(){
 
 			$('.legend tr').css({"cursor":"pointer"});
-			if (that.filter.length>0){
+			if (that.actionsFilter.length>0 && that.allActions == false ){
 				$.each($('.legend tr'),function (i, val){
-					if ($.inArray(val.children[1].innerText , that.filter)==-1){
+					if ($.inArray(val.children[1].innerText , that.actionsFilter)==-1){
 						$( this).children(".legendColorBox").children().html('<div style="width:4px;height:0;border:5px solid #999;overflow:hidden; "></div>');
 						$( this ).css({"opacity": "0.5"});
 					}
 				})
 			}
-			else {
-				$.each(that.data.distribution_chart, function(i, val){
-					that.filter.push(val.label);
-				})
-			}
+
 		}
 
 		// Plot Graph
@@ -652,7 +687,7 @@ telepath.alerts = {
 			$(".tele-alert-graph-distribution-canvas .tele-graph-canvas").bind('plotclick', pieClick);
 			legendClick();
 			set_legend();
-			this._resize();
+			that._resize();
 		}, 100);
 
 		

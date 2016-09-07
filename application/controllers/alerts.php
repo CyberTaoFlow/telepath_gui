@@ -19,7 +19,8 @@ class Alerts extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $search = $this->input->post('search');
-        $filters = $this->input->post('filters');
+        $alerts_filter = $this->input->post('alertsFilter');
+        $actions_filter = $this->input->post('actionsFilter');
 //        if ($search && substr($search, -1) != '*' && $search[0]!='"' && substr($search, -1) != '"' && strpos($search, 'country_code') !== 0)
 //        {
 //            $search = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$search))) . '*';
@@ -46,22 +47,29 @@ class Alerts extends Tele_Controller
 //        $filter = array();
 
         // Alerts Data
-        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, $displayed_ips, 15, $range, $apps, $ip_rules, $search, $filters);
+        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, $displayed_ips, 15, $range, $apps, $ip_rules, $search, $alerts_filter, $actions_filter);
 
         if ( $displayed ) {
             // We need just the alert items
             return_json($alerts);
         }
 
-        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $filters);
+        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_filter);
         $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search);
-        $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search, $filters);
+        $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search, $alerts_filter);
 
 
-        if ($filters){
+        if ($alerts_filter){
             foreach($distribution_chart as $key => $dis){
-                if (!in_array($dis['label'], $filters)){
+                if (!in_array($dis['label'], $alerts_filter)){
                     $distribution_chart[$key]['data']=0;
+                }
+            }
+        }
+        if ($actions_filter){
+            foreach($action_distribution_chart as $key => $dis){
+                if (!in_array($dis['label'], $actions_filter)){
+                    $action_distribution_chart[$key]['data']=0;
                 }
             }
         }
