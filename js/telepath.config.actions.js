@@ -420,7 +420,7 @@ telepath.config.actions = {
 				telepath.dialog({
 					type: 'dialog',
 					title: 'Business Actions',
-					msg: 'Are you sure thay you want to stop the Business Action record?',
+					msg: 'Are you sure that you want to stop the Business Action record?',
 					callback: function () {
 						clearInterval(telepath.action.recorder.timer);
 						telepath.action.recorder.endRecord();

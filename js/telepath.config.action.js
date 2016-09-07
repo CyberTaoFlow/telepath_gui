@@ -167,7 +167,14 @@ telepath.action.recorder = {
 			if(that.timerValue > 99 && !that.dataLoaded) {
 				clearInterval(that.timer);
 				that.timer=false;
-				telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'No matching requests, tracking timed out.' });
+				if(!$('.tele-overlay-dialog').is(':visible')){
+					telepath.dialog({ type: 'alert', title: 'Business Action', msg: 'No matching requests, tracking timed out.' });
+				}
+				that.progbarInner.css({width: 0});
+				$('.tele-control-record-cmd-lbl').html('Start Recording');
+				var record_ico = $('.tele-control .tele-control-stop');
+				record_ico.toggleClass('tele-control-stop');
+				record_ico.toggleClass('tele-control-record');
 				that.endRecord();
 			}
 		
