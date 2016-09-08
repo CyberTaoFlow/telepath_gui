@@ -386,7 +386,7 @@ class M_Alerts extends CI_Model {
 			"aggs" => [
 				"sid" => [ 
 
-					"terms" => [ "field" => "sid", "size" => $limit * 10, "order" => [ $sortfield => $sortorder ] ],
+					"terms" => [ "field" => "sid", "size" => $limit , "order" => [ $sortfield => $sortorder ] ],
 					/*					"aggs" => [
                     						"alerts_count" => [
                     							"sum" => [ "field" => "alerts_count" ]
