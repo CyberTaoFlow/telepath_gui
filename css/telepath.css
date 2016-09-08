@@ -877,7 +877,8 @@ a.tele-refresh-value:hover {
 .tele-panel-alerts  .tele-alert-graphs-block .tele-mini-toggle {
 	padding: 0px 10px;
 	margin-top: -5px;
-	height: 22px;
+	/*height: 22px;*/
+	margin-bottom: 39px;
 }
 
 .tele-panel-alerts  .tele-alert-graphs-block .tele-mini-toggle-left,
