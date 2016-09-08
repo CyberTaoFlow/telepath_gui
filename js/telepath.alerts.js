@@ -10,7 +10,6 @@ telepath.alerts = {
 	allActions: true, // indicate if all the data is shown, without action filter
 	loading: false,
 	displayed: [],
-	displayed_ips: [],
 	init: function () {
 		
 		var that = this;
@@ -192,7 +191,6 @@ telepath.alerts = {
 		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
 
 		this.displayed = [];
-		this.displayed_ips = [];
 		container.append(telepath.loader);
 
 			telepath.ds.get('/alerts/index', {
@@ -207,9 +205,6 @@ telepath.alerts = {
 					data.items.alerts.items.map(function (a) {
 						that.displayed.push(a.sid)
 					});
-				}
-				if (typeof (data.items.alerts.displayed_ips) != 'undefined') {
-					that.displayed_ips = data.items.alerts.displayed_ips;
 				}
 			telepath.alerts.loading=false;
 			telepath.alerts.setData(data.items);
@@ -266,16 +261,12 @@ telepath.alerts = {
 					offset: offset,
 					alertsFilter: that.alertsFilter,
 					actionsFilter: that.actionsFilter,
-					displayed: that.displayed,
-					displayed_ips: that.displayed_ips
+					displayed: that.displayed
 				}, function (data) {
 					if (typeof (data.items) != 'undefined') {
 						data.items.map(function (a) {
 							that.displayed.push(a.sid)
 						});
-						if (typeof (data.displayed_ips) != 'undefined') {
-							that.displayed_ips = data.displayed_ips;
-						}
 					}
 					callback(data);
 				}, false, false, true);

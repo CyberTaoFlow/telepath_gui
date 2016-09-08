@@ -354,8 +354,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts($sort, $sortorder, $displayed = false, $displayed_ips = false, $limit = 100, $range = [],
-							   $apps = [], $ip_rules, $search = '', $alerts_filter=[], $actions_filter=[]) {
+	public function get_alerts($sort, $sortorder, $displayed = false, $limit = 100, $range = [], $apps = [], $search = '', $alerts_filter = [], $actions_filter = []) {
 		
 		switch($sort) {
 		
@@ -388,44 +387,44 @@ class M_Alerts extends CI_Model {
 				"sid" => [ 
 
 					"terms" => [ "field" => "sid", "size" => $limit * 10, "order" => [ $sortfield => $sortorder ] ],
-					"aggs" => [
-//						"alerts_count" => [
-//							"sum" => [ "field" => "alerts_count" ]
-//						],
-/*
-						"country_code" => [ 
-							"terms" => [ "field" => "country_code", "size" => 1 ] 
-						],
-						"city" => [ 
-							"terms" => [ "field" => "city" , "size" => 1 ] 
-						],
-						"id" => [ 
-							"terms" => [ "field" => "_id" , "size" => 1 ] 
-						],*/
-						"ip_orig" => [
-							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
-						],
-					/*	"host" => [
-							"terms" => [ "field" => "host" , "size" => 10 ]
-						],
-						"score" => [
-							"avg" => [ "field" => "alerts.score" ]
-						],*/
-						"alerts_names" => [
-							"terms" => [ "field" => "alerts.name", "size" => 10 ]
-						],
-					/*	"actions_count" => [
-							"sum" => [ "field" => "business_actions_count" ]
-						],
-						"actions_names" => [
-							"terms" => [ "field" => "business_actions.name", "size" => 10 ]
-						],
-						"date" => [
-							"max" => [ "field" => "ts" ]
-						],
-*/
-					],
-				
+					/*					"aggs" => [
+                    						"alerts_count" => [
+                    							"sum" => [ "field" => "alerts_count" ]
+                    						],
+
+                                            "country_code" => [
+                                                "terms" => [ "field" => "country_code", "size" => 1 ]
+                                            ],
+                                            "city" => [
+                                                "terms" => [ "field" => "city" , "size" => 1 ]
+                                            ],
+                                            "id" => [
+                                                "terms" => [ "field" => "_id" , "size" => 1 ]
+                                            ],
+                                            "ip_orig" => [
+                                                "terms" => [ "field" => "ip_orig" , "size" => 1 ]
+                                            ],
+                                            "host" => [
+                                                "terms" => [ "field" => "host" , "size" => 10 ]
+                                            ],
+                                            "score" => [
+                                                "avg" => [ "field" => "alerts.score" ]
+                                            ],
+                                            "alerts_names" => [
+                                                "terms" => [ "field" => "alerts.name", "size" => 10 ]
+                                            ],
+                                            "actions_count" => [
+                                                "sum" => [ "field" => "business_actions_count" ]
+                                            ],
+                                            "actions_names" => [
+                                                "terms" => [ "field" => "business_actions.name", "size" => 10 ]
+                                            ],
+                                            "date" => [
+                                                "max" => [ "field" => "ts" ]
+                                            ],
+
+                                        ],
+                    */
 				],
 				"sid_count" => [
 					"cardinality" => [ "field" => "sid" ],
@@ -442,11 +441,6 @@ class M_Alerts extends CI_Model {
 		if ($displayed) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
 		}
-		if (!empty($displayed_ips)) {
-			$params['body']['query']['bool']['must_not'][] = ['terms' => ['ip_orig' => $displayed_ips]];
-		}
-
-
 
 //		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 
@@ -490,9 +484,7 @@ class M_Alerts extends CI_Model {
 		} else if ($sortfield == "alerts_count") {
 			$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = ["sum" => [ "field" => "alerts_count" ]];
 		}
-//		} else if ($sortfield == "alerts_names") {
-//			$params['body']["aggs"]["sid"]["aggs"]["alerts_names"] = ["terms" => ["field" => "alerts.name", "size" => 10]];
-//		} else if ($sortfield == "last_score") {
+//		else if ($sortfield == "last_score") {
 //			$params['body']["aggs"]["sid"]["aggs"]["last_score"] = [
 //				"terms" => [
 //					"field" => "ip_score",
@@ -579,7 +571,7 @@ class M_Alerts extends CI_Model {
 //				if($count_offset >= $displayed) {
 
 						$sid_key = $sid['key'];
-						//$doc_count = $sid['doc_count'];
+						$doc_count = $sid['doc_count'];
 
 						$params2 = array();
 					if ($range) {
@@ -651,37 +643,8 @@ class M_Alerts extends CI_Model {
 							]
 						];
 
-				$anchor = ['sid' => $sid['key']];
+				$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 
-				$continue = false;
-
-				if (isset($sid['alerts_names']) && !empty($sid['alerts_names']["buckets"])
-					&& isset($sid['ip_orig']) && !empty($sid['ip_orig']["buckets"])
-				) {
-					foreach ($sid['alerts_names']["buckets"] as $alert) {
-						if (in_array($alert['key'], $ip_rules)) {
-							$ip = $sid['ip_orig']["buckets"][0]['key_as_string'];
-							if (! in_array($ip, $displayed_ips)){
-								$anchor = ['ip_orig' => $ip];
-								$displayed_ips[] = $ip;
-							}else{
-								$continue = true;
-							}
-						}
-					}
-				}
-
-				if (count($actions_filter) > 0 && $actions_filter != false) {
-					if (! in_array($sid['key'],$actions_sid)){
-						$continue = true;
-					}
-				}
-
-				if ($continue){
-					continue;
-				}
-
-				$params2['body']['query']['bool']['filter'][] = ['term' => $anchor];
 
 				$params2 = append_range_query($params2, $range);
 
@@ -700,7 +663,7 @@ class M_Alerts extends CI_Model {
 							"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 							"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
 							"host"    => $sid['host']['buckets'],
-							"count"   => $sid['alerts_names']['buckets'],
+							"count"   => $doc_count,
 							"score"  => $sid['score']['value'],
 							"date"  => $sid['date']['value'],
 							'ip_score'=>$sid['last_score']['buckets'][0]['key'],
@@ -720,13 +683,7 @@ class M_Alerts extends CI_Model {
 			$count = $result["aggregations"]["sid_count"]["value"];
 				
 		}
-
 		if ($sort =='date') {
-			$sort_key = 'date';
-		}
-		elseif ($sort =='count') {
-			$sort_key = 'alerts_count';
-		}
 
 		if ($sortorder == 'ASC') {
 			$sortorder = SORT_ASC;
@@ -743,16 +700,15 @@ class M_Alerts extends CI_Model {
 			$ar = $results['items'];
 			foreach ($ar as $key => $row)
 			{
-				$temp[$key] = $row[$sort_key];
+				$temp[$key] = $row['date'];
 			}
 			array_multisort($temp, $sortorder, $ar);
 			$results['items'] = $ar;
-
+		}
 		
 		$results['success'] = true;
 		$results['query'] = $params;
 		$results['count'] = $count;
-		$results['displayed_ips'] = $displayed_ips;
 		return $results;
 		
 			
