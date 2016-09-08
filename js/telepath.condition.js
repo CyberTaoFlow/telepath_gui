@@ -214,7 +214,7 @@ $.widget( "tele.condition", {
 									
 									var opt = opts[x].split('::');
 									if(opt.length == 2) {
-										if(node.category == opt[0].trim() && node.id == opt[1].trim()) {
+										if(node.category == opt[0].trim() && node.name == opt[1].trim()) {
 											checked = true;
 										}
 									}
@@ -239,7 +239,7 @@ $.widget( "tele.condition", {
 											
 											var opt = opts[x].split('::');
 											if(opt.length == 2) {
-												if(node.category == opt[0].trim() && node.id == opt[1].trim()) {
+												if(node.category == opt[0].trim() && node.name == opt[1].trim()) {
 													found = true;
 												}
 											}
@@ -247,7 +247,7 @@ $.widget( "tele.condition", {
 										}
 										
 										if(found && !checked) {
-											that.options.data.value = that.options.data.value.replace(node.category + '::' + node.id, '');
+											that.options.data.value = that.options.data.value.replace(node.category + '::' + node.name, '');
 											that.options.data.value = that.options.data.value.replace(',,',',');
 										}
 										
@@ -256,7 +256,7 @@ $.widget( "tele.condition", {
 											if (that.options.data.value.length > 0 && that.options.data.value.substr(that.options.data.value.length-1, 1) !== ',') {
 												that.options.data.value = that.options.data.value + ',';
 											}
-											that.options.data.value = that.options.data.value + /*node.category + '::' +*/ node.name;
+											that.options.data.value = that.options.data.value + node.category + '::' + node.name;
 										}
 										// remove last comma
 										if(that.options.data.value.substr(that.options.data.value.length-1, 1) == ',') {
