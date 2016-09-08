@@ -203,33 +203,35 @@ telepath.suspects = {
 			}
 		});*/
 
-		$("#search-button").on("click", function (event) {
-			that.searchString = '';
-			$(".tele-panel-suspects .tele-search-input").prop("value", that.searchString);
-			that.input();
-
+		$('.tele-panel-suspects .tele-search-input').keyup('input', function (e) {
+			if ($(this).val()) {
+				that.searchString = $(this).val();
+				that.input();
+			}
+			if (e.which == 13) {
+				that.refresh()
+			}
+		});
+		$("#search-button").on("click", function () {
+			that.refresh();
 		});
 
 		if (that.searchString)
 		{
 			$('.tele-panel-suspects .tele-search-input').prop("value",that.searchString);
 
-			that.input();
 		}
-		
+		that.refresh();
 	},
 
-	input: function(){
+	/*input: function(){
 		var that = this;
 		var icon= $("#search-button");
 		if (that.searchString.length>0)
 			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
 		else
 			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
-
-		that.refresh()
-
-	},
+	},*/
 
 	refresh: function (callback) {
 

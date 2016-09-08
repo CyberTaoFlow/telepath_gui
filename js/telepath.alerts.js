@@ -154,34 +154,34 @@ telepath.alerts = {
 			}
 		});*/
 
-		$(".tele-search").on("click",'.icon-delete-input2', function (event) {
-			clearTimeout(typingTimer);
-			that.searchString = '';
-			$(".tele-panel-alerts .tele-search-input").prop("value", telepath.alerts.searchString);
-			that.input();
+		$('.tele-panel-alerts .tele-search-input').keyup('input', function (e) {
+			if ($(this).val()) {
+				that.searchString = $(this).val();
+			}
+			if (e.which == 13) {
+				that.refresh()
+			}
+		});
+
+		$(".tele-search").on("click",'.tele-search-button', function () {
+			that.refresh();
 		});
 
 		// insert the value search to the input box (Moshe)
 		if (telepath.alerts.searchString) {
 			$('.tele-panel-alerts .tele-search-input').prop("value", telepath.alerts.searchString);
-			that.input();
 		}
-		else {
-			telepath.alerts.refresh();
-		}
+		that.refresh()
 	},
 
-	input: function(){
-		var that = this;
+	/*input: function(){
+
 		var icon= $("#search-button");
 		if (telepath.alerts.searchString.length>0)
 			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
 		else
 			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
-
-		that.refresh()
-
-	},
+	},*/
 
 	refresh: function (callback) {
 
