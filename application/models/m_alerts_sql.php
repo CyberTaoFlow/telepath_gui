@@ -92,7 +92,7 @@ class M_Alerts extends CI_Model {
 		return $diff[0]->diff;
 	}
 	
-	public function get_time_chart($range, $apps = array(), $case_id = -1) {
+	public function sql_get_time_chart($range, $apps = array(), $case_id = -1) {
 		
 		$chart = array();
 		$gap = get_gap($range);
@@ -200,7 +200,7 @@ class M_Alerts extends CI_Model {
 		
 	}
 	
-	public function get_distribution_chart($alerts) {
+	public function sql_get_distribution_chart($alerts) {
 	
 		$dist   = array();
 		$result = array();
