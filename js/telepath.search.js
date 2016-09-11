@@ -533,7 +533,6 @@ telepath.search = {
             callbacks: {
 
                 scroll: function (offset, callback) {
-                    console.log('came here');
                     telepath.ds.get('/search/cases', {
                         search: that.searchStr,
                         options: that.options,
@@ -574,7 +573,6 @@ telepath.search = {
             callbacks: {
 
                 scroll: function (offset, callback) {
-                    console.log('came here');
                     telepath.ds.get('/search/alerts', {
                         search: that.searchStr,
                         options: that.options,
@@ -612,8 +610,7 @@ telepath.search = {
             callbacks: {
 
                 scroll: function (offset, callback) {
-                    console.log('came here');
-                    telepath.ds.get('/search/suspect', {
+                    telepath.ds.get('/search/suspects', {
                         search: that.searchStr,
                         options: that.options,
                         is_country: that.countryFlag,
