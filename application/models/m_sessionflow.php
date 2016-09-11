@@ -42,7 +42,7 @@ class M_Sessionflow extends CI_Model {
 //			$results[0]['parameters'] = $params;
 //		}
 
-		$params=[];
+/*		$params=[];
 		$params['index'] = 'telepath-20*';
 		$params['type'] = 'http';
 		$params['body']=[
@@ -64,7 +64,7 @@ class M_Sessionflow extends CI_Model {
 		];
 		$results2 = $this->elasticClient->search($params);
 		$results2 = get_elastic_results($results2);
-		$results[0]['ip_score']=$results2[0]['ip_score'];
+		$results[0]['ip_score']=$results2[0]['ip_score'];*/
 		return $results[0];
 	
 	}
@@ -156,7 +156,10 @@ class M_Sessionflow extends CI_Model {
 				"business_actions_count" => [
 					"sum" => [ "field" => "business_actions_count" ]
 				],
-				"last_score" => [
+				"ip_orig" =>[
+					"terms" => [ "field" => "ip_orig" , "size" =>1]
+				],
+				/*"last_score" => [
 					"terms" => [
 						"field" => "ip_score",
 						"size" => 1,
@@ -167,7 +170,7 @@ class M_Sessionflow extends CI_Model {
 							"max" => [ "field" => "ts"]
 						]
 					]
-				],
+				],*/
 				"min_ts" => [ "min" => [ "field" => "ts" ] ],
 				"max_ts" => [ "max" => [ "field" => "ts" ] ]
 				
@@ -184,7 +187,35 @@ class M_Sessionflow extends CI_Model {
 		$params = append_range_query($params, $range);
 
 		$results = $this->elasticClient->search($params);
-		
+
+		$params['body'] = [
+			'size' => 0,
+			'query' => [
+				'bool' => [
+					'filter' => [
+						[ 'term' => ["ip_orig" => $results['aggregations']['ip_orig']['buckets'][0]['key']] ],
+
+					]
+				],
+			],
+			"aggs" =>[
+				"last_score" => [
+					"terms" => [
+						"field" => "ip_score",
+						"size" => 1,
+						"order"=>["max_ts" => "desc" ]
+					],
+					'aggs'=>[
+						'max_ts'=>[
+							"max" => [ "field" => "ts"]
+						]
+					]
+				]
+			]
+		];
+
+		$results2 = $this->elasticClient->search($params);
+
 		if(isset($results['aggregations'])) {
 			if (!empty($range))
 			{
@@ -207,7 +238,7 @@ class M_Sessionflow extends CI_Model {
 				"alerts_count"  => $results['aggregations']['alerts_count']['value'],
 				"session_start" => $results['aggregations']['min_ts']['value'],
 				"session_end"   => $results['aggregations']['max_ts']['value'],
-				'ip_score'=>$results['aggregations']['last_score']['buckets'][0]['key'],
+				'ip_score' => $results2['aggregations']['last_score']['buckets'][0]['key'],
 				"search_count"  => $search_count,
 				"suspect_count" => $suspect_count,
 				"total" 	=> $results['hits']['total']
@@ -268,7 +299,7 @@ class M_Sessionflow extends CI_Model {
 		$params = append_access_query($params);
 		$results = get_elastic_results($this->elasticClient->search($params));
 
-		$params2['index'] = 'telepath-20*';
+/*		$params2['index'] = 'telepath-20*';
 		$params2['type'] = 'http';
 		$params2['body']=[
 			'size'=>1,
@@ -283,7 +314,7 @@ class M_Sessionflow extends CI_Model {
 
 		foreach ($results as $key => $value){
 			$results[$key]['ip_score']= $results2[0]['ip_score'];
-		}
+		}*/
 		return $results;
 
 	}

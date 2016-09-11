@@ -97,7 +97,11 @@ class M_Suspects extends CI_Model {
 								"field" => "sid",
 								"size" => 1
 							]
+						],
+						"score_average" => [
+							"avg" => ["field" => "score_average"]
 						]
+
 					],
 					// Allow up to 10 scrolls
 				],
@@ -113,7 +117,11 @@ class M_Suspects extends CI_Model {
 				"aggs" => [
 					"sid" => [
 						"terms" => [ "field" => "sid", "size" => $limit * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
-
+						"aggs" => [
+							"score_average" => [
+								"avg" => ["field" => "score_average"]
+							]
+						]
 
 // Disabe internal aggregation, Yuli
 						/*
@@ -160,7 +168,7 @@ class M_Suspects extends CI_Model {
 
 		if ($sortfield == "date")
 		{
-			$params['body']["aggs"]["sid"]["aggs"] = [ "date" => [ "max" => [ "field" => "ts" ] ] ];
+			$params['body']["aggs"]["sid"]["aggs"]["date"] =  [ "max" => [ "field" => "ts" ] ] ;
 		}
 //		else if ($sortfield == "alerts_count")
 //		{
@@ -221,6 +229,7 @@ class M_Suspects extends CI_Model {
 						}
 
 						$doc_count = $sid['doc_count'];
+						$score_average = $sid['score_average']['value'];
 
 						$params2 = array();
 						if ($range) {
@@ -267,7 +276,7 @@ class M_Suspects extends CI_Model {
 											"order" => ["_term" => "desc" ],
 											"size" => 1 ]
 									],
-									"last_score" => [
+									/*"last_score" => [
 										"terms" => [
 												"field" => "ip_score",
 											"order"=>["max_ts" => "desc" ]
@@ -277,7 +286,7 @@ class M_Suspects extends CI_Model {
 													"max" => [ "field" => "ts"]
 											]
 										]
-									]
+									]*/
 								]
 							];
 						if ($distinct_ip){
@@ -308,7 +317,7 @@ class M_Suspects extends CI_Model {
 								"count"   => $doc_count,
 								"business_action" => $sid['business_action']['buckets'],
 								"date"  => $sid['date']['value'],
-								"ip_score" =>$sid['last_score']['buckets'][0]['key'],
+								"ip_score" =>$score_average,
 								"user" => $sid['user']['buckets'][0]['key']
 							);
 							$count_insert++;

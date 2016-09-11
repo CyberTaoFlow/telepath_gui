@@ -387,6 +387,11 @@ class M_Alerts extends CI_Model {
 				"sid" => [ 
 
 					"terms" => [ "field" => "sid", "size" => $limit , "order" => [ $sortfield => $sortorder ] ],
+					"aggs" =>[
+						"score_average" => [
+							"avg" => ["field" => "score_average"]
+						]
+					]
 					/*					"aggs" => [
                     						"alerts_count" => [
                     							"sum" => [ "field" => "alerts_count" ]
@@ -572,6 +577,7 @@ class M_Alerts extends CI_Model {
 
 						$sid_key = $sid['key'];
 						$doc_count = $sid['doc_count'];
+						$score_average = $sid['score_average']['value'];
 
 						$params2 = array();
 					if ($range) {
@@ -627,7 +633,7 @@ class M_Alerts extends CI_Model {
 										"order" => ["_term" => "desc"],
 										"size" => 1
 									]
-								],
+								]/*,
 								"last_score" => [
 									"terms" => [
 										"field" => "ip_score",
@@ -639,7 +645,7 @@ class M_Alerts extends CI_Model {
 											"max" => [ "field" => "ts"]
 										]
 									]
-								]
+								]*/
 							]
 						];
 
@@ -666,7 +672,7 @@ class M_Alerts extends CI_Model {
 							"count"   => $doc_count,
 							"score"  => $sid['score']['value'],
 							"date"  => $sid['date']['value'],
-							'ip_score'=>$sid['last_score']['buckets'][0]['key'],
+							'ip_score' => $score_average,
 							"user" => $sid['user']['buckets'][0]['key']
 						);
 //						$count_insert++;

@@ -179,7 +179,7 @@ class M_Cases extends CI_Model {
 							"sum" => [ "field" => "alerts_count" ]
 						],
 						"score" => [
-							"avg" => [ "field" => "alerts.score" ]
+							"avg" => [ "field" => "score_average" ]
 						],
 						"alerts_names" => [
 							"terms" => [ "field" => "alerts.name", "size" => 100 ]
@@ -323,7 +323,7 @@ class M_Cases extends CI_Model {
 							"sum" => ["field" => "alerts_count"]
 						],
 						"score" => [
-							"avg" => ["field" => "alerts.score"]
+							"avg" => ["field" => "score_average"]
 						],
 						"alerts_names" => [
 							"terms" => ["field" => "alerts.name", "size" => 100]

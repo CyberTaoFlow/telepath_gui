@@ -84,6 +84,9 @@ class M_Search extends CI_Model {
 						"date" => [
 							"max" => [ "field" => "ts" ]
 						],
+						"score_average" => [
+							"avg" => ["field" => "score_average"]
+						]
 					],
 				
 				],
@@ -212,7 +215,7 @@ class M_Search extends CI_Model {
 						"size" => 1,
 						"order" => [ "_term" => "desc" ]
 					]
-				],
+				]/*,
 				"last_score" => [
 					"terms" => [
 						"field" => "ip_score",
@@ -223,7 +226,7 @@ class M_Search extends CI_Model {
 							"max" => [ "field" => "ts"]
 						]
 					]
-				]
+				]*/
 
 			]
 		];
@@ -246,6 +249,7 @@ class M_Search extends CI_Model {
 		
 					$sid_key = $sid['key'];
 					$doc_count = $sid['doc_count'];
+					$score_average = $sid['score_average']['value'];
 
 					$params3 = $params2;
 					
@@ -269,7 +273,7 @@ class M_Search extends CI_Model {
 						"count"   => $doc_count,
 						"score_average" => $sid['score']['value'],
 						"date"  => $sid['date']['value'],
-						"ip_score"=>$sid['last_score']['buckets'][0]['key'],
+						'ip_score' => $score_average,
 						"user" => $sid['user']['buckets'][0]['key']
 					);
 
