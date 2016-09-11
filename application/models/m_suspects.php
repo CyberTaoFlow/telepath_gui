@@ -76,7 +76,6 @@ class M_Suspects extends CI_Model {
 //			break;
 		}
 		
-		//die;
 		if ($range) {
 			$params['index'] = $range['indices'];
 		} else {
@@ -112,7 +111,7 @@ class M_Suspects extends CI_Model {
 				'size' => 0,
 				"aggs" => [
 					"sid" => [
-						"terms" => [ "field" => "sid", "size" => $limit * 10, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
+						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ],
 
 
 // Disabe internal aggregation, Yuli
@@ -177,18 +176,12 @@ class M_Suspects extends CI_Model {
 		if($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
 		}
-		
-		#print_r(json_encode($params));
-		// die;
-		
+
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
-		#var_dump($params);
 
 		$result = $this->elasticClient->search($params);
-				
-		$count_offset = 0;
-		$count_insert = 0;
+
 
 		$sid_buckets = false;
 
@@ -211,8 +204,6 @@ class M_Suspects extends CI_Model {
 		if($sid_buckets){
 				foreach($sid_buckets as $sid) {
 				
-//					if($count_offset >= $start) {
-						// Create subrequest for agregated data
 						if ($distinct_ip) {
 							$sid_key = $sid['sid']["buckets"][0]['key'];
 						}
@@ -311,17 +302,11 @@ class M_Suspects extends CI_Model {
 								"ip_score" =>$sid['last_score']['buckets'][0]['key'],
 								"user" => $sid['user']['buckets'][0]['key']
 							);
-							$count_insert++;
-							if($count_insert >= $limit) {
-								break;
-							}
+
 						} else {
 							// can not return record details here !!!
 						}
 
-					/*} else {
-						$count_offset++;
-					}*/
 
 				}
 
