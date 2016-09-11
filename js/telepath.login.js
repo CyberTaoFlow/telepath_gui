@@ -55,9 +55,18 @@ telepath.login = {
 		$.post(telepath.controllerPath + '/auth/login', loginData, function(result) {
 			
 			$('.loader').remove();
-			
-			if(result['success']) {
+
+			if (result['success']) {
 				window.location = telepath.basePath;
+
+				// empty session storage browser cache
+				var keys = Object.keys(sessionStorage);
+				for (var i = 0; i < keys.length; i += 1) {
+					if (keys[i].indexOf('telecache') === 0) {
+						sessionStorage.removeItem(keys[i]);
+					}
+				}
+
 			} else {
 				$('#login-error').html(result['error']).show();
 			}
