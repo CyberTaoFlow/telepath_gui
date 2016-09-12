@@ -43,15 +43,22 @@ class Alerts extends Tele_Controller
         // Prep filter
 //        $filter = array();
 
+        $actions_sid=[];
+        //Action filter
+        if (count($actions_filter) > 0 && $actions_filter != false) {
+
+            $actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
+        }
+
         // Alerts Data
-        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_filter);
+        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_sid);
 
         if ( $displayed ) {
             // We need just the alert items
             return_json($alerts);
         }
 
-        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_filter);
+        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_sid);
         $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search);
         $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search, $alerts_filter);
 
@@ -100,8 +107,15 @@ class Alerts extends Tele_Controller
         $range = $this->range;
         $apps = $this->apps;
 
+        $actions_sid=[];
+        //Action filter
+        if (count($actions_filter) > 0 && $actions_filter != false) {
+
+            $actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
+        }
+
         $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter,
-            $actions_filter);
+            $actions_sid);
 
         if ( $displayed ) {
             // We need just the alert items
@@ -124,7 +138,15 @@ class Alerts extends Tele_Controller
         $range = $this->range;
         $apps = $this->apps;
 
-        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_filter);
+        $actions_sid=[];
+        //Action filter
+        if (count($actions_filter) > 0 && $actions_filter != false) {
+
+            $actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
+        }
+
+
+        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_sid);
         $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search);
 
         if ($alerts_filter) {

@@ -12,7 +12,7 @@ class M_Alerts extends CI_Model {
 		$this->elasticClient = new Elasticsearch\Client();
 	}
 
-	public function get_time_chart($range, $apps = array(), $search = '', $alerts_filter = [], $actions_filter = []) {
+	public function get_time_chart($range, $apps = array(), $search = '', $alerts_filter = [], $actions_sid = []) {
 		
 		
 		$dots  = 10;
@@ -53,20 +53,15 @@ class M_Alerts extends CI_Model {
 			if (count($alerts_filter) > 0 && $alerts_filter != false) {
 				$query .= 'alerts.name:"' . implode('" OR "', $alerts_filter) . '"';
 			}
-			if (count($actions_filter) > 0 && $actions_filter != false) {
-				$query .= ' business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
+
+			if ($actions_sid) {
+
+				$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 			}
 
+			if ($search && strlen($search) > 1) {
 
-			if($search && strlen($search) > 1) {
-
-				if ((count($alerts_filter) > 0 && $alerts_filter != false) || (count($actions_filter) > 0 && $actions_filter != false)) {
-					$query.=' ('.$search.')';
-				}
-				else{
-					$query.=$search;
-				}
-
+				$query .= $search;
 			}
 
 			if($query)
@@ -354,7 +349,7 @@ class M_Alerts extends CI_Model {
 
 	}
 	
-	public function get_alerts($sort, $sortorder, $displayed = false, $limit = 100, $range = [], $apps = [], $search = '', $alerts_filter = [], $actions_filter = []) {
+	public function get_alerts($sort, $sortorder, $displayed = [], $limit = 100, $range = [], $apps = [], $search = '', $alerts_filter = [], $actions_sid = []) {
 		
 		switch($sort) {
 		
@@ -443,10 +438,17 @@ class M_Alerts extends CI_Model {
 				],
 			],
 		];
-		if ($displayed) {
+		if (count($displayed) > 0 && $displayed != false) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
 		}
 
+		if ($actions_sid) {
+
+			if (count($displayed) > 0 && $displayed != false) {
+				$actions_sid = array_values(array_diff($actions_sid, $displayed));
+			}
+			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
+		}
 //		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 
 
@@ -459,18 +461,11 @@ class M_Alerts extends CI_Model {
 		global $query;
 		$query='';
 
-		if ((count($alerts_filter) > 0 && $alerts_filter != false) || (count($actions_filter) > 0 && $actions_filter != false)) {
+		if (count($alerts_filter) > 0 && $alerts_filter != false){
 
 			if (count($alerts_filter) > 0 && $alerts_filter != false) {
 				$query .= 'alerts.name:"' . implode('" OR "', $alerts_filter) . '"';
 			}
-			/*if (count($actions_filter) > 0 && $actions_filter != false) {
-				if (count($alerts_filter) > 0 && $alerts_filter != false) {
-					$query .= ' business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
-				} else {
-					$query .= ' business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
-				}
-			}*/
 		}
 		if ($search && strlen($search) > 1) {
 
@@ -511,55 +506,6 @@ class M_Alerts extends CI_Model {
 		$result = $this->elasticClient->search($params);
 	
 		$results = array('items' => array());
-
-		$params['body'] = [
-			'size' => 0,
-			"aggs" => [
-				"sid" => [
-					"terms" => [ "field" => "sid", "size" => 999]
-				],
-			],
-			'query' => [
-				'bool' => [
-					'filter' => [
-						[ 'exists' => [ 'field' => 'business_actions' ] ],
-					]
-				],
-			],
-		];
-
-		global $query;
-		$query = '';
-
-		$params = append_range_query($params, $range);
-		if (count($actions_filter) > 0 && $actions_filter != false) {
-			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
-		}
-
-		if ($search && strlen($search) > 1) {
-
-			if (count($actions_filter) > 0 && $actions_filter != false) {
-				$query .= ' (' . $search . ')';
-			} else {
-				$query .= $search;
-			}
-		}
-		if ($query)
-			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
-		$params = append_range_query($params, $range);
-		$params = append_application_query($params, $apps);
-		$params = append_access_query($params);
-
-
-		$result2 = $this->elasticClient->search($params);
-
-		$result2 = $result2['aggregations']["sid"]['buckets'];
-
-		$actions_sid = [];
-
-		foreach ($result2 as $res){
-			$actions_sid[] = $res['key'];
-		}
 
 		$count = 0;
 //
@@ -718,6 +664,57 @@ class M_Alerts extends CI_Model {
 		return $results;
 		
 			
+	}
+
+	public function get_action_filter($actions_filter=[], $range=[], $search='', $apps=[]){
+
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"sid" => [
+					"terms" => [ "field" => "sid", "size" => 999]
+				],
+			],
+			'query' => [
+				'bool' => [
+					'filter' => [
+						[ 'exists' => [ 'field' => 'business_actions' ] ],
+					]
+				],
+			],
+		];
+
+		global $query;
+		$query = '';
+
+		$params = append_range_query($params, $range);
+		if (count($actions_filter) > 0 && $actions_filter != false) {
+			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
+		}
+
+		if ($search && strlen($search) > 1) {
+			if (count($actions_filter) > 0 && $actions_filter != false) {
+				$query .= ' (' . $search . ')';
+			}
+		}
+		if ($query)
+			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+		$params = append_range_query($params, $range);
+		$params = append_application_query($params, $apps);
+		$params = append_access_query($params);
+
+
+		$result2 = $this->elasticClient->search($params);
+
+		$actions_sid = [];
+
+		if  (!empty($result2['aggregations']["sid"]['buckets'])) {
+			foreach ($result2['aggregations']["sid"]['buckets'] as $res) {
+				$actions_sid[] = $res['key'];
+			}
+		}
+
+		return $actions_sid;
 	}
 	
 	// Generic
