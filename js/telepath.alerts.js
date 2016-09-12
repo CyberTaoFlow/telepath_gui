@@ -183,17 +183,31 @@ telepath.alerts = {
 			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
 	},*/
 
-	refresh: function (callback) {
-
-		var that = this;
+	refresh: function(callback){
 
 		var container = $('.tele-panel-alerts');
 		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
-
-		this.displayed = [];
 		container.append(telepath.loader);
 
-			telepath.ds.get('/alerts/index', {
+		this.refreshSession(callback);
+		this.refreshGraphs(callback);
+	},
+
+	refreshSession: function (callback) {
+
+		var that = this;
+
+		this.container = $('.tele-panel-alerts');
+		//$('.tele-loader', this.container).remove();
+
+		// Create List
+		this.list = $('<div>').addClass('tele-alerts-block');
+		this.container.append(this.list);
+
+		this.displayed = [];
+
+
+		telepath.ds.get('/alerts/get_alerts', {
 			sort: this.sort,
 			dir: this.dir,
 			search: this.searchString,
@@ -206,30 +220,69 @@ telepath.alerts = {
 						that.displayed.push(a.sid)
 					});
 				}
-			telepath.alerts.loading=false;
-			telepath.alerts.setData(data.items);
+		//	telepath.alerts.loading = false;
+			telepath.alerts.setSessionData(data.items);
 			if(callback && typeof(callback) == 'function') {
 				callback();
 			}
 		}, false, false, true);
 
 	},
+	refreshGraphs: function(callback){
+		var that = this;
+
+		var container = $('.tele-panel-alerts');
+
+		// Cleanup
+		//$('.tele-loader', container).remove();
+		// Graphs Block
+		var graphsBlock = $('<div class="tele-alert-graphs-block">').css({ marginTop: 20 });
+		container.append(graphsBlock);
+		//graphsBlock.append(telepath.loader);
+
+
+		telepath.ds.get('/alerts/get_charts', {
+			search: this.searchString,
+			alertsFilter: that.alertsFilter,
+			actionsFilter: that.actionsFilter
+		}, function (data) {
+
+		//	telepath.alerts.loading=false;
+			telepath.alerts.setGraphData(data.items);
+			if(callback && typeof(callback) == 'function') {
+				callback();
+			}
+		}, false, false, true);
+
+		telepath.alerts.data.action_distribution_chart = false;
+		telepath.ds.get('/alerts/get_action_distribution_chart', {
+			search: this.searchString,
+			alertsFilter: that.alertsFilter,
+			actionsFilter: that.actionsFilter
+		}, function (data) {
+			telepath.alerts.loading=false;
+			telepath.alerts.data.action_distribution_chart = data.items.action_distribution_chart;
+			if(that.actionDistribution == true){
+				that.show_action_distribution();
+			}
+		}, false, false, true);
+	},
 	hardRefresh: function(callback){
 		deleteCache('telecache');
 		this.refresh(callback);
 	},
-	setData: function(data) {
+	setSessionData: function(data) {
 		
 		// Set
-		telepath.alerts.data = data;
+		telepath.alerts.data.alerts = data.alerts;
 		
 		// Container
 		var that = this;
 		var container = $('.tele-panel-alerts');
 		this.container = container;
-		
 		// Cleanup
-		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
+		$('.tele-loader', container).remove();
+
 		
 		// Sanity
 		
@@ -239,9 +292,12 @@ telepath.alerts = {
 		}
 		
 		// Create List
-		this.list = $('<div>').addClass('tele-alerts-block');
-		this.container.append(this.list);
-		
+		this.list = $('.tele-alerts-block');
+		//this.container.append(this.list);
+
+		// Cleanup
+		$('.tele-loader', this.list).remove();
+
 		// Init List
 		this.list.teleList({ 
 		data: this.data.alerts.items,
@@ -254,11 +310,10 @@ telepath.alerts = {
 		},
 		callbacks: { scroll: function (offset, callback) {
 
-				telepath.ds.get('/alerts/index', {
+				telepath.ds.get('/alerts/get_alerts', {
 					sort: telepath.alerts.sort,
 					dir: telepath.alerts.dir,
 					search: telepath.alerts.searchString,
-					offset: offset,
 					alertsFilter: that.alertsFilter,
 					actionsFilter: that.actionsFilter,
 					displayed: that.displayed
@@ -282,44 +337,70 @@ telepath.alerts = {
 		if(parseInt(data.alerts.count) == 0) {
 			//return;
 		}
+
 		
+		// Rebind
+		$(window).unbind('resize', that._resize);
+		$(window).bind('resize', that._resize);
+		// Call Once
+		
+		$(window).trigger('resize');
+		
+	},
+	setGraphData: function(data){
+
+		telepath.alerts.data.distribution_chart = data.distribution_chart;
+		telepath.alerts.data.time_chart = data.time_chart;
+
+		// Container
+		var that = this;
+		var container = $('.tele-panel-alerts');
+		this.container = container;
+       // Cleanup
+		$('.tele-loader', container).remove();
+
 		// Graphs Block
-		var graphsBlock = $('<div class="tele-alert-graphs-block">').css({ marginTop: 20 });
-		$(container).append(graphsBlock);
+		var graphsBlock = $(".tele-alert-graphs-block");
+		//$(container).append(graphsBlock);
+
+		// Cleanup
+		$('.tele-loader', graphsBlock).remove();
 
 		var graphOverTimeContainer = $('<div>').addClass('tele-alert-graph-overtime');
 		var graphOverTimeTitle 	   = $('<h2>').html('Alerts over time');
 		var graphOverTimeCanvas    = $('<div>').addClass('tele-alert-graph-overtime-canvas');
-		
+
 		graphOverTimeContainer.append(graphOverTimeTitle).append(graphOverTimeCanvas);
-		
+
 		var graphDistributionContainer = $('<div>').addClass('tele-alert-graph-distribution');
 		var graphDistributionTitle 	   = $('<h2>').html('Total Events');
 		this.graphDistributionCanvas    = $('<div>').addClass('tele-alert-graph-distribution-canvas');
 		var showPercent    = $('<div>').attr('id','alert-distribution-showPercent');
 		var graphDistributionLegend    = $('<div>').attr('id','alert-distribution-legend');
-		
-		
+
+
 		var newToggle = $('<div>').toggleFlip({ left_value: 'Alerts', right_value: 'Business Actions', flip: function (x) {
-		
+
 			if(!x) {
 				$("#alert-distribution-showPercent").empty();
-				telepath.alerts.show_alert_distribution();			
+				that.actionDistribution = false;
+				that.show_alert_distribution();
 			} else {
 				$("#alert-distribution-showPercent").empty();
-				telepath.alerts.show_action_distribution();
+				that.actionDistribution = true;
+				that.show_action_distribution();
 			}
 
 		} });
-		
+
 		graphDistributionContainer.append(graphDistributionTitle).append(newToggle).append(showPercent).append(graphDistributionLegend).append(this.graphDistributionCanvas);
-		
+
 		// Add the 2 graph containers
 		graphsBlock.append(graphOverTimeContainer).append(graphDistributionContainer);
-	
+
 		// Graph
 		var options = {
-		
+
 			legend: { show: false },
 			series: { lines: { show: true, fill: true }, points: { show: true, fillColor: '#fff' } },
 			yaxis: { ticks: 5, color: '#D6D6D6', font: { color: '#cccccc', size: 11, weight: "bold" } },
@@ -336,9 +417,9 @@ telepath.alerts = {
 		// $('.graph').on('plothover', function ( event, pos, item ) {
 		//     if ( hoverTip )
 		// 	    hoverTip.remove();
-			 
+
 		//     if (item) {
-			 
+
 		// 	      hoverTip = $(toolTipHTML( item.series.data[item.dataIndex][1], item.series.label ));
 		// 	      $('.graph').parent().append(hoverTip);
 		// 	      ofsh = hoverTip.outerHeight();
@@ -349,32 +430,30 @@ telepath.alerts = {
 		// 	         });
 		// 	   }
 		// };
-		 
+
 		// $('.graph').on('plotclick', function ( event, pos, item ) {
 		//     ...
 		// };
-		
+
 		// Generate sample data
 		var chart_data = [{ label: "random", data: this.data.time_chart, color: '#FC3D3D' }];
 		graphOverTimeCanvas.flotGraph({ data: chart_data, options: options });
-		
+
 		// Sample data
 		telepath.alerts.show_alert_distribution();
-		
+
 		// Init Scroll
-		
+
 		$(graphsBlock).mCustomScrollbar({
 			advanced:{ updateOnContentResize:true },
 			scrollButtons:{	enable: false },
 		});
-		
 		// Rebind
 		$(window).unbind('resize', that._resize);
 		$(window).bind('resize', that._resize);
 		// Call Once
-		
+
 		$(window).trigger('resize');
-		
 	},
 	show_alert_distribution: function() {
 		
@@ -535,6 +614,11 @@ telepath.alerts = {
 		this.graphDistributionCanvas.empty();
 		
 		var pie_data = this.data.action_distribution_chart;
+
+		if (!pie_data){
+			this.graphDistributionCanvas.append(telepath.loader);
+			return;
+		}
 	
 		// Calculate total for percentage
 		var dataTotal = 0;
