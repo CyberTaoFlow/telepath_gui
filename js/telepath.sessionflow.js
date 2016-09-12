@@ -1082,9 +1082,24 @@ telepath.sessionflow = {
 		$('tr:nth-child(n+3) .tele-alert-info-value', table).click(function () {
 			var search = $(this).text();
 			if (search != 'Unknown') {
+
+				var field = $(this).parent().text().split(':')[0] .replace(/Application/g, 'host')
+					.replace(/IP/g, 'ip_orig').replace(/Location/g, 'country_code');
+
+
+				if (field == 'country_code')
+				{
+					$.each(telepath.countries.map, function (k, val) {
+						if (val.toLowerCase() == search.toLowerCase()) {
+							search = k;
+						}
+					});
+				}
+
+
 				telepath.overlay.destroy();
-				telepath.header.searchInput.val(search);
-				telepath.search.init(search);
+				telepath.header.searchInput.val(field + ':"' + search + '"');
+				telepath.search.init(field + ':"' + search + '"');
 			}
 		});
 		//if(alert.user && alert.user != '') {

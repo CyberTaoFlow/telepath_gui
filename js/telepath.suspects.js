@@ -221,7 +221,6 @@ telepath.suspects = {
 			$('.tele-panel-suspects .tele-search-input').prop("value",that.searchString);
 
 		}
-		that.refresh();
 	},
 
 	/*input: function(){
