@@ -100,6 +100,7 @@ td {
 	float: left;
 	margin-top: 8px;
 	margin-left: 10px;
+	cursor: pointer;
 }
 
 /* MAIN NAVIGATION */

@@ -116,8 +116,34 @@ telepath.header = {
 		
 		$('.tele-header').append(this.logo).append(this.nav).append(this.headerRight);
 		// End Build Header
-		
-		
+
+		$('.tele-logo').click(function(){
+
+			if(telepath.dashboard.loading) {
+				return;
+			}
+			telepath.dashboard.loading=true;
+
+			$('.tele-panel').empty().hide().removeClass('active');
+			$("#file-upload").hide();
+			$('.tele-panel-dashboard').show().addClass('active');
+			telepath.ui.resize();
+			telepath.dashboard.init();
+
+
+			telepath.header.configCmd.removeClass('active');
+			$('.tele-nav a.active').removeClass('active');
+			$('.tele-nav-dashboard a').addClass('active');
+
+			telepath.activePage = 'dashboard';
+
+			setTimeout(function () {
+				$('.tele-popup, .popover').remove();
+			}, 100);
+
+			// check if there is a record in process and stop it
+			telepath.config.actions.checkNotFinishedRecord();
+		});
 		telepath.header.bindHooks();
 		
 		// Bind resize event
