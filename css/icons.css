@@ -243,6 +243,12 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-users.active { background-position: -502px -262px; }
 
 /*Checked*/
+.tele-icon-webusers { background-position: -412px -262px; }
+.tele-icon-webusers.hover  { background-position: -442px -262px; }
+.tele-icon-webusers.active { background-position: -502px -262px; }
+
+
+/*Checked*/
 .tele-icon-system { background-position: -412px -292px; }
 .tele-icon-system.hover  { background-position: -442px -292px; }
 .tele-icon-system.active { background-position: -502px -292px; }
