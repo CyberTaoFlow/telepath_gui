@@ -119,6 +119,7 @@ $js_array = [
     $js_path . "telepath.config.rules.js",
     $js_path . "telepath.config.user.js",
     $js_path . "telepath.config.users.js",
+    $js_path . "telepath.config.webusers.js",
     $js_path . "telepath.config.groups.js",
     $js_path . "telepath.config.system.js"
 ];
