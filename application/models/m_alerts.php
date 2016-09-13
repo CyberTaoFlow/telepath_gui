@@ -80,9 +80,7 @@ class M_Alerts extends CI_Model {
 				$val     = intval($results['aggregations']['sid']['value']);
 				$chart[] = array($scope_end * 1000, $val);
 			}
-							
-				
-				
+
 		}
 		
 		return $chart;
@@ -179,7 +177,7 @@ class M_Alerts extends CI_Model {
                 ],*/
 				"sid" => [
 					"terms" => ["field" => "sid",
-						"size" => 999
+						"size" => 0
 					]
 				],
 			]
@@ -220,7 +218,6 @@ class M_Alerts extends CI_Model {
 		$results2 = [];
 		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["sid"]) &&
-			isset($result["aggregations"]["sid"]["buckets"]) &&
 			!empty($result["aggregations"]["sid"]["buckets"])
 		) {
 
@@ -250,7 +247,6 @@ class M_Alerts extends CI_Model {
 
 				if (isset($result2["aggregations"]) &&
 					isset($result2["aggregations"]["actions"]) &&
-					isset($result2["aggregations"]["actions"]["buckets"]) &&
 					!empty($result2["aggregations"]["actions"]["buckets"])
 				) {
 
@@ -276,7 +272,7 @@ class M_Alerts extends CI_Model {
 		return $results2;
 	}
 
-	public function get_distribution_chart($range, $apps, $search = '', $actions_filter = []) {
+	public function get_distribution_chart($range, $apps, $search = '') {
 
 		$dist   = array();
 		$result = array();
@@ -308,18 +304,10 @@ class M_Alerts extends CI_Model {
 		$query = '';
 
 		$params = append_range_query($params, $range);
-		if (count($actions_filter) > 0 && $actions_filter != false) {
-			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
-		}
+
 
 		if ($search && strlen($search) > 1) {
-
-			/*if (count($actions_filter) > 0 && $actions_filter != false) {
-				$query .= ' (' . $search . ')';
-			} else {*/
-				$query .= $search;
-//			}
-
+			$query .= $search;
 		}
 		if($query)
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
@@ -687,7 +675,6 @@ class M_Alerts extends CI_Model {
 		global $query;
 		$query = '';
 
-		$params = append_range_query($params, $range);
 		if (count($actions_filter) > 0 && $actions_filter != false) {
 			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
 		}
@@ -699,6 +686,7 @@ class M_Alerts extends CI_Model {
 		}
 		if ($query)
 			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);

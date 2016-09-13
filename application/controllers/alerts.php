@@ -13,6 +13,7 @@ class Alerts extends Tele_Controller
         $this->load->model('M_Alerts');
         $this->range = $this->_get_range();
         $this->apps = $this->_get_apps();
+        $this->actions_sid = false;
     }
 
     public function get_alerts()
@@ -34,12 +35,12 @@ class Alerts extends Tele_Controller
 
         $actions_sid = [];
         //Action filter
-        if (count($actions_filter) > 0 && $actions_filter != false) {
+        if (count($actions_filter) > 0 && $actions_filter != false && !$this->actions_sid) {
 
-            $actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
+            $this->actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
         }
 
-        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_sid);
+        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $this->actions_sid);
 
         if ($displayed) {
             // We need just the alert items
@@ -64,13 +65,13 @@ class Alerts extends Tele_Controller
 
         $actions_sid = [];
         //Action filter
-        if (count($actions_filter) > 0 && $actions_filter != false) {
+        if (count($actions_filter) > 0 && $actions_filter != false && !$this->actions_sid) {
 
-            $actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
+            $this->actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
         }
 
 
-        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_sid);
+        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $this->actions_sid);
         $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search);
 
         if ($alerts_filter) {
@@ -99,8 +100,7 @@ class Alerts extends Tele_Controller
         $range = $this->range;
         $apps = $this->apps;
 
-        $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search,
-            $alerts_filter);
+        $action_distribution_chart = $this->M_Alerts->get_action_distribution_chart($range, $apps, $search, $alerts_filter);
 
         if ($actions_filter) {
             foreach ($action_distribution_chart as $key => $dis) {
