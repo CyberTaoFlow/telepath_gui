@@ -15,11 +15,11 @@ class M_Users extends CI_Model
 
         logger('Start','/var/log/web_users.log');
 
+        @set_time_limit(-1);
+
         $time = time();
-     //   $update_time = $time - 60;
         $this->load->model('M_Config');
         $last_update = $this->M_Config->get_key('last_web_users_update_id');
-        $last_update =false;
 
         /* // get the relevant index
          $index1='telepath-'.date("Ymd",$time);
@@ -92,6 +92,8 @@ class M_Users extends CI_Model
     }
 
 
+
+
     public function get_users($search = false, $sort, $dir, $offset = 0)
     {
         $params['index'] = 'telepath-users';
@@ -117,7 +119,11 @@ class M_Users extends CI_Model
             $results[] = $res['_source'];
         }
 
+
+
         return $results;
     }
+
+
 
 }
