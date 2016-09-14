@@ -236,7 +236,6 @@ class M_Search extends CI_Model {
 			$params2['body']['aggs']['max_score'] = ["max" => [ "field" => "score_average" ]];
 		}
 
-		$params2['body']['query']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],"default_operator" => 'AND']];
 		$params2 = append_range_query($params2, $settings['range']);
 
 		if(isset($result["aggregations"]) && 
