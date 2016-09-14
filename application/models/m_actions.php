@@ -335,7 +335,7 @@ class M_Actions extends CI_Model {
 		$ans = [];
 		while (true) {
 
-			$res = $redisObj->lpop($id);
+			$res = $redisObj->rpop($id);
 
 			if (!$res) {
 				break;
