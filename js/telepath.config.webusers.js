@@ -1,8 +1,8 @@
 telepath.config.webusers = {
 
-    sort: 'user',
+    sort: 'username',
     dir: true,
-    searchString:'',
+    searchString: '',
 
     init: function () {
 
@@ -20,7 +20,7 @@ telepath.config.webusers = {
 
     },
 
-    initTools: function(){
+    initTools: function () {
 
         var that = this;
 
@@ -28,47 +28,61 @@ telepath.config.webusers = {
         var sortRadios = $('<div>').radios({
             title: 'Sort By',
             items: [
-                {id: 'user', icon: 'alphabetical', tip: 'ABC', dir: that.dir },
-                {id: 'learning_so_far', icon: 'bars', tip: 'Count', dir: that.dir }
+                {id: 'username', icon: 'alphabetical', tip: 'Username', dir: that.dir},
+                {id: 'last_activity', icon: 'time', tip: 'Time', dir: that.dir},
             ],
             selected: this.sort,
-            callback: function(e, id) {
-                if(that.sort == id) {
+            callback: function (e, id) {
+                if (that.sort == id) {
                     that.dir = !that.dir;
                 }
-                $.each(e.options.items, function(i,v){
-                    if (v.id==id){
-                        e.options.items[i].dir=that.dir;
+                $.each(e.options.items, function (i, v) {
+                    if (v.id == id) {
+                        e.options.items[i].dir = that.dir;
                     }
                 });
                 that.sort = id;
-                that.init();
+                that.loadData();
             }
         });
 
+        // Refresh
+        var cmdRefresh = $('<div>').addClass('tele-refresh');
+        var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+        cmdRefresh.append(cmdRefreshButton);
+
+        cmdRefreshButton.click(function () {
+            that.hardRefresh();
+        });
+
         // Search
-        this.search = $('<div>').teleSearch({ callback: function (e, txt) {
-            that.searchString = txt;
-        }});
+        this.search = $('<div>').teleSearch({
+            callback: function (e, txt) {
+                that.searchString = txt;
+            }
+        });
 
         this.barLeft.append(this.search);
 
-        var rightPanel=$('<div>').attr('id', 'sort-radio').css('float','right').append(sortRadios);
+        var rightPanel = $('<div>').attr('id', 'sort-radio').css('float', 'right').append(sortRadios).append(cmdRefresh);
         $('.tele-panel-topbar').append(rightPanel);
 
 
         var input = $(".tele-config-bar-left .tele-search-input");
         input.keyup('input', function (e) {
-            if (input.val()) {
-                that.searchString = input.val();
-            }
+            that.searchString = input.val();
+
             if (e.which == 13) {
                 that.loadData()
             }
         });
 
+        $("#search-button").on("click", function () {
+            that.loadData();
+        });
 
-        if (typeof that.searchString != 'undefined'){
+
+        if (typeof that.searchString != 'undefined') {
             input.prop("value", that.searchString);
         }
 
@@ -76,11 +90,17 @@ telepath.config.webusers = {
     },
 
 
-    loadData: function() {
+    loadData: function () {
 
         var that = this;
 
-        telepath.ds.get('/webusers/get_users', { search: this.searchString }, function (data) {
+        that.contentEl.empty().append(telepath.loader);
+
+        telepath.ds.get('/webusers/get_users', {
+            search: that.searchString,
+            sort: that.sort,
+            dir: that.dir
+        }, function (data) {
 
             // Create List
             var list = $('<div>');
@@ -89,7 +109,7 @@ telepath.config.webusers = {
             // Init List
             list.teleList({
                 data: data.items,
-                formatter: function(item) {
+                formatter: function (item) {
 
                     return {
                         time: item.last_activity,
@@ -98,22 +118,44 @@ telepath.config.webusers = {
                         title: item.username,
                         host: item.host,
                         /*progbar: true,
-                        progbarValue: item.score *100,
-                        raw: item,
-                        itemID: item.sid,
-                        count: item.total,*/
+                         progbarValue: item.score *100,
+                         raw: item,
+                         itemID: item.sid,
+                         count: item.total,*/
                         details: [
-                            { key: 'host', value: item.host }
+                            {key: 'host', value: item.host}
                         ]
                     };
 
                 }, callbacks: {
-                    click: function (el) {},
-                    hover_in: function (el, id) {},
-                    hover_out: function (el, id) {}
-                }});
+                    scroll: function (offset, callback) {
 
-        }, 'Error loading users list.');
+                        telepath.ds.get('/webusers/get_users', {
+                            sort:   that.sort,
+                            dir:    that.dir,
+                            search: that.searchString,
+                            offset: offset
+                        }, function (data) {
+                            callback(data);
+                        }, false, false, true);
+                    },
+                    click: function (el) {
+                    },
+                    hover_in: function (el, id) {
+                    },
+                    hover_out: function (el, id) {
+                    }
+                }
+            });
 
+        }, 'Error loading users list.', false, true);
+
+    },
+
+    hardRefresh: function () {
+        deleteCache('telecache');
+        this.loadData();
     }
+
+
 };

@@ -13,10 +13,11 @@ class M_Users extends CI_Model
     public function store_users()
     {
 
-        logger('Start','/var/log/flag_requests_by_users.log');
+        logger('Start','/var/log/web_users.log');
+
+        @set_time_limit(-1);
 
         $time = time();
-        $update_time = $time - 60;
         $this->load->model('M_Config');
         $last_update = $this->M_Config->get_key('last_web_users_update_id');
 
@@ -30,10 +31,10 @@ class M_Users extends CI_Model
             'size' => 0,
             "aggs" => [
                 "users" => [
-                    "terms" => ["field" => "username"],
+                    "terms" => ["field" => "username", "size" => 0],
                     "aggs" => [
                         "host" => [
-                            "terms" => ["field" => "host", "size" => 100],
+                            "terms" => ["field" => "host", "size" => 0],
                             "aggs" => [
                                 "last_activity" => [
                                     "max" => ["field" => "ts"]
@@ -47,11 +48,14 @@ class M_Users extends CI_Model
 
         $params['body']['query']['bool']['must_not'][] = ['term' => ['username' => ""]];
 
+        if ($last_update)
+            $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gt' => $last_update - 60]]];
+
         $results = $this->elasticClient->search($params);
 
         if (isset($results['aggregations']) && isset($results['aggregations']['users']) &&
             !empty($results['aggregations']['users']['buckets'])
-        )
+        ){
             foreach ($results['aggregations']['users']['buckets'] as $res) {
 
                 foreach ($res['host']['buckets'] as $item) {
@@ -68,27 +72,38 @@ class M_Users extends CI_Model
                             'doc_as_upsert' => true
                         ],
 
-                         'refresh' => true
+                        'refresh' => true
                     ];
 
                     $this->elasticClient->update($params);
-                }
 
-                logger('Finish to '.$res['key']. ' host: ' . $item['key']);
+                    logger('Update user: '.$res['key']. ' application: ' . $item['key']);
+                }
             }
 
-        $this->M_Config->update('last_web_users_update_id', $update_time, true);
 
-        logger('Update the time to: '. $update_time);
+            }
 
-        return $results;
+        $this->M_Config->update('last_web_users_update_id', $time, true);
+
+        logger('Update the time to: '. $time);
+
+        return;
     }
 
 
-    public function get_users($search = false)
+
+
+    public function get_users($search = false, $sort, $dir, $offset = 0)
     {
         $params['index'] = 'telepath-users';
         $params['type'] = "users";
+        $params['body'] = [
+            'sort' => [$sort => $dir],
+            'size' => 15,
+            'from' => $offset
+        ];
+
         if ($search) {
             $params['body']['query']['bool']['must'][] = ['query_string' => [  /*'default_field' => 'username',*/
                 "query" => $search . '*', "default_operator" => 'AND']];
@@ -104,7 +119,11 @@ class M_Users extends CI_Model
             $results[] = $res['_source'];
         }
 
+
+
         return $results;
     }
+
+
 
 }
