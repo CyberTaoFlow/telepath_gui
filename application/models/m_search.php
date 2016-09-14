@@ -17,7 +17,7 @@ class M_Search extends CI_Model {
 	function search($scope, $settings, $suspect_threshold = false)
 	{
 		
-		$limit = 100;
+		$limit = 15;
 
 		switch($settings['sort']) {
 
