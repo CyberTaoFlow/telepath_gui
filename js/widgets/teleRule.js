@@ -526,7 +526,7 @@ $.widget( "tele.teleRule", {
 						//if($('.tele-pattern-changing .tele-multi input').size() > 0 &&
 						//   $('.tele-pattern-changing .tele-multi input').data('teleSelect') &&
 						//   $('.tele-pattern-changing .tele-multi input').data('teleSelect').raw) {
-						var action_data = $('.tele-pattern-changing .tele-multi input').data('teleSelect');
+						var action_data = $('.tele-radio-wrap .tele-multi input').data('teleSelect');
 
 						//if the `getValues` above opened a dialog, stop now
 						if($('.tele-overlay-dialog').is(':visible')){
