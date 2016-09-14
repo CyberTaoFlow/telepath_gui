@@ -101,6 +101,7 @@ telepath.dashboard = {
 	
 		if(telepath.access.admin || telepath.access.perm.Cases_get) {
 			this.divs +=1;
+			$('.tele-dashboard-block .cases').remove();
 			this.casesList = $('<div>').addClass('tele-dashboard-block cases');
 			$('.tele-panel-dashboard').append(this.casesList);
 
@@ -125,6 +126,7 @@ telepath.dashboard = {
 	
 		if(telepath.access.admin || telepath.access.perm.Alerts_get) {
 			this.divs +=1;
+			$('.tele-dashboard-block .alerts').remove();
 			this.alertsList = $('<div>').addClass('tele-dashboard-block alerts');
 			$('.tele-panel-dashboard').append(this.alertsList);
 
@@ -150,6 +152,7 @@ telepath.dashboard = {
 		if(telepath.access.admin || telepath.access.perm.Suspects_get) {
 		
 			this.divs +=1;
+			$('.tele-dashboard-block .suspects').remove();
 			this.suspectsList = $('<div>').addClass('tele-dashboard-block suspects');
 			$('.tele-panel-dashboard').append(this.suspectsList);
 
