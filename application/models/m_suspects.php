@@ -398,7 +398,7 @@ class M_Suspects extends CI_Model {
                                                 "host" => [
                                                     "terms" => [ "field" => "host" , "size" => 100 ]
                                                 ],
-                                                "score" => [
+                                                "score_average" => [
                                                     "avg" => [ "field" => "score_average" ]
                                                 ],
                                                 "date" => [
@@ -464,7 +464,8 @@ class M_Suspects extends CI_Model {
 						"host"    => $sid['host']['buckets'],
 						"count"   => $sid['doc_count'],
 						"date"  => $sid['date']['value'],
-						"user" => $sid['user']['buckets'][0]['key']
+						"user" => $sid['user']['buckets'][0]['key'],
+						"ip_score" =>  $sid['score_average']['value']
 					);
 
 			}

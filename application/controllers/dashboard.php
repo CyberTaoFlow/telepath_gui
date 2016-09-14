@@ -104,7 +104,7 @@ class Dashboard extends Tele_Controller
 //        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
 
         $this->load->model('M_Alerts');
-        $alerts = $this->M_Alerts->get_alerts($sort, $dir, false, 5, $range, $apps);
+        $alerts = $this->M_Alerts->dashboard_get_alerts($sort, $dir, 5, $range, $apps);
 
         $data = array('alerts' => $alerts);
 

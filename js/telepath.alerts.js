@@ -183,11 +183,26 @@ telepath.alerts = {
 			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
 	},*/
 
-	refresh: function(callback){
+	refresh: function (callback) {
 
 		var container = $('.tele-panel-alerts');
+		// Empty panet
 		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
-		container.append(telepath.loader);
+
+		// Create List container
+		var list = $('<div>').addClass('tele-alerts-block').css('height', '1px');
+		// Create Graphs Block container
+		var graphsBlock = $('<div class="tele-alert-graphs-block">').css({marginTop: 20});
+		container.append(list).append(graphsBlock);
+		// Add loaders
+		list.append(telepath.loader);
+		graphsBlock.append(telepath.loader);
+
+		// Rebind to define the size of the list and graph containers
+		$(window).unbind('resize', this._resize);
+		$(window).bind('resize', this._resize);
+		// Call Once
+		$(window).trigger('resize');
 
 		this.refreshSession(callback);
 		this.refreshGraphs(callback);
@@ -197,15 +212,7 @@ telepath.alerts = {
 
 		var that = this;
 
-		this.container = $('.tele-panel-alerts');
-		//$('.tele-loader', this.container).remove();
-
-		// Create List
-		this.list = $('<div>').addClass('tele-alerts-block');
-		this.container.append(this.list);
-
 		this.displayed = [];
-
 
 		telepath.ds.get('/alerts/get_alerts', {
 			sort: this.sort,
@@ -213,56 +220,51 @@ telepath.alerts = {
 			search: this.searchString,
 			alertsFilter: that.alertsFilter,
 			actionsFilter: that.actionsFilter
-			}, function (data) {
+		}, function (data) {
 
-				if (typeof (data.items) != 'undefined') {
-					data.items.alerts.items.map(function (a) {
-						that.displayed.push(a.sid)
-					});
-				}
-		//	telepath.alerts.loading = false;
+			if (typeof (data.items) != 'undefined') {
+				data.items.alerts.items.map(function (a) {
+					that.displayed.push(a.sid)
+				});
+			}
 			telepath.alerts.setSessionData(data.items);
-			if(callback && typeof(callback) == 'function') {
+			if (callback && typeof(callback) == 'function') {
 				callback();
 			}
 		}, false, false, true);
 
 	},
-	refreshGraphs: function(callback){
+	refreshGraphs: function (callback) {
+
 		var that = this;
 
-		var container = $('.tele-panel-alerts');
-
-		// Cleanup
-		//$('.tele-loader', container).remove();
-		// Graphs Block
-		var graphsBlock = $('<div class="tele-alert-graphs-block">').css({ marginTop: 20 });
-		container.append(graphsBlock);
-		//graphsBlock.append(telepath.loader);
-
-
+		// Time chart and Alert filter
 		telepath.ds.get('/alerts/get_charts', {
 			search: this.searchString,
 			alertsFilter: that.alertsFilter,
 			actionsFilter: that.actionsFilter
 		}, function (data) {
-
-		//	telepath.alerts.loading=false;
 			telepath.alerts.setGraphData(data.items);
-			if(callback && typeof(callback) == 'function') {
+			if (callback && typeof(callback) == 'function') {
 				callback();
 			}
 		}, false, false, true);
 
+
+		// BA filter data
+		// empty BA filter data
 		telepath.alerts.data.action_distribution_chart = false;
 		telepath.ds.get('/alerts/get_action_distribution_chart', {
 			search: this.searchString,
 			alertsFilter: that.alertsFilter,
 			actionsFilter: that.actionsFilter
 		}, function (data) {
-			telepath.alerts.loading=false;
+			// probably the last one!!
+			telepath.alerts.loading = false;
+			// set data
 			telepath.alerts.data.action_distribution_chart = data.items.action_distribution_chart;
-			if(that.actionDistribution == true){
+			// if the BA toogle filter is displayed and is waiting for data, we need to show the data
+			if (!that.alertsFilterDisplayed) {
 				that.show_action_distribution();
 			}
 		}, false, false, true);
@@ -280,20 +282,14 @@ telepath.alerts = {
 		var that = this;
 		var container = $('.tele-panel-alerts');
 		this.container = container;
-		// Cleanup
-		$('.tele-loader', container).remove();
 
-		
-		// Sanity
-		
 		if(data.alerts.total == 0) {
 			this.panelTitle.html('No Data');
 			return;
 		}
 		
-		// Create List
+		// List
 		this.list = $('.tele-alerts-block');
-		//this.container.append(this.list);
 
 		// Cleanup
 		$('.tele-loader', this.list).remove();
@@ -356,12 +352,9 @@ telepath.alerts = {
 		var that = this;
 		var container = $('.tele-panel-alerts');
 		this.container = container;
-       // Cleanup
-		$('.tele-loader', container).remove();
 
 		// Graphs Block
 		var graphsBlock = $(".tele-alert-graphs-block");
-		//$(container).append(graphsBlock);
 
 		// Cleanup
 		$('.tele-loader', graphsBlock).remove();
@@ -379,15 +372,16 @@ telepath.alerts = {
 		var graphDistributionLegend    = $('<div>').attr('id','alert-distribution-legend');
 
 
+
 		var newToggle = $('<div>').toggleFlip({ left_value: 'Alerts', right_value: 'Business Actions', flip: function (x) {
 
 			if(!x) {
 				$("#alert-distribution-showPercent").empty();
-				that.actionDistribution = false;
+				that.alertsFilterDisplayed = true;
 				that.show_alert_distribution();
 			} else {
 				$("#alert-distribution-showPercent").empty();
-				that.actionDistribution = true;
+				that.alertsFilterDisplayed = false;
 				that.show_action_distribution();
 			}
 
@@ -441,6 +435,7 @@ telepath.alerts = {
 
 		// Sample data
 		telepath.alerts.show_alert_distribution();
+		that.alertsFilterDisplayed = true;
 
 		// Init Scroll
 
@@ -803,7 +798,7 @@ telepath.alerts = {
 		}
 		
 		$('.tele-panel-alerts .tele-alert-graphs-block', this.list).width(magic);
-		$('.tele-panel-alerts .tele-block').width(width - magic - 15);
+		$('.tele-panel-alerts .tele-alerts-block').width(width - magic - 15);
 		$('.tele-panel-alerts .tele-block .tele-list').width(width - magic - 25).height(offset - 50).mCustomScrollbar("update");
 		$('.tele-panel-alerts .tele-alert-graphs-block').height(offset - 50).mCustomScrollbar("update");
 

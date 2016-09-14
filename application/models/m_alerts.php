@@ -80,9 +80,7 @@ class M_Alerts extends CI_Model {
 				$val     = intval($results['aggregations']['sid']['value']);
 				$chart[] = array($scope_end * 1000, $val);
 			}
-							
-				
-				
+
 		}
 		
 		return $chart;
@@ -179,7 +177,7 @@ class M_Alerts extends CI_Model {
                 ],*/
 				"sid" => [
 					"terms" => ["field" => "sid",
-						"size" => 999
+						"size" => 0
 					]
 				],
 			]
@@ -220,7 +218,6 @@ class M_Alerts extends CI_Model {
 		$results2 = [];
 		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["sid"]) &&
-			isset($result["aggregations"]["sid"]["buckets"]) &&
 			!empty($result["aggregations"]["sid"]["buckets"])
 		) {
 
@@ -250,7 +247,6 @@ class M_Alerts extends CI_Model {
 
 				if (isset($result2["aggregations"]) &&
 					isset($result2["aggregations"]["actions"]) &&
-					isset($result2["aggregations"]["actions"]["buckets"]) &&
 					!empty($result2["aggregations"]["actions"]["buckets"])
 				) {
 
@@ -276,7 +272,7 @@ class M_Alerts extends CI_Model {
 		return $results2;
 	}
 
-	public function get_distribution_chart($range, $apps, $search = '', $actions_filter = []) {
+	public function get_distribution_chart($range, $apps, $search = '') {
 
 		$dist   = array();
 		$result = array();
@@ -308,18 +304,10 @@ class M_Alerts extends CI_Model {
 		$query = '';
 
 		$params = append_range_query($params, $range);
-		if (count($actions_filter) > 0 && $actions_filter != false) {
-			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
-		}
+
 
 		if ($search && strlen($search) > 1) {
-
-			/*if (count($actions_filter) > 0 && $actions_filter != false) {
-				$query .= ' (' . $search . ')';
-			} else {*/
-				$query .= $search;
-//			}
-
+			$query .= $search;
 		}
 		if($query)
 			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
@@ -666,6 +654,141 @@ class M_Alerts extends CI_Model {
 			
 	}
 
+	public function dashboard_get_alerts($sort, $sortorder, $limit = 5, $range = [], $apps = [])
+	{
+
+		switch ($sort) {
+
+			case 'date':
+				$sortfield = 'date';
+				break;
+			case 'count':
+				$sortfield = 'alerts_count';
+				break;
+			default:
+				$sortfield = 'alerts_count';
+				break;
+		}
+
+		if ($range) {
+			$params['index'] = $range['indices'];
+		} else {
+			$params['index'] = 'telepath-20*';
+		}
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"sid" => [
+
+					"terms" => ["field" => "sid", "size" => $limit, "order" => [$sortfield => $sortorder]],
+
+					"aggs" => [
+						"alerts_count" => [
+							"sum" => ["field" => "alerts_count"]
+						],
+						"country_code" => [
+							"terms" => ["field" => "country_code", "size" => 1]
+						],
+						"city" => [
+							"terms" => ["field" => "city", "size" => 1]
+						],
+						"ip_orig" => [
+							"terms" => ["field" => "ip_orig", "size" => 1]
+						],
+						"host" => [
+							"terms" => ["field" => "host", "size" => 10]
+						],
+						"score_average" => [
+							"avg" => ["field" => "alerts.score"]
+						],
+						"alerts_names" => [
+							"terms" => ["field" => "alerts.name", "size" => 10]
+						],
+						"date" => [
+							"max" => ["field" => "ts"]
+						],
+						"user" =>[
+							"terms" => ["field" => "username",
+								"order" => ["_term" => "desc"],
+								"size" => 1
+							]
+						]
+					],
+
+				],
+			],
+			'query' => [
+				'bool' => [
+					'filter' => [
+						['exists' => ['field' => 'alerts']],
+					]
+				],
+			],
+		];
+
+
+		$params = append_range_query($params, $range);
+		$params = append_application_query($params, $apps);
+		$params = append_access_query($params);
+
+		$result = $this->elasticClient->search($params);
+
+		$results = array('items' => array());
+
+
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid"]) &&
+			!empty($result["aggregations"]["sid"]["buckets"])
+		) {
+
+			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
+			foreach ($sid_buckets as $sid) {
+
+				$sid_key = $sid['key'];
+
+				$results['items'][] = array(
+					"sid" => $sid_key,
+					"city" => $sid['city']['buckets'][0]['key'],
+					"alerts_count" => $sid['alerts_count']['value'],
+					"alerts_names" => $sid['alerts_names']['buckets'],
+					"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
+					"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
+					"host" => $sid['host']['buckets'],
+					"date" => $sid['date']['value'],
+					'ip_score' => $sid['score_average']['value'],
+					"user" => $sid['user']['buckets'][0]['key']
+				);
+			}
+		}
+		if ($sort == 'date') {
+
+			if ($sortorder == 'ASC') {
+				$sortorder = SORT_ASC;
+			} elseif ($sortorder == 'DESC') {
+				$sortorder = SORT_DESC;
+			}
+
+			# Fix the problem we have with sort.
+			# When sorting alerts by date we are getting other requests
+			# with the same session id. As a result we need to perform
+			# second sort.
+			$temp = array();
+			$ar = $results['items'];
+			foreach ($ar as $key => $row) {
+				$temp[$key] = $row['date'];
+			}
+			array_multisort($temp, $sortorder, $ar);
+			$results['items'] = $ar;
+		}
+
+		$results['success'] = true;
+		$results['query'] = $params;
+		return $results;
+
+
+	}
+
 	public function get_action_filter($actions_filter=[], $range=[], $search='', $apps=[]){
 
 		$params['body'] = [
@@ -687,7 +810,6 @@ class M_Alerts extends CI_Model {
 		global $query;
 		$query = '';
 
-		$params = append_range_query($params, $range);
 		if (count($actions_filter) > 0 && $actions_filter != false) {
 			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
 		}
@@ -699,6 +821,7 @@ class M_Alerts extends CI_Model {
 		}
 		if ($query)
 			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
