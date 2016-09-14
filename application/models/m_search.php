@@ -25,12 +25,12 @@ class M_Search extends CI_Model {
 				$sortfield = 'date';
 				break;
 			case 'count':
-				if($scope=='alerts' || $scope == 'cases' ){
-					$sortfield = $scope.'_count';
-				}
-				else{
+//				if($scope=='alerts' || $scope == 'cases' ){
+//					$sortfield = $scope.'_count';
+//				}
+//				else{
 					$sortfield = '_count';
-				}
+//				}
 
 				break;
 //			case 'score':
@@ -80,10 +80,10 @@ class M_Search extends CI_Model {
 						],
 						"score" => [
 							"avg" => [ "field" => "score_average" ]
-						],*/
+						],
 						"date" => [
 							"max" => [ "field" => "ts" ]
-						],
+						],*/
 						"score_average" => [
 							"avg" => ["field" => "score_average"]
 						]
@@ -112,13 +112,17 @@ class M_Search extends CI_Model {
 
 		}
 
+		if ($sortfield == "date") {
+			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
+		}
+
 		$params = append_range_query($params, $settings['range']);
 
 
 		switch($scope) {
 			case 'alerts':
 				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-				$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
+				//$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
 				//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 				//$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 			break;
@@ -126,7 +130,7 @@ class M_Search extends CI_Model {
 				// Here we also need cases data
 				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
 				$params['body']["aggs"]["sid"]["aggs"]["cases_names"] = [ "terms" => [ "field" => "cases_name", "size" => 100 ] ];
-				$params['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
+//				$params['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases_name' ] ] ] ];
 //				$params2['body']["aggs"]["sid"]["aggs"]["cases_names"] = [ "terms" => [ "field" => "cases_name", "size" => 100 ] ];
 //				$params2['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
@@ -159,9 +163,7 @@ class M_Search extends CI_Model {
 
 
 
-		//var_dump($settings['apps']);
-		$params = append_application_query($params, $settings['apps']);	
-		//var_dump(json_encode($params));
+		$params = append_application_query($params, $settings['apps']);
 		$result = $this->elasticClient->search($params);
 		$results = array('items' => array());
 
@@ -177,9 +179,6 @@ class M_Search extends CI_Model {
 				"city" => [
 					"terms" => [ "field" => "city" , "size" => 1 ]
 				],
-//				"id" => [
-//					"terms" => [ "field" => "_id" , "size" => 1 ]
-//				],
 				"ip_orig" => [
 					"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 				],
@@ -236,6 +235,8 @@ class M_Search extends CI_Model {
 			$params2['body']['aggs']['max_score'] = ["max" => [ "field" => "score_average" ]];
 		}
 
+//		$params2['body']['post_filter']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],
+//			"default_operator" => 'AND']];
 		$params2 = append_range_query($params2, $settings['range']);
 
 		if(isset($result["aggregations"]) && 
@@ -270,6 +271,7 @@ class M_Search extends CI_Model {
 						"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
 						"host"    => $sid['host']['buckets'],
 						"count"   => $doc_count,
+//						"count"   => $result2['hits']['total'],
 						"score_average" => $sid['score']['value'],
 						"date"  => $sid['date']['value'],
 						'ip_score' => $score_average,
