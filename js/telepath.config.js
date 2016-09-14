@@ -37,10 +37,10 @@ telepath.config = {
 			this.tabs.push({ icon: 'actions', text: 'Business Actions' });
 		}
 
-		/*if(telepath.access.admin || telepath.access.perm.WebUsers_get) {
-			this.tabs.push({ icon: 'users', text: 'Web Users' });
+		if(telepath.access.admin || telepath.access.perm.WebUsers_get) {
+			this.tabs.push({ icon: 'webusers', text: 'Web Users' });
 		}
-*/
+
 		if(telepath.access.admin || telepath.access.perm.Config_get) {
 			this.tabs.push({ icon: 'system', text: 'Advanced' });
 		}

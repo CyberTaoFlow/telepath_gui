@@ -13,7 +13,7 @@ class WebUsers extends Tele_Controller
 
     public function store_users()
     {
-        return_success($this->M_Users->store_users());
+        $this->M_Users->store_users();
 
     }
 
@@ -21,7 +21,10 @@ class WebUsers extends Tele_Controller
     public function get_users()
     {
         $search = $this->input->post('search');
+        $sort = $this->input->post('sort');
+        $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
+        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
-        return_success($this->M_Users->get_users($search));
+        return_success($this->M_Users->get_users($search, $sort, $dir, $offset));
     }
 }
