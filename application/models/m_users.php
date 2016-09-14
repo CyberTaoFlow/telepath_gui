@@ -100,7 +100,7 @@ class M_Users extends CI_Model
         $params['type'] = "users";
         $params['body'] = [
             'sort' => [$sort => $dir],
-            'size' => 15,
+            'size' => 50,
             'from' => $offset
         ];
 
