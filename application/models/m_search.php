@@ -25,12 +25,12 @@ class M_Search extends CI_Model {
 				$sortfield = 'date';
 				break;
 			case 'count':
-				if($scope=='alerts' || $scope == 'cases' ){
-					$sortfield = $scope.'_count';
-				}
-				else{
+//				if($scope=='alerts' || $scope == 'cases' ){
+//					$sortfield = $scope.'_count';
+//				}
+//				else{
 					$sortfield = '_count';
-				}
+//				}
 
 				break;
 //			case 'score':
@@ -80,10 +80,10 @@ class M_Search extends CI_Model {
 						],
 						"score" => [
 							"avg" => [ "field" => "score_average" ]
-						],*/
+						],
 						"date" => [
 							"max" => [ "field" => "ts" ]
-						],
+						],*/
 						"score_average" => [
 							"avg" => ["field" => "score_average"]
 						]
@@ -112,21 +112,25 @@ class M_Search extends CI_Model {
 
 		}
 
+		if ($sortfield == "date") {
+			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
+		}
+
 		$params = append_range_query($params, $settings['range']);
 
 
 		switch($scope) {
 			case 'alerts':
 				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-				$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
+				//$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
 				//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 				//$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
 			break;
 			case 'cases':
 				// Here we also need cases data
 				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
-				$params['body']["aggs"]["sid"]["aggs"]["cases_names"] = [ "terms" => [ "field" => "cases_name", "size" => 100 ] ];
-				$params['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
+//				$params['body']["aggs"]["sid"]["aggs"]["cases_names"] = [ "terms" => [ "field" => "cases_name", "size" => 100 ] ];
+//				$params['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'cases_name' ] ] ] ];
 //				$params2['body']["aggs"]["sid"]["aggs"]["cases_names"] = [ "terms" => [ "field" => "cases_name", "size" => 100 ] ];
 //				$params2['body']["aggs"]["sid"]["aggs"]["cases_count"] = [ "sum" => [ "field" => "cases_count" ] ];
@@ -159,9 +163,7 @@ class M_Search extends CI_Model {
 
 
 
-		//var_dump($settings['apps']);
-		$params = append_application_query($params, $settings['apps']);	
-		//var_dump(json_encode($params));
+		$params = append_application_query($params, $settings['apps']);
 		$result = $this->elasticClient->search($params);
 		$results = array('items' => array());
 
@@ -177,9 +179,6 @@ class M_Search extends CI_Model {
 				"city" => [
 					"terms" => [ "field" => "city" , "size" => 1 ]
 				],
-//				"id" => [
-//					"terms" => [ "field" => "_id" , "size" => 1 ]
-//				],
 				"ip_orig" => [
 					"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 				],
@@ -204,9 +203,9 @@ class M_Search extends CI_Model {
 				"business_actions_names" => [
 					"terms" => [ "field" => "business_actions.name", "size" => 100 ]
 				],
-				"score" => [
-					"avg" => [ "field" => "score_average" ]
-				],
+//				"score" => [
+//					"avg" => [ "field" => "score_average" ]
+//				],
 				"date" => [
 					"max" => [ "field" => "ts" ]
 				],
@@ -231,12 +230,17 @@ class M_Search extends CI_Model {
 			]
 		];
 
-		// add aggregation to check if there is a suspect request in normal session
-		if($scope == 'requests'){
-			$params2['body']['aggs']['max_score'] = ["max" => [ "field" => "score_average" ]];
+		// Add post filter to filter only the query (and not the aggregation) to check if the current session has
+		// also results in another tab
+		if ($scope == 'requests' || $scope == 'suspects') {
+			$params2['body']['post_filter']['bool']['must'][] = [
+				'query_string' => [
+					"query" => $settings['search'],
+					"default_operator" => 'AND'
+				]
+			];
 		}
 
-		$params2['body']['query']['bool']['must'][] = ['query_string' => ["query" => $settings['search'],"default_operator" => 'AND']];
 		$params2 = append_range_query($params2, $settings['range']);
 
 		if(isset($result["aggregations"]) && 
@@ -253,9 +257,43 @@ class M_Search extends CI_Model {
 
 					$params3 = $params2;
 					
-					$params3['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+					$params3['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 
 					$result2 = $this->elasticClient->search($params3);
+
+
+					//TODO: this code doesn't help on pagination. It's only remove duplicate sessions and update the
+					// counter in the current page.
+					// page, but cannot update the counter
+					// If the current session has also results in another tab, we need to remove it from normal requests
+					// tab
+					if($scope == 'requests' && $doc_count < $result2['hits']['total']){
+						$result["aggregations"]["sid_count"]["value"]--;
+						continue;
+					}
+
+					// If the current session has also results in alerts tab, we need to remove it from suspects tab
+					if($scope == 'suspects' && $doc_count < $result2['hits']['total']){
+						$params4 = array();
+						$params4['index'] = $settings['range']['indices'];
+						$params4['type'] = 'http';
+						$params4['body']['size'] = 0;
+						$params4['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+						$params4['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+						$params4['body']['query']['bool']['must'][] = [
+							'query_string' => [
+								"query" => $settings['search'],
+								"default_operator" => 'AND'
+							]
+						];
+						$result4 = $this->elasticClient->search($params4);
+
+						if ($result4['hits']['total']){
+							$result["aggregations"]["sid_count"]["value"]--;
+							continue;
+						}
+					}
+
 					$sid = $result2['aggregations'];
 
 					$item = array(
@@ -271,20 +309,11 @@ class M_Search extends CI_Model {
 						"ip_orig" => long2ip($sid['ip_orig']['buckets'][0]['key']),
 						"host"    => $sid['host']['buckets'],
 						"count"   => $doc_count,
-						"score_average" => $sid['score']['value'],
+						//"score_average" => $sid['score']['value'],
 						"date"  => $sid['date']['value'],
 						'ip_score' => $score_average,
 						"user" => $sid['user']['buckets'][0]['key']
 					);
-
-					// we don't want to see alerts and cases in suspects and normal requests (even if some requests
-					// contains alerts or cases) and not suspects in normal requests
-					if ((($scope == 'requests' || $scope == 'suspects') && ($item['alerts_count'] > 0 || $item['cases_count'] > 0))
-						|| ($scope == 'requests' && $sid['max_score']['value'] > $suspect_threshold)
-					) {
-						$result["aggregations"]["sid_count"]["value"]--;
-						continue;
-					}
 
 					$results['items'][] = $item;
 					
