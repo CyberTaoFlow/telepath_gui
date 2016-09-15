@@ -492,12 +492,16 @@ class M_Cases extends CI_Model {
 			$this->load->model('M_Config');
 			$last_update = $this->M_Config->get_key('last_case_update_id');
 			// get the relevant index
-			$index1='telepath-'.date("Ymd",$time);
-			$index2='telepath-'.date("Ymd",$last_update);
-			$status['indices'][$index1]='';
-			$status['indices'][$index2]='';
+			if($last_update){
+				$index1='telepath-'.date("Ymd",$time);
+				$index2='telepath-'.date("Ymd",$last_update);
+				$status['indices'][$index1]='';
+				$status['indices'][$index2]='';
+			}
 		}
-		else{
+
+		if(!$range || !$last_update)
+		{
 			$status = $this->elasticClient->indices()->stats(['index' => 'telepath-20*']);
 		}
 
