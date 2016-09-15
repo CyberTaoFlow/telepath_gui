@@ -308,7 +308,7 @@ $.widget( "tele.teleRule", {
 
 							case 'rangelength':
 
-								json.length = $('#rule-slider-between', c).data('sliderValue').join('-');
+								json.length = $('#rule-slider-between', c).data('value').join('-');
 
 								break;
 
@@ -441,6 +441,15 @@ $.widget( "tele.teleRule", {
 				json.time  = parseInt($('.tele-pattern-time input', c).val()) || 0;
 				json.count = parseInt($('.tele-pattern-count input', c).val()) || 0;
 
+				var time = $('.tele-rule-pattern-window .tele-dropdown-options').teleOption("option", "selected");
+				switch (time) {
+					case 'Minutes':
+						json.time = json.time * 60;
+						break;
+					case 'Hours':
+						json.time = json.time * 3600;
+						break
+				}
 				//if the `getValues` above opened a dialog, stop now
 				if($('.tele-overlay-dialog').is(':visible')){
 					return;
@@ -632,9 +641,8 @@ $.widget( "tele.teleRule", {
 				switch(json.type) {
 					
 					case 'velocity':
-						
-						//var range = $('.tele-geo-ts').val();
-						var range = $('.tele-velocity-wrap .text-button').val();
+
+						var range = $('.tele-velocity-wrap .tele-dropdown-options').teleOption('option', 'selected');
 						var count = $('.tele-geo-ts-count input').val();
 						var distance= $('.rule-slider-length input').val();
 
@@ -658,13 +666,13 @@ $.widget( "tele.teleRule", {
 						}
 						
 						switch(range) {
-							case 's':
+							case 'Seconds':
 								json.ts = parseInt(count);
 							break;
-							case 'm':
+							case 'Minutes':
 								json.ts = parseInt(count) * 60;
 							break;
-							case 'h':
+							case 'Hours':
 								json.ts = parseInt(count) * 3600;
 							break;
 						}
@@ -854,7 +862,7 @@ $.widget( "tele.teleRule", {
 				var r_fuzzy_opt  = [ 'short', 'long', 'both' ];
 				//var r_fuzzy_list = $('<select>').addClass('tele-rule-dropdown');
 
-				var r_fuzzy_list =$('<div>').teleOption({label: '', options: r_fuzzy_opt });
+				var r_fuzzy_list =$('<div>').teleOption({label: '', options: r_fuzzy_opt, selected: data.str_length});
 
 				/*$.each(r_fuzzy_opt, function(i, opt) {
 					var option = '<option value="' + opt + '">' + opt.charAt(0).toUpperCase() + opt.slice(1) + '</option>';
@@ -936,8 +944,7 @@ $.widget( "tele.teleRule", {
 						
 						switch(radio.key) {
 							case 'heuristic':
-								r_regex_input.show();
-								r_regex_check.show();
+
 							break;
 							case 'regex':
 								
@@ -1136,7 +1143,7 @@ $.widget( "tele.teleRule", {
 						
 							inspectionType.find('.tele-radio-radio[rel="stringmatch"]').click();
 							$('input', r_contains_input).val(data.str_match);
-							if(data.not_signal) {
+							if(data.negate) {
 								$('.tele-checkbox-checkbox', r_contains_check).click();
 							}
 
@@ -1146,7 +1153,7 @@ $.widget( "tele.teleRule", {
 							
 							inspectionType.find('.tele-radio-radio[rel="regex"]').click();
 							$('input', r_regex_input).val(data.str_match);
-							if(data.not_signal) {
+							if(data.negate) {
 								$('.tele-checkbox-checkbox', r_regex_check).click();
 							}
 						
@@ -1160,32 +1167,27 @@ $.widget( "tele.teleRule", {
 						case 'fuzzylength':
 							
 							inspectionType.find('.tele-radio-radio[rel="fuzzylength"]').click();
-							//r_fuzzy_list.val(data.str_length);
-							$('.text-button', r_fuzzy_list).val(data.str_length)
+							r_fuzzy_list.teleOption( "option", "selected", data.length);
 						break;
 						case 'exactlength':
 							
 							inspectionType.find('.tele-radio-radio[rel="exactlength"]').click();
 
-							$('input', r_len_input).attr('value', data.str_length);
-							// r_len_slider_div.data('ui-slider').option('value', data.str_length)
+							$('#rule-slider-length').slider('setValue', data.length);
 						
 						break;
 						case 'rangelength':
 							
 							inspectionType.find('.tele-radio-radio[rel="rangelength"]').click();
 
-							var tmp = data.str_length.split("-");
-							$('input', r_bet_input).attr('value', data.str_length);
-							// r_bet_slider.data('ui-slider').option('values', [tmp[0], tmp[1]]);
-						
+							$('#rule-slider-between').slider('setValue', data.length.split("-"));
+
 						break;
 						case 'distance':
 							
 							inspectionType.find('.tele-radio-radio[rel="distance"]').click();
 
-							$('input', r_sim_input).attr('value', data.str_length);
-							// r_sim_slider.data('ui-slider').option('value', data.str_similarity);
+							$('#rule-slider-similarity').slider('setValue', data.distance);
 						
 						break;
 						default: 
@@ -1328,16 +1330,27 @@ $.widget( "tele.teleRule", {
 						}
 										
 				}}).addClass('tele-rule-bind');
-				
+
 				var patWindowWrap = $('<div>').addClass('tele-rule-pattern-window');
+				if (!data.time) {
+					data.time = 60;
+				}
+				var selected;
+
+				if (data.time > 60 ) {
+					if (data.time > 3600) {
+						selected = 'Hours';
+						data.time = data.time / 3600
+					}
+					else {
+						selected = 'Minutes';
+						data.time = data.time / 60
+					}
+				}
 				var patCount = $('<div>').teleInput({ label: 'Count', value: data.count ? data.count : 3 }).addClass('tele-pattern-count');
-				var patDuration = $('<div>').teleInput({ label: 'Duration', value: data.time ? data.time : 60 }).addClass('tele-pattern-time');
+				var patDuration = $('<div>').teleInput({ label: 'Duration', value: data.time }).addClass('tele-pattern-time');
 				var patGaps   = [ 'Seconds', 'Minutes', 'Hours' ];
-				//var patGap    = $('<select>').addClass('tele-rule-dropdown');
-				//$.each(patGaps, function(i, opt) { patGap.append('<option value="' + opt + '">' + opt + '</option>'); });
-
-				var patGap  = $('<div>').teleOption({options: patGaps, css:{float: 'left', 'margin-top': '1px'}});
-
+				var patGap  = $('<div>').teleOption({options: patGaps, css:{float: 'left', 'margin-top': '1px'}, selected: selected});
 
 				patWindowWrap.append(patCount).append(patDuration).append(patGap);
 				ruleInner.append(patWindowWrap).append(patAnchor).append(patLinked);
@@ -1392,7 +1405,7 @@ $.widget( "tele.teleRule", {
 					data.type = 'average';
 				}
 
-				var behavSelect = $('<div>').teleOption({options: behaviorTypes, css:{float: 'left', 'margin-top': '7px'}});
+				var behavSelect = $('<div>').teleOption({options: behaviorTypes, css:{float: 'left', 'margin-top': '7px'}, selected: data.type});
 
 				//$.each(behaviorTypes, function(i, opt) { var selected = data.type == opt.k ? 'selected': ''; behavSelect.append('<option ' + selected + ' value="' + opt.k + '">' + opt.v + '</option>'); });
 				
