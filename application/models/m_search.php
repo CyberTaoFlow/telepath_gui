@@ -262,9 +262,9 @@ class M_Search extends CI_Model {
 					$result2 = $this->elasticClient->search($params3);
 
 
-					//TODO: this code doesn't help on pagination. It's only remove duplicate sessions and update the
-					// counter in the current page.
-					// page, but cannot update the counter
+					//TODO: this code doesn't help on pagination. It's only remove duplicate sessions of the current
+					// page and update the counter according to the current page.
+
 					// If the current session has also results in another tab, we need to remove it from normal requests
 					// tab
 					if($scope == 'requests' && $doc_count < $result2['hits']['total']){
