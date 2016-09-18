@@ -15,6 +15,7 @@ telepath.search = {
     sort: 'date',
     dir: false,
     loading:false,
+    selectedTab:false,
     displayed:{
         alerts:[],
         cases:[],
@@ -106,6 +107,8 @@ telepath.search = {
     searchStr: '',
     init: function (searchStr) {
 
+        this.selectedTab = false;
+
         this.searchStr = searchStr;
 
         this.displayed = {
@@ -166,6 +169,8 @@ telepath.search = {
                     }
                 });
                 that.sort = id;
+
+                that.selectedTab = that.tabsEl.tabs( "option", "active" );
 
                 telepath.search.refresh(function () {
                 });
@@ -439,41 +444,68 @@ telepath.search = {
         //telepath.loader.remove();
         that.tabsEl.children('.tele-loader').remove();
 
-        var found = false;
+        var select;
 
-        $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
+        if (this.selectedTab){
+            switch (this.selectedTab) {
+                case 0:
+                    that.showAlertsTab();
+                    break;
+                case 1:
+                    that.showCasesTab();
+                    break;
+                case 2:
+                    that.showSuspectsTab();
+                    break;
+                case 3:
+                    that.showRequestsTab();
+                    break;
 
-            if (!found) {
-
-                if (that.results[type] && that.results[type].length > 0) {
-
-                    var select;
-                    $('.tele-'+type+'-block').empty();
-                    switch (type) {
-                        case 'alerts':
-                            select = 0;
-                            that.showAlertsTab();
-                            break;
-                        case 'cases':
-                            select = 1;
-                            that.showCasesTab();
-                            break;
-                        case 'suspects':
-                            select = 2;
-                            that.showSuspectsTab();
-                            break;
-                        case 'requests':
-                            select = 3;
-                            that.showRequestsTab();
-                            break;
-
-                    }
-                    that.tabsEl.tabs({active: select});
-
-                    found = true;
-                }
             }
-        });
+            that.tabsEl.tabs({active: that.selectedTab});
+
+            found = true;
+        }
+
+        else {
+
+            var found = false;
+
+            $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
+
+                if (!found) {
+
+                    if (that.results[type] && that.results[type].length > 0) {
+
+                        $('.tele-'+type+'-block').empty();
+                        switch (type) {
+                            case 'alerts':
+                                select = 0;
+                                that.showAlertsTab();
+                                break;
+                            case 'cases':
+                                select = 1;
+                                that.showCasesTab();
+                                break;
+                            case 'suspects':
+                                select = 2;
+                                that.showSuspectsTab();
+                                break;
+                            case 'requests':
+                                select = 3;
+                                that.showRequestsTab();
+                                break;
+
+                        }
+                        that.tabsEl.tabs({active: select});
+
+                        found = true;
+                    }
+                }
+            });
+        }
+
+
         that.tabsEl.tabs({collapsible: false});
     },
 
@@ -675,8 +707,9 @@ telepath.search = {
 
         $('.ui-tabs-panel .tele-block .tele-list').height(offset - 160);
 
-        $('#tele-search-'+ name +' .tele-list').mCustomScrollbar('update');
         $(window).trigger('resize');
+        $('#tele-search-'+ name +' .tele-list').mCustomScrollbar('update');
+
     }
 
 }
