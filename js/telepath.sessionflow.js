@@ -238,12 +238,12 @@ telepath.sessionflow = {
 		}
 
 	},
-	init: function(SID, IP, alerts_names, state,  searchkey, list) {
+	init: function(SID, /*IP, alerts_names,*/ state,  searchkey, list) {
 
 		this.session = false;
 		this.SID  = SID;
-		this.IP  = IP;
-		this.alerts_names = alerts_names;
+		//this.IP  = IP;
+		//this.alerts_names = alerts_names;
 		this.searchkey = searchkey;
 		this.list = list;
 		this.suspect= '';
@@ -289,11 +289,11 @@ telepath.sessionflow = {
 		that.session = {};
 		
 		// Load session stats, then items
-		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.suspect, alerts: that.alerts_names, ip: that.IP , range: that.range }, function (data) {
+		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.suspect, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
 			
 			that.session.stats = data.items;
 			
-			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP , range: that.range }, function (data) {
+			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
 				that.session.items = data.items;
 				that.showSession();
 			}, false, false, true);
@@ -517,7 +517,7 @@ telepath.sessionflow = {
 					
 						var offset = that.session.items.length;
 						
-						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, alerts: that.alerts_names, ip: that.IP, offset: offset, range: that.range }, function (data) {
+						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, /*alerts: that.alerts_names, ip: that.IP,*/ offset: offset, range: that.range }, function (data) {
 							that.loading = false;
 							$('.tele-loader', that.actionsContainer).remove();
 						

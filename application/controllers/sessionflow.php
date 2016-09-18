@@ -22,20 +22,20 @@ class Sessionflow extends Tele_Controller
         $key = $this->input->post('searchkey');
         $state = $this->input->post('state');
         //$range = $this->_get_range();
-        $alerts = $this->input->post('alerts');
+//        $alerts = $this->input->post('alerts');
         $range = $this->input->post('range') == 'true';
 
-        if($alerts && !empty($alerts)){
-            $this->load->model('M_Rules');
-            foreach($alerts as $alert){
-                $rule = $this->M_Rules->get_rule_by_name($alert['key']);
-                if (!empty($rule) && $rule[0]['criteria'][0]['type']=="IP") {
-                    $anchor_field='ip_orig';
-                    $anchor_value=$this->input->post('ip');
-                    break;
-                }
-            }
-        }
+//        if($alerts && !empty($alerts)){
+//            $this->load->model('M_Rules');
+//            foreach($alerts as $alert){
+//                $rule = $this->M_Rules->get_rule_by_name($alert['key']);
+//                if (!empty($rule) && $rule[0]['criteria'][0]['type']=="IP") {
+//                    $anchor_field='ip_orig';
+//                    $anchor_value=$this->input->post('ip');
+//                    break;
+//                }
+//            }
+//        }
 
         if ($range){
             $range = $this->_get_range();
@@ -61,20 +61,20 @@ class Sessionflow extends Tele_Controller
         $anchor_field='sid';
         $anchor_value=$this->input->post('sid');
         $filter = $this->input->post('filter');
-        $alerts = $this->input->post('alerts');
+//        $alerts = $this->input->post('alerts');
         $range = $this->input->post('range') == 'true';
 
-        if($alerts && !empty($alerts)){
-            $this->load->model('M_Rules');
-            foreach($alerts as $alert){
-                $rule = $this->M_Rules->get_rule_by_name($alert['key']);
-                if (!empty($rule) && $rule[0]['criteria'][0]['type']=="IP") {
-                    $anchor_field='ip_orig';
-                    $anchor_value=$this->input->post('ip');
-                    break;
-                }
-            }
-        }
+//        if($alerts && !empty($alerts)){
+//            $this->load->model('M_Rules');
+//            foreach($alerts as $alert){
+//                $rule = $this->M_Rules->get_rule_by_name($alert['key']);
+//                if (!empty($rule) && $rule[0]['criteria'][0]['type']=="IP") {
+//                    $anchor_field='ip_orig';
+//                    $anchor_value=$this->input->post('ip');
+//                    break;
+//                }
+//            }
+//        }
 
         $key = $this->input->post('searchkey');
 //        if (!empty($key) && substr($key, -1) != '*' && strpos($key, 'country_code') !== 0)

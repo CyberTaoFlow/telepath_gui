@@ -77,7 +77,8 @@ telepath.listitem.generic = {
 			var parent_parent = widget.element.parent().parent(),
 				names = (widget.options.raw.alerts_names)?widget.options.raw.alerts_names:[];
 			
-			telepath.sessionflow.init(widget.options.itemID, widget.options.raw.ip_orig, names , widget.options.icon, widget.options.raw.searchkey, parent_parent);
+			telepath.sessionflow.init(widget.options.itemID, /*widget.options.raw.ip_orig, names ,*/
+			 widget.options.icon, widget.options.raw.searchkey, parent_parent);
 		},
 		hover_in: function (el, item) {
 
