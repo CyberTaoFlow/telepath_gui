@@ -326,6 +326,21 @@ telepath.config.rule = {
 			}*/
 
 
+			var found = false;
+
+			ruleData.action_email_field = $('.tele-rule-email-notif input').map(function(idx, elem) {
+				if (!validateEmail($(elem).val())){
+					$(elem).css({'border-color': "red"});
+					telepath.dialog({ title: 'Rule Editor', msg: 'You must email' });
+					found = true;
+				}
+				return $(elem).val();
+			}).get().join();
+
+			if (found){
+				return
+			}
+
 			ruleData.ip= [];
 
 			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip')) {
@@ -377,7 +392,6 @@ telepath.config.rule = {
 			// Drop to console.
 			if(that.data.new_rule) {
 
-				var found=false;
 				$.each(telepath.config.rules.categories,function(i,val){
 					if(ruleData.name== val.name){
 						telepath.dialog({ title: 'Case Editor', msg: 'Rule name already exists' });
