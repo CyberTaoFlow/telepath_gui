@@ -218,7 +218,8 @@ telepath.config.rule = {
 			
 		if(!this.data.domain) { this.data.domain = '' }	
 		var app_filter_data = [ { text: this.data.domain } ];
-		var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: app_filter_data, click: function () { } }).appendTo(this.container);
+		var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: app_filter_data, click: function () { } })
+			.appendTo(this.container).attr('id', 'limit-application');
 		$('.tele-multi-control', filterApps).hide();
 		
 		this.cmd_wrap = $('<div>').addClass('tele-rule-cmd-wrap').appendTo(this.container);
@@ -344,6 +345,7 @@ telepath.config.rule = {
 				}
 			}
 
+			ruleData.domain = $('#limit-application input').val();
 
 			// Get rule script execution config
 			ruleData.cmd = [];
