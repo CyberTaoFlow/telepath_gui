@@ -329,9 +329,9 @@ telepath.config.rule = {
 			var found = false;
 
 			ruleData.action_email_field = $('.tele-rule-email-notif input').map(function(idx, elem) {
-				if (!validateEmail($(elem).val())){
+				if (!validateEmail($(elem).val()) && $(elem).val()!=''){
 					$(elem).css({'border-color': "red"});
-					telepath.dialog({ title: 'Rule Editor', msg: 'You must email' });
+					telepath.dialog({ title: 'Rule Editor', msg: 'Please provide a valid email address' });
 					found = true;
 				}
 				return $(elem).val();
