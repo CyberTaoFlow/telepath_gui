@@ -1231,6 +1231,7 @@ $.widget( "tele.teleRule", {
 				var browseOpt = { mode: 'page' , label: 'none', type: 'page' };
 				
 				if(data.subtype == 'page' && data.pagename && data.domain) {
+					browseOpt.paramname = data.pagename;
 					browseOpt.pagename = data.pagename;
 					browseOpt.domain = data.domain;
 				}
