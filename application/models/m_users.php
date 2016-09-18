@@ -21,11 +21,18 @@ class M_Users extends CI_Model
         $this->load->model('M_Config');
         $last_update = $this->M_Config->get_key('last_web_users_update_id');
 
-        /* // get the relevant index
-         $index1='telepath-'.date("Ymd",$time);
-         $index2='telepath-'.date("Ymd",$last_update);*/
-
-        $params['index'] = 'telepath-20*';
+        if($last_update){
+            // search only in relevant index
+            $index1 = 'telepath-'.date("Ymd",$time);
+            $index2 = 'telepath-'.date("Ymd",$last_update - 60);
+            $params['index'] = [$index1];
+            if($index2 != $index1){
+                array_push($params['index'],$index2);
+            }
+        }
+        else{
+            $params['index'] = 'telepath-20*';
+        }
         $params['type'] = 'http';
         $params['body'] = [
             'size' => 0,
