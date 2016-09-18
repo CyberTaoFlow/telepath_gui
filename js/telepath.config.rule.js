@@ -186,14 +186,14 @@ telepath.config.rule = {
 		// IP , APP Filters
 		var title1 = $('<div>').addClass('tele-title-1').text('Limit rule by IP').appendTo(this.container);
 		if(!this.data.ip) { this.data.ip = '' }
-	
-		var is_range = this.data.ip.split('-').length > 1;
-						
+		
+		var is_range = this.data.ip.from != this.data.ip.to ;
+
 		var ipWrap   = $('<div>').addClass('tele-ip-wrap');
-		var ipStart  = $('<div>').addClass('tele-ip').ip({ data: this.data.ip.split('-')[0] });
+		var ipStart  = $('<div>').addClass('tele-ip').ip({ data: this.data.ip.from });
 		var ipDash   = $('<div>').addClass('tele-ip-dash').html('_');
-		var ipEnd    = $('<div>').addClass('tele-ip').ip({ data: is_range ?this.data.ip.split('-')[1] : '' });
-	
+		var ipEnd    = $('<div>').addClass('tele-ip').ip({data: is_range ? this.data.ip.to : '' });
+
 		if(!is_range) {
 			ipDash.hide();
 			ipEnd.hide();
@@ -323,6 +323,27 @@ telepath.config.rule = {
 			/*if (that.action_email_owner.data('teleTeleCheckbox').options.checked) {
 				ruleData.action_email_owner = true;
 			}*/
+
+
+			ruleData.ip= [];
+
+			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip')) {
+				var is_range = $('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip').options.flipped;
+
+				var ip_start = $('.tele-ip-wrap .tele-ip:first').data('tele-ip').getIP();
+				var ip_end = $('.tele-ip-wrap .tele-ip:last').data('tele-ip').getIP();
+
+				if (is_range) {
+					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
+						ruleData.ip = {from: ip_start, to: ip_end};
+					}
+				} else {
+					if (ip_start) {
+						ruleData.ip = {from: ip_start, to: ip_start};
+					}
+				}
+			}
+
 
 			// Get rule script execution config
 			ruleData.cmd = [];
