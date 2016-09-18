@@ -11,8 +11,8 @@ $.widget('tele.teleOption', {
         this._update();
     },
 
-    _setOptions: function (key, value) {
-        this.option[key] = value;
+    _setOption: function (key, value) {
+        this.options[key] = value;
         this._update();
     },
     _update: function () {
@@ -90,7 +90,9 @@ $.widget('tele.teleOption', {
 
         $('a', options).click(function () {
             $('.text-button', select).remove();
-            select.append('<span class="text-button">' + $(this).html() + '</span>');
+            var selected = $(this).html();
+            select.append('<span class="text-button">' + selected + '</span>');
+            that.options.selected =  selected;
 
         });
 
