@@ -66,8 +66,9 @@ class Applications extends Tele_Controller
 
         // search in business actions
         if ($search && $actions){
-           $actions = $this->M_Actions->search_actions($search);
-            foreach($actions as $action){
+           $actions = $this->M_Actions->search_actions($search, $size, $offset );
+            $results['finished'] = $actions['finished'];
+            foreach($actions['data'] as $action){
                 //TODO: add option to add an action to a subdomain
                //$root_domain= $this->M_Applications->get_root_domain($action['application']);
                 // if the domain already exists, we add the action to this domain

@@ -61,20 +61,26 @@ class M_Actions extends CI_Model {
 		return_success($ans);
 	}
 
-	function search_actions($text){
+	function search_actions($text, $size, $start){
 
 
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
-		$params['body']['size'] = 999;
 		$params['sort'] = ['application'];
 		$params['body'] = [
-			'size' => 9999,
+			'size'=>$size,
+			'from'=>$start,
 			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["action_name.search"], "query" => '*' .
 				$text . '*']]]],
 		];
 
 		$results = $this->elasticClient->search($params);
+
+		if ($start + $size >= $results['hits']['total']) {
+			$finished = true;
+		} else {
+			$finished = false;
+		}
 
 		$results=get_app_source($results);
 
@@ -87,7 +93,7 @@ class M_Actions extends CI_Model {
 
 
 
-		return $results;
+		return ['data'=>$results, 'finished'=> $finished];
 
 	}
 
