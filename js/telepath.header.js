@@ -165,7 +165,8 @@ telepath.header = {
 			$('.tele-panel').empty().hide();
 			$("#file-upload").hide();
 			$('.tele-nav a.active').removeClass('active');
-			
+			$('.tele-search-input').val('');
+
 			// Trigger this panel
 			var id = 'config';
 			telepath[id].init();
@@ -194,7 +195,9 @@ telepath.header = {
 		
 		/* Navigation */
 		$('.tele-nav a').click(function () {
-		
+
+			$('.tele-search-input').val('');
+
 			var id = $(this).parent().attr('class').split('-');
 
 			if(id[0] == 'tele' && id[1] == 'nav' && id[2] != '') {
