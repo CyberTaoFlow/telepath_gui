@@ -574,7 +574,10 @@ telepath.search = {
                         displayed: that.displayed.cases
                     }, function (data) {
                         callback(data);
-                        data.items.map(function(a) { that.displayed.cases.push(a.sid)});
+                        data.items.map(function(a) {
+                            that.displayed.cases.push(a.sid);
+                            that.results.cases.push(a);
+                        });
                     }, false, false, true)
                 }
             }
@@ -613,7 +616,10 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.alerts
                     }, function (data) {
-                        data.items.map(function(a) { that.displayed.alerts.push(a.sid)});
+                        data.items.map(function(a) {
+                            that.displayed.alerts.push(a.sid);
+                            that.results.alerts.push(a);
+                        });
                         callback(data);
                     }, false, false, true)
                 }
@@ -650,7 +656,10 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.suspects
                     }, function (data) {
-                        data.items.map(function(a) { that.displayed.suspects.push(a.sid)});
+                        data.items.map(function(a) {
+                            that.displayed.suspects.push(a.sid);
+                            that.results.suspects.push(a);
+                        });
                         callback(data);
                     }, false, false, true)
                 }
@@ -687,7 +696,10 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.requests
                     }, function (data) {
-                        data.items.map(function(a) { that.displayed.requests.push(a.sid)});
+                        data.items.map(function(a) {
+                            that.displayed.requests.push(a.sid);
+                            that.results.requests.push(a);
+                        });
                         callback(data);
                     }, false, false, true)
                 }
