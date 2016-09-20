@@ -65,7 +65,8 @@ class Rules extends Tele_Controller
         unset($data['id']);
 
 
-        $rules_category = $this->M_Rules->get_rules($data['category']);
+        if ($data['category'] != 'Brute-Force' && $data['category'] != 'Credential-Stuffing' && $data['category'] != 'Web shell'){
+            $rules_category = $this->M_Rules->get_rules($data['category']);
 
         foreach ($rules_category as $rule){
             if ($rule['name'] == $data['name']&& $rule['uid'] != $id){
@@ -91,7 +92,8 @@ class Rules extends Tele_Controller
 
             else {
                 $rules = $this->M_Rules->get_rule_by_name($data['name'],$data['category']);
-                $rules= [$rules['uid']];
+                $rules[0]['_id'] = $rules[0]['uid'];
+//                $rules= [$rules['_id']];
             }
 
             foreach ($rules as $rule) {
@@ -119,7 +121,6 @@ class Rules extends Tele_Controller
                 $this->M_Rules->set_rule($rule['_id'], $data);
             }
             $result = $this->M_Rules->get_rule_by_name($data['name'],$data['category']);
-            $result=  $result[0];
         }
 
          else {

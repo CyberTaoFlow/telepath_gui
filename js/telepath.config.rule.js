@@ -432,7 +432,7 @@ telepath.config.rule = {
 				telepath.ds.get('/rules/set_rule', { ruleData: ruleData, builtin_rule: that.data.builtin_rule }, function(data) {
 					that.data = data.items;
 
-					that.showRule(); // Reload
+					//that.showRule(); // Reload
 
 					if(data.success){
 						$('.jstree-clicked').text(ruleData.name);
