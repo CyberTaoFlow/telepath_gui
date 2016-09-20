@@ -154,11 +154,11 @@ class M_Cases extends CI_Model {
 		$params['type'] = 'http';
 		$params['_source']=false;
 		$params['body'] = [
-			'size' => 100,
+			'size' => 0,
 			"aggs" => [
 				"sid" => [ 
 				
-					"terms" => [ "field" => "sid", "size" => 100, "order" => [ $sortfield => $sortorder ] ],
+					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $sortorder ] ],
 					"aggs" => [
 						"country_code" => [ 
 							"terms" => [ "field" => "country_code", "size" => 1 ] 

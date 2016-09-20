@@ -161,7 +161,7 @@ class Cases extends Tele_Controller
         // Contains requests data to display
         $ans = array();
 
-        $requests = $this->M_Cases->get_case_sessions(100, $cid, $range, $apps, $sort, $dir, $displayed);
+        $requests = $this->M_Cases->get_case_sessions(15, $cid, $range, $apps, $sort, $dir, $displayed);
         if($requests['items']){
             $similars = $this->M_Cases->get_similar_case_sessions($cid);
             if ($similars){
