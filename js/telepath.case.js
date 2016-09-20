@@ -481,7 +481,7 @@ telepath.casePanel = {
 							that.displayed.push(a.sid)
 						});
 						if(typeof(callback) == 'function') {
-							callback();
+							callback(data);
 						}
 					}, false, false, true);
 				}
