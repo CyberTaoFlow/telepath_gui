@@ -240,6 +240,7 @@ $.widget( "tele.teleList", {
 							
 							for(x in data.items) {
 								var item = data.items[x];
+								item.searchkey = that.options.searchkey;
 								that.appendItem(item);
 							}
 							
