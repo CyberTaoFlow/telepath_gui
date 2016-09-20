@@ -68,12 +68,12 @@ class Rules extends Tele_Controller
         if ($data['category'] != 'Brute-Force' && $data['category'] != 'Credential-Stuffing' && $data['category'] != 'Web shell'){
             $rules_category = $this->M_Rules->get_rules($data['category']);
 
-        foreach ($rules_category as $rule){
-            if ($rule['name'] == $data['name']&& $rule['uid'] != $id){
-                return_fail('Rule name already exists');
+            foreach ($rules_category as $rule) {
+                if ($rule['name'] == $data['name'] && $rule['uid'] != $id) {
+                    return_fail('Rule name already exists');
+                }
             }
         }
-
         foreach($data as $i => $val) {
             if ($val =='true'||$val =='false'){
                 $data[$i] = true ? $val=='true': ($val=='false' ? false:$val);
