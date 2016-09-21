@@ -6,6 +6,7 @@ telepath.alerts = {
 	searchString: '',
 	alertsFilter: [],
 	actionsFilter: [],
+	actionsFilterSessions: [],
 	allAlerts: true, // indicate if all the data is shown, without alert filter
 	allActions: true, // indicate if all the data is shown, without action filter
 	loading: false,
@@ -185,6 +186,8 @@ telepath.alerts = {
 
 	refresh: function (callback) {
 
+		var that = this;
+
 		var container = $('.tele-panel-alerts');
 		// Empty panet
 		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
@@ -204,8 +207,23 @@ telepath.alerts = {
 		// Call Once
 		$(window).trigger('resize');
 
-		this.refreshSession(callback);
-		this.refreshGraphs(callback);
+		if(this.actionsFilter.length){
+			telepath.ds.get('/alerts/get_action_filter_sessions', {
+				actionsFilter: that.actionsFilter
+			}, function (data) {
+
+				telepath.alerts.actionsFilterSessions = data.items.action_filter_sessions;
+				that.refreshSession(callback);
+				that.refreshGraphs(callback);
+				if (callback && typeof(callback) == 'function') {
+					callback();
+				}
+			}, false, false, true);
+		}
+		else{
+			this.refreshSession(callback);
+			this.refreshGraphs(callback);
+		}
 	},
 
 	refreshSession: function (callback) {
@@ -219,7 +237,7 @@ telepath.alerts = {
 			dir: this.dir,
 			search: this.searchString,
 			alertsFilter: that.alertsFilter,
-			actionsFilter: that.actionsFilter
+			actionsFilterSessions: that.actionsFilterSessions
 		}, function (data) {
 
 			if (typeof (data.items) != 'undefined') {
@@ -242,7 +260,7 @@ telepath.alerts = {
 		telepath.ds.get('/alerts/get_charts', {
 			search: this.searchString,
 			alertsFilter: that.alertsFilter,
-			actionsFilter: that.actionsFilter
+			actionsFilterSessions: that.actionsFilterSessions
 		}, function (data) {
 			telepath.alerts.setGraphData(data.items);
 			if (callback && typeof(callback) == 'function') {
@@ -311,7 +329,7 @@ telepath.alerts = {
 					dir: telepath.alerts.dir,
 					search: telepath.alerts.searchString,
 					alertsFilter: that.alertsFilter,
-					actionsFilter: that.actionsFilter,
+					actionsFilterSessions: that.actionsFilterSessions,
 					displayed: that.displayed
 				}, function (data) {
 					if (typeof (data.items) != 'undefined') {
