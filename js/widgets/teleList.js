@@ -166,6 +166,20 @@ $.widget( "tele.teleList", {
                         case "rules:":
                             field = 'alerts.name:';
                             break;
+						case "country:":
+							$.each(telepath.countries.map, function (k, val) {
+								if (val.toLowerCase() == search.toLowerCase()) {
+									search = k;
+								}
+							});
+                            field = 'country_code:';
+                            break;
+						case "application:":
+                            field = 'host:';
+                            break;
+						case "parameter:":
+                            field = 'parameters.name:';
+                            break;
                     }
                 }
                 // user and country fields

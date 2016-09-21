@@ -18,6 +18,7 @@ telepath.formatConditionBrief = function(container, data) {
 		case 'rules':
 			
 			result = data.value.replace(',', ', ');
+			result = result.split('::')[1];
 		
 		break;
 		
