@@ -136,7 +136,9 @@ telepath.config.account = {
 				
 				break;
 				case 'ranges':
-				
+
+					$(".tele-ip-segment.error").removeClass('error');
+					var checkIPS = false;
 					$('.tele-ip-wrap', that.limitRanges).each(function () {
 
 						if ($('.tele-mini-toggle', this).data('tele-toggleFlip')) {
@@ -149,14 +151,27 @@ telepath.config.account = {
 								if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 									userData.ranges.push(ip_start + '-' + ip_end);
 								}
+								else{
+									$('input', this).addClass('error');
+									checkIPS = true;
+								}
 							} else {
 								if (ip_start) {
 									userData.ranges.push(ip_start);
+								}
+								else {
+									$('input', this).addClass('error');
+									checkIPS = true;
 								}
 							}
 						}
 
 					});
+
+					if (checkIPS){
+						telepath.dialog({msg: 'You have entered an invalid IP address!'});
+						return
+					}
 				
 				break;
 				

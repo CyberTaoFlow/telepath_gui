@@ -213,6 +213,9 @@ telepath.config.system = {
 
 		data.ip_balances=[];
 
+		var checkIPS = false;
+		$(".tele-ip-segment.error").removeClass('error');
+
 		$('.tele-config-system-lb .tele-ip-wrap', this.ip_balances).each(function () {
 
 			if ($('.tele-mini-toggle', this).data('tele-toggleFlip')) {
@@ -225,9 +228,17 @@ telepath.config.system = {
 					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 						data.ip_balances.push({from: ip_start, to: ip_end});
 					}
+					else{
+						$('input', this).addClass('error');
+						checkIPS = true;
+					}
 				} else {
 					if (ip_start) {
 						data.ip_balances.push({from: ip_start, to: ip_start});
+					}
+					else {
+						$('input', this).addClass('error');
+						checkIPS = true;
 					}
 				}
 			}
@@ -257,14 +268,31 @@ telepath.config.system = {
 					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 						data.whitelist.push({from: ip_start, to: ip_end});
 					}
+					else{
+						$('input', this).addClass('error');
+						checkIPS = true;
+					}
 				} else {
 					if (ip_start) {
 						data.whitelist.push({from: ip_start, to: ip_start});
 					}
+					else {
+						$('input', this).addClass('error');
+						checkIPS = true;
+					}
 				}
 			}
 		});
-		
+
+		if (checkIPS){
+			telepath.dialog({msg: 'You have entered an invalid IP address!'});
+			$(".tele-overlay-dialog").animate({top:  $(".tele-ip-segment.error").first().offset().top},0);
+			$('html, body').animate({
+				scrollTop: $(".tele-ip-segment.error").offset().top-200
+			},0);
+			return false
+		}
+
 		// De-Dupe
 		data.whitelist = data.whitelist.filter(function(elem, pos) {
 			return data.whitelist.indexOf(elem) == pos;

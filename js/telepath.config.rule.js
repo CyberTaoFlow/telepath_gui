@@ -342,6 +342,8 @@ telepath.config.rule = {
 			}
 
 			ruleData.ip= [];
+			$(".tele-ip-segment.error").removeClass('error');
+			var checkIPS = false;
 
 			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip')) {
 				var is_range = $('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip').options.flipped;
@@ -353,11 +355,24 @@ telepath.config.rule = {
 					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 						ruleData.ip = {from: ip_start, to: ip_end};
 					}
+					else{
+						$('input', this).addClass('error');
+						checkIPS = true;
+					}
 				} else {
 					if (ip_start) {
 						ruleData.ip = {from: ip_start, to: ip_start};
 					}
+					else {
+						$('input', this).addClass('error');
+						checkIPS = true;
+					}
 				}
+			}
+
+			if (checkIPS){
+				telepath.dialog({msg: 'You have entered an invalid IP address!'});
+				return
 			}
 
 			ruleData.domain = $('#limit-application input').val();
