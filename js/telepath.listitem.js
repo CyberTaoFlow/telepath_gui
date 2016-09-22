@@ -385,9 +385,23 @@ $.widget( "tele.listitem", {
 									li.append(detail.key);
 									if(detail.value) { li.append(':&nbsp;'); }
 								}
-								
-								if(detail.value) {
-									li.append('<b>' + escapeHtml(detail.value) + '</b>');
+
+								if (detail.value) {
+									if (detail.value.indexOf(",") > -1) {
+										$.each(detail.value.split(/,\s{1}/), function (i, val) {
+											if (i == 0) {
+												li.append('<b>' + escapeHtml(val) + '</b>');
+											}
+											else {
+												li.append(',&nbsp;<b>' + escapeHtml(val) + '</b>');
+											}
+
+										});
+									}
+									else {
+										li.append('<b>' + escapeHtml(detail.value) + '</b>');
+									}
+
 								}
 							
 							break;

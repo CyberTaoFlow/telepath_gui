@@ -24,7 +24,7 @@ class Dashboard extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
         $range = $this->range;
         $apps = $this->apps;
-        $map_mode = $this->M_Dashboard->get_map_mode(true);
+        $map_mode = $this->input->post('map_mode');
 
         $map = $this->M_Dashboard->get_map($range, $apps, $map_mode);
 
@@ -180,57 +180,5 @@ class Dashboard extends Tele_Controller
 
     }
 
-    public function index()
-    {
-
-        // Mode is used for returning only map data
-
-        $mode = $this->input->post('mode');
-        if ($mode) {
-
-            $range = $this->range;
-            $apps = $this->apps;
-
-            switch ($mode) {
-
-                case 'map_alerts':
-
-                    $this->M_Dashboard->set_map_mode('alerts', $range);
-                    $map = $this->M_Dashboard->get_map($range, $apps, 'alerts');
-                    return_success(array('map' => $map));
-
-                    break;
-                case 'map_traffic':
-
-                    $this->M_Dashboard->set_map_mode('traffic',$range);
-                    $traffic = $this->M_Dashboard->get_map($range, $apps, 'traffic');
-                    return_success(array('traffic' => $traffic));
-
-                    break;
-
-            }
-
-            return;
-        }
-        /*
-        $hash1 = md5(serialize($range));
-        $hash2 = md5(serialize($apps));
-        $hash  = md5($hash1 . $hash2);
-
-        $redisObj = new Redis();
-        $redisObj->connect('localhost', '6379');
-        $res = $redisObj->get('cache_dashboard_' . $hash);
-        */
-        /*
-                if($res && $res != '') {
-                    $data = json_decode($res);
-                    if($data && !empty($data)) {
-                        return_success($data);
-                    }
-                }
-        */
-        // Return everything ..
-
-    }
 
 }

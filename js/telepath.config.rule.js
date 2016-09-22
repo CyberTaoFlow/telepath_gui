@@ -359,7 +359,6 @@ telepath.config.rule = {
 					}
 				}
 			}
-
 			ruleData.domain = $('#limit-application input').val();
 
 			// Get rule script execution config

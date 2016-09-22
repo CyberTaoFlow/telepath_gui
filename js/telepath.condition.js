@@ -85,6 +85,8 @@ $.widget( "tele.condition", {
 			
 			case 'IP':
 				result = '';
+				$(".tele-ip-segment.error").removeClass('error');
+				var checkIPS = false;
 				$('.tele-ip-wrap', this.options.element).each(function () {
 
 					if ($('.tele-mini-toggle', this).data('tele-toggleFlip')){
@@ -97,14 +99,29 @@ $.widget( "tele.condition", {
 							if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 								result = result + ip_start + '-' + ip_end + ',';
 							}
+							else{
+								$('input', this).addClass('error');
+								checkIPS = true;
+							}
 						} else {
 							if(ip_start) {
 								result = result + ip_start + ',';
+							}
+							else {
+								$('input', this).addClass('error');
+								checkIPS = true;
 							}
 						}
 					}
 
 				});
+
+				if (checkIPS){
+					telepath.dialog({msg: 'You have entered an invalid IP address!'});
+					$(".tele-condition-accordion").accordion({ active: 2 });
+					return
+				}
+
 				result = result.substr(0, result.length - 1);
 			
 			break;

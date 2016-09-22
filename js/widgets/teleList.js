@@ -149,14 +149,13 @@ $.widget( "tele.teleList", {
 
             $('.tele-listitem-info li b, .tele-country, .tele-user', newItem).click(function () {
 
-                var search = $(this).parent().text();
+                var search = $(this).text();
 
                 var field = '';
 
                 // check if displayed field name (before ":")
-                if (search.indexOf(":") > -1) {
-                    field = search.split(/\s{1}/)[0];
-                    search = search.split(/:\s{1}/)[1];
+                if ($(this).parent().text().indexOf(":") > -1) {
+                    field = $(this).parent().text().split(/\s{1}/)[0];
 
                     // change field to elastic field name
                     switch (field) {
