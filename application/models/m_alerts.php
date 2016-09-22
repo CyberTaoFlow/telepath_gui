@@ -38,20 +38,18 @@ class M_Alerts extends CI_Model {
 					]
 				)
 			),
-			'query' => [
-				'bool' => [
-					'filter' => [
-						 [ 'exists' => [ 'field' => 'alerts_count' ] ] ,
-					]
-				]
-			]
 			];
 
 			global $query;
-			$query='';
+			$query = '_exists_:alerts_count';
 
 			if (count($alerts_filter) > 0 && $alerts_filter != false) {
-				$query .= 'alerts.name:"' . implode('" OR "', $alerts_filter) . '"';
+				$query .= ' AND alerts.name:("' . implode('" OR "', $alerts_filter) . '")';
+			}
+
+
+			if ($search && strlen($search) > 1) {
+				$query .= ' AND "' . $search . '"';
 			}
 
 			if ($actions_sid) {
@@ -59,13 +57,13 @@ class M_Alerts extends CI_Model {
 				$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 			}
 
-			if ($search && strlen($search) > 1) {
 
-				$query .= $search;
-			}
-
-			if($query)
-				$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
+			$params['body']['query']['bool']['filter'][] = [
+				'query_string' => [
+					"query" => $query,
+					"default_operator" => 'AND'
+				]
+			];
 
 			// QUERY
 			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
@@ -87,78 +85,6 @@ class M_Alerts extends CI_Model {
 		
 	}
 	
-	public function old_get_action_distribution_chart($range, $apps, $search = '', $filter=[]) {
-	
-		$dist   = array();
-		$result = array();
-		$max    = 5;
-
-		$params['index'] = 'telepath-20*';
-		$params['type'] = 'http';
-		$params['body'] = [
-			'size' => 0,
-			"aggs" => [
-				"actions" => [ 
-					"terms" => [ "field" => "business_actions.name", "size" => 999 ],
-				],
-			]
-		];
-		
-		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-
-		$params = append_range_query($params, $range);
-
-		global $query;
-		$query='';
-
-		if (count($filter)>1){
-			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
-		}
-
-		elseif (count($filter)==1&&$filter!=false){
-			$query.='alerts.name:"'.implode('" OR "',$filter).'"';
-		}
-
-
-
-		if($search && strlen($search) > 1) {
-
-			if (count($filter)>0 &&$filter!=false){
-				$query.=' AND ('.$search.')';
-			}
-			else{
-				$query.=$search;
-			}
-
-		}
-
-		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
-
-		$params = append_application_query($params, $apps);
-		$params = append_access_query($params);
-		
-		$result = $this->elasticClient->search($params);
-		$results = array();
-		
-		if(isset($result["aggregations"]) && 
-		   isset($result["aggregations"]["actions"]) && 
-		   isset($result["aggregations"]["actions"]["buckets"]) && 
-		   !empty($result["aggregations"]["actions"]["buckets"])) {
-		   
-				$action_buckets = $result["aggregations"]["actions"]["buckets"];
-				foreach($action_buckets as $action_bucket) {
-				
-					$results[] = [
-						"label"     => $action_bucket['key'],
-						"data"    => $action_bucket['doc_count'], 
-					];
-			}
-		}
-		
-		return $results;
-
-	}
 
 	public function get_action_distribution_chart($range, $apps, $search = '', $alerts_filter = [])
 	{
@@ -172,95 +98,78 @@ class M_Alerts extends CI_Model {
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
-				/*"actions" => [
-                    "terms" => [ "field" => "business_actions.name", "size" => 999 ],
-                ],*/
 				"sid" => [
-					"terms" => ["field" => "sid",
+					"terms" => [
+						"field" => "sid",
 						"size" => 0
-					]
+					],
+					"aggs" => [
+						"actions" => [
+							"filter" => ['exists' => ['field' => 'business_actions']],
+							"aggs" => [
+								"actions_names" => [
+									"terms" => ["field" => "business_actions.name", "size" => 0]
+								]
+							]
+						],
+					],
+
 				],
 			]
 		];
 
-
-		$params['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
-
 		$params = append_range_query($params, $range);
 
 		global $query;
-		$query = '';
+
+		$query = '_exists_:alerts';
 
 		if (count($alerts_filter) > 0 && $alerts_filter != false) {
-			$query .= 'alerts.name:"' . implode('" OR "', $alerts_filter) . '"';
+			$query .= ' AND alerts.name:("' . implode('" OR "', $alerts_filter) . '")';
 		}
 
 
 		if ($search && strlen($search) > 1) {
-
-			if (count($alerts_filter) > 0 && $alerts_filter != false) {
-				$query .= ' (' . $search . ')';
-			} else {
-				$query .= $search;
-			}
-
+			$query .= ' AND "' . $search . '"';
 		}
 
-		if ($query)
-			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+		$params['body']['aggs']['sid']['aggs']['alerts']['filter'] = [
+			'query_string' => [
+				"query" => $query,
+				"default_operator" => 'AND'
+			]
+		];
 
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 
 		$result = $this->elasticClient->search($params);
 
-		$results = array();
+		$results = [];
 		$results2 = [];
 		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["sid"]) &&
 			!empty($result["aggregations"]["sid"]["buckets"])
 		) {
 
-			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
-			foreach ($sid_buckets as $sid) {
-				$params2 = [];
-				if ($range) {
-					$params2['index'] = $range['indices'];
-				} else {
-					$params2['index'] = 'telepath-20*';
-				}
-				$params2['type'] = 'http';
-				$params2['body'] = [
-					"size" => 0,
-					"aggs" => [
-						"actions" => [
-							"terms" => ["field" => "business_actions.name", "size" => 999]
-						]
-					]
-				];
+			foreach ($result["aggregations"]["sid"]["buckets"] as $sid) {
+				if ($sid['alerts']['doc_count'] && $sid['actions']['doc_count']) {
 
-				$params2['body']['query']['bool']['filter'][] = ['term' => ['sid' => $sid['key']]];
+					if (isset($sid['actions']["actions_names"]) &&
+						!empty($sid['actions']["actions_names"]["buckets"])
+					) {
 
-				$params2 = append_range_query($params2, $range);
-
-				$result2 = $this->elasticClient->search($params2);
-
-				if (isset($result2["aggregations"]) &&
-					isset($result2["aggregations"]["actions"]) &&
-					!empty($result2["aggregations"]["actions"]["buckets"])
-				) {
-
-					$action_buckets = $result2["aggregations"]["actions"]["buckets"];
-
-					foreach ($action_buckets as $key => $value) {
-						if (isset($results [$value['key']])) {
-							$results [$value['key']] += $value['doc_count'];
-						} else {
-							$results [$value['key']] = $value['doc_count'];
+						foreach ($sid['actions']["actions_names"]["buckets"] as $key => $value) {
+							if (isset($results [$value['key']])) {
+								$results [$value['key']] += $value['doc_count'];
+							} else {
+								$results [$value['key']] = $value['doc_count'];
+							}
 						}
 					}
 				}
 			}
+
 
 			foreach ($results as $key => $value) {
 				$results2[] = [
@@ -272,11 +181,7 @@ class M_Alerts extends CI_Model {
 		return $results2;
 	}
 
-	public function get_distribution_chart($range, $apps, $search = '') {
-
-		$dist   = array();
-		$result = array();
-		$max    = 5;
+	public function get_distribution_chart($range, $apps, $search = ''/*, $actions_sid = []*/) {
 
 		if ($range) {
 			$params['index'] = $range['indices'];
@@ -298,20 +203,23 @@ class M_Alerts extends CI_Model {
 			]
 		];
 
-		$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
-
 		global $query;
-		$query = '';
 
-		$params = append_range_query($params, $range);
+		$query = '_exists_:alerts';
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= $search;
+			$query .= ' AND "' . $search . '"';
 		}
-		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
+		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
+
+//		if ($actions_sid) {
+//
+//			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
+//		}
+
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 
@@ -418,13 +326,6 @@ class M_Alerts extends CI_Model {
 					"cardinality" => [ "field" => "sid" ],
 				]
 			],
-			'query' => [
-				'bool' => [
-					'filter' => [
-						[ 'exists' => [ 'field' => 'alerts' ] ],
-					]
-				],
-			],
 		];
 		if (count($displayed) > 0 && $displayed != false) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
@@ -437,35 +338,21 @@ class M_Alerts extends CI_Model {
 			}
 			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 		}
-//		$params['body']['query']['bool']['must'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
-
-
-		$params = append_range_query($params, $range);
-		
-		/*if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
-		}*/
 
 		global $query;
-		$query='';
 
-		if (count($alerts_filter) > 0 && $alerts_filter != false){
+		$query = '_exists_:alerts';
 
-			if (count($alerts_filter) > 0 && $alerts_filter != false) {
-				$query .= 'alerts.name:"' . implode('" OR "', $alerts_filter) . '"';
-			}
+		if (count($alerts_filter) > 0 && $alerts_filter != false) {
+			$query .= ' AND alerts.name:("' . implode('" OR "', $alerts_filter) . '")';
 		}
+
+
 		if ($search && strlen($search) > 1) {
-
-			if ((count($alerts_filter) > 0 && $alerts_filter != false) /*|| (count($actions_filter) > 0 && $actions_filter != false)*/) {
-				$query .= ' (' . $search . ')';
-			} else {
-				$query .= $search;
-			}
+			$query .= ' AND "' . $search . '"';
 		}
 
-		if($query)
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND'] ];
+		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND'] ];
 
 		if ($sortfield == "date") {
 			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
@@ -487,7 +374,7 @@ class M_Alerts extends CI_Model {
 //			];
 //		}
 
-		
+		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 
@@ -496,18 +383,14 @@ class M_Alerts extends CI_Model {
 		$results = array('items' => array());
 
 		$count = 0;
-//
-//		$count_offset = 0;
-//		$count_insert = 0;
-//
+
+
 		if(isset($result["aggregations"]) && 
 		   isset($result["aggregations"]["sid"]) && 
 		   !empty($result["aggregations"]["sid"]["buckets"])) {
 		   
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach($sid_buckets as $sid) {
-				
-//				if($count_offset >= $displayed) {
 
 						$sid_key = $sid['key'];
 						$doc_count = $sid['doc_count'];
@@ -609,15 +492,7 @@ class M_Alerts extends CI_Model {
 							'ip_score' => $score_average,
 							"user" => $sid['user']['buckets'][0]['key']
 						);
-//						$count_insert++;
-//						if($count_insert >= $limit) {
-//							break;
-//						}
-					
-				/*} else {
-					$count_offset++;
-				}
-				*/
+
 			}
 			
 			$count = $result["aggregations"]["sid_count"]["value"];
@@ -789,38 +664,26 @@ class M_Alerts extends CI_Model {
 
 	}
 
-	public function get_action_filter($actions_filter=[], $range=[], $search='', $apps=[]){
+	public function get_action_filter_sessions($actions_filter=[], $range=[], $apps=[]){
 
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
 				"sid" => [
-					"terms" => [ "field" => "sid", "size" => 999]
-				],
-			],
-			'query' => [
-				'bool' => [
-					'filter' => [
-						[ 'exists' => [ 'field' => 'business_actions' ] ],
-					]
+					"terms" => [ "field" => "sid", "size" => 0]
 				],
 			],
 		];
 
 		global $query;
-		$query = '';
+
+		$query = '_exists_:business_actions';
 
 		if (count($actions_filter) > 0 && $actions_filter != false) {
-			$query .= 'business_actions.name:"' . implode('" OR "', $actions_filter) . '"';
+			$query .= ' AND business_actions.name:("' . implode('" OR "', $actions_filter) . '")';
 		}
 
-		if ($search && strlen($search) > 1) {
-			if (count($actions_filter) > 0 && $actions_filter != false) {
-				$query .= ' (' . $search . ')';
-			}
-		}
-		if ($query)
-			$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+		$params['body']['query']['bool']['filter'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);

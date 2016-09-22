@@ -13,7 +13,6 @@ class Alerts extends Tele_Controller
         $this->load->model('M_Alerts');
         $this->range = $this->_get_range();
         $this->apps = $this->_get_apps();
-        $this->actions_sid = false;
     }
 
     public function get_alerts()
@@ -23,7 +22,7 @@ class Alerts extends Tele_Controller
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $search = $this->input->post('search');
         $alerts_filter = $this->input->post('alertsFilter');
-        $actions_filter = $this->input->post('actionsFilter');
+        $actions_filter_session = $this->input->post('actionsFilterSessions');
         $displayed = $this->input->post('displayed');
 
         if (!$sort || !in_array($sort, array('date', 'name', 'count', 'score'))) {
@@ -33,14 +32,7 @@ class Alerts extends Tele_Controller
         $range = $this->range;
         $apps = $this->apps;
 
-        $actions_sid = [];
-        //Action filter
-        if (count($actions_filter) > 0 && $actions_filter != false && !$this->actions_sid) {
-
-            $this->actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
-        }
-
-        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $this->actions_sid);
+        $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_filter_session);
 
         if ($displayed) {
             // We need just the alert items
@@ -58,21 +50,13 @@ class Alerts extends Tele_Controller
 
         $search = $this->input->post('search');
         $alerts_filter = $this->input->post('alertsFilter');
-        $actions_filter = $this->input->post('actionsFilter');
+        $actions_filter_session = $this->input->post('actionsFilterSessions');
 
         $range = $this->range;
         $apps = $this->apps;
 
-        $actions_sid = [];
-        //Action filter
-        if (count($actions_filter) > 0 && $actions_filter != false && !$this->actions_sid) {
-
-            $this->actions_sid = $this->M_Alerts->get_action_filter($actions_filter, $range, $search, $apps);
-        }
-
-
-        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $this->actions_sid);
-        $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search);
+        $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_filter_session);
+        $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search/*, $actions_filter_session*/);
 
         if ($alerts_filter) {
             foreach ($distribution_chart as $key => $dis) {
@@ -111,6 +95,19 @@ class Alerts extends Tele_Controller
         }
 
         return_success(['action_distribution_chart' => $action_distribution_chart]);
+    }
+
+    public function get_action_filter_sessions()
+    {
+
+        $actions_filter = $this->input->post('actionsFilter');
+
+        $range = $this->range;
+        $apps = $this->apps;
+
+        $action_filter_sessions = $this->M_Alerts->get_action_filter_sessions($actions_filter, $range, $apps);
+
+        return_success(['action_filter_sessions' => $action_filter_sessions]);
     }
 
 
