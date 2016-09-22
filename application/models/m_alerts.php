@@ -181,7 +181,7 @@ class M_Alerts extends CI_Model {
 		return $results2;
 	}
 
-	public function get_distribution_chart($range, $apps, $search = ''/*, $actions_sid = []*/) {
+	public function get_distribution_chart($range, $apps, $search = '', $actions_sid = []) {
 
 		if ($range) {
 			$params['index'] = $range['indices'];
@@ -214,10 +214,10 @@ class M_Alerts extends CI_Model {
 
 		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
-//		if ($actions_sid) {
-//
-//			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
-//		}
+		if ($actions_sid) {
+
+			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
+		}
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
