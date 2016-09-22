@@ -565,9 +565,6 @@ class M_Alerts extends CI_Model {
 						"country_code" => [
 							"terms" => ["field" => "country_code", "size" => 1]
 						],
-						"city" => [
-							"terms" => ["field" => "city", "size" => 1]
-						],
 						"ip_orig" => [
 							"terms" => ["field" => "ip_orig", "size" => 1]
 						],
@@ -624,7 +621,6 @@ class M_Alerts extends CI_Model {
 
 				$results['items'][] = array(
 					"sid" => $sid_key,
-					"city" => $sid['city']['buckets'][0]['key'],
 					"alerts_count" => $sid['alerts_count']['value'],
 					"alerts_names" => $sid['alerts_names']['buckets'],
 					"country" => strtoupper($sid['country_code']['buckets'][0]['key']),

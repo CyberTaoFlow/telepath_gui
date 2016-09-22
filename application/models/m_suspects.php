@@ -394,9 +394,6 @@ class M_Suspects extends CI_Model {
                                                 "country_code" => [
                                                     "terms" => [ "field" => "country_code", "size" => 1 ]
                                                 ],
-                                                "city" => [
-                                                    "terms" => [ "field" => "city" , "size" => 1 ]
-                                                ],
                                                 "ip_orig" => [
                                                     "min" => [ "field" => "ip_orig" ]
                                                 ],
@@ -463,7 +460,6 @@ class M_Suspects extends CI_Model {
 
 					$results['items'][] = array(
 						"sid"     => $sid_key,
-						"city"    => $sid['city']['buckets'][0]['key'],
 						"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
 						"ip_orig" => long2ip($sid['ip_orig']['value']),
 						"host"    => $sid['host']['buckets'],
