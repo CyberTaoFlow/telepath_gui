@@ -207,6 +207,9 @@ telepath.alerts = {
 		// Call Once
 		$(window).trigger('resize');
 
+		this.loading = true;
+		this.counter = 0;
+
 		if(this.actionsFilter.length){
 			telepath.ds.get('/alerts/get_action_filter_sessions', {
 				actionsFilter: that.actionsFilter
@@ -240,6 +243,11 @@ telepath.alerts = {
 			actionsFilterSessions: that.actionsFilterSessions
 		}, function (data) {
 
+			that.counter++;
+			if (that.counter>1){
+				that.loading = false;
+			}
+
 			if (typeof (data.items) != 'undefined') {
 				data.items.alerts.items.map(function (a) {
 					that.displayed.push(a.sid)
@@ -262,6 +270,12 @@ telepath.alerts = {
 			alertsFilter: that.alertsFilter,
 			actionsFilterSessions: that.actionsFilterSessions
 		}, function (data) {
+
+			that.counter++;
+			if (that.counter>1){
+				that.loading = false;
+			}
+
 			telepath.alerts.setGraphData(data.items);
 			if (callback && typeof(callback) == 'function') {
 				callback();
@@ -277,8 +291,6 @@ telepath.alerts = {
 			alertsFilter: that.alertsFilter,
 			actionsFilter: that.actionsFilter
 		}, function (data) {
-			// probably the last one!!
-			telepath.alerts.loading = false;
 			// set data
 			telepath.alerts.data.action_distribution_chart = data.items.action_distribution_chart;
 			// if the BA toogle filter is displayed and is waiting for data, we need to show the data

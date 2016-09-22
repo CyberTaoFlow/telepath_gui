@@ -56,7 +56,7 @@ class Alerts extends Tele_Controller
         $apps = $this->apps;
 
         $time_chart = $this->M_Alerts->get_time_chart($range, $apps, $search, $alerts_filter, $actions_filter_session);
-        $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search/*, $actions_filter_session*/);
+        $distribution_chart = $this->M_Alerts->get_distribution_chart($range, $apps, $search, $actions_filter_session);
 
         if ($alerts_filter) {
             foreach ($distribution_chart as $key => $dis) {
