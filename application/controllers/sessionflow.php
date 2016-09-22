@@ -46,7 +46,14 @@ class Sessionflow extends Tele_Controller
 //            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
 //        }
 
-        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $state, $range);
+        $suspect_threshold = 0.8;
+
+        if ($state == 'Suspect'){
+            $this->load->model('M_Suspects');
+            $suspect_threshold = $this->M_Suspects->get_threshold();
+        }
+
+        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $state, $range, $suspect_threshold);
         return_success($stats);
 
     }
@@ -89,8 +96,16 @@ class Sessionflow extends Tele_Controller
             $range = $this->_get_range();
         }
 
+        $suspect_threshold = 0.8;
 
-        $sessionflow = $this->M_Sessionflow->get_sessionflow($anchor_field, $anchor_value, $offset, 100, $filter, $key, $range);
+        if ($filter == 'Suspect'){
+            $this->load->model('M_Suspects');
+            $suspect_threshold = $this->M_Suspects->get_threshold();
+        }
+
+
+        $sessionflow = $this->M_Sessionflow->get_sessionflow($anchor_field, $anchor_value, $offset, 100, $filter,
+            $key, $range, $suspect_threshold);
         return_success($sessionflow);
 
     }

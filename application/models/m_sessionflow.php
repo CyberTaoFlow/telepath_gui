@@ -69,7 +69,8 @@ class M_Sessionflow extends CI_Model {
 	
 	}
 	
-	public function get_session_stats($anchor_field, $anchor_value, $key = '',$state='', $range = null) {
+	public function get_session_stats($anchor_field, $anchor_value, $key = '',$state='', $range = null,
+		$suspect_threshold = 0.8) {
 		if ($range) {
 			$params['index'] = $range['indices'];
 		} else {
@@ -94,7 +95,7 @@ class M_Sessionflow extends CI_Model {
 				],
 			];
             if ($state=='Suspect'){
-				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
+				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 
@@ -247,7 +248,8 @@ class M_Sessionflow extends CI_Model {
 			
 	}
 	
-	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range = false) {
+	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range =
+	false, $suspect_threshold = 0.8) {
 		if($range){
 			$params['index'] = $range['indices'];
 		}
@@ -285,7 +287,7 @@ class M_Sessionflow extends CI_Model {
 				}
             break;
             case 'Suspect':
-                $params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => 0.8 ] ] ];
+                $params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
                 $params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
                 $params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
                 break;
