@@ -21,18 +21,39 @@ telepath.dashboard = {
 		}, 5000);
 		
 		var that = this;
-		
-		telepath.ds.get('/dashboard/get_map', { }, function (data, flag) {
+
+
+		this.map_mode = this.map_mode ? this.map_mode : 'alerts';
+		telepath.ds.get('/dashboard/get_map', { map_mode: this.map_mode }, function (data, flag) {
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
 				return;
 			}
-			telepath.dashboard.map_mode=data.items.map_mode;
-			$('.tele-panel-dashboard .tele-panel-subtitle-right .tele-mini-toggle').toggleFlip({flipped:data.items.map_mode=='traffic'}) ;
-			telepath.dashboard.data.items.map = data.items.map;
-			telepath.dashboard.map.vMap({ data: telepath.dashboard.data.items.map, title: data.items.map_mode=='traffic'?'Traffic over time':'Alerts over time'});
+			// define for the first time
+			$('.tele-panel-dashboard .tele-panel-subtitle-right .tele-mini-toggle').toggleFlip({flipped: that.map_mode == 'traffic'});
+			if (that.map_mode == 'alerts') {
+				that.data.items.map_alerts = data.items.map;
+				that.data.items.map = data.items.map;
+			}
+			else {
+				that.data.items.map_traffic = data.items.map;
+				that.data.items.map = data.items.map;
+			}
+
+			telepath.dashboard.map.vMap({
+				data: that.data.items.map,
+				title: data.items.map_mode == 'traffic' ? 'Traffic over time' : 'Alerts over time'
+			});
 			$(window).trigger('resize');
+			telepath.ds.get('/dashboard/get_map', {map_mode: that.map_mode == 'alerts' ? 'traffic' : 'alerts'}, function (data, flag) {
+				if (that.map_mode == 'traffic') {
+					that.data.items.map_alerts = data.items.map;
+				}
+				else {
+					that.data.items.map_traffic = data.items.map;
+				}
+			});
 		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_chart', { }, function (data, flag) {
@@ -241,15 +262,13 @@ telepath.dashboard = {
 				that.map.empty();
 				that.map.append(telepath.loader);
 				if(x) {
-					telepath.ds.get('/dashboard', { mode: 'map_traffic' }, function(data) { 
-						telepath.dashboard.data.items.map = data.items.traffic;
-						that.map.vMap({ data: data.items.traffic, title: 'Traffic over time' });
-					}, false, false, true);
+					that.map_mode = 'traffic';
+					telepath.dashboard.data.items.map = that.data.items.map_traffic;
+					that.map.vMap({ data: that.data.items.map_traffic, title: 'Traffic over time' });
 				} else {
-					telepath.ds.get('/dashboard', { mode: 'map_alerts' }, function(data) { 
-						telepath.dashboard.data.items.map = data.items.map;
-						that.map.vMap({ data: data.items.map, title: 'Alerts over time' });
-					}, false, false, true);
+					that.map_mode = 'alerts';
+					telepath.dashboard.data.items.map = that.data.items.map_alerts;
+					that.map.vMap({ data: that.data.items.map_alerts, title: 'Alerts over time' });
 				}
 			}});
 			

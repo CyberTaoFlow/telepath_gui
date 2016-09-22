@@ -682,43 +682,6 @@ class M_Dashboard extends CI_Model {
 
 	}
 
-	public function set_map_mode($status,$range){
-
-		$this->user_id = $this->ion_auth->get_user_id();
-
-		$parsed=array('time_range'=>$range,'status'=>$status);
-
-		$this->ion_auth->update($this->user_id, array('extradata' => json_encode($parsed)));
-
-	}
-
-	public function get_map_mode($local=false)
-	{
-		$this->user_id = $this->ion_auth->get_user_id();
-
-		if ($this->user_id) {
-			$this->user = $this->ion_auth->user($this->user_id)->result();
-			if (!isset($this->user[0])) {
-				return;
-			}
-			$this->user = (array)$this->user[0];
-		} else {
-			return;
-		}
-
-		$parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
-
-		if (isset ($parsed['status'])) {
-			$map_mode = $parsed['status'];
-		} else {
-			$map_mode = "alerts";
-		}
-
-		if ($local)
-			return $map_mode;
-
-		return_success($map_mode);
-	}
 }
 
 ?>
