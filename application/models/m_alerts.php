@@ -54,11 +54,11 @@ class M_Alerts extends CI_Model {
 
 			if ($actions_sid) {
 
-				$params['body']['query']['bool']['must'][] = ['terms' => ['sid' => $actions_sid]];
+				$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 			}
 
 
-			$params['body']['query']['bool']['must'][] = [
+			$params['body']['query']['bool']['filter'][] = [
 				'query_string' => [
 					"query" => $query,
 					"default_operator" => 'AND'
@@ -66,7 +66,7 @@ class M_Alerts extends CI_Model {
 			];
 
 			// QUERY
-			$params['body']['query']['bool']['must'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
+			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
 				$scope_end ] ] ];
 			
 			$params = append_application_query($params, $apps);
@@ -212,11 +212,11 @@ class M_Alerts extends CI_Model {
 			$query .= ' AND "' . $search . '"';
 		}
 
-		$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
+		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 		if ($actions_sid) {
 
-			$params['body']['query']['bool']['must'][] = ['terms' => ['sid' => $actions_sid]];
+			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 		}
 
 		$params = append_range_query($params, $range);
@@ -336,7 +336,7 @@ class M_Alerts extends CI_Model {
 			if (count($displayed) > 0 && $displayed != false) {
 				$actions_sid = array_values(array_diff($actions_sid, $displayed));
 			}
-			$params['body']['query']['bool']['must'][] = ['terms' => ['sid' => $actions_sid]];
+			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 		}
 
 		global $query;
@@ -352,7 +352,7 @@ class M_Alerts extends CI_Model {
 			$query .= ' AND "' . $search . '"';
 		}
 
-		$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND'] ];
+		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND'] ];
 
 		if ($sortfield == "date") {
 			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
@@ -466,7 +466,7 @@ class M_Alerts extends CI_Model {
 							]
 						];
 
-				$params2['body']['query']['bool']['must'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+				$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 
 
 				$params2 = append_range_query($params2, $range);
@@ -595,7 +595,7 @@ class M_Alerts extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 						['exists' => ['field' => 'alerts']],
 					]
 				],
@@ -683,7 +683,7 @@ class M_Alerts extends CI_Model {
 			$query .= ' AND business_actions.name:("' . implode('" OR "', $actions_filter) . '")';
 		}
 
-		$params['body']['query']['bool']['must'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
+		$params['body']['query']['bool']['filter'][] = ['query_string' => ["query" => $query, "default_operator" => 'AND']];
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);

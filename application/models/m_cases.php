@@ -571,7 +571,7 @@ class M_Cases extends CI_Model {
 					foreach ($case['details'] as $condition) {
 
 						if (!$condition['negate'])
-							$appear = 'must';
+							$appear = 'filter';
 						else
 							$appear = 'must_not';
 
@@ -800,7 +800,7 @@ class M_Cases extends CI_Model {
 		foreach ($case_data['details'] as $condition){
 
 				if ($condition['negate']=="false")
-					$appear='must';
+					$appear='filter';
 				else
 					$appear='must_not';
 
@@ -821,7 +821,7 @@ class M_Cases extends CI_Model {
 
 		//$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases_name" => $cid ] ];
 
-		// todo: need to add $params['body']['query']['bool']['must'] for the append functions
+		// todo: need to add $params['body']['query']['bool']['filter'] for the append functions
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);

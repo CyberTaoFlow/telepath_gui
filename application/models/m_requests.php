@@ -37,7 +37,7 @@ class M_Requests extends CI_Model {
 			'size'  => 1,
 			'query' => array(
 				'bool' => array(
-					'must' => array(
+					'filter' => array(
 						array('query_string' => array('default_field' => '_type', 'query' => 'http')),
 					)
 				)

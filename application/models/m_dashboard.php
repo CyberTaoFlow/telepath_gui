@@ -563,7 +563,7 @@ class M_Dashboard extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must'=>[]
+					'filter'=>[]
 				],
 			],
 		];

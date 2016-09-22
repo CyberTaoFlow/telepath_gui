@@ -13,7 +13,7 @@ class M_Sessionflow extends CI_Model {
 			'size'  => 1,
 			'query' => array(
 				'bool' => array(
-					'must' => array(
+					'filter' => array(
 						array('query_string' => array('default_field' => '_id', 'query' => $uid)),
 					)
 				)
@@ -109,7 +109,7 @@ class M_Sessionflow extends CI_Model {
 
 				$params = append_range_query($params, $range);
 
-				$params['body']['query']['bool']['must'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 
 				$results = $this->elasticClient->search($params);
 
@@ -272,15 +272,15 @@ class M_Sessionflow extends CI_Model {
 		
 		switch($filter) {
 			case 'Actions':
-				$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'business_actions' ] ] ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'business_actions' ] ] ;
 			break;
 			case 'Alerts':
-				$params['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ] ;
 			break;
 			case 'Search':
 				if ($key)
 				{
-					$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+					$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 					break;
 				}
             break;

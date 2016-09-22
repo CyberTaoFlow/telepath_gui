@@ -19,8 +19,8 @@ class M_Rules extends CI_Model {
 		$params['index'] = 'telepath-rules';
 		$params['type']  = 'rules';
 		
-		$params['body']['query']['bool']['must'][] = ['match' => ['name' => $name]];
-		$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
+		$params['body']['query']['bool']['filter'][] = ['match' => ['name' => $name]];
+		$params['body']['query']['bool']['filter'][] = ['match' => ['category' => $category]];
 
 		#$results = $this->elasticClient->deleteByQuery($params);
 		delete_by_query($this->elasticClient, $params, 1);
@@ -248,10 +248,10 @@ class M_Rules extends CI_Model {
 		$params['index'] = 'telepath-rules';
 		$params['type']  = 'rules';
 		
-		$params['body']['query']['bool']['must'][] = ['match' => ['name' => $name]];
+		$params['body']['query']['bool']['filter'][] = ['match' => ['name' => $name]];
 		if($category){
 			$params['body']['size'] = 1;
-			$params['body']['query']['bool']['must'][] = ['match' => ['category' => $category]];
+			$params['body']['query']['bool']['filter'][] = ['match' => ['category' => $category]];
 		}
 
 		$results   = get_elastic_results($this->elasticClient->search($params));
@@ -444,7 +444,7 @@ class M_Rules extends CI_Model {
 		$params['_source_include'] = ['category','name'];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ['category.search', 'name.search'], "query" => '*'. $search . '*']]]],
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ['category.search', 'name.search'], "query" => '*'. $search . '*']]]],
 
 		];
 

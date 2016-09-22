@@ -96,7 +96,7 @@ class M_Search extends CI_Model {
 			],
 			'query' => [
 				'bool' => [
-					'must' => [
+					'filter' => [
 						[
                             'query_string' => [
                                 "query" => $settings['search'],
@@ -233,7 +233,7 @@ class M_Search extends CI_Model {
 		// Add post filter to filter only the query (and not the aggregation) to check if the current session has
 		// also results in another tab
 		if ($scope == 'requests' || $scope == 'suspects') {
-			$params2['body']['post_filter']['bool']['must'][] = [
+			$params2['body']['post_filter']['bool']['filter'][] = [
 				'query_string' => [
 					"query" => $settings['search'],
 					"default_operator" => 'AND'
@@ -280,7 +280,7 @@ class M_Search extends CI_Model {
 						$params4['body']['size'] = 0;
 						$params4['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 						$params4['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-						$params4['body']['query']['bool']['must'][] = [
+						$params4['body']['query']['bool']['filter'][] = [
 							'query_string' => [
 								"query" => $settings['search'],
 								"default_operator" => 'AND'

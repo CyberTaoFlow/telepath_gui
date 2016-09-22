@@ -14,7 +14,7 @@ class M_Actions extends CI_Model {
 
 		$params['body'] = [
 			'size'   => 999,
-				'query' => [ "bool" => [ "must" => [
+				'query' => [ "bool" => [ "filter" => [
 					[ 'term' => [ "domain" => $host ] ],
 					[ 'term' => [ '_type' => 'actions' ] ]
 				] ]	]
@@ -46,7 +46,7 @@ class M_Actions extends CI_Model {
 		$params['_source_include'] = ["application", "action_name"];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["application", "action_name"], "query" => '*' . $text . '*']]]],
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["application", "action_name"], "query" => '*' . $text . '*']]]],
 		];
 
 		$results = $this->client->search($params);
@@ -70,7 +70,7 @@ class M_Actions extends CI_Model {
 		$params['body'] = [
 			'size'=>$size,
 			'from'=>$start,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["action_name.search"], "query" => '*' .
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["action_name.search"], "query" => '*' .
 				$text . '*']]]],
 		];
 
@@ -150,8 +150,8 @@ class M_Actions extends CI_Model {
 		// Delete old
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
-		$params['body']['query']['bool']['must'][] = ['term' => ['action_name' => $name]];
-		$params['body']['query']['bool']['must'][] = ['term' => ['application' => $app]];
+		$params['body']['query']['bool']['filter'][] = ['term' => ['action_name' => $name]];
+		$params['body']['query']['bool']['filter'][] = ['term' => ['application' => $app]];
 		#$res = $this->client->deleteByQuery($params);
                 delete_by_query($this->client, $params);
 
@@ -170,7 +170,7 @@ class M_Actions extends CI_Model {
 		$params['body'] = [
 			'size' => 100,
 			'query' => ['bool' =>
-				['must' => [
+				['filter' => [
 					['term' => ['parameters.name' => 'hybridrecord']],
 					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
 				],
@@ -217,10 +217,10 @@ class M_Actions extends CI_Model {
 		];
 
 		if ($offset) {
-			$params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $offset]]];
+			$params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $offset]]];
 		}
 		if ($host) {
-			$params['body']['query']['bool']['must'][] = ['term' => ['host' => $host]];
+			$params['body']['query']['bool']['filter'][] = ['term' => ['host' => $host]];
 		}
 
 		// sanity check (Yuli)
@@ -237,7 +237,7 @@ class M_Actions extends CI_Model {
 
 			case 'IP':
 
-				$params['body']['query']['bool']['must'][] = ['term' => ['ip_orig' => $value]];
+				$params['body']['query']['bool']['filter'][] = ['term' => ['ip_orig' => $value]];
 
 				break;
 
@@ -250,7 +250,7 @@ class M_Actions extends CI_Model {
 
 			case 'SID':
 
-				$params['body']['query']['bool']['must'][] = ['term' => ['sid' => $value]];
+				$params['body']['query']['bool']['filter'][] = ['term' => ['sid' => $value]];
 
 				break;
 		}
@@ -401,7 +401,7 @@ class M_Actions extends CI_Model {
 				],
 			],
 			'query' => ['bool' =>
-				['must' => [
+				['filter' => [
 					['term' => ['host' => $host]],
 					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
 				],
@@ -442,7 +442,7 @@ class M_Actions extends CI_Model {
 
 			],
 			'query' => ['bool' =>
-				['must' => [
+				['filter' => [
 					['term' => ['host' => $host]],
 					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
 				],
@@ -502,7 +502,7 @@ class M_Actions extends CI_Model {
 				],
 			],
 			'query' => ['bool' =>
-				['must' => [
+				['filter' => [
 					['term' => ['host' => $host]],
 					['range' => ['ts' => ['gte' => intval(time() - $scope)]]]
 				],

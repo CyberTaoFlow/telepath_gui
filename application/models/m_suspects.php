@@ -182,7 +182,12 @@ class M_Suspects extends CI_Model {
 		$params = append_range_query($params, $range);
 
 		if($search && strlen($search) > 1) {
-			$params['body']['query']['bool']['must'][] = [ 'query_string' => [ "query" => $search, "default_operator" => 'AND'  ] ];
+			$params['body']['query']['bool']['filter'][] = [
+				'query_string' => [
+					"query" => $search,
+					"default_operator" => 'AND'
+				]
+			];
 		}
 
 		$params = append_application_query($params, $apps);

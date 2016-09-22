@@ -112,7 +112,7 @@ class M_Users extends CI_Model
         ];
 
         if ($search) {
-            $params['body']['query']['bool']['must'][] = ['query_string' => [  /*'default_field' => 'username',*/
+            $params['body']['query']['bool']['filter'][] = ['query_string' => [  /*'default_field' => 'username',*/
                 "query" => $search . '*', "default_operator" => 'AND']];
         }
 

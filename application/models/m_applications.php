@@ -151,7 +151,7 @@ class M_Applications extends CI_Model {
 		$params = array();
 		$params['index'] = '_all';
 //		$params['type'] = 'http';
-		$params['body']['query']['bool']['must']['term']['host'] = $host;
+		$params['body']['query']['bool']['filter']['term']['host'] = $host;
 		delete_by_query($this->elasticClient, $params, 1);
 	}
 
@@ -320,7 +320,7 @@ class M_Applications extends CI_Model {
 		];
 
 		if ($search){
-			$params['body']['query']['bool']['must'][] = [ "query_string" => [ "fields" => $fields , "query" => '*' . $search . '*' ] ];
+			$params['body']['query']['bool']['filter'][] = [ "query_string" => [ "fields" => $fields , "query" => '*' . $search . '*' ] ];
 			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
 
@@ -450,7 +450,7 @@ class M_Applications extends CI_Model {
 		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
 		$params['body'] = [
 			'size'   => 9999,
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
 
 		$params = append_access_query($params);
@@ -516,7 +516,7 @@ class M_Applications extends CI_Model {
 		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["host", $field], "query" => '*' . $search . '*']]]],
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["host", $field], "query" => '*' . $search . '*']]]],
 		];
 		$params['body']['highlight']['fields'] = ['host' => new \stdClass(), $field => new \stdClass()];
 		$params['body']['highlight']['pre_tags'] = [''];
@@ -563,7 +563,7 @@ class M_Applications extends CI_Model {
 		$params	['index'] = 'telepath-20*';
 		$params['body'] = [
 			'size' => 999,
-			'query' => ["bool" => ["must" => [
+			'query' => ["bool" => ["filter" => [
 				['term' => ["uri" => $path]],
 				['term' => ["host" => $host]],
 			]
@@ -613,7 +613,7 @@ class M_Applications extends CI_Model {
 		$params['body'] = [
 			'size' => 1,
 			'aggs'   => [ 'canonical_url' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
-			'query' => [ "bool" => [ "must" => [ 'term' => [ "host" => $host ]	] ] ]
+			'query' => [ "bool" => [ "filter" => [ 'term' => [ "host" => $host ]	] ] ]
 		];
 		
 		$params = append_access_query($params);
@@ -641,7 +641,7 @@ class M_Applications extends CI_Model {
                 $params['body'] = array(
                         'size'  => 0,
                         'aggs'  => [ 'distinct_ips' => [ "terms" => [ "field" => "http.ip_resp", "size" => 1 ], ], ],
-                        'query' => [ 'bool' => [ "must" => [ /* 'term' => [ '_type' => 'http' ],*/ 'term' => [ 'http.host' => $host ], ] ] ]
+                        'query' => [ 'bool' => [ "filter" => [ /* 'term' => [ '_type' => 'http' ],*/ 'term' => [ 'http.host' => $host ], ] ] ]
                 );
                 $results = $this->elasticClient->search($params);
                 $ans = [];
@@ -700,7 +700,7 @@ class M_Applications extends CI_Model {
 		$params['body'] = array(
 			'size'  => 0,
 			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
-			'query'  => [ "bool" => [ "must" => [ "query_string" => [ "default_field" => "host", "query" =>'*'. $filter . '*' ] ] ] ],
+			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "default_field" => "host", "query" =>'*'. $filter . '*' ] ] ] ],
 		);
 		
 		$params = append_access_query($params);
