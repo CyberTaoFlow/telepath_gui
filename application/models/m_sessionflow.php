@@ -8,20 +8,21 @@ class M_Sessionflow extends CI_Model {
 	}
 	
 	public function get_sessionflow_params($uid) {
-		
+
 		$params['body'] = array(
-			'size'  => 1,
-			'query' => array(
-				'bool' => array(
-					'filter' => array(
-						array('query_string' => array('default_field' => '_id', 'query' => $uid)),
-					)
-				)
-			)
+			'size' => 1,
+			'query' => [
+				'bool' => [
+					'filter' => [
+						['term' => ['_id' => $uid]]
+					]
+				]
+			]
 		);
 		
 		$results = $this->elasticClient->search($params);
-		$results = get_elastic_results($results);
+//		$results = get_elastic_results($results);
+		$results = get_source($results);
 //		$params = array();
 //		# Make sure we do not have XSS kind of security bug in HTML headers, Yuli
 //		Now, we escape html in JS (Yossi)
@@ -247,9 +248,10 @@ class M_Sessionflow extends CI_Model {
 		}
 			
 	}
-	
-	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $range =
-	false, $suspect_threshold = 0.8) {
+
+	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null,
+		$range = false, $suspect_threshold = 0.8) {
+
 		if($range){
 			$params['index'] = $range['indices'];
 		}
