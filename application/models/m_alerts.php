@@ -393,7 +393,7 @@ class M_Alerts extends CI_Model {
 			foreach($sid_buckets as $sid) {
 
 						$sid_key = $sid['key'];
-						$doc_count = $sid['doc_count'];
+					//	$doc_count = $sid['doc_count'];
 						$score_average = $sid['score_average']['value'];
 
 						$params2 = array();
@@ -418,17 +418,11 @@ class M_Alerts extends CI_Model {
 								"city" => [
 									"terms" => [ "field" => "city" , "size" => 1 ]
 								],
-//								"id" => [
-//									"terms" => [ "field" => "_id" , "size" => 1 ]
-//								],
 								"ip_orig" => [
 									"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 								],
 								"host" => [
 									"terms" => [ "field" => "host" , "size" => 10 ]
-								],
-								"score" => [
-									"avg" => [ "field" => "alerts.score" ]
 								],
 								"alerts_names" => [
 									"terms" => [ "field" => "alerts.name", "size" => 10 ]
@@ -477,7 +471,7 @@ class M_Alerts extends CI_Model {
 						$results['items'][] = array(
 							"sid"     => $sid_key,
 							"city"    => $sid['city']['buckets'][0]['key'], 
-							"alerts_count"  => $sid['alerts_count']['value'], 
+							"alerts_count"  => $sid['alerts_count']['value'],
 							"alerts_names"  => $sid['alerts_names']['buckets'],
 							"actions_count"  => $sid['actions_count']['value'],
 							"actions_names"  => $sid['actions_names']['buckets'],
@@ -486,8 +480,7 @@ class M_Alerts extends CI_Model {
 							"country" => $sid['country_code']['buckets'][0]['key'],
 							"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 							"host"    => $sid['host']['buckets'],
-							"count"   => $doc_count,
-							"score"  => $sid['score']['value'],
+//							"count"   => $doc_count,
 							"date"  => $sid['date']['value'],
 							'ip_score' => $score_average,
 							"user" => $sid['user']['buckets'][0]['key']
