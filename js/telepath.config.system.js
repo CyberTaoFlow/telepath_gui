@@ -201,6 +201,12 @@ telepath.config.system = {
 		data.loadbalancer_mode_id = this.ipToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
 		//data.loadbalancer_mode_id = this.ipToggle.data('toggleFlip').options.flipped ? 1 : 0;
 
+		if (data.loadbalancer_mode_id && $('.tele-config-system-lb .tele-ip-wrap', this.ip_balances).length == 0) {
+			$('#tele-config-step-network').click();
+			telepath.dialog({title:'Config system network', msg: 'You must enter at least one IP address!'});
+			return false
+		}
+
 		data.header_balances=[];
 
 		//headerBalances
@@ -229,16 +235,22 @@ telepath.config.system = {
 						data.ip_balances.push({from: ip_start, to: ip_end});
 					}
 					else{
-						$('input', this).addClass('error');
-						checkIPS = true;
+						if (data.loadbalancer_mode_id) {
+							$('input', this).addClass('error');
+							checkIPS = true;
+							$('#tele-config-step-network').click();
+						}
 					}
 				} else {
 					if (ip_start) {
 						data.ip_balances.push({from: ip_start, to: ip_start});
 					}
 					else {
-						$('input', this).addClass('error');
-						checkIPS = true;
+						if (data.loadbalancer_mode_id) {
+							$('input', this).addClass('error');
+							checkIPS = true;
+							$('#tele-config-step-network').click();
+						}
 					}
 				}
 			}
@@ -271,6 +283,7 @@ telepath.config.system = {
 					else{
 						$('input', this).addClass('error');
 						checkIPS = true;
+						$('#tele-config-step-whitelist').click();
 					}
 				} else {
 					if (ip_start) {
@@ -279,13 +292,14 @@ telepath.config.system = {
 					else {
 						$('input', this).addClass('error');
 						checkIPS = true;
+						$('#tele-config-step-whitelist').click();
 					}
 				}
 			}
 		});
 
 		if (checkIPS){
-			telepath.dialog({msg: 'You have entered an invalid IP address!'});
+			telepath.dialog({title:'Config system', msg: 'You have entered an invalid IP address!'});
 			$(".tele-overlay-dialog").animate({top:  $(".tele-ip-segment.error").first().offset().top},0);
 			$('html, body').animate({
 				scrollTop: $(".tele-ip-segment.error").offset().top-200
