@@ -201,7 +201,7 @@ telepath.config.system = {
 		data.loadbalancer_mode_id = this.ipToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
 		//data.loadbalancer_mode_id = this.ipToggle.data('toggleFlip').options.flipped ? 1 : 0;
 
-		if (data.loadbalancer_mode_id && $('.tele-config-system-lb .tele-ip-wrap', this.ip_balances).length == 0) {
+		if (data.loadbalancer_mode_id && $('.tele-config-system-lb .tele-ip-wrap', this.ip_balances).length < 2) {
 			$('#tele-config-step-network').click();
 			telepath.dialog({title:'Config system network', msg: 'You must enter at least one IP address!'});
 			return false
