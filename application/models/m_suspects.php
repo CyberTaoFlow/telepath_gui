@@ -247,7 +247,7 @@ class M_Suspects extends CI_Model {
 //										"terms" => [ "field" => "_id" , "size" => 1 ]
 //									],
 									"ip_orig" => [
-										"min" => [ "field" => "ip_orig" ]
+										"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 									],
 									"host" => [
 										"terms" => [ "field" => "host" , "size" => 100 ]
@@ -308,7 +308,7 @@ class M_Suspects extends CI_Model {
 								"alerts_count"  => $sid['alerts_count']['value'],
 								"cases_count"=> $sid['cases_count']['value'],
 								"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
-								"ip_orig" => long2ip($sid['ip_orig']['value']),
+								"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 								"host"    => $sid['host']['buckets'],
 								"count"   => $doc_count,
 								"business_action" => $sid['business_action']['buckets'],
@@ -394,9 +394,9 @@ class M_Suspects extends CI_Model {
                                                 "country_code" => [
                                                     "terms" => [ "field" => "country_code", "size" => 1 ]
                                                 ],
-                                                "ip_orig" => [
-                                                    "min" => [ "field" => "ip_orig" ]
-                                                ],
+												"ip_orig" => [
+													"terms" => [ "field" => "ip_orig" , "size" => 1 ]
+												],
                                                 "host" => [
                                                     "terms" => [ "field" => "host" , "size" => 100 ]
                                                 ],
@@ -461,7 +461,7 @@ class M_Suspects extends CI_Model {
 					$results['items'][] = array(
 						"sid"     => $sid_key,
 						"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
-						"ip_orig" => long2ip($sid['ip_orig']['value']),
+						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 						"host"    => $sid['host']['buckets'],
 						"count"   => $sid['doc_count'],
 						"date"  => $sid['date']['value'],
