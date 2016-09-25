@@ -307,7 +307,7 @@ class M_Suspects extends CI_Model {
 								"city"    => $sid['city']['buckets'][0]['key'],
 								"alerts_count"  => $sid['alerts_count']['value'],
 								"cases_count"=> $sid['cases_count']['value'],
-								"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
+								"country" => $sid['country_code']['buckets'][0]['key'],
 								"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 								"host"    => $sid['host']['buckets'],
 								"count"   => $doc_count,
@@ -460,7 +460,7 @@ class M_Suspects extends CI_Model {
 
 					$results['items'][] = array(
 						"sid"     => $sid_key,
-						"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
+						"country" => $sid['country_code']['buckets'][0]['key'],
 						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 						"host"    => $sid['host']['buckets'],
 						"count"   => $sid['doc_count'],

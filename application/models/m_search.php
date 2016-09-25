@@ -305,7 +305,7 @@ class M_Search extends CI_Model {
 						"cases_names"  => $sid['cases_names']['buckets'],
 						"actions_count"  => $sid['business_actions_count']['value'], 
 						"actions_names"  => $sid['business_actions_names']['buckets'],  
-						"country" => strtoupper($sid['country_code']['buckets'][0]['key']),
+						"country" => $sid['country_code']['buckets'][0]['key'],
 						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 						"host"    => $sid['host']['buckets'],
 						"count"   => $doc_count,
