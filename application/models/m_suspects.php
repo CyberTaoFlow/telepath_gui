@@ -243,26 +243,23 @@ class M_Suspects extends CI_Model {
 									"city" => [
 										"terms" => [ "field" => "city" , "size" => 1 ]
 									],
-//									"id" => [
-//										"terms" => [ "field" => "_id" , "size" => 1 ]
-//									],
 									"ip_orig" => [
 										"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 									],
 									"host" => [
 										"terms" => [ "field" => "host" , "size" => 100 ]
 									],
-									"alerts_count" => [
-										"sum" => [ "field" => "alerts_count" ]
-									],
 									"cases_count" => [
 										"sum" => [ "field" => "cases_count" ]
 									],
-									"score" => [
-										"avg" => [ "field" => "score_average" ]
+									"cases_names" => [
+										"terms" => [ "field" => "cases_name", "size" => 10 ]
 									],
-									"business_action" => [
-										"terms" => [ "field" => "business_action", "size"=> 100 ]
+									"actions_count" => [
+										"sum" => [ "field" => "business_actions_count" ]
+									],
+									"actions_names" => [
+										"terms" => [ "field" => "business_actions.name", "size" => 10 ]
 									],
 									"date" => [
 										"max" => [ "field" => "ts" ]
@@ -305,15 +302,16 @@ class M_Suspects extends CI_Model {
 							$results['items'][] = array(
 								"sid"     => $sid_key,
 								"city"    => $sid['city']['buckets'][0]['key'],
-								"alerts_count"  => $sid['alerts_count']['value'],
 								"cases_count"=> $sid['cases_count']['value'],
+								"cases_names"=>	$sid['cases_names']['buckets'],
 								"country" => $sid['country_code']['buckets'][0]['key'],
 								"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 								"host"    => $sid['host']['buckets'],
 								"count"   => $doc_count,
-								"business_action" => $sid['business_action']['buckets'],
+								"actions_count"  => $sid['actions_count']['value'],
+								"actions_names"  => $sid['actions_names']['buckets'],
 								"date"  => $sid['date']['value'],
-								"ip_score" =>$score_average,
+								"ip_score" => $score_average,
 								"user" => $sid['user']['buckets'][0]['key']
 							);
 
