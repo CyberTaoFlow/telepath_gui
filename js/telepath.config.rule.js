@@ -218,7 +218,7 @@ telepath.config.rule = {
 			
 		if(!this.data.domain) { this.data.domain = '' }	
 		var app_filter_data = [ { text: this.data.domain } ];
-		var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: app_filter_data, click: function () { } })
+		var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: app_filter_data, appendTo: this.container, position:'bottom',click: function () { } })
 			.appendTo(this.container).attr('id', 'limit-application');
 		$('.tele-multi-control', filterApps).hide();
 		
