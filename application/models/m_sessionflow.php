@@ -95,7 +95,7 @@ class M_Sessionflow extends CI_Model {
 					],
 				],
 			];
-            if ($state=='Suspect'){
+            if ($state=='Suspect' && $suspect_threshold){
 				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
@@ -136,30 +136,12 @@ class M_Sessionflow extends CI_Model {
 		$params['body'] = [
 			'size'  => 0,
 			"aggs" => [
-				
-				"score_average" => [
-							"avg" => [ "field" => "score_average" ]
-				],
-				"score_query" => [
-							"avg" => [ "field" => "score_query" ]
-				],
-				"score_landing" => [
-							"avg" => [ "field" => "score_landing" ]
-				],
-				"score_geo" => [
-							"avg" => [ "field" => "score_geo" ]
-				],
-				"score_flow" => [
-							"avg" => [ "field" => "score_flow" ]
-				],
+
 				"alerts_count" => [
 					"sum" => [ "field" => "alerts_count" ]
 				],
 				"business_actions_count" => [
 					"sum" => [ "field" => "business_actions_count" ]
-				],
-				"ip_orig" =>[
-					"terms" => [ "field" => "ip_orig" , "size" =>1]
 				],
 				/*"last_score" => [
 					"terms" => [
@@ -190,33 +172,6 @@ class M_Sessionflow extends CI_Model {
 
 		$results = $this->elasticClient->search($params);
 
-		$params['body'] = [
-			'size' => 0,
-			'query' => [
-				'bool' => [
-					'filter' => [
-						[ 'term' => ["ip_orig" => $results['aggregations']['ip_orig']['buckets'][0]['key']] ],
-
-					]
-				],
-			],
-			"aggs" =>[
-				"last_score" => [
-					"terms" => [
-						"field" => "ip_score",
-						"size" => 1,
-						"order"=>["max_ts" => "desc" ]
-					],
-					'aggs'=>[
-						'max_ts'=>[
-							"max" => [ "field" => "ts"]
-						]
-					]
-				]
-			]
-		];
-
-		$results2 = $this->elasticClient->search($params);
 
 		if(isset($results['aggregations'])) {
 			if (!empty($range))
@@ -231,22 +186,121 @@ class M_Sessionflow extends CI_Model {
 				}
 			}
 			return array(
-				"score_average" => $results['aggregations']['score_average']['value'],
-				"score_query"   => $results['aggregations']['score_query']['value'],
-				"score_landing" => $results['aggregations']['score_landing']['value'],
-				"score_geo"     => $results['aggregations']['score_geo']['value'],
-				"score_flow"    => $results['aggregations']['score_flow']['value'],
 				"actions_count" => $results['aggregations']['business_actions_count']['value'],
 				"alerts_count"  => $results['aggregations']['alerts_count']['value'],
 				"session_start" => $results['aggregations']['min_ts']['value'],
 				"session_end"   => $results['aggregations']['max_ts']['value'],
-				'ip_score' => $results2['aggregations']['last_score']['buckets'][0]['key'],
 				"search_count"  => $search_count,
 				"suspect_count" => $suspect_count,
 				"total" 	=> $results['hits']['total']
 			);
 		}
 			
+	}
+
+
+	public function get_session_scores($anchor_field, $anchor_value)
+	{
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+
+				"score_average" => [
+					"avg" => ["field" => "score_average"]
+				],
+				"score_query" => [
+					"avg" => ["field" => "score_query"]
+				],
+				"score_landing" => [
+					"avg" => ["field" => "score_landing"]
+				],
+				"score_geo" => [
+					"avg" => ["field" => "score_geo"]
+				],
+				"score_flow" => [
+					"avg" => ["field" => "score_flow"]
+				],
+				/*"last_score" => [
+					"terms" => [
+						"field" => "ip_score",
+						"size" => 1,
+						"order"=>["max_ts" => "desc" ]
+					],
+					'aggs'=>[
+						'max_ts'=>[
+							"max" => [ "field" => "ts"]
+						]
+					]
+				],*/
+				"ip_orig" => [
+					"terms" => ["field" => "ip_orig", "size" => 1]
+				],
+			],
+			'query' => array(
+				'bool' => array(
+					'filter' => array(
+						['term' => [$anchor_field => $anchor_value]],
+					)
+				)
+			)
+		];
+
+		$results = $this->elasticClient->search($params);
+
+		if (isset($results['aggregations']) && isset($results['aggregations']['ip_orig'])
+			&& !empty($results['aggregations']['ip_orig']['buckets'])
+		) {
+
+			$params['body'] = [
+				'size' => 0,
+				'query' => [
+					'bool' => [
+						'filter' => [
+							['term' => ["ip_orig" => $results['aggregations']['ip_orig']['buckets'][0]['key']]],
+						]
+					],
+				],
+				"aggs" => [
+					"last_score" => [
+						"terms" => [
+							"field" => "ip_score",
+							"size" => 1,
+							"order" => ["max_ts" => "desc"]
+						],
+						'aggs' => [
+							'max_ts' => [
+								"max" => ["field" => "ts"]
+							]
+						]
+					]
+				]
+			];
+
+			$results2 = $this->elasticClient->search($params);
+		}
+
+		if (!empty($results['aggregations'])) {
+			$scores = [
+				"score_query" => $results['aggregations']['score_query']['value'],
+				"score_landing" => $results['aggregations']['score_landing']['value'],
+				"score_geo" => $results['aggregations']['score_geo']['value'],
+				"score_flow" => $results['aggregations']['score_flow']['value'],
+			];
+		}
+
+		if (isset($results2['aggregations']) && isset($results2['aggregations']['last_score']) && !empty
+			($results2['aggregations']['last_score']['buckets'])
+		) {
+
+			$scores['ip_score'] = $results2['aggregations']['last_score']['buckets'][0]['key'];
+		}
+
+		return $scores;
+
+
 	}
 
 	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null,
