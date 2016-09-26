@@ -11,6 +11,8 @@ telepath.loader = '<div class="tele-loader"></div>';
 
 telepath.autocomplete = {
     disabled: false,
+    appendTo: 'body',
+    position: 'top',
     get: function (element, type, value) {
 
         $('.tele-loader', element.parent()).remove();
@@ -76,13 +78,29 @@ telepath.autocomplete = {
 
         $('.tele-autocomplete-select', 'body').remove();
 
-        resultsEl.css({
-            position: 'absolute',
-            top: offset.top + 24,
-            left: offset.left,
-            width: element.outerWidth() - 2
-        }).appendTo('body');
-
+        if (this.appendTo == 'body') {
+            resultsEl.css({
+                position: 'absolute',
+                top: offset.top + 24,
+                left: offset.left,
+                width: element.outerWidth() - 2
+            }).appendTo(this.appendTo);
+        }
+        else if (this.position == 'bottom'){
+            resultsEl.css({
+                position: 'absolute',
+                bottom: $(window).height() - offset.top,
+                left: offset.left - $(this.appendTo).offset().left,
+                width: element.outerWidth() - 2
+            }).appendTo(this.appendTo);
+        }else {
+            resultsEl.css({
+                position: 'absolute',
+                bottom: offset.top - $(this.appendTo).offset().top,
+                left: offset.left - $(this.appendTo).offset().left,
+                width: element.outerWidth() - 2
+            }).appendTo(this.appendTo);
+        }
         $.each(items, function (i, item) {
 
             var resultEl = $('<div>').addClass('tele-autocomplete-item')
@@ -131,12 +149,17 @@ $.widget("tele.teleSelect", {
     options: {
         type: 'application',
         constrain: 5,
+        appendTo: 'body',
+        position: 'top',
         click: function () {
 
         },
         template: function (element, value) {
 
             element.addClass('tele-multi-input');
+
+            telepath.autocomplete.appendTo = this.appendTo;
+            telepath.autocomplete.position = this.position;
 
             var that = this;
             var input = $('<input>');
