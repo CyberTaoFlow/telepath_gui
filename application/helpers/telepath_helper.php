@@ -136,6 +136,18 @@ function append_range_query($base, $range)
 		return $result;
 	}
 
+function get_source_and_ip($results) {
+	$result  = array();
+	if(!empty($results) && isset($results['hits']) && isset($results['hits']['hits'])) {
+		foreach($results['hits']['hits'] as $row) {
+			$new_row  = $row['_source'];
+			if(isset($row['_id'])) { $new_row['uid'] = $row['_id']; }
+			$result[] = $new_row;
+		}
+	}
+	return $result;
+}
+
 function delete_by_query($client, $params, $max = 0)
 {
 	#$results = $this->elasticClient->deleteByQuery($params);

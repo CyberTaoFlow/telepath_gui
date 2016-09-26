@@ -809,12 +809,13 @@ telepath.sessionflow = {
 			result.description = alerts.slice(0,-2);
 			//alert = item.alerts[0];
 			//result.description  = alert.name;
-			result.progbarValue = item.score_average;
-		} else {
-			if(item.avg_score > 85) {
-				result.icon = 'suspect_red';
-			}
+			//result.progbarValue = item.score_average;
 		}
+		//else {
+		//	if(item.score_average > 85) {
+		//		result.icon = 'suspect_red';
+		//	}
+		//}
 		
 		result.callback = function (widget, el) {
 			$('.selected', that.actionsContainer).removeClass('selected');
@@ -887,6 +888,11 @@ telepath.sessionflow = {
 		//} else {
 		//	this.initRequestTools();
 		//}
+
+		// Display parameters data
+		this.requestData = this.requestInfo;
+		this.printParams();
+
 		telepath.sessionflow.reloadFlag = Date.now();
 	
 		// Load similarities
@@ -901,41 +907,43 @@ telepath.sessionflow = {
 		
 		// Load param data
 		$('.tele-similarity-details').remove();
-		telepath.ds.get('/sessionflow/get_sessionflow_params', { uid: uid }, function(data, flag) {
-			if (flag && telepath.sessionflow.reloadFlag && flag != telepath.sessionflow.reloadFlag)
-			{
-				// session flow item was changed !
-				return;
-			}
-			that.expandRequestData(data.items);
-		}, null, telepath.sessionflow.reloadFlag, true);
-		
+		//telepath.ds.get('/sessionflow/get_sessionflow_params', { uid: uid }, function(data, flag) {
+		//	if (flag && telepath.sessionflow.reloadFlag && flag != telepath.sessionflow.reloadFlag)
+		//	{
+		//		// session flow item was changed !
+		//		return;
+		//	}
+		//	that.expandRequestData(data.items);
+		//}, null, telepath.sessionflow.reloadFlag, true);
+
+
+
 	}, 
-	expandRequestData: function(data) {
-		$('.loader', this.requestDetails).remove();
-		this.requestData = data;
-		
-		this.updateTitle(this.requestData);
-	
-		this.printParams();
-	},
-	updateTitle: function(request) {
-		/*
-		// Lookup alert
-		var alert = this.lookupAlert(request.RID);
-		
-		// Page name
-		var title = request.title != '' ? request.title : request.display_path;
-	
-		// Alert name
-		if(alert !== false) {
-			title = alert.name;
-		}
-		
-		// Update title
-		this.overlay.titleEl.html(title);
-		*/
-	},
+	//expandRequestData: function(data) {
+	//	$('.loader', this.requestDetails).remove();
+	//	this.requestData = data;
+	//
+	//	this.updateTitle(this.requestData);
+	//
+	//	this.printParams();
+	//},
+	//updateTitle: function(request) {
+	//
+	//	// Lookup alert
+	//	var alert = this.lookupAlert(request.RID);
+	//
+	//	// Page name
+	//	var title = request.title != '' ? request.title : request.display_path;
+	//
+	//	// Alert name
+	//	if(alert !== false) {
+	//		title = alert.name;
+	//	}
+	//
+	//	// Update title
+	//	this.overlay.titleEl.html(title);
+	//
+	//},
 	printParams: function(container) {
 		var container = this.requestDetails;
 		container.empty();

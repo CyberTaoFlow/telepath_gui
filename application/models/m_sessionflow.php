@@ -301,7 +301,7 @@ class M_Sessionflow extends CI_Model {
 
 		$params = append_range_query($params, $range);
 		$params = append_access_query($params);
-		$results = get_elastic_results($this->elasticClient->search($params));
+		$results = get_source_and_ip($this->elasticClient->search($params));
 
 /*		$params2['index'] = 'telepath-20*';
 		$params2['type'] = 'http';
