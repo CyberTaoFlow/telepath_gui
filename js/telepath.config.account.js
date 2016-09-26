@@ -28,6 +28,7 @@ telepath.config.account = {
 		this.form.teleForm({
 			title: 'User Editor',
 			data: data.user,
+			buttons: false,
 			items: [
 				{ type: 'checkbox', label: 'Enabled', dataIndex: 'active' },
 				{ type: 'text', label: 'Login', dataIndex: 'login' },
@@ -46,12 +47,17 @@ telepath.config.account = {
 		
 		this.container.empty().append(this.form);
 
+		var btnContain = $('<div>').addClass('tele-button-container-group');
+		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
+		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
 
-		$(".tele-button-cancel", this.container).click(function () {
+		btnContain.append(saveBtn).append(cancelBtn);
+
+		cancelBtn.click(function () {
 			telepath.config.accounts.getUsers();
 		});
 
-		$(".tele-button-apply", this.container).click(function () {
+		saveBtn.click(function () {
 		
 			// console.log('Saving user');
 				
@@ -328,7 +334,11 @@ telepath.config.account = {
 		}}).addClass('tele-limit-type');
 		
 		that.container.append(that.toggleType);
-		that.container.append(that.limitApps);
+
+		that.containerLimits =$('<div>').addClass('container-limits');
+		that.container.append(that.containerLimits);
+		that.container.append(btnContain);
+		that.containerLimits.append(that.limitApps);
 
 
 		//check if there is ip ranges
@@ -348,7 +358,7 @@ telepath.config.account = {
 		
 		that.limitRanges.append(getRangeUI('last'));
 			
-		that.container.append(that.limitRanges);
+		that.containerLimits.append(that.limitRanges);
 		
 	}
 	

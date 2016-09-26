@@ -80,9 +80,10 @@ telepath.config.accounts = {
 		}}).addClass('tele-limit-type-group');
 		
 		that.groupLeftWrap.append(that.toggleType);
-		
-		that.groupLeftWrap.append(that.limitApps);
-		
+
+		that.containerLimits =$('<div>').addClass('container-limits');
+		that.groupLeftWrap.append(that.containerLimits);
+		that.containerLimits.append(that.limitApps);
 
 		that.permissions = $('<div>').addClass('tele-group-permissions').append('<div class="tele-title-1">Permissions</div>');
 
@@ -155,7 +156,7 @@ telepath.config.accounts = {
 		// Another blank
 		that.limitRanges.append(getRangeUI(''));
 		
-		that.groupLeftWrap.append(that.limitRanges);
+		that.containerLimits.append(that.limitRanges);
 
 		that.contentRight.append(btnContain);
 		
