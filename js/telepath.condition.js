@@ -95,6 +95,8 @@ $.widget( "tele.condition", {
 						var ip_start = $('.tele-ip:first', this).data('tele-ip').getIP();
 						var ip_end   = $('.tele-ip:last', this).data('tele-ip').getIP();
 
+					if ($('.tele-ip-segment', this).map(function(){return $(this).val()}).get().join('') == ''){return;}
+
 						if(is_range) {
 							if(ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 								result = result + ip_start + '-' + ip_end + ',';
