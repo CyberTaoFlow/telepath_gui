@@ -235,7 +235,7 @@ telepath.listitem.generic = {
 					content: telepath.loader
 				}).popover('show');
 
-				telepath.ds.get('/sessionflow/get_session_stats', {sid: item.itemID}, function (data) {
+				telepath.ds.get('/sessionflow/get_session_scores', {sid: item.itemID}, function (data) {
 
 
 					$('.popover-title:first').html('Anomaly Scores');
