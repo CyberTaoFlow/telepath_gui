@@ -216,6 +216,15 @@ ul.tele-listitem-info .flag {
 	background: #ff5f5f;
 }
 
+.tele-listitem-progbar-value{
+	float: left;
+	position: absolute;
+	top: -11px;
+	font-size: 11px;
+	color: #999;
+	font-family: Arial, sans-serif;
+}
+
 .tele-listitem-bigprogbar .tele-listitem-progbar-inner {
 	height: 10px;
 }

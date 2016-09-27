@@ -207,8 +207,10 @@ $.widget( "tele.listitem", {
 			}
 			
 			var progbarInner = $('<div>').addClass('tele-listitem-progbar-inner').css({ width: this.options.progbarValue + '%' });
-			
-			progbar.append(progbarInner);
+
+			var progbarVal = $('<div>').addClass('tele-listitem-progbar-value').html(parseInt(this.options.progbarValue) + '%');
+
+			progbar.append(progbarInner).append(progbarVal);
 			el.append(progbar);
 		}
 		
