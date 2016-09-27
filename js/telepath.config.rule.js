@@ -354,8 +354,13 @@ telepath.config.rule = {
 			}
 
 			ruleData.ip= [];
+			var ipInput = $('.tele-ip-segment');
 
-			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip')) {
+			$('.tele-ip-segment.error').removeClass('error');
+			var checkIPS = false;
+
+			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip') && ipInput.map(function(){
+					return $(this).val()}).get().join('') != '') {
 				var is_range = $('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip').options.flipped;
 
 				var ip_start = $('.tele-ip-wrap .tele-ip:first').data('tele-ip').getIP();
@@ -365,12 +370,28 @@ telepath.config.rule = {
 					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 						ruleData.ip = {from: ip_start, to: ip_end};
 					}
+					else{
+						ipInput.addClass('error');
+						checkIPS = true;
+					}
 				} else {
 					if (ip_start) {
 						ruleData.ip = {from: ip_start, to: ip_start};
 					}
+					else {
+						ipInput.addClass('error');
+						checkIPS = true;
+					}
 				}
 			}
+			if (checkIPS) {
+				telepath.dialog({msg: 'You have entered an invalid IP address!'});
+				telepath.config.rules.contentRight.mCustomScrollbar(
+					"scrollTo", $('.tele-ip-segment.error').offset().top - 200, {scrollInertia: 0});
+
+				return
+			}
+
 			ruleData.domain = $('#limit-application input').val();
 
 			// Get rule script execution config
