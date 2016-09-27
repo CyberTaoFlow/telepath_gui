@@ -46,6 +46,11 @@
 	cursor: pointer;
 }
 
+.tele-listitem .tele-listitem-inner.selected .tele-listitem-time,
+.tele-listitem .tele-listitem-inner.selected .tele-listitem-progbar-value{
+	color: #fff;
+}
+
 .tele-listitem-icon {
 	float: left;
 	background: #555555;
