@@ -10,7 +10,6 @@ class Similarities extends Tele_Controller
     {
 
         parent::__construct();
-        require 'vendor/autoload.php';
 
     }
 
@@ -20,7 +19,6 @@ class Similarities extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $this->load->model('M_Requests');
-        $client = new Elasticsearch\Client();
 
         $uid = $this->input->post('uid');
         $req = $this->M_Requests->get_similar($uid);
