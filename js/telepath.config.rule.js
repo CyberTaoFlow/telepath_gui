@@ -287,14 +287,19 @@ telepath.config.rule = {
 			};
 			
 			// Validate name
-			if(ruleData.name.length == 0 || ruleData.name.length > 32) {
-				telepath.dialog({ title: 'Case Editor', msg: 'Must specify rule name' });
+			if(ruleData.name.length == 0) {
+				telepath.dialog({ title: 'Rule Editor', msg: 'Must specify rule name' });
+				return;
+			}
+
+			if(ruleData.name.length > 32) {
+				telepath.dialog({ title: 'Rule Editor', msg: 'Rule name cannot contains more than 32 characters' });
 				return;
 			}
 			
 			// Validate score
 			if(ruleData.score < 0 || ruleData.score > 100) {
-				telepath.dialog({ title: 'Case Editor', msg: 'Must specify score between 0 and 100' });
+				telepath.dialog({ title: 'Rule Editor', msg: 'Must specify score between 0 and 100' });
 				return;
 			}
 			
