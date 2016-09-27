@@ -302,19 +302,26 @@ telepath.config.rule = {
 				telepath.dialog({ title: 'Rule Editor', msg: 'Must specify score between 0 and 100' });
 				return;
 			}
-			
-			// Collect criteria
-			ruleData.criteria = $('.tele-ruletype-select').data('teleTeleRule').getValues();
 
-			//if the `getValues` above opened a dialog, stop now
-			if($('.tele-overlay-dialog').is(':visible')){
-				return;
+			if (!telepath.config.rule.data.builtin_rule) {
+				// Collect criteria
+				ruleData.criteria = $('.tele-ruletype-select').data('teleTeleRule').getValues();
+
+
+				//if the `getValues` above opened a dialog, stop now
+				if ($('.tele-overlay-dialog').is(':visible')) {
+					return;
+				}
+
+				// Validate criteria
+				if (ruleData.criteria.length == 0) {
+					telepath.dialog({title: 'Rule Editor', msg: 'Must have at least one condition'});
+					return;
+				}
 			}
-
-			// Validate criteria
-			if(ruleData.criteria.length == 0 ) {
-				telepath.dialog({ title: 'Case Editor', msg: 'Must have at least one condition' });
-				return;
+			else{
+				ruleData.criteria = [];
+				ruleData.criteria.push(JSON.stringify({'enable':$('.tele-rule-toggle .checked').size() > 0,'kind': telepath.config.rule.data.criteria[0].kind}));
 			}
 
 			/*if (that.action_notifications.data('teleTeleCheckbox').options.checked) {
