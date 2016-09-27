@@ -287,29 +287,41 @@ telepath.config.rule = {
 			};
 			
 			// Validate name
-			if(ruleData.name.length == 0 || ruleData.name.length > 32) {
-				telepath.dialog({ title: 'Case Editor', msg: 'Must specify rule name' });
+			if(ruleData.name.length == 0) {
+				telepath.dialog({ title: 'Rule Editor', msg: 'Must specify rule name' });
+				return;
+			}
+
+			if(ruleData.name.length > 32) {
+				telepath.dialog({ title: 'Rule Editor', msg: 'Rule name cannot contains more than 32 characters' });
 				return;
 			}
 			
 			// Validate score
 			if(ruleData.score < 0 || ruleData.score > 100) {
-				telepath.dialog({ title: 'Case Editor', msg: 'Must specify score between 0 and 100' });
-				return;
-			}
-			
-			// Collect criteria
-			ruleData.criteria = $('.tele-ruletype-select').data('teleTeleRule').getValues();
-
-			//if the `getValues` above opened a dialog, stop now
-			if($('.tele-overlay-dialog').is(':visible')){
+				telepath.dialog({ title: 'Rule Editor', msg: 'Must specify score between 0 and 100' });
 				return;
 			}
 
-			// Validate criteria
-			if(ruleData.criteria.length == 0 ) {
-				telepath.dialog({ title: 'Case Editor', msg: 'Must have at least one condition' });
-				return;
+			if (!telepath.config.rule.data.builtin_rule) {
+				// Collect criteria
+				ruleData.criteria = $('.tele-ruletype-select').data('teleTeleRule').getValues();
+
+
+				//if the `getValues` above opened a dialog, stop now
+				if ($('.tele-overlay-dialog').is(':visible')) {
+					return;
+				}
+
+				// Validate criteria
+				if (ruleData.criteria.length == 0) {
+					telepath.dialog({title: 'Rule Editor', msg: 'Must have at least one condition'});
+					return;
+				}
+			}
+			else{
+				ruleData.criteria = [];
+				ruleData.criteria.push(JSON.stringify({'enable':$('.tele-rule-toggle .checked').size() > 0,'kind': telepath.config.rule.data.criteria[0].kind}));
 			}
 
 			/*if (that.action_notifications.data('teleTeleCheckbox').options.checked) {
@@ -342,8 +354,13 @@ telepath.config.rule = {
 			}
 
 			ruleData.ip= [];
+			var ipInput = $('.tele-ip-segment');
 
-			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip')) {
+			$('.tele-ip-segment.error').removeClass('error');
+			var checkIPS = false;
+
+			if ($('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip') && ipInput.map(function(){
+					return $(this).val()}).get().join('') != '') {
 				var is_range = $('.tele-ip-wrap .tele-mini-toggle').data('tele-toggleFlip').options.flipped;
 
 				var ip_start = $('.tele-ip-wrap .tele-ip:first').data('tele-ip').getIP();
@@ -353,12 +370,28 @@ telepath.config.rule = {
 					if (ip_start && ip_end && ip2long(ip_start) < ip2long(ip_end)) {
 						ruleData.ip = {from: ip_start, to: ip_end};
 					}
+					else{
+						ipInput.addClass('error');
+						checkIPS = true;
+					}
 				} else {
 					if (ip_start) {
 						ruleData.ip = {from: ip_start, to: ip_start};
 					}
+					else {
+						ipInput.addClass('error');
+						checkIPS = true;
+					}
 				}
 			}
+			if (checkIPS) {
+				telepath.dialog({msg: 'You have entered an invalid IP address!'});
+				telepath.config.rules.contentRight.mCustomScrollbar(
+					"scrollTo", $('.tele-ip-segment.error').offset().top - 200, {scrollInertia: 0});
+
+				return
+			}
+
 			ruleData.domain = $('#limit-application input').val();
 
 			// Get rule script execution config

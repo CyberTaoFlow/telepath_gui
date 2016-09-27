@@ -417,7 +417,13 @@ telepath.alerts = {
 
 		} });
 
-		graphDistributionContainer.append(graphDistributionTitle).append(newToggle).append(showPercent).append(graphDistributionLegend).append(this.graphDistributionCanvas);
+		var reset = $('<a>').attr('href', '#').addClass('reset-button').click(function (){
+			console.log('came here');
+			that.resetFilters();
+		});
+
+		graphDistributionContainer.append(graphDistributionTitle).append(newToggle).append(reset).append(showPercent)
+			.append(graphDistributionLegend).append(this.graphDistributionCanvas);
 
 		// Add the 2 graph containers
 		graphsBlock.append(graphOverTimeContainer).append(graphDistributionContainer);
@@ -790,8 +796,14 @@ telepath.alerts = {
 			that._resize();
 		}, 100);
 
-		
-	},	
+
+	},
+	resetFilters: function () {
+		this.alertsFilter = [];
+		this.actionsFilter = [];
+		this.refresh();
+
+	},
 	_resize: function () {
 
 		var that = this;
