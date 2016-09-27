@@ -561,11 +561,6 @@ class M_Dashboard extends CI_Model {
 					],
 				]
 			],
-			'query' => [
-				'bool' => [
-					'filter'=>[]
-				],
-			],
 		];
 
 		$params = append_range_query($params, $range);
