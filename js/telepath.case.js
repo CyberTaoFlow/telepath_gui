@@ -231,9 +231,6 @@ telepath.casePanel = {
 		this.container.append(telepath.loader);
 
 		telepath.ds.get('/cases/get_case', {
-			start: telepath.range.start,
-			end: telepath.range.end,
-			apps: telepath.appFilter,
 			sort: this.sort,
 			dir: this.dir,
 			cid : this.caseID
@@ -468,9 +465,6 @@ telepath.casePanel = {
 
 				scroll: function (offset, callback) {
 					telepath.ds.get('/cases/get_case', {
-						start: telepath.range.start,
-						end: telepath.range.end,
-						apps: telepath.appFilter,
 						sort: that.sort,
 						dir: that.dir,
 						cid : that.caseID,

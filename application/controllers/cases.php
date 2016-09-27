@@ -32,9 +32,6 @@ class Cases extends Tele_Controller
         $range = $this->_get_range();
         $apps = $this->_get_apps();
 
-        telepath_auth(__CLASS__, __FUNCTION__);
-
-
         if (!$search) {
             $search = 'all';
         }
@@ -136,9 +133,7 @@ class Cases extends Tele_Controller
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-
-        $this->load->model('M_Alerts');
-
+        
         // Collect Input
         $cid = $this->input->post('cid');
         $sort = $this->input->post('sort');
