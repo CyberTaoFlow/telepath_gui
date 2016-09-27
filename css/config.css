@@ -1228,7 +1228,7 @@ body .jstree .tele-button {
 }
 
 .error {
-	border-color: red;
+	border-color: red !important;
 }
 
 .tele-scheduler {
