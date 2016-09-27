@@ -26,9 +26,7 @@
 function append_range_query($base, $range)
 {
 
-	if (!empty($range) && $range['state'] != 'data' && isset($base['body']) && isset($base['body']['query']) && isset
-		($base['body']['query']['bool'])
-	) {
+	if (!empty($range) && $range['state'] != 'data') {
 		if ($range['state'] == 'range') {
 			$base['body']['query']['bool']['filter'][] = [
 				'range' => [
