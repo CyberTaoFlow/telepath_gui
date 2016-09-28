@@ -541,7 +541,7 @@ telepath.casePanel = {
 		
 		var alert = item.alert_count > 0;
 		
-		result.progbarValue = parseInt(item.avg_score);
+		result.progbarValue = parseInt(item.score);
 		
 		if(alert !== false) {
 			result.icon   = 'alert';
