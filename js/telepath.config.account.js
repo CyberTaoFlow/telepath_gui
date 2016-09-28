@@ -93,7 +93,7 @@ telepath.config.account = {
 			}
 			
 			if(userData.user.id == 'new' && pass_1 == '') {
-				
+				$(".tele-password input", that.container).css({ borderColor: 'red' });
 				telepath.dialog({ msg: 'Must provide password for new user.' });
 				return;
 				
@@ -102,7 +102,7 @@ telepath.config.account = {
 			// Validate email
 			
 			if(userData.user.login == '') {
-				
+				$("[rel='login'] input", that.container).css({ borderColor: 'red' });
 				telepath.dialog({ msg: 'User login cant be blank.' });
 				return;
 				
