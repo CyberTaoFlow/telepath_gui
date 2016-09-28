@@ -222,8 +222,18 @@ $.widget( "tele.listitem", {
 			var updatingEl = $('<div>').addClass('tele-listitem-updating tele-icon-ring').html('Update in progress').attr('title', 'Update in progress');
 			el.append(updatingEl);
 		}
-		if(this.options.description) {
-			var descEl = $('<div>').addClass('tele-title-2').html(this.options.description);
+		if (this.options.description) {
+			var descEl = $('<div>').addClass('tele-title-2');
+			$.each(this.options.description.split(/,\s{1}/), function (i, val) {
+				var element = $('<span>').html(val);
+
+				if (i == 0) {
+					descEl.append(element);
+				}
+				else {
+					descEl.append(',&nbsp;', element);
+				}
+			});
 			el.append(descEl);
 		}
 		

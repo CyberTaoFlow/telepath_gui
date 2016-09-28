@@ -15,11 +15,29 @@
 	clear: none;
 	min-width: 60%;
 }
+.tele-listitem .tele-title-2 span{
+	cursor: url(../img/search_icon.png), pointer;
+	color: rgb(255, 0, 0);
+}
+
+.tele-listitem .tele-title-2 span:last-of-type{
+	white-space: pre;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
 .tele-alert-action .tele-listitem .tele-title-2, .tele-similarities-list .tele-listitem .tele-title-2{
 	overflow: hidden;
-	max-width: 79%;
+	max-width: 63%;
 	height: 14px;
+	white-space: nowrap;
+	display: inline-flex;
+	flex-flow: row nowrap;
+}
+
+.tele-alert-action .tele-listitem-title, .tele-similarities-list .tele-listitem-title{
+	cursor: url(../img/search_icon.png), pointer;
 }
 
 .tele-rounded-box,
@@ -222,9 +240,9 @@ ul.tele-listitem-info .flag {
 }
 
 .tele-listitem-progbar-value{
-	float: left;
 	position: absolute;
 	top: -11px;
+	right: 3px;
 	font-size: 11px;
 	color: #999;
 	font-family: Arial, sans-serif;
