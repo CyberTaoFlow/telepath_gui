@@ -127,7 +127,7 @@ class M_Cases extends CI_Model {
 		
 	}
 	
-	public function get_case_sessions($limit = 100, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc', $displayed = false) {
+	public function get_case_sessions($limit = 15, $cid, $range = array(), $apps = array(), $sort  = 'date', $sortorder = 'desc', $displayed = false) {
 
 		
 		switch($sort) {
@@ -166,9 +166,6 @@ class M_Cases extends CI_Model {
 						"city" => [ 
 							"terms" => [ "field" => "city" , "size" => 1 ] 
 						],
-//						"id" => [
-//							"terms" => [ "field" => "_id" , "size" => 1 ]
-//						],
 						"ip_orig" => [
 							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
 						],
@@ -199,15 +196,6 @@ class M_Cases extends CI_Model {
 					"cardinality" => [ "field" => "sid", "precision_threshold" => 200 ],
 				]
 			],
-/*
-			'query' => [
-				'bool' => [
-					'must' => [
-						[ 'term' => [ '_type' => 'http' ] ],
-					]
-				],
-			],
-*/
 		];
 
 		$params['body']['query']['bool']['filter'][] = [ 'term' => [ "cases_name" => $cid ] ];
@@ -261,13 +249,30 @@ class M_Cases extends CI_Model {
 			$results['count'] = 0;
 		}
 
-		if(!empty($result['hits']['hits'])){
-			foreach ($result['hits']['hits'] as $key=>$val){
+		return $results;
+
+	}
+
+	public function get_case_docs($limit = 100, $cid)
+	{
+
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['_source'] = false;
+		$params['body'] ['size'] = $limit;
+		$params['body']['query']['bool']['filter'][] = ['term' => ["cases_name" => $cid]];
+
+
+		$params = append_access_query($params);
+		$result = $this->elasticClient->search($params);
+
+
+		if (!empty($result['hits']['hits'])) {
+			foreach ($result['hits']['hits'] as $key => $val) {
 				unset($result['hits']['hits'][$key]['_score']);
 			}
 		}
-		$results['requests']= $result['hits']['hits'];
-		return $results;
+		return $result['hits']['hits'];
 
 	}
 

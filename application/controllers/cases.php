@@ -190,9 +190,9 @@ class Cases extends Tele_Controller
         }
 
         foreach ($cases as $cid) {
-            $requests = $this->M_Cases->get_case_sessions(100, $cid);
-            if (!empty($requests['requests'])) {
-                $similars = $this->M_Cases->get_similar_sessions($requests['requests'], $cid);
+            $requests = $this->M_Cases->get_case_docs(100, $cid);
+            if (!empty($requests)) {
+                $similars = $this->M_Cases->get_similar_sessions($requests, $cid);
                 $this->M_Cases->store_similar_case_sessions($similars, $cid);
                 logger('Finish to update similar sessions for case: '.$cid);
             }
