@@ -605,7 +605,7 @@ telepath.config.system = {
 		}).addClass('tele-config-mv2prod').appendTo(this.c_mode);
 
 		$('<div>').addClass('tele-title-1 ').html('Learn New Applications').appendTo(this.c_mode);
-                this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.add_unknown_applications_id
+                this.addUnknownAppToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.add_unknown_applications_id
 				== '1' }).addClass('tele-addUnknownApp-toggle').appendTo(this.c_mode);
 
                 //$('<p>').html('ETA: ' + this.data.eta_id ).appendTo(this.c_mode);
@@ -616,7 +616,7 @@ telepath.config.system = {
 		// Engine
 		$('<div>').addClass('tele-title-2').html('Telepath Engine').appendTo(this.engineControls);
 		
-		this.telepathEngineToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.engine_mode_id == '1', flip: function (value) {
+		this.telepathEngineToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.engine_mode_id == '1', flip: function (value) {
 			
 			telepath.ds.get('/telepath/set_engine_' + (value ? 'start' : 'restart'), { }, function (data) {
 			
@@ -626,15 +626,15 @@ telepath.config.system = {
 		
 		// Rev-Proxy
 		$('<div>').addClass('tele-title-2').html('Reverse Proxy').appendTo(this.engineControls);
-		this.reverseProxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.reverse_proxy_mode_id == "1" }).appendTo(this.engineControls);
+		this.reverseProxyToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.reverse_proxy_mode_id == "1" }).appendTo(this.engineControls);
 		
 		// Sniffer
 		$('<div>').addClass('tele-title-2').html('Sniffer').appendTo(this.engineControls);
-		this.snifferToggle 		= $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.sniffer_mode_id == "1" }).appendTo(this.engineControls);
+		this.snifferToggle 		= $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.sniffer_mode_id == "1" }).appendTo(this.engineControls);
 		
 		// Sniffer
 		$('<div>').addClass('tele-title-2').html('Webservice').appendTo(this.engineControls).css({ opacity: 0.3 });
-		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', disabled: true }).appendTo(this.engineControls);
+		this.webserviceToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', disabled: true }).appendTo(this.engineControls);
 
 		// File upload
 		//this.fileUpload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
@@ -909,7 +909,7 @@ telepath.config.system = {
 		// -----------------------------------------------------------
 		
 		$('<div>').addClass('tele-title-1').html('Syslog').appendTo(this.c_reports).addClass('tele-title-syslog');
-		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.write_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
+		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.write_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
 		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.syslog_ip_id }).addClass('tele-config-syslog-host').appendTo(this.c_reports);
 		
 
@@ -974,7 +974,7 @@ telepath.config.system = {
 		
 		$('<div>').addClass('tele-title-1').html('Load Balancer').appendTo(this.c_lb);
 		
-		this.lbToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.loadbalancer_mode_id == '1' }).appendTo(this.c_lb);
+		this.lbToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.loadbalancer_mode_id == '1' }).appendTo(this.c_lb);
 		this.lbIPs     = $('<div>').teleMulti({ values: this.data.balances.headers, title: 'Load Balancer Headers IPs', template: function(element, value) {
 			element.ip({ data: value });
 		} }).appendTo(this.c_lb).addClass('tele-config-balancer-headers');
@@ -1081,7 +1081,7 @@ telepath.config.system = {
 		}
 
 		this.ipToggle = $('<div>').toggleFlip({
-			left_value: 'Off', right_value: 'On',
+			left_value: 'OFF', right_value: 'ON',
 
 			flip: function () {
 				another_ip_balancesthis.toggle();
@@ -1101,7 +1101,7 @@ telepath.config.system = {
 
 		$('<div>').addClass('tele-title-1').html('Proxy').appendTo(this.row).addClass('tele-title-proxy');
 
-		this.proxyToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data.proxy_mode_id == '1' }).appendTo(this.row);
+		this.proxyToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.proxy_mode_id == '1' }).appendTo(this.row);
 		this.proxyIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.proxy_ip_id }).addClass('tele-config-proxy-host').appendTo(this.row);
 		this.proxyPort   = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.proxy_port_id }).addClass('tele-config-proxy-port').appendTo(this.row);
 

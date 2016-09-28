@@ -61,7 +61,7 @@ telepath.config.rule = {
 		
 		this.container.empty();
 		// Rule Toggle
-		// this.ruleToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: this.data['enable']}).css('color', 'black').appendTo(this.container);
+		// this.ruleToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data['enable']}).css('color', 'black').appendTo(this.container);
 		
 		// Rule Name
 		var ruleName = $('<div>').teleInput({ label: 'Name', value: this.data['name'] == 'new' ? '' : this.data['name']  }).addClass('tele-rule-name');

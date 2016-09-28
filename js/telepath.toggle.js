@@ -2,8 +2,8 @@ $.widget( "tele.toggleFlip", {
  
     // Default options.
     options: {
-		'left_value': 'On',
-		'right_value': 'Off',
+		'left_value': 'ON',
+		'right_value': 'OFF',
 		'flipped': false,
 		'flip': false,
 		'disabled': false

@@ -100,27 +100,27 @@ telepath.config.application = {
 		
 
 
-		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "ON" ? 1 : 0;
 		app_data.app_ssl_certificate = $('input', this.app_ssl_certificate).data('file');
 		app_data.app_ssl_private = $('input', this.app_ssl_private).data('file');
 
 		// Success Criteria -- Toggle
-		//app_data.form_authentication_flag = this.SC_toggle.teleRadios('option', 'checked') == 'On' ? 1 : 0;
+		//app_data.form_authentication_flag = this.SC_toggle.teleRadios('option', 'checked') == 'ON' ? 1 : 0;
 
 		// Success Criteria -- Cookie
-		app_data.cookie_mode = this.SC_cookie_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+		app_data.cookie_mode = this.SC_cookie_toggle.data('teleTeleRadios').options.checked == "ON" ? 1 : 0;
 		app_data.cookie_name = $('input', this.SC_cookie_name).val();
 		app_data.cookie_value = $('input', this.SC_cookie_value).val();
 		app_data.cookie_value_appearance = this.SC_cookie_flag.data('teleTeleRadios').options.checked == 'appears' ? 1 : 0;
 
 		// Success Criteria -- Redirect
-		//app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+		//app_data.redirect_mode = this.SC_redirect_toggle.data('teleTeleRadios').options.checked == "ON" ? 1 : 0;
 		//app_data.redirect_page = this.SC_redirect_browse.teleBrowse('option', 'filename');
 		////app_data.form_authentication_redirect_page_id   	 = this.SC_redirect_browse.teleBrowse('option', 'id');
 		//app_data.redirect_status_code = this.SC_redirect_range.data('tele-teleInput').input.val();
 
 		// Success Criteria -- Body Value
-		app_data.body_value_mode = this.SC_body_toggle.data('teleTeleRadios').options.checked == "On" ? 1 : 0;
+		app_data.body_value_mode = this.SC_body_toggle.data('teleTeleRadios').options.checked == "ON" ? 1 : 0;
 		app_data.body_value_html = this.SC_body_input.data('tele-teleInput').input.val();
 
 		if(that.app_id=='new'){
@@ -418,7 +418,7 @@ telepath.config.application = {
 		this.container.append(this.c_mode);
 
 		$('<div>').addClass('tele-title-1 ').html('Top Level Domain').appendTo('#tele-app-details');
-		this.TopLevelDomainAppToggle = $('<div>').toggleFlip({ left_value: 'Off', right_value: 'On', flipped: that.app_data.top_level_domain=='1' }).addClass('tele-TopLevelDomainApp-toggle').appendTo('#tele-app-details');
+		this.TopLevelDomainAppToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: that.app_data.top_level_domain=='1' }).addClass('tele-TopLevelDomainApp-toggle').appendTo('#tele-app-details');
 
 		$('<div>').addClass('tele-title-1').html('Operation Mode').appendTo('#tele-app-details');
 
@@ -613,16 +613,16 @@ telepath.config.application = {
 		// this.SC_cookie_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Cookie', checked: that.app_data.cookie_mode == '1' });
 		this.SC_cookie_toggle = $('<div>').teleRadios({
 			title: 'Cookie',
-			checked: that.app_data.cookie_mode == '1' ? 'On' : 'Off',
+			checked: that.app_data.cookie_mode == '1' ? 'ON' : 'OFF',
 			radios: [
-				{ key: 'On', label: 'On' },
-				{ key: 'Off', label: 'Off' }
+				{ key: 'ON', label: 'ON' },
+				{ key: 'OFF', label: 'OFF' }
 			], callback: function(radio) {
 				that.SC_cookie_name.hide();
 				that.SC_cookie_value.hide();
 				that.SC_cookie_flag.hide();
 				switch(radio.key) {
-					case 'On':
+					case 'ON':
 						that.SC_cookie_name.show();
 						that.SC_cookie_value.show();
 						that.SC_cookie_flag.show();
@@ -661,16 +661,16 @@ telepath.config.application = {
 		////this.SC_redirect_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Redirect', checked: that.app_data.redirect_mode == '1' });
 		//this.SC_redirect_toggle = $('<div>').teleRadios({
 		//	title: 'Redirect',
-		//	checked: that.app_data.redirect_mode == '1' ? 'On' : 'Off',
+		//	checked: that.app_data.redirect_mode == '1' ? 'ON' : 'OFF',
 		//	radios: [
-		//		{ key: 'On', label: 'On' },
-		//		{ key: 'Off', label: 'Off' },
+		//		{ key: 'ON', label: 'ON' },
+		//		{ key: 'OFF', label: 'OFF' },
 		//	], callback: function(radio) {
         //
 		//		that.SC_redirect_browse.hide();
 		//		that.SC_redirect_range.hide();
 		//		 switch(radio.key) {
-		//		 case 'On':
+		//		 case 'ON':
 		//			 that.SC_redirect_browse.show();
 		//			 that.SC_redirect_range.show();
 		//		 break;
@@ -692,17 +692,17 @@ telepath.config.application = {
 		//SC_body_toggle = $('<div>').teleCheckbox({ inputFirst: true, label: 'Body Value', checked: that.app_data.body_value_mode == '1' });
 		this.SC_body_toggle = $('<div>').teleRadios({
 			title: 'Body Value',
-			checked: that.app_data.body_value_mode == '1'? 'On' : 'Off',
+			checked: that.app_data.body_value_mode == '1'? 'ON' : 'OFF',
 
 			radios: [
-				{ key: 'On', label: 'On' },
-				{ key: 'Off', label: 'Off' },
+				{ key: 'ON', label: 'ON' },
+				{ key: 'OFF', label: 'OFF' },
 			], callback: function(radio) {
 
 				that.SC_body_input.hide();
 
 				 switch(radio.key) {
-				 case 'On':
+				 case 'ON':
 					 that.SC_body_input.show();
 				 break;
 				 }
@@ -711,7 +711,7 @@ telepath.config.application = {
 
 		this.SC_wrap.append(this.SC_body_toggle).append(this.SC_body_input);
 		
-	/*	var SC_toggle_val = that.app_data.form_authentication_flag == '1' ? 'On' : 'Off';
+	/*	var SC_toggle_val = that.app_data.form_authentication_flag == '1' ? 'ON' : 'OFF';
 		
 		//var SC_title = $('<div>').css({ marginTop: 55, marginBottom: 0 }).addClass('tele-title-1').html('Success Criteria').appendTo('#tele-app-auth');
 		
@@ -719,14 +719,14 @@ telepath.config.application = {
 			title: 'Success Criteria',
 			checked: SC_toggle_val,
 			radios: [ 
-				{ key: 'On', label: 'On' }, 
-				{ key: 'Off', label: 'Off' },
+				{ key: 'ON', label: 'ON' },
+				{ key: 'OFF', label: 'OFF' },
 			], callback: function(radio) {
 				
 				SC_wrap.hide();
 				
 				switch(radio.key) {
-					case 'On':
+					case 'ON':
 						SC_wrap.show();
 					break;
 				}
@@ -736,19 +736,19 @@ telepath.config.application = {
 
 		// SSL
 		var app_ssl_wrap   = $('<div>').addClass('tele-app-ssl-wrap');
-		var app_ssl_toggle_val = that.app_data.ssl_flag == '1' ? 'On' : 'Off';
+		var app_ssl_toggle_val = that.app_data.ssl_flag == '1' ? 'ON' : 'OFF';
 		this.app_ssl_toggle = $('<div>').teleRadios({
 			title: 'SSL',
 			checked: app_ssl_toggle_val,
 			radios: [ 
-				{ key: 'On', label: 'On' }, 
-				{ key: 'Off', label: 'Off' },
+				{ key: 'ON', label: 'ON' },
+				{ key: 'OFF', label: 'OFF' },
 			], callback: function(radio) {
 				
 				app_ssl_wrap.hide();
 				
 				switch(radio.key) {
-					case 'On':
+					case 'ON':
 						app_ssl_wrap.show();
 					break;
 				}
