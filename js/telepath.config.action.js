@@ -326,6 +326,7 @@ telepath.action.recorder = {
 			//URL
 				case 'u':
 					var input = $('<div>').teleInput({ label: 'Target URL:', value: hybrid_link, link: true });
+					$('a', input).attr('title', hybrid_link);
 					trackerInfo.append(input);
 				break;
 			

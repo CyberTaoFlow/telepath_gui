@@ -414,6 +414,9 @@
 a.tele-input-input {
 	float: left;
 	width: 300px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .rules_string_control_bool {
