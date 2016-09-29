@@ -573,18 +573,10 @@ telepath.sessionflow = {
 		this.newList.append(newListItem);
 		newListItem.listitem(item);
 
-		//$('.tele-title-2 span, .tele-listitem-title', newListItem).css('cursor', 'url(img/search_icon.png), pointer');
-
-		$('.tele-title-2 span, .tele-listitem-title', newListItem).hover(function () {
+		$('.tele-title-2 span', newListItem).hover(function () {
 			$(this).css('color', '#4174a7');
 		}, function () {
-			if ($( this ).get(0).tagName=='DIV'){
-				$(this).css('color', '#333');
-			}
-			else {
-				$(this).css('color', '#f00');
-			}
-
+			$(this).css('color', '#f00');
 		});
 
 		$('.tele-title-2 span', newListItem).click(function () {
@@ -596,15 +588,6 @@ telepath.sessionflow = {
 			telepath.search.init(search);
 		});
 
-		$('.tele-listitem-title', newListItem).click(function () {
-
-			var field = req.title ? 'title' : 'uri';
-			var search = field +':"' + $(this).text() + '"';
-
-			telepath.overlay.destroy();
-			telepath.header.searchInput.val(search);
-			telepath.search.init(search);
-		});
 		this.printed++;
 
 		// We don't need to search alerts

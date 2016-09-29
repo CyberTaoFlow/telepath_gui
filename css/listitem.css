@@ -36,10 +36,6 @@
 	flex-flow: row nowrap;
 }
 
-.tele-alert-action .tele-listitem-title, .tele-similarities-list .tele-listitem-title{
-	cursor: url(../img/search_icon.png), pointer;
-}
-
 .tele-rounded-box,
 .tele-listitem-inner {
 	background-color: white;
