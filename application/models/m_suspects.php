@@ -326,6 +326,27 @@ class M_Suspects extends CI_Model {
 
 		}
 
+		# Fix the problem we have with sort.
+		# When sorting by date we get other requests
+		# with the same session id. As a result we need to perform
+		# second sort.
+		if ($sort == 'date') {
+
+			if ($sortorder == 'ASC') {
+				$sortorder = SORT_ASC;
+			} elseif ($sortorder == 'DESC') {
+				$sortorder = SORT_DESC;
+			}
+
+			$temp = array();
+			$ar = $results['items'];
+			foreach ($ar as $key => $row) {
+				$temp[$key] = $row['date'];
+			}
+			array_multisort($temp, $sortorder, $ar);
+			$results['items'] = $ar;
+		}
+
 		$results['success'] = true;
 		$results['count']   = $count;
 		$results['query']   = $params;
