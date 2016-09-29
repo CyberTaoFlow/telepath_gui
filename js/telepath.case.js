@@ -1,16 +1,17 @@
 // Cant create telepath.case, reserved word :{}
 telepath['case'] = {
-	
+
 	rowFormatter: function(item,mode) {
-		
+
 		if(item._source) { item = item._source }
-		item.data = item.case_data.details;
-			
-		var details = [];
-		$.each(item.data, function(i, condition) {
-			details.push({ key: condition.type, value: telepath.formatConditionBrief(false, condition) });
-		});
-		
+		if (mode!='search'){
+			item.data = item.case_data.details;
+
+			var details = [];
+			$.each(item.data, function(i, condition) {
+				details.push({ key: condition.type, value: telepath.formatConditionBrief(false, condition) });
+			});
+		}
 
 		// Just in case defaults
 		if(!item.checkable) {
@@ -20,7 +21,7 @@ telepath['case'] = {
 			item.favorites = false;
 			item.favorite  = false;
 		}
-		
+
 		if(mode == 'dashboard'){
 				var result = {
 				details: details,
@@ -32,7 +33,38 @@ telepath['case'] = {
 				time: item.last_time,
 				favorite: item.favorite
 				};
-		}else{
+		}
+		else if(mode == 'search'){
+			var case_names = '';
+			$.each(item.cases_names, function (i, x) {
+				case_names = case_names + x.key + ' ,'
+			});
+			case_names = case_names.substr(0, case_names.length - 2);
+
+			var result = {
+				raw: item,
+				checkable: false,
+				favorites: false,
+				favorite: false,
+				itemID: item.sid,
+				icon: 'case',
+				title: case_names,
+				count: item.count,
+				time: item.date,
+				progbar: true,
+				progbarValue: item.ip_score,
+				details: [
+					{key: 'IP', value: item.ip_orig},
+					{key: 'country', value: item.country},
+					{key: 'city', value: item.city},
+					{key: 'host', value: grabNames(item.host)},
+					{key: 'alerts', value: item.alerts_count},
+					{key: 'actions', value: item.actions_count},
+					{key: 'user', value: item.user }
+				]
+			};
+		}
+		else{
 				var result = {
 				checkable: item.checkable,
 				favorites: item.favorites,
@@ -48,11 +80,11 @@ telepath['case'] = {
 				time: item.last_time
 			};
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 }
 
 telepath.caseOverlay = {
@@ -230,16 +262,27 @@ telepath.casePanel = {
 		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar, .tele-loader", this.container).remove();
 		this.container.append(telepath.loader);
 
-		telepath.ds.get('/cases/get_case', {
+		telepath.ds.get('/cases/get_case_sessions', {
 			sort: this.sort,
 			dir: this.dir,
 			cid : this.caseID
-			//case_data: this.data.case.case_data
 		}, function (data) {
-			telepath.casePanel.loadData(data);
-			data.items.map(function (a) {
-				that.displayed.push(a.sid)
-			});
+			if(data){
+				that.data = data;
+
+				telepath.ds.get('/cases/get_case_data', {
+					cid : that.caseID
+				}, function (data) {
+					if(data){
+						that.loadData(data);
+					}
+				}, false, false, true);
+
+				data.items.map(function (a) {
+					that.displayed.push(a.sid)
+				});
+			}
+
 			if(typeof(callback) == 'function') {
 				callback();
 			}
@@ -257,8 +300,12 @@ telepath.casePanel = {
 	loadData: function(data) {
 		
 		var that = this;
-		this.data = data;
-		
+		this.data.case = data.case;
+		this.data.chart = data.chart;
+		if(this.data.items.length){
+			this.data.similars = data.similars;
+		}
+
 		$('.tele-loader', this.container).remove();
 		//$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar", this.container).remove();
 
@@ -464,12 +511,11 @@ telepath.casePanel = {
 			callbacks: {
 
 				scroll: function (offset, callback) {
-					telepath.ds.get('/cases/get_case', {
+					telepath.ds.get('/cases/get_case_sessions', {
 						sort: that.sort,
 						dir: that.dir,
 						cid : that.caseID,
 						displayed: that.displayed
-						//case_data: this.data.case.case_data
 					}, function (data) {
 						data.items.map(function (a) {
 							that.displayed.push(a.sid)
@@ -534,6 +580,7 @@ telepath.casePanel = {
 			{ key: 'user', value: item.user_id },
 			{ key: 'host', value: grabNames(item.host) },
 			{ key: 'alerts', value: item.alerts_count },
+			{ key: 'actions', value: item.actions_count },
 			{ key: 'user', value: item.user }
 		];
 		

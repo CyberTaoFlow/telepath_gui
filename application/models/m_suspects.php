@@ -102,7 +102,6 @@ class M_Suspects extends CI_Model {
 						]
 
 					],
-					// Allow up to 10 scrolls
 				],
 				"sid_count" => [
 					"cardinality" => ["field" => "sid"],
@@ -115,43 +114,12 @@ class M_Suspects extends CI_Model {
 				'size' => 0,
 				"aggs" => [
 					"sid" => [
-						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
+						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ],
 						"aggs" => [
 							"score_average" => [
 								"avg" => ["field" => "score_average"]
 							]
 						]
-
-// Disabe internal aggregation, Yuli
-						/*
-                                            "aggs" => [
-                                                "country_code" => [
-                                                    "terms" => [ "field" => "country_code", "size" => 1 ]
-                                                ],
-                                                "city" => [
-                                                    "terms" => [ "field" => "city" , "size" => 1 ]
-                                                ],
-                                                "id" => [
-                                                    "terms" => [ "field" => "_id" , "size" => 1 ]
-                                                ],
-                                                "ip_orig" => [
-                                                    "min" => [ "field" => "ip_orig" ]
-                                                ],
-                                                "host" => [
-                                                    "terms" => [ "field" => "host" , "size" => 100 ]
-                                                ],
-                                                "alerts_count" => [
-                                                    "sum" => [ "field" => "alerts_count" ]
-                                                ],
-                                                "score" => [
-                                                    "avg" => [ "field" => "score_average" ]
-                                                ],
-                                                "date" => [
-                                                    "max" => [ "field" => "ts" ]
-                                                ],
-                                            ],
-                        */
-
 					],
 					"sid_count" => [
 						"cardinality" => [ "field" => "sid" ],
@@ -324,6 +292,27 @@ class M_Suspects extends CI_Model {
 
 			$count = $result["aggregations"]["sid_count"]["value"];
 
+		}
+
+		# Fix the problem we have with sort.
+		# When sorting by date we get other requests
+		# with the same session id. As a result we need to perform
+		# second sort.
+		if ($sort == 'date') {
+
+			if ($sortorder == 'ASC') {
+				$sortorder = SORT_ASC;
+			} elseif ($sortorder == 'DESC') {
+				$sortorder = SORT_DESC;
+			}
+
+			$temp = array();
+			$ar = $results['items'];
+			foreach ($ar as $key => $row) {
+				$temp[$key] = $row['date'];
+			}
+			array_multisort($temp, $sortorder, $ar);
+			$results['items'] = $ar;
 		}
 
 		$results['success'] = true;

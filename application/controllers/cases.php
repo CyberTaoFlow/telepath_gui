@@ -128,18 +128,17 @@ class Cases extends Tele_Controller
 
     }
 
-    // Get Specific
-    public function get_case()
+    // Get Sessions of the case
+    public function get_case_sessions()
     {
 
         telepath_auth(__CLASS__, __FUNCTION__);
-        
+
         // Collect Input
         $cid = $this->input->post('cid');
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
         $displayed = $this->input->post('displayed');
-       // $case_data= $this->input->post('case_data');
 
         if (!$sort || !in_array($sort, array('date', 'type', 'count'))) {
             $sort = 'date';
@@ -148,29 +147,36 @@ class Cases extends Tele_Controller
         $range = $this->_get_range();
         $apps = $this->_get_apps();
 
-        // Done
+        $requests = $this->M_Cases->get_case_sessions(15, $cid, $range, $apps, $sort, $dir, $displayed);
 
-        // CASE DATA
-        // $case = $this->M_Cases->get_case(array('id' => $cid));
+        return_json($requests);
+
+    }
+
+    // Get Similar sessions, graph and case data
+    public function get_case_data()
+    {
+
+        telepath_auth(__CLASS__, __FUNCTION__);
+
+        // Collect Input
+        $cid = $this->input->post('cid');
+
+        $range = $this->_get_range();
+        $apps = $this->_get_apps();
+
 
         // Contains requests data to display
         $ans = array();
 
-        $requests = $this->M_Cases->get_case_sessions(15, $cid, $range, $apps, $sort, $dir, $displayed);
-        if($requests['items']){
-            $similars = $this->M_Cases->get_similar_case_sessions($cid);
-            if ($similars){
-                $ans['similars']=$similars;
-            }
-
+        $similars = $this->M_Cases->get_similar_case_sessions($cid);
+        if ($similars) {
+            $ans['similars'] = $similars;
         }
-       // $requests = $this->M_Cases->new_get_case_sessions(100, $range, $apps, $case_data);
 
-        unset($requests['requests']);
-
-        $ans = array_merge($ans, $requests);
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
         $ans['case'] = array('case_data' => $this->M_Cases->get_case_data($cid));
+        $ans['success'] = true;
 
         return_json($ans);
 

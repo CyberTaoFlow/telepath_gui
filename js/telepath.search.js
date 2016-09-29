@@ -522,43 +522,7 @@ telepath.search = {
             searchkey: this.searchStr,
             formatter: function (item) {
 
-                if (item._source) {
-                    item = item._source
-                }
-                // Just in case defaults
-                if (!item.checkable) {
-                    item.checkable = false;
-                }
-                if (!item.favorites) {
-                    item.favorites = false;
-                    item.favorite = false;
-                }
-
-                var case_names = '';
-                $.each(item.cases_names, function (i, x) {
-                    case_names = case_names + x.key + ' ,'
-                });
-                case_names = case_names.substr(0, case_names.length - 2);
-
-                var result = {
-                    raw: item,
-                    checkable: false,
-                    favorites: false,
-                    favorite: false,
-                    itemID: item.sid,
-                    icon: 'case',
-                    title: case_names,
-                    count: item.count,
-                    details: [
-                        {key: 'IP', value: item.ip_orig},
-                        {key: 'country', value: item.country},
-                        {key: 'city', value: item.city},
-                        {key: 'host', value: grabNames(item.host)},
-                        {key: 'alerts', value: item.alerts_count},
-                        {key: 'actions', value: item.actions_count},
-                    ]
-                };
-                return result;
+                return telepath.case.rowFormatter(item,'search');
 
             },
 

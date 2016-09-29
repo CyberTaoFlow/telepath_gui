@@ -283,44 +283,6 @@ class M_Alerts extends CI_Model {
 							"avg" => ["field" => "score_average"]
 						]
 					]
-					/*					"aggs" => [
-                    						"alerts_count" => [
-                    							"sum" => [ "field" => "alerts_count" ]
-                    						],
-
-                                            "country_code" => [
-                                                "terms" => [ "field" => "country_code", "size" => 1 ]
-                                            ],
-                                            "city" => [
-                                                "terms" => [ "field" => "city" , "size" => 1 ]
-                                            ],
-                                            "id" => [
-                                                "terms" => [ "field" => "_id" , "size" => 1 ]
-                                            ],
-                                            "ip_orig" => [
-                                                "terms" => [ "field" => "ip_orig" , "size" => 1 ]
-                                            ],
-                                            "host" => [
-                                                "terms" => [ "field" => "host" , "size" => 10 ]
-                                            ],
-                                            "score" => [
-                                                "avg" => [ "field" => "alerts.score" ]
-                                            ],
-                                            "alerts_names" => [
-                                                "terms" => [ "field" => "alerts.name", "size" => 10 ]
-                                            ],
-                                            "actions_count" => [
-                                                "sum" => [ "field" => "business_actions_count" ]
-                                            ],
-                                            "actions_names" => [
-                                                "terms" => [ "field" => "business_actions.name", "size" => 10 ]
-                                            ],
-                                            "date" => [
-                                                "max" => [ "field" => "ts" ]
-                                            ],
-
-                                        ],
-                    */
 				],
 				"sid_count" => [
 					"cardinality" => [ "field" => "sid" ],
@@ -491,23 +453,22 @@ class M_Alerts extends CI_Model {
 			$count = $result["aggregations"]["sid_count"]["value"];
 				
 		}
-		if ($sort =='date') {
 
-		if ($sortorder == 'ASC') {
-			$sortorder = SORT_ASC;
-		}
-		elseif ($sortorder == 'DESC') {
-			$sortorder =  SORT_DESC;
-		}
+		# Fix the problem we have with sort.
+		# When sorting by date we get other requests
+		# with the same session id. As a result we need to perform
+		# second sort.
+		if ($sort == 'date') {
 
-			# Fix the problem we have with sort.
-			# When sorting alerts by date we are getting other requests
-			# with the same session id. As a result we need to perform
-			# second sort. Yuli
+			if ($sortorder == 'ASC') {
+				$sortorder = SORT_ASC;
+			} elseif ($sortorder == 'DESC') {
+				$sortorder = SORT_DESC;
+			}
+
 			$temp = array();
 			$ar = $results['items'];
-			foreach ($ar as $key => $row)
-			{
+			foreach ($ar as $key => $row) {
 				$temp[$key] = $row['date'];
 			}
 			array_multisort($temp, $sortorder, $ar);
