@@ -137,9 +137,9 @@ class M_Cases extends CI_Model {
 			case 'count':
 				$sortfield = '_count'; // we need to get a specific case, so the count is not the sum of the "cases_count" elastic field
 			break;
-			case 'score':
-				$sortfield = 'last_score';
-			break;
+//			case 'score':
+//				$sortfield = 'last_score';
+//			break;
 //			case 'type':
 //				$sortfield = 'alerts_count';
 //			break;
@@ -152,7 +152,6 @@ class M_Cases extends CI_Model {
 			$params['index'] = 'telepath-20*';
 		}
 		$params['type'] = 'http';
-		$params['_source']=false;
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
@@ -160,34 +159,8 @@ class M_Cases extends CI_Model {
 				
 					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $sortorder ] ],
 					"aggs" => [
-						"country_code" => [ 
-							"terms" => [ "field" => "country_code", "size" => 1 ] 
-						],
-						"city" => [ 
-							"terms" => [ "field" => "city" , "size" => 1 ] 
-						],
-						"ip_orig" => [
-							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
-						],
-						"host" => [
-							"terms" => [ "field" => "host" , "size" => 100 ]
-						],
-						"alerts_count" => [
-							"sum" => [ "field" => "alerts_count" ]
-						],
-						"score" => [
+						"score_average" => [
 							"avg" => [ "field" => "score_average" ]
-						],
-						"alerts_names" => [
-							"terms" => [ "field" => "alerts.name", "size" => 100 ]
-						],
-						"date" => [
-							"min" => [ "field" => "ts" ]
-						],
-						"user" => [
-							"terms" => ["field" => "username",
-								"order" => ["_term" => "desc"],
-								"size" => 1]
 						],
 					],
 				
@@ -200,54 +173,147 @@ class M_Cases extends CI_Model {
 
 		$params['body']['query']['bool']['filter'][] = [ 'term' => [ "cases_name" => $cid ] ];
 
+		if ($sortfield == "date") {
+			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
+		}
+
 		if ($displayed) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ["sid" => $displayed]];
 		}
 
 
 		$params = append_range_query($params, $range);
-
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
+
 		$result = $this->elasticClient->search($params);
 		
 		$results = array('items' => array());
-		
+
+		$count = 0;
+
 		if(isset($result["aggregations"]) &&
 		   isset($result["aggregations"]["sid"]) &&
-		   isset($result["aggregations"]["sid"]["buckets"]) &&
 		   !empty($result["aggregations"]["sid"]["buckets"])) {
 
 				$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 				foreach($sid_buckets as $sid) {
 
+					$sid_key = $sid['key'];
+					$doc_count = $sid['doc_count'];
+					$score_average = $sid['score_average']['value'];
+
+					$params2 = array();
+					if ($range) {
+						$params2['index'] = $range['indices'];
+					} else {
+						$params2['index'] = 'telepath-20*';
+					}
+					$params2['type'] = 'http';
+					$params2['body'] = [
+						'size' => 0,
+						"aggs" => [
+							"alerts_count" => [
+								"sum" => [ "field" => "alerts_count" ]
+							],
+							"country_code" => [
+								"terms" => [ "field" => "country_code", "size" => 1 ]
+							],
+							"city" => [
+								"terms" => [ "field" => "city" , "size" => 1 ]
+							],
+							"ip_orig" => [
+								"terms" => [ "field" => "ip_orig" , "size" => 1 ]
+							],
+							"host" => [
+								"terms" => [ "field" => "host" , "size" => 10 ]
+							],
+							"alerts_names" => [
+								"terms" => [ "field" => "alerts.name", "size" => 10 ]
+							],
+							"actions_count" => [
+								"sum" => [ "field" => "business_actions_count" ]
+							],
+							"actions_names" => [
+								"terms" => [ "field" => "business_actions.name", "size" => 10 ]
+							],
+							"date" => [
+								"max" => [ "field" => "ts" ]
+							],
+							"user" =>[
+								"terms" => ["field" => "username",
+									"order" => ["_term" => "desc"],
+									"size" => 1
+								]
+							]/*,
+								"last_score" => [
+									"terms" => [
+										"field" => "ip_score",
+										"size" => 1,
+										"order"=>["max_ts" => "desc" ]
+									],
+									'aggs'=>[
+										'max_ts'=>[
+											"max" => [ "field" => "ts"]
+										]
+									]
+								]*/
+						]
+					];
+
+					$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+
+
+					$params2 = append_range_query($params2, $range);
+
+					$result2 = $this->elasticClient->search($params2);
+
+					$sid = $result2['aggregations'];
+
+
 					$results['items'][] = array(
-						"sid"     => $sid['key'],
+						"sid"     => $sid_key,
 						"city"    => $sid['city']['buckets'][0]['key'],
 						"alerts_count"  => $sid['alerts_count']['value'],
 						"alerts_names"  => $sid['alerts_names']['buckets'],
+						"actions_count"  => $sid['actions_count']['value'],
+						"actions_names"  => $sid['actions_names']['buckets'],
 						"country" => $sid['country_code']['buckets'][0]['key'],
 						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 						"host"    => $sid['host']['buckets'],
-						"count"   => $sid['doc_count'],
-						"score"  => $sid['score']['value'],
+						"count"   => $doc_count,
+						"score"  => $score_average,
 						"date"  => $sid['date']['value'],
 						"user" => $sid['user']['buckets'][0]['key']
 					);
 			}
+			$count = $result["aggregations"]["sid_count"]["value"];
+		}
+
+		# Fix the problem we have with sort.
+		# When sorting by date we get other requests
+		# with the same session id. As a result we need to perform
+		# second sort.
+		if ($sort == 'date') {
+
+			if ($sortorder == 'ASC') {
+				$sortorder = SORT_ASC;
+			} elseif ($sortorder == 'DESC') {
+				$sortorder = SORT_DESC;
+			}
+
+			$temp = array();
+			$ar = $results['items'];
+			foreach ($ar as $key => $row) {
+				$temp[$key] = $row['date'];
+			}
+			array_multisort($temp, $sortorder, $ar);
+			$results['items'] = $ar;
 		}
 
 		$results['success'] = true;
 		$results['query']   = $params;
-
-		if (isset($result["aggregations"]) &&
-			isset($result["aggregations"]["sid_count"]) &&
-			!empty($result["aggregations"]["sid_count"]["value"])
-		) {
-			$results['count'] = intval($result["aggregations"]['sid_count']['value']);
-		} else {
-			$results['count'] = 0;
-		}
+		$results['count'] = $count;
 
 		return $results;
 

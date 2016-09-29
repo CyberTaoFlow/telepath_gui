@@ -580,6 +580,7 @@ telepath.casePanel = {
 			{ key: 'user', value: item.user_id },
 			{ key: 'host', value: grabNames(item.host) },
 			{ key: 'alerts', value: item.alerts_count },
+			{ key: 'actions', value: item.actions_count },
 			{ key: 'user', value: item.user }
 		];
 		
