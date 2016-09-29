@@ -1,16 +1,17 @@
 // Cant create telepath.case, reserved word :{}
 telepath['case'] = {
-	
+
 	rowFormatter: function(item,mode) {
-		
+
 		if(item._source) { item = item._source }
-		item.data = item.case_data.details;
-			
-		var details = [];
-		$.each(item.data, function(i, condition) {
-			details.push({ key: condition.type, value: telepath.formatConditionBrief(false, condition) });
-		});
-		
+		if (mode!='search'){
+			item.data = item.case_data.details;
+
+			var details = [];
+			$.each(item.data, function(i, condition) {
+				details.push({ key: condition.type, value: telepath.formatConditionBrief(false, condition) });
+			});
+		}
 
 		// Just in case defaults
 		if(!item.checkable) {
@@ -20,7 +21,7 @@ telepath['case'] = {
 			item.favorites = false;
 			item.favorite  = false;
 		}
-		
+
 		if(mode == 'dashboard'){
 				var result = {
 				details: details,
@@ -32,7 +33,38 @@ telepath['case'] = {
 				time: item.last_time,
 				favorite: item.favorite
 				};
-		}else{
+		}
+		else if(mode == 'search'){
+			var case_names = '';
+			$.each(item.cases_names, function (i, x) {
+				case_names = case_names + x.key + ' ,'
+			});
+			case_names = case_names.substr(0, case_names.length - 2);
+
+			var result = {
+				raw: item,
+				checkable: false,
+				favorites: false,
+				favorite: false,
+				itemID: item.sid,
+				icon: 'case',
+				title: case_names,
+				count: item.count,
+				time: item.date,
+				progbar: true,
+				progbarValue: item.ip_score,
+				details: [
+					{key: 'IP', value: item.ip_orig},
+					{key: 'country', value: item.country},
+					{key: 'city', value: item.city},
+					{key: 'host', value: grabNames(item.host)},
+					{key: 'alerts', value: item.alerts_count},
+					{key: 'actions', value: item.actions_count},
+					{key: 'user', value: item.user }
+				]
+			};
+		}
+		else{
 				var result = {
 				checkable: item.checkable,
 				favorites: item.favorites,
@@ -48,11 +80,11 @@ telepath['case'] = {
 				time: item.last_time
 			};
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 }
 
 telepath.caseOverlay = {
