@@ -300,7 +300,7 @@ telepath.config.applications = {
 			contextmenu: {items: telepath.contextMenu},
 			grid: {
 				columns: [
-					{width: 320},
+					{width: $(window).width() < 1200 ? 150 : 320},
 					{width: 50, value: "count", cellClass: "learning-so-far"},
 					{
 						value: function (node) {

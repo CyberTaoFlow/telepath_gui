@@ -62,7 +62,12 @@ telepath.config.webusers = {
             }
         });
 
-        this.barLeft.append(this.search);
+        if($(window).width() < 1200) {
+            this.barRight.append(this.search);
+        }
+        else {
+            this.barLeft.append(this.search);
+        }
 
         var rightPanel = $('<div>').attr('id', 'sort-radio').css('float', 'right').append(sortRadios).append(cmdRefresh);
         $('.tele-panel-topbar').append(rightPanel);

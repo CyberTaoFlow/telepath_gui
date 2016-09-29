@@ -378,7 +378,7 @@ telepath.config.actions = {
 			plugins: ["json_data", "wholerow", "theme", "grid", "search"],
 			grid: {
 				columns: [
-					{width: 370},
+					{width: $(window).width() < 1200 ? 200 : 370},
 					{
 						value: function (node) {
 							/*

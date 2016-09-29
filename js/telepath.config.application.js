@@ -271,7 +271,7 @@ telepath.config.application = {
 		this.cancelBtn = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
 		
 		this.buttonsEl.append(this.applyBtn).append(this.cancelBtn);
-		this.container.append(this.buttonsEl);
+		//this.container.append(this.buttonsEl);
 		
 		// BIND Validate
 		this.applyBtn.click(function () { 
@@ -298,7 +298,13 @@ telepath.config.application = {
 			}
 			
 		});
-		
+		if ($(window).height() < 800) {
+
+			this.buttonsEl.css({'margin-top': 0});
+			var tabs = $('.ui-tabs-panel');
+			tabs.height(tabs.height() + 70);
+		}
+
 		this.toolbar.append(this.tabsUl);
 
                 this.app_id = app_id;

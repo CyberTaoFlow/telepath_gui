@@ -55,7 +55,7 @@
 }
 .tele-config-bar .tele-button {
 	float: right;
-	margin-right: 20px;
+	margin-right: 19px;
 	margin-top: 4px;
 	color: white;
 }
@@ -828,6 +828,26 @@ body .jstree .tele-button {
 	width: 540px;
 }
 
+@media (max-width: 1310px){
+	.tele-workflow-recorder .tele-workflow-tracker {
+		width: 550px;
+	}
+	.tele-workflow-tracker-info{
+		left: 27px;
+		width: 494px;
+	}
+	.tele-workflow-tracker-input-u {
+		width: 400px;
+	}
+	.tele-workflow-tracker-input-u .tele-input-label {
+		width: 80px;
+	}
+	.tele-workflow-tracker-info .tele-listitem-bigprogbar {
+		width: 430px;
+	}
+}
+
+
 .tele-action-container {
 	float: left;
     height: 400px;
@@ -1232,10 +1252,8 @@ body .jstree .tele-button {
 }
 
 .tele-scheduler {
-	/*position: absolute;*/
-	/*right: 10px;*/
 	float: left;
-	width: 700px;
+	width: 60%;
 	margin-bottom: 40px;
 }
 
@@ -1258,7 +1276,7 @@ body .jstree .tele-button {
 
 #file-upload{
 	position: absolute;
-	margin-left: 53%;
+	right: 2%;
 	width: 33%;
 	padding:10px 10px 10px 10px;
 	top: 350px;

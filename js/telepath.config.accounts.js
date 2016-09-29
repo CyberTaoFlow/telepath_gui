@@ -359,7 +359,7 @@ telepath.config.accounts = {
 			plugins: ["grid", "wholerow", "theme"],
 			grid: {
 				columns: [
-					{width: 390 },
+					{width: $(window).width() < 1200 ? 220 : 390},
 					{value: function (node) {
 						
 						if(node.name !== 'All') {

@@ -206,6 +206,10 @@ telepath.config = {
 		} else {
 		
 			var magic = 520;
+
+			if(width < 1200) {
+				magic = 350;
+			}
 			
 			this.contentLeft.width(magic);
 			this.contentRight.width(width - magic - 20);
