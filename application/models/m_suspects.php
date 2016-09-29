@@ -115,43 +115,12 @@ class M_Suspects extends CI_Model {
 				'size' => 0,
 				"aggs" => [
 					"sid" => [
-						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ], // Lists can scroll up to 10 times
+						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ],
 						"aggs" => [
 							"score_average" => [
 								"avg" => ["field" => "score_average"]
 							]
 						]
-
-// Disabe internal aggregation, Yuli
-						/*
-                                            "aggs" => [
-                                                "country_code" => [
-                                                    "terms" => [ "field" => "country_code", "size" => 1 ]
-                                                ],
-                                                "city" => [
-                                                    "terms" => [ "field" => "city" , "size" => 1 ]
-                                                ],
-                                                "id" => [
-                                                    "terms" => [ "field" => "_id" , "size" => 1 ]
-                                                ],
-                                                "ip_orig" => [
-                                                    "min" => [ "field" => "ip_orig" ]
-                                                ],
-                                                "host" => [
-                                                    "terms" => [ "field" => "host" , "size" => 100 ]
-                                                ],
-                                                "alerts_count" => [
-                                                    "sum" => [ "field" => "alerts_count" ]
-                                                ],
-                                                "score" => [
-                                                    "avg" => [ "field" => "score_average" ]
-                                                ],
-                                                "date" => [
-                                                    "max" => [ "field" => "ts" ]
-                                                ],
-                                            ],
-                        */
-
 					],
 					"sid_count" => [
 						"cardinality" => [ "field" => "sid" ],

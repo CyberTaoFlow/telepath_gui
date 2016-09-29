@@ -51,39 +51,6 @@ class M_Search extends CI_Model {
 				
 					"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => $settings['dir'] ] ],
 					"aggs" => [
-						/*"country_code" => [ 
-							"terms" => [ "field" => "country_code", "size" => 1 ] 
-						],
-						"city" => [ 
-							"terms" => [ "field" => "city" , "size" => 1 ] 
-						],
-						"id" => [ 
-							"terms" => [ "field" => "_id" , "size" => 1 ] 
-						],
-						"ip_orig" => [
-							"terms" => [ "field" => "ip_orig" , "size" => 1 ]
-						],
-						"host" => [
-							"terms" => [ "field" => "host" , "size" => 100 ]
-						],
-						"alerts_count" => [
-							"sum" => [ "field" => "alerts_count" ]
-						],
-						"alerts_names" => [
-							"terms" => [ "field" => "alerts.name", "size" => 100 ]
-						],
-						"business_actions_count" => [
-							"sum" => [ "field" => "business_actions_count" ]
-						],
-						"business_actions_names" => [
-							"terms" => [ "field" => "business_actions.name", "size" => 100 ]
-						],
-						"score" => [
-							"avg" => [ "field" => "score_average" ]
-						],
-						"date" => [
-							"max" => [ "field" => "ts" ]
-						],*/
 						"score_average" => [
 							"avg" => ["field" => "score_average"]
 						]
