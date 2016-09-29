@@ -102,7 +102,6 @@ class M_Suspects extends CI_Model {
 						]
 
 					],
-					// Allow up to 10 scrolls
 				],
 				"sid_count" => [
 					"cardinality" => ["field" => "sid"],
