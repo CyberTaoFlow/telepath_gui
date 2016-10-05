@@ -349,13 +349,13 @@ telepath.search = {
         }
 
         // Quick country conversion
-        if (telepath.countries.n2a(this.searchStr) != '00') {
-            this.searchStr = telepath.countries.n2a(this.searchStr);
-            $('.tele-search-input').val(this.searchStr);
-            this.countryFlag = true;
-        } else {
-            this.countryFlag = false;
-        }
+        //if (telepath.countries.n2a(this.searchStr) != '00') {
+        //    this.searchStr = telepath.countries.n2a(this.searchStr);
+        //    $('.tele-search-input').val(this.searchStr);
+        //    this.countryFlag = true;
+        //} else {
+        //    this.countryFlag = false;
+        //}
 
         // Collect Settings
         var searchSettingsObj = {
@@ -364,7 +364,7 @@ telepath.search = {
             // we get this data directly from the server
             //range: telepath.range,
             //apps: telepath.appFilter,
-            is_country: this.countryFlag,
+         //   is_country: this.countryFlag,
             sort: this.sort,
             dir: this.dir
         };
@@ -532,7 +532,7 @@ telepath.search = {
                     telepath.ds.get('/search/cases', {
                         search: that.searchStr,
                         options: that.options,
-                        is_country: that.countryFlag,
+                      //  is_country: that.countryFlag,
                         sort: that.sort,
                         dir: that.dir,
                         displayed: that.displayed.cases
@@ -575,7 +575,7 @@ telepath.search = {
                     telepath.ds.get('/search/alerts', {
                         search: that.searchStr,
                         options: that.options,
-                        is_country: that.countryFlag,
+                     //   is_country: that.countryFlag,
                         sort: that.sort,
                         dir: that.dir,
                         displayed: that.displayed.alerts
@@ -615,7 +615,7 @@ telepath.search = {
                     telepath.ds.get('/search/suspects', {
                         search: that.searchStr,
                         options: that.options,
-                        is_country: that.countryFlag,
+                     //   is_country: that.countryFlag,
                         sort: that.sort,
                         dir: that.dir,
                         displayed: that.displayed.suspects

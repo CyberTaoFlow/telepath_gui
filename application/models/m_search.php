@@ -14,10 +14,8 @@ class M_Search extends CI_Model {
 		$this->elasticClient = new Elasticsearch\Client();
 	}
 
-	function search($scope, $settings, $suspect_threshold = false)
+	function search($scope, $settings, $suspect_threshold = false, $limit = 15)
 	{
-		
-		$limit = 15;
 
 		switch($settings['sort']) {
 
@@ -152,12 +150,6 @@ class M_Search extends CI_Model {
 				"host" => [
 					"terms" => [ "field" => "host" , "size" => 100 ]
 				],
-				"alerts_count" => [
-					"sum" => [ "field" => "alerts_count" ]
-				],
-				"alerts_names" => [
-					"terms" => [ "field" => "alerts.name", "size" => 100 ]
-				],
 				"cases_count" => [
 					"sum" => [ "field" => "cases_count" ]
 				],
@@ -196,6 +188,12 @@ class M_Search extends CI_Model {
 
 			]
 		];
+
+		// Add alerts aggregation for alerts and cases only
+		if ($scope == 'alerts' || $scope == 'cases') {
+			$params2['body']["aggs"]["alerts_count"] = ["sum" => ["field" => "alerts_count"]];
+			$params2['body']["aggs"]["alerts_names"] = ["terms" => ["field" => "alerts.name", "size" => 100]];
+		}
 
 		// Add post filter to filter only the query (and not the aggregation) to check if the current session has
 		// also results in another tab
@@ -265,9 +263,7 @@ class M_Search extends CI_Model {
 
 					$item = array(
 						"sid"     => $sid_key, 
-						"city"    => $sid['city']['buckets'][0]['key'], 
-						"alerts_count"  => $sid['alerts_count']['value'], 
-						"alerts_names"  => $sid['alerts_names']['buckets'],
+						"city"    => $sid['city']['buckets'][0]['key'],
 						"cases_count"  => $sid['cases_count']['value'],
 						"cases_names"  => $sid['cases_names']['buckets'],
 						"actions_count"  => $sid['business_actions_count']['value'], 
@@ -282,7 +278,12 @@ class M_Search extends CI_Model {
 						"user" => $sid['user']['buckets'][0]['key']
 					);
 
-					$results['items'][] = $item;
+					if ($scope == 'alerts' || $scope == 'cases') {
+						$item['alerts_count'] = $sid['alerts_count']['value'];
+						$item['alerts_names'] = $sid['alerts_names']['buckets'];
+					}
+
+						$results['items'][] = $item;
 					
 				}
 				

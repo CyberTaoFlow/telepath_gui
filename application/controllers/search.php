@@ -10,19 +10,18 @@ class Search extends Tele_Controller
 
         parent::__construct();
         $this->load->model('M_Search');
-        $this->load->model('M_Suspects');
     }
 
     function _getSettings()
     {
 
-        //return array('search' => 'il', 'range' => [ 'start' => 0, 'end' => 9999999999999 ]);
-
         if ($this->input->post('search') == '') {
             return_fail('No search string defined, aborting');
         }
-        # Automatically add * to the end of search string
+
         $key = $this->input->post('search');
+
+        # Automatically add * to the end of search string
 //        if (substr($key, -1) != '*' && $key[0]!='"' && substr($key, -1) != '"' )
 //        {
 //            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
@@ -39,7 +38,7 @@ class Search extends Tele_Controller
             'range' => $this->_get_range(),
             //'apps' 	  	 => $this->input->post('apps'),
             'apps' => $this->_get_apps(),
-            'is_country' => $this->input->post('is_country') == 'true', // Comes as string, not boolean
+//            'is_country' => $this->input->post('is_country') == 'true', // Comes as string, not boolean
             'sort' => $sort,
             'dir' => $this->input->post('dir') == 'true' ? 'ASC' : 'DESC',
             'displayed' => $this->input->post('displayed')
@@ -66,6 +65,7 @@ class Search extends Tele_Controller
     public function suspects()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
+        $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
         return_json($this->M_Search->search('suspects', $this->_getSettings(), $suspect_threshold));
     }
@@ -74,6 +74,7 @@ class Search extends Tele_Controller
     public function requests()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
+        $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
         return_json($this->M_Search->search('requests', $this->_getSettings(), $suspect_threshold));
     }
