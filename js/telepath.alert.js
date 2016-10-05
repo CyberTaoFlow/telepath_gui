@@ -24,7 +24,7 @@ telepath.alert = {
 				checkable: row.checkable,
 				count: row.alerts_count,
 				progbar: true,
-				progbarValue: row.ip_score,
+				progbarValue: row.score_average,
 				time: row.date,
 				title:  telepath.alert.grabNames(row.alerts_names),
 				details: [
@@ -41,7 +41,7 @@ telepath.alert = {
 				checkable: row.checkable,
 				count: row.alerts_count,
 				progbar: true,
-				progbarValue: row.ip_score,
+				progbarValue: row.score_average,
 				time: row.date,
 				title:  telepath.alert.grabNames(row.alerts_names),
 				details: [ 
@@ -271,7 +271,7 @@ telepath.alert = {
 		
 		result.progbarValue = avg;*/
 
-		result.progbarValue=item.ip_score;
+		result.progbarValue=item.score_average;
 		result.callback = function (widget, el) {
 			$('.selected', that.actionsContainer).removeClass('selected');
 			$('.tele-listitem-inner', widget.element).addClass('selected');
@@ -461,7 +461,7 @@ telepath.alert = {
 					time: item.date, 
 					itemID: item.RID,
 					progbar: true, 
-					progbarValue: parseInt(item.ip_score * 100),
+					progbarValue: parseInt(item.score_average * 100),
 					details: [
 						{ key: 'country', value: item.country },
 						{ key: 'IP', value: item.IP }

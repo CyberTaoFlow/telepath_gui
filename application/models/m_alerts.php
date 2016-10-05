@@ -444,7 +444,7 @@ class M_Alerts extends CI_Model {
 							"host"    => $sid['host']['buckets'],
 //							"count"   => $doc_count,
 							"date"  => $sid['date']['value'],
-							'ip_score' => $score_average,
+							'score_average' => $score_average,
 							"user" => $sid['user']['buckets'][0]['key']
 						);
 
@@ -583,7 +583,7 @@ class M_Alerts extends CI_Model {
 					"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 					"host" => $sid['host']['buckets'],
 					"date" => $sid['date']['value'],
-					'ip_score' => $sid['score_average']['value'],
+					'score_average' => $sid['score_average']['value'],
 					"user" => $sid['user']['buckets'][0]['key']
 				);
 			}

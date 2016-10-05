@@ -274,7 +274,7 @@ class M_Search extends CI_Model {
 						"count"   => $doc_count,
 						//"score_average" => $sid['score']['value'],
 						"date"  => $sid['date']['value'],
-						'ip_score' => $score_average,
+						'score_average' => $score_average,
 						"user" => $sid['user']['buckets'][0]['key']
 					);
 
