@@ -52,7 +52,7 @@ telepath['case'] = {
 				count: item.count,
 				time: item.date,
 				progbar: true,
-				progbarValue: item.ip_score,
+				progbarValue: item.score_average,
 				details: [
 					{key: 'IP', value: item.ip_orig},
 					{key: 'country', value: item.country},

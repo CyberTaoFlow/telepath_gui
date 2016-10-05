@@ -279,7 +279,7 @@ class M_Suspects extends CI_Model {
 								"actions_count"  => $sid['actions_count']['value'],
 								"actions_names"  => $sid['actions_names']['buckets'],
 								"date"  => $sid['date']['value'],
-								"ip_score" => $score_average,
+								"score_average" => $score_average,
 								"user" => $sid['user']['buckets'][0]['key']
 							);
 
@@ -453,7 +453,7 @@ class M_Suspects extends CI_Model {
 						"count"   => $sid['doc_count'],
 						"date"  => $sid['date']['value'],
 						"user" => $sid['user']['buckets'][0]['key'],
-						"ip_score" =>  $sid['score_average']['value']
+						"score_average" =>  $sid['score_average']['value']
 					);
 
 			}
