@@ -1284,10 +1284,10 @@ $.widget( "tele.teleRule", {
 						otherBrowse.hide();
 
 					var user =	$( ".tele-radio-wrap:contains('Changing Username')" );
-					//var parameter =	$( ".tele-radio-wrap:contains('Changing Parameter')" );
+					var page =	$( ".tele-radio-wrap:contains('Page')" );
 
 						user.show();
-						//parameter.show();
+						page.show();
 
 						switch(radio.key) {
 							case 'IP':
@@ -1297,6 +1297,7 @@ $.widget( "tele.teleRule", {
 								user.hide();
 							break;
 							case 'Custom':
+								page.hide()
 								otherBrowse.show();
 								//parameter.hide();
 							break;
