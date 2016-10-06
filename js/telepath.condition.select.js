@@ -17,9 +17,7 @@ telepath.formatConditionBrief = function(container, data) {
 		
 		case 'rules':
 			
-			result = data.value.replace(',', ', ');
-			result = result.split('::')[1];
-		
+			result = $.map(data.value.split(','), function(v){ return v.split('::')[1]; }).join(', ');
 		break;
 		
 		case 'IP':
