@@ -346,6 +346,18 @@ telepath.casePanel = {
 		this.goBack = $('<a>').attr('href', '#').addClass('tele-panel-case-close').html('|&nbsp;Back to all cases');
 		this.panelTopBar.append(this.goBack);
 		
+		// Refresh
+		var cmdRefresh = $('<div>').addClass('tele-refresh');
+		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+		cmdRefresh.append(cmdRefreshButton);
+
+		cmdRefreshButton.click(function () {
+			telepath.casePanel.hardRefresh();
+		});
+
+		this.panelTopBar.append(cmdRefresh);
+		this.panelTopBar.append('<div class="tele-navsep"></div>');
+
 		// Edit Case
 		this.editCase = $('<div>').btn({ icon: 'caseConfig', text: 'Edit Case', callback: function () {
 			telepath.caseOverlay.editCase(that['data']['case']);			

@@ -1191,6 +1191,12 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 	float: right;
 	margin-top: 15px;
 }
+
+.tele-panel-case .tele-panel-topbar .tele-refresh{
+	float: right;
+	margin-top: 25px;
+}
+
 .tele-panel-case .tele-case-graph .tele-navsep {
 	float: right;
 }
