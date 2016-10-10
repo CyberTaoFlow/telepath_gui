@@ -157,10 +157,9 @@ $.widget( "tele.conditionList", {
 		
 		this.accordion.accordion({ 
 		
-			heightStyle: 'fill',
+			heightStyle: 'content',
 			collapsible: true,
 			active: false,
-			autoHeight: false,
 			animate: false,
 			activate: function( event, ui ) {
 				

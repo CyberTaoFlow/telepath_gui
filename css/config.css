@@ -312,7 +312,7 @@ body .jstree .tele-button {
 
 .tele-condition-select .tele-country-list {
 	overflow: hidden;
-	height: 220px;
+	height: 240px;
 }
 .tele-condition-select .tele-country-list ul {
 	height: 207px;
@@ -370,7 +370,7 @@ body .jstree .tele-button {
 
 .tele-ruletype-accordion,
 .tele-condition-accordion {
-	margin-right: 5px;
+	margin-right: 20px;
 }
 
 .tele-ruletype-accordion .ui-accordion-content,
@@ -387,15 +387,11 @@ body .jstree .tele-button {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 	margin-bottom: 10px;
-	min-height: 270px;
-	overflow: visible;
 }
 
-/*
 .tele-ruletype-accordion .ui-accordion-content.ui-accordion-content-active {
-	min-height: 326px;
+	overflow: visible;
 }
-*/
 
 .tele-ruletype-accordion.small .ui-accordion-content.ui-accordion-content-active {
 	min-height: 80px;
@@ -508,13 +504,6 @@ body .jstree .tele-button {
 	clear: both;
 	margin-bottom: 50px;
 	text-align: center;
-}
-
-
-.tele-overlay.tele-overlay-case-edit.ui-draggable .tele-overlay-content .tele-button-container{
-	margin-left: 1085px;
-    position: absolute;
-    top: 35px;
 }
 
 .tele-button-container .tele-button {

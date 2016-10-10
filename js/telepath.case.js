@@ -103,9 +103,8 @@ telepath.caseOverlay = {
 		// console.log(this.data);
 		
 		// Show Window
-		telepath.overlay.init('case-edit', data.case_data.case_name);
-		$('.tele-overlay').height(860).trigger('resize');
-		
+		telepath.overlay.init('case-edit', data.case_data.case_name, true, 550);
+
 		// Case Name
 		var caseName = $('<div>').teleInput({ label: 'Name', value: data.id == 'new' ? '' : data.case_data.case_name, disabled: data.id == 'new' ? false : true });
 		
@@ -120,7 +119,11 @@ telepath.caseOverlay = {
 		telepath.overlay.contentEl.append(title);
 		
 		// Condition list
-		var cond = $('<div>').conditionList({ data: data.case_data.details });
+		var cond = $('<div>').conditionList({data: data.case_data.details}).mCustomScrollbar({
+			advanced: {
+				updateOnContentResize: true
+			}
+		}).height($('.tele-overlay').height() - 250);
 		telepath.overlay.contentEl.append(cond);
 		
 		// Apply / Cancel buttons
