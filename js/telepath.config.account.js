@@ -187,14 +187,24 @@ telepath.config.account = {
 				
 				telepath.ds.get('/users/add_user', { items: userData }, function (data) {
 					// console.log(data);
-					telepath.config.accounts.loadData();
+					if (data.success){
+						telepath.dialog({title: 'Telepath Users', msg: 'User successfully added'});
+						telepath.config.accounts.loadData();
+					}
+				},function(data){
+					telepath.dialog({msg: data.error})
 				});
 			
 			} else {
 						
 				telepath.ds.get('/users/set_user', { items: userData }, function (data) {
 					// console.log(data);
-					telepath.config.accounts.loadData();
+					if (data.success){
+						telepath.dialog({title: 'Telepath Users', msg: 'User successfully updated'});
+						telepath.config.accounts.loadData();
+					}
+				},function(data){
+					telepath.dialog({msg: data.error})
 				});
 			
 			}
