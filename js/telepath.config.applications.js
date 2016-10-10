@@ -75,7 +75,7 @@ telepath.config.applications = {
 		var that = this;
 		var treeData = [];
 		$.each(data, function(i, row) {
-			var text = row.host;
+			var text = row.display_name ? row.display_name : row.host;
 			var children = false;
 			if (count) {
 				//	text += '&nbsp;(' + row.learning_so_far + ')';
