@@ -103,9 +103,8 @@ telepath.caseOverlay = {
 		// console.log(this.data);
 		
 		// Show Window
-		telepath.overlay.init('case-edit', data.case_data.case_name);
-		$('.tele-overlay').height(860).trigger('resize');
-		
+		telepath.overlay.init('case-edit', data.case_data.case_name, true, 550);
+
 		// Case Name
 		var caseName = $('<div>').teleInput({ label: 'Name', value: data.id == 'new' ? '' : data.case_data.case_name, disabled: data.id == 'new' ? false : true });
 		
@@ -120,7 +119,11 @@ telepath.caseOverlay = {
 		telepath.overlay.contentEl.append(title);
 		
 		// Condition list
-		var cond = $('<div>').conditionList({ data: data.case_data.details });
+		var cond = $('<div>').conditionList({data: data.case_data.details}).mCustomScrollbar({
+			advanced: {
+				updateOnContentResize: true
+			}
+		}).height($('.tele-overlay').height() - 250);
 		telepath.overlay.contentEl.append(cond);
 		
 		// Apply / Cancel buttons
@@ -314,7 +317,11 @@ telepath.casePanel = {
 		// Case Title
 		this.panelTitle   = $('<div>').addClass('tele-panel-title');
 		this.panelTopBar.append(this.panelTitle);
-		this.panelTitle.html(this.data['case']['case_data']['case_name'] + ' | ' + thousandsFormat(this.data.count) + ' Sessions');
+		var HebrewChars = new RegExp("^[\u0590-\u05FF]+$");
+		var caseName= this.data['case']['case_data']['case_name'];
+		var lang = HebrewChars.test(caseName);
+		var text = lang ? '<span dir="ltr"> | ' + thousandsFormat(this.data.count) + ' Sessions </span> ':  ' | ' + thousandsFormat(this.data.count) + ' Sessions';
+		this.panelTitle.html(this.data['case']['case_data']['case_name'] + text );
 		
 		// Case Favorite Flag
 		this.favEl = $('<a>').cb({ icon: 'favorites', checked: data['case']['favorite'] == '1', callback: function(widget) {
