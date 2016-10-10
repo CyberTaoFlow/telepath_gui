@@ -446,7 +446,6 @@ telepath.casePanel = {
 			telepath.range.start = start;
 			telepath.range.end = end;
 			
-			//telepath.cases.refresh(function () {});
 				that.hardRefresh();
 			
 		}});
@@ -454,7 +453,7 @@ telepath.casePanel = {
 		// Applications
 		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
 			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			telepath.cases.hardRefresh(function () {
+			that.hardRefresh(function () {
 				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
 			});
 		}});
