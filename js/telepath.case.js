@@ -317,7 +317,11 @@ telepath.casePanel = {
 		// Case Title
 		this.panelTitle   = $('<div>').addClass('tele-panel-title');
 		this.panelTopBar.append(this.panelTitle);
-		this.panelTitle.html(this.data['case']['case_data']['case_name'] + ' | ' + thousandsFormat(this.data.count) + ' Sessions');
+		var HebrewChars = new RegExp("^[\u0590-\u05FF]+$");
+		var caseName= this.data['case']['case_data']['case_name'];
+		var lang = HebrewChars.test(caseName);
+		var text = lang ? '<span dir="ltr"> | ' + thousandsFormat(this.data.count) + ' Sessions </span> ':  ' | ' + thousandsFormat(this.data.count) + ' Sessions';
+		this.panelTitle.html(this.data['case']['case_data']['case_name'] + text );
 		
 		// Case Favorite Flag
 		this.favEl = $('<a>').cb({ icon: 'favorites', checked: data['case']['favorite'] == '1', callback: function(widget) {
