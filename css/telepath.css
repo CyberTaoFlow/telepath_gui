@@ -886,7 +886,7 @@ a.tele-refresh-value:hover {
 	display: inline-block;
 	float: right;
 	margin-right: 30px;
-	margin-top: 5px;
+	margin-top: -5px;
 	background: url(../img/icons.png) no-repeat scroll -363px -58px rgba(0, 0, 0, 0);
 	height: 32px;
 	width: 32px;
