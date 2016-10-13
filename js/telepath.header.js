@@ -240,7 +240,7 @@ telepath.header = {
 	resize: function () {
 		
 		// Nav
-		var width = $(window).width();
+		var width = window.innerWidth;
 		
 		$('.tele-logo').css({ width: 200, overflow: 'hidden' });
 		
@@ -249,7 +249,7 @@ telepath.header = {
 			$(this.searchInput).css({ width: 100 });
 			
 			if(width < 1200) {
-				if(width < 1000) {
+				if(width < 800) {
 					$('.tele-logo').css({ width: 65, overflow: 'hidden' });
 					$('.tele-nav li').css({ margin: '0px 0px' });
 				} else {
