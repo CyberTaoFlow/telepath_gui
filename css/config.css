@@ -466,7 +466,7 @@ body .jstree .tele-button {
 
 .tele-ruletype-accordion .ui-icon,
 .tele-condition-accordion .ui-icon {
-	background: transparent url('../img/icons.png') center right no-repeat;
+	background: transparent url('/telepath/img/icons.png') center right no-repeat;
 	height: 20px;
 	width: 25px;
 	margin-top: -10px;

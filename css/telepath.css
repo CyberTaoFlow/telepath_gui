@@ -1,5 +1,5 @@
 .tele-loader {
-	  background: transparent url('../img/loader.gif') 50% 0% no-repeat;
+	  background: transparent url('/telepath/img/loader.gif') 50% 0% no-repeat;
 	  width: 100%;
 	  text-align: center;
 	  padding: 0px 0px 20px 0px;
@@ -16,7 +16,7 @@
 }
 
 .tele-map .tele-loader{
-	background: transparent url('../img/map-loader.gif') 50% 0% no-repeat;
+	background: transparent url('/telepath/img/map-loader.gif') 50% 0% no-repeat;
 	position: absolute;
 	top: 130px;
 }
@@ -31,7 +31,7 @@ td {
   font-family: 'Roboto Condensed Regular';
   font-style: normal;
   font-weight: 400;
-  src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'), url(Zd2E9abXLFGSr9G3YK2MsFzqCfRpIA3W6ypxnPISCPA.woff) format('woff');
+  src: local('Roboto Condensed Regular'), local('RobotoCondensed-Regular'), url(/telepath/css/Zd2E9abXLFGSr9G3YK2MsFzqCfRpIA3W6ypxnPISCPA.woff) format('woff');
 }
 
   .axisLabels {
@@ -156,7 +156,7 @@ td {
 	height: 19px
 }
 .tele-search-top a.tele-search-icon {
-	background: url("../img/icon_map.png") no-repeat scroll -298px -416px rgba(0, 0, 0, 0);
+	background: url("/telepath/img/icon_map.png") no-repeat scroll -298px -416px rgba(0, 0, 0, 0);
 	height: 32px;
 	width: 30px;
 	border: none;
@@ -171,7 +171,7 @@ td {
 	background-position: -329px -416px;
 }
 .tele-search-top a.tele-search-dropdown {
-	background: url("../img/icons.png") no-repeat scroll -320px -906px #999999;
+	background: url("/telepath/img/icons.png") no-repeat scroll -320px -906px #999999;
 	height: 29px;
 	width: 38px;
 	border: none;
@@ -216,7 +216,7 @@ td {
 	cursor: pointer;
 }
 .tele-notify a {
-	background: url("../img/icon_map.png") no-repeat scroll -294px -533px rgba(0, 0, 0, 0);
+	background: url("/telepath/img/icon_map.png") no-repeat scroll -294px -533px rgba(0, 0, 0, 0);
 	height: 36px;
 	width: 36px;
 	display: block;
@@ -367,7 +367,7 @@ td {
 	float: left;
 }
 a.tele-refresh-button {
-	background: url("../img/icons.png") no-repeat scroll -324px -58px rgba(0, 0, 0, 0);
+	background: url("/telepath/img/icons.png") no-repeat scroll -324px -58px rgba(0, 0, 0, 0);
 	height: 32px;
 	width: 32px;
 	display: block;
@@ -380,7 +380,7 @@ a.tele-refresh-button:hover {
 	background-position: -362px -58px;
 }
 a.tele-refresh-button.loader {
-	background: transparent url("../img/loader_small.gif") 4px 0 no-repeat;
+	background: transparent url("/telepath/img/loader_small.gif") 4px 0 no-repeat;
 }
 a.tele-refresh-button.loader:hover {
 	background-position: 4px 0;
@@ -489,7 +489,7 @@ a.tele-refresh-value:hover {
 	margin-top: 20px;
 }
 .tele-graph-filter-toggle {
-	background: transparent url("../img/icons.png") no-repeat scroll -327px -842px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -327px -842px;
 	height: 20px;
 	width: 20px;
 	float: left;
@@ -500,7 +500,7 @@ a.tele-refresh-value:hover {
 	border-radius: 20px;
 }
 .tele-graph-filter-toggle.active {
-	background: transparent url("../img/icons.png") no-repeat scroll -365px -843px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -365px -843px;
 }
 
 .tele-graph-filter-title {
@@ -696,10 +696,10 @@ a.tele-refresh-value:hover {
 	cursor: pointer;
 }
 .tele-popup .ui-datepicker .ui-datepicker-prev span {
-	background: transparent url("../img/icons.png") no-repeat scroll  -10px -544px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll  -10px -544px;
 }
 .tele-popup .ui-datepicker .ui-datepicker-next span {
-	background: transparent url("../img/icons.png") no-repeat scroll  -35px -544px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll  -35px -544px;
 }
 
 .tele-popup .ui-datepicker .ui-datepicker-prev-hover, .tele-popup .ui-datepicker .ui-datepicker-next-hover {
@@ -887,7 +887,7 @@ a.tele-refresh-value:hover {
 	float: right;
 	margin-right: 30px;
 	margin-top: 5px;
-	background: url(../img/icons.png) no-repeat scroll -363px -58px rgba(0, 0, 0, 0);
+	background: url(/telepath/img/icons.png) no-repeat scroll -363px -58px rgba(0, 0, 0, 0);
 	height: 32px;
 	width: 32px;
 	zoom: 0.8;
@@ -971,7 +971,7 @@ a.tele-refresh-value:hover {
 	color: #999;
 }
 .tele-dropdown .tele-dropdown-arrow {
-	background: url("../img/icons.png") no-repeat scroll -325px -907px rgba(0, 0, 0, 0);
+	background: url("/telepath/img/icons.png") no-repeat scroll -325px -907px rgba(0, 0, 0, 0);
 	height: 32px;
 	width: 32px;
 	display: block;
@@ -1071,7 +1071,7 @@ a.tele-refresh-value:hover {
 .tele-search-button {
 	height: 28px;
 	width: 28px;
-	background: transparent url("../img/icons.png") no-repeat scroll -363px -573px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -363px -573px;
 	margin-left: -28px;
 	float: left;
 }
@@ -1082,7 +1082,7 @@ a.tele-refresh-value:hover {
 .icon-delete-input {
 	height: 28px;
 	width: 28px;
-	background: transparent url("../img/icons.png") no-repeat scroll -358px -355px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -358px -355px;
 	margin-left: -28px;
 	float: left;
 }
@@ -1093,14 +1093,14 @@ a.tele-refresh-value:hover {
 .icon-delete-input2 {
 	height: 15px;
 	width: 17px;
-	background: transparent url("../img/cross-out-mark-2.png") no-repeat;
+	background: transparent url("/telepath/img/cross-out-mark-2.png") no-repeat;
 	margin-left: -29px;
 	margin-top: 9px;
 	float: left;
 	zoom: 80%;
 }
 .icon-delete-input2:hover {
-	background: transparent url("../img/cross-out-mark.png") no-repeat;
+	background: transparent url("/telepath/img/cross-out-mark.png") no-repeat;
 }
 /* UI ToolTips */
 
@@ -1288,7 +1288,7 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 	height: 50px;
 	width: 50px;
 	background: black;
-	background: transparent url("../img/icons.png") no-repeat scroll 0 0;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll 0 0;
 	margin: auto;
 	margin-bottom: 10px;
 	
