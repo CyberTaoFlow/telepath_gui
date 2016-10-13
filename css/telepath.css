@@ -928,8 +928,20 @@ a.tele-refresh-value:hover {
 }
 
 @media (max-width: 1200px) {
+	.tele-alert-graph-distribution-canvas,
+	.tele-alert-graph-distribution-canvas .tele-graph-canvas {
+		height: 380px;
+	}
+
 	.tele-alert-graph-distribution-canvas canvas{
-		margin-top: -40px;
+		margin-top: -20px;
+		margin-left: -50px;
+
+	}
+}
+
+@media (max-width: 1023px) {
+	.tele-alert-graph-distribution-canvas canvas{
 		margin-left: -20px;
 
 	}
@@ -1391,6 +1403,10 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
   	margin-top: 200px;
   }
   .tele-graph-canvas{top: 0px;}
+
+  #alert-distribution-showPercent {
+	  margin-top: -5px;
+  }
 }
 
 @media (max-width: 1250px){

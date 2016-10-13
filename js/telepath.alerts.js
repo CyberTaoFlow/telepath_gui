@@ -547,8 +547,8 @@ telepath.alerts = {
 		};
 
 		if (window.innerWidth < 1200){
-			options.series.pie.margin=[50,0];
-			options.legend.margin=([50,400])
+			options.series.pie.margin=0;
+			options.legend.margin=([50,300]);
 		}
 
 		function pieHover(event, pos, obj) 
@@ -700,8 +700,8 @@ telepath.alerts = {
 		};
 
 		if (window.innerWidth < 1200){
-			options.series.pie.margin=[50,0];
-			options.legend.margin=([50,400])
+			options.series.pie.margin = 0;
+			options.legend.margin = ([50, 300]);
 		}
 
 		function pieHover(event, pos, obj) 
@@ -811,7 +811,7 @@ telepath.alerts = {
 		if($('.tele-panel-alerts').children().size() == 0) return;
 		
 		var height = $(window).height();
-		var width  = $(window).width() - 10;
+		var width  = window.innerWidth;
 		
 		$('.tele-body').css({ height: height });
 		var offset = height - 
@@ -838,10 +838,10 @@ telepath.alerts = {
 			magic = 600;
 		
 		}
-		
-		$('.tele-panel-alerts .tele-alert-graphs-block', this.list).width(magic);
-		$('.tele-panel-alerts .tele-alerts-block').width(width - magic - 15);
-		$('.tele-panel-alerts .tele-block .tele-list').width(width - magic - 25).height(offset - 50).mCustomScrollbar("update");
+
+		$('.tele-panel-alerts .tele-alert-graphs-block', this.list).width(magic );
+		$('.tele-panel-alerts .tele-alerts-block').width(width - magic - 25);
+		$('.tele-panel-alerts .tele-block .tele-list').width(width - magic - 40).height(offset - 50).mCustomScrollbar("update");
 		$('.tele-panel-alerts .tele-alert-graphs-block').height(offset - 50).mCustomScrollbar("update");
 
 		if (window.innerWidth <1200 ){
@@ -849,7 +849,7 @@ telepath.alerts = {
 			this.graph = $('.tele-alert-graph-distribution-canvas.tele-graph');
 			this.legendHeight=$('.legend table').height();
 			this.pieGraphHeight=$('.tele-alert-graph-distribution-canvas.tele-graph .tele-graph-canvas-outer').height();
-			this.graph.height(that.pieGraphHeight + that.legendHeight - 50);
+			this.graph.height(that.pieGraphHeight + that.legendHeight);
 			
 		}
 
