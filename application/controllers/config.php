@@ -210,6 +210,11 @@ class Config extends Tele_Controller
 
         $this->M_Config->changed();
 
+        if (isset($config['reverse_proxy_mode_id']) && $config['reverse_proxy_mode_id'] == '1') {
+            exec('/opt/telepath/openresty/nginx/sbin/nginx -s reload');
+        }
+
+
         if (isset($config['whitelist'])) {
 
             $whitelist = $config['whitelist'];

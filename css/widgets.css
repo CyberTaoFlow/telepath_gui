@@ -473,7 +473,7 @@ a.tele-input-input {
 	margin-top: 10px;
 }
 .tele-checkbox-checkbox {
-	background: transparent url("../img/icon_map.png") no-repeat scroll -415px -475px;
+	background: transparent url("/telepath/img/icon_map.png") no-repeat scroll -415px -475px;
 	height: 32px;
 	width: 32px;
 	float: left;
@@ -483,10 +483,10 @@ a.tele-input-input {
 	margin-top: 3px;
 }
 .tele-checkbox-checkbox.checked {
-	background: transparent url("../img/icon_map.png") no-repeat scroll -445px -475px;
+	background: transparent url("/telepath/img/icon_map.png") no-repeat scroll -445px -475px;
 }
 .tele-checkbox-favorites {
-	background: transparent url("../img/icons.png") no-repeat scroll -323px -875px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -323px -875px;
 	height: 32px;
 	width: 32px;
 	float: left;
@@ -494,7 +494,7 @@ a.tele-input-input {
 	text-decoration: none;
 }
 .tele-checkbox-favorites.checked {
-	background: transparent url("../img/icons.png") no-repeat scroll -361px -875px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -361px -875px;
 }
 
 /* TELE FORM */
@@ -534,7 +534,7 @@ a.tele-input-input {
 /*.tele-browser .jstree-default .jstree-node,*/
 .tele-browser .jstree-default .jstree-icon:empty,
 .tele-browser .jstree-default .jstree-icon {
-	background: transparent url('../img/icon_map.png') no-repeat;
+	background: transparent url('/telepath/img/icon_map.png') no-repeat;
 	height: 22px;
 	width: 22px;
 	border-radius: 16px;
@@ -606,7 +606,7 @@ body .vakata-context li > a > i {
 	height: 22px;
 	line-height: 22px;
 	margin: 0px;
-	background-image: url("../img/icons.png");
+	background-image: url("/telepath/img/icons.png");
 }
 body .vakata-context li > a .vakata-contextmenu-sep {
 	height: 22px;

@@ -352,7 +352,7 @@
 }
 #jstree-dnd.jstree-default .jstree-ok,
 #jstree-dnd.jstree-default .jstree-er {
-  background-image: url("../img/icon_map.png");
+  background-image: url("/telepath/img/icon_map.png");
   background-repeat: no-repeat;
   background-color: transparent;
 }
@@ -418,7 +418,7 @@
 }
 .jstree-default .jstree-node,
 .jstree-default .jstree-icon {
-  background-image: url("../img/icon_map.png");
+  background-image: url("/telepath/img/icon_map.png");
 }
 .jstree-default .jstree-node {
   background-position: -292px -4px;
@@ -547,7 +547,7 @@
 }
 .jstree-default-small .jstree-node,
 .jstree-default-small .jstree-icon {
-  background-image: url("../img/icon_map.png");
+  background-image: url("/telepath/img/icon_map.png");
 }
 .jstree-default-small .jstree-node {
   background-position: -295px -7px;
@@ -676,7 +676,7 @@
 }
 .jstree-default-large .jstree-node,
 .jstree-default-large .jstree-icon {
-  background-image: url("../img/icon_map.png");
+  background-image: url("/telepath/img/icon_map.png");
 }
 .jstree-default-large .jstree-node {
   background-position: -288px 0px;
@@ -913,7 +913,7 @@
 
 .jstree-icon.jstree-themeicon.tele-icon.tele-icon-actions.jstree-themeicon-custom{
   display: block ;
-  background: #555555 url("../img/icon_map.png") no-repeat scroll -412px -232px ;
+  background: #555555 url("/telepath/img/icon_map.png") no-repeat scroll -412px -232px ;
   border-radius: 20px;
   height: 33px ;
   width: 33px ;

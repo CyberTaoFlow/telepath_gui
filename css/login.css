@@ -114,7 +114,7 @@ h1 {
 /* Checkbox Element */
 
 .tele-checkbox {
-	background: transparent url("../img/icons.png") no-repeat scroll -326px -804px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -326px -804px;
 	height: 32px;
 	width: 32px;
 	float: left;
@@ -125,7 +125,7 @@ h1 {
 }
 
 .tele-checkbox.checked {
-	background: transparent url("../img/icons.png") no-repeat scroll -363px -804px;
+	background: transparent url("/telepath/img/icons.png") no-repeat scroll -363px -804px;
 }
 
 .tele-button:hover {

@@ -16,7 +16,7 @@
 	min-width: 60%;
 }
 .tele-listitem .tele-title-2 span{
-	cursor: url(../img/search_icon.png), pointer;
+	cursor: url(/telepath/img/search_icon.png), pointer;
 	color: rgb(255, 0, 0);
 }
 
@@ -161,7 +161,7 @@
 }
 
 .tele-listitem-user-name{
-	background-image: url("../img/icon_map.png");
+	background-image: url("/telepath/img/icon_map.png");
 	background-position: -330px -2200px;
 	float: left;
 	height: 20px;

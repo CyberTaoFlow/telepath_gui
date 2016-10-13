@@ -66,7 +66,7 @@ if($logged_in && $can_access) {
 
         require __DIR__ . '/../../vendor/minify/min/utils.php';
 
-        echo '<link rel="stylesheet" href="' . Minify_getUri('css', ['minAppUri' => 'vendor/minify/min']) . '">';
+        echo '<link rel="stylesheet" href="' . Minify_getUri('css', ['minAppUri' => 'vendor/minify/min', 'rewriteWorks' => FALSE]) . '">';
 
 
     } else {
@@ -97,8 +97,8 @@ if($logged_in && $can_access) {
 
     if ($minify) {
 
-        echo '<script src="' . Minify_getUri('js_lib', ['minAppUri' => 'vendor/minify/min']) . '"></script>';
-        echo '<script src="' . Minify_getUri('js', ['minAppUri' => 'vendor/minify/min']) . '"></script>';
+        echo '<script src="' . Minify_getUri('js_lib', ['minAppUri' => 'vendor/minify/min', 'rewriteWorks' => FALSE]) . '"></script>';
+        echo '<script src="' . Minify_getUri('js', ['minAppUri' => 'vendor/minify/min', 'rewriteWorks' => FALSE]) . '"></script>';
 
     } else {
 

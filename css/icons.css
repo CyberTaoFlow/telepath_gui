@@ -37,7 +37,7 @@
 }
 
 .tele-listitem-icon {
-	background-image: url("../img/icon_map.png");
+	background-image: url("/telepath/img/icon_map.png");
 }
 
 .jstree-themeicon-custom,
@@ -46,7 +46,7 @@
 	height: 32px;
 	width: 32px;
 	margin-right: 10px;
-	background: transparent url("../img/icon_map.png") no-repeat scroll 0 0;
+	background: transparent url("/telepath/img/icon_map.png") no-repeat scroll 0 0;
 }
 
 body .vakata-context i.tele-icon-alias_add,
@@ -97,11 +97,11 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 }
 
 .tele-icon-loader {
-	background: transparent url("../img/loader_small.gif") no-repeat scroll 0px 7px;
+	background: transparent url("/telepath/img/loader_small.gif") no-repeat scroll 0px 7px;
 }
 
 .tele-icon-ring{
-	background: transparent url("../img/ring.gif") no-repeat scroll 148px -2px;
+	background: transparent url("/telepath/img/ring.gif") no-repeat scroll 148px -2px;
 }
 .tele-icon-search {
 	background-position: -315px -573px;
@@ -287,14 +287,14 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-icon-query        { background-position: -240px -400px; }
 .tele-icon-location   { background-position: -233px -480px; }
 .tele-icon-navigation { background-position: -80px -480px; }
-.tele-icon-reputation{background: transparent url("../img/icon_map.png") -187px -436px }
+.tele-icon-reputation{background: transparent url("/telepath/img/icon_map.png") -187px -436px }
 
 /*Checked*/
 .tele-icon-speed.active        { background-position: 0px -400px; }
 .tele-icon-query.active        { background-position: -160px -400px; }
 .tele-icon-location.active   { background-position: -153px -480px; }
 .tele-icon-navigation.active { background-position: 0px -480px; }
-.tele-icon-reputation.active {background: transparent url("../img/icon_map.png") -127px -438px }
+.tele-icon-reputation.active {background: transparent url("/telepath/img/icon_map.png") -127px -438px }
 
 /* Other icons */
 /*Checked*/
@@ -346,7 +346,7 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 
 .tele-icon.selected:after {
 	content: "";
-	background: url("../img/icon_map.png") -539px -383px;
+	background: url("/telepath/img/icon_map.png") -539px -383px;
 	float: left;
 	height: 32px;
 	padding: 0 6px;
@@ -397,7 +397,7 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 .tele-nav-icon {
 	height: 60px;
 	width: 60px;
-	background: transparent url('../img/icons.png') 0 0 no-repeat;
+	background: transparent url('/telepath/img/icons.png') 0 0 no-repeat;
 	display: block;
 	margin-bottom: 2px;
 }
