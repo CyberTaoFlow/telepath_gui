@@ -433,7 +433,7 @@ telepath.config.actions = {
 				$(this).trigger("restart", data);
 			}
 		}).on('restart', function (e, data) {
-			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+			data.instance.element.find('.jstree-wholerow').css('background-color', '');
 			data.instance.element.find('#' + data.selected[0]).children(":first").css("background-color", "rgba(189, 189, 189, 0.85)");
 
 			telepath.config.actions.contentRight.empty();
