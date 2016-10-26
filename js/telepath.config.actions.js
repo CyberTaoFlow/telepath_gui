@@ -62,8 +62,8 @@ telepath.config.actions = {
 
 
 					$.each(data.data, function(i, row) {
-					
-						var text = row.host;
+
+						var text = row.display_name ? row.display_name : row.host;
 						//var children = [{ children: true, text: 'Root Domain', data: {id: row.host, type: 'app', ssl: row.ssl_flag }}];
 						//if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0){
 						//	$.each(row.subdomains, function(i,subdomain){
