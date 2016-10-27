@@ -143,7 +143,7 @@ telepath.action.recorder = {
 						});
 
 						that.showSaveLoad = telepath.config.action.showSaveLoad;
-						that.showSaveLoad();
+						that.showSaveLoad(true);
 
 						// if URL mode is enabled, we don't display the first recorded request with the hybridrecord GET
 						// parameter
@@ -536,7 +536,7 @@ telepath.config.action = {
 		}
 				
 	},
-	showSaveLoad: function() {
+	showSaveLoad: function(name_validate) {
 		
 		var that = this;
 		
@@ -589,25 +589,31 @@ telepath.config.action = {
 				return;
 			}
 
-			// Check if name already exists
-			telepath.ds.get('/actions/check_existing_action_name', {
-				host: telepath.action.currentApp,
-				name: flow_name
-			}, function (data) {
-				if (data.items) {
-					telepath.dialog({
-						type: 'dialog',
-						title: 'Business Actions',
-						msg: 'This action name already exists. Do you want to override it?',
-						callback: function () {
-							telepath.config.action.postToServer(flow_name, cleanData);
-						}
-					});
-				}
-				else {
-					telepath.config.action.postToServer(flow_name, cleanData);
-				}
-			});
+			if (name_validate){
+				// Check if name already exists
+				telepath.ds.get('/actions/check_existing_action_name', {
+					host: telepath.action.currentApp,
+					name: flow_name
+				}, function (data) {
+					if (data.items) {
+						telepath.dialog({
+							type: 'dialog',
+							title: 'Business Actions',
+							msg: 'This action name already exists. Do you want to override it?',
+							callback: function () {
+								telepath.config.action.postToServer(flow_name, cleanData);
+							}
+						});
+					}
+					else {
+						telepath.config.action.postToServer(flow_name, cleanData);
+					}
+				});
+			}
+			else {
+				telepath.config.action.postToServer(flow_name, cleanData);
+			}
+
 
 		});
 		

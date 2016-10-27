@@ -338,6 +338,21 @@
 
 }
 
+.popover.top:after {
+    top: 100%;
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #ffffff;
+    border-width: 15px;
+    margin-left: -236px;
+}
+.popover.top:before {
+    top: 100%;
+    border-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0,0,0,0.3);
+    border-width: 17px;
+    margin-top: 5px;
+    margin-left: 200px;
+}
 
 .popover .loader {
 	position: relative;

@@ -106,6 +106,10 @@ body .jstree .tele-button {
 	margin-top: 10px;
 }
 
+a.jstree-anchor{
+	text-overflow: ellipsis;
+}
+
 .tele-config-content-right .tele-button {
 	margin-right: 15px;
 }
