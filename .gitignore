@@ -256,3 +256,5 @@ fabric.properties
 # *.ipr
 .idea/
 application/sessions/
+CI_phpStorm.php
+my_models.php
