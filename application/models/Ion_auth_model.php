@@ -2073,19 +2073,20 @@ class Ion_auth_model extends CI_Model
 
 	protected function _filter_data($table, $data)
 	{
-		$filtered_data = array();
-		$columns = $this->db->list_fields($table);
-
-		if (is_array($data))
-		{
-			foreach ($columns as $column)
-	{
-				if (array_key_exists($column, $data))
-					$filtered_data[$column] = $data[$column];
-			}
-		}
-
-		return $filtered_data;
+//		$filtered_data = array();
+//		$columns = $this->db->list_fields($table);
+//
+//		if (is_array($data))
+//		{
+//			foreach ($columns as $column)
+//	{
+//				if (array_key_exists($column, $data))
+//					$filtered_data[$column] = $data[$column];
+//			}
+//		}
+//
+//		return $filtered_data;
+		return $data;
 	}
 
 	protected function _prepare_ip($ip_address) {
