@@ -234,6 +234,9 @@ class Users extends CI_Controller
         $mode = $data['mode'];
         unset($data['mode']);
         unset($data['extradata']); // IMPORTANT NOT TO ALLOW THIS
+        $data['username'] = $data['login'];
+        unset($data['login']);
+
 
         $data['active'] = isset($data['active']) && $data['active'] == 'true' ? 1 : 0;
 
