@@ -258,3 +258,4 @@ fabric.properties
 application/sessions/
 CI_phpStorm.php
 my_models.php
+application/databases/telepath_users.db
