@@ -486,12 +486,10 @@ telepath.sessionflow = {
 		// Print Requests
 		this.lastAction = -1;
 		this.printed = 0;
-		
-		for(x in that.session.items) {
-		
+
+		for (var x in that.session.items) {
 			var req = that.session.items[x];
-			that.appendItem(req);
-			
+			that.appendItem(req, x);
 		}
 		if (this.width <= 1250){
 			var height = this.container.height() - statsEl.height() /*- durationEl.height()*/ - 70;
@@ -521,9 +519,10 @@ telepath.sessionflow = {
 							$('.tele-loader', that.actionsContainer).remove();
 						
 							if(data.items.length > 0) {
+								var length = that.session.items.length;
 								$.each(data.items, function(i, item) {
 									that.session.items.push(item);
-									that.appendItem(item);
+									that.appendItem(item, length + i);
 								});
 							}
 							 
@@ -540,7 +539,7 @@ telepath.sessionflow = {
 		this.overlay.titleEl.html('Session Flow');
 		
 	},
-	appendItem: function (req) {
+	appendItem: function (req, index) {
 		
 		if(this.lastAction == -1 || (req.business_actions && (req.business_actions[0].name != this.lastAction || req.business_actions[0].status == 2)) || (!req.business_actions && this.lastAction != -1 && this.lastAction != 'Browsing')) {
 				
@@ -569,7 +568,7 @@ telepath.sessionflow = {
 		}
 		
 		var item = this.formatData(req);
-		var newListItem = $('<li>').attr('id', 'alert-item-' + x);
+		var newListItem = $('<li>').attr('id', 'alert-item-' + index);
 		this.newList.append(newListItem);
 		newListItem.listitem(item);
 
@@ -686,36 +685,41 @@ telepath.sessionflow = {
 		
 		return false;
 	},
-	updateSelected: function() {
-	
+	updateSelected: function(state) {
+
+		if($('.selected', this.actionsContainer).length){
+			var elTop = $('.selected', this.actionsContainer).offset().top - $(".tele-requests-list .mCSB_container").offset().top;
+		}
+		else {
+			var elTop = 60;
+		}
 		$('.selected', this.actionsContainer).removeClass('selected');
-		var newSelected = $( "li:nth-child(" + (this.selectedIndex + 1) + ")", this.actionsContainer).first();
-		
+		var newSelected = $("#alert-item-" + this.selectedIndex, this.actionsContainer).first();
 		$('.tele-listitem-inner', newSelected).addClass('selected');
 		
 		if(newSelected.data('tele-listitem') && newSelected.data('tele-listitem').options) {
 			var dataID = newSelected.data('tele-listitem').options.dataID;
 		} else {
-			newSelected = $( "li:nth-child(1)", this.actionsContainer);
+			newSelected = $("#alert-item-" + this.selectedIndex, this.actionsContainer);
 			var dataID = newSelected.data('tele-listitem').options.dataID;
 		}
 
 		this.expandRequest(dataID);
-		
-		$(this.actionsContainer).mCustomScrollbar("scrollTo", "li:nth-child(" + (this.selectedIndex + 1) + ")");
-		
+
+		//var elTop = $("#alert-item-" + this.selectedIndex).offset().top - $(".tele-requests-list .mCSB_container").offset().top;
+		$('.tele-requests-list').mCustomScrollbar("scrollTo", state == 'up' ? elTop - 400 : elTop - 50);
 	},
 	scrollUp: function() {
 		if(this.selectedIndex > 0) {
 			this.selectedIndex--;
 		}
-		this.updateSelected();
+		this.updateSelected('up');
 	},
 	scrollDown: function() {
-		if(this.selectedIndex < this.session.items.length) {
+		if(this.selectedIndex < this.session.items.length -1) {
 			this.selectedIndex++;
 		}
-		this.updateSelected();
+		this.updateSelected('down');
 	},
 	keyDown: function(e) {
 		// Up/Down Navigation
@@ -835,6 +839,7 @@ telepath.sessionflow = {
 		result.callback = function (widget, el) {
 			$('.selected', that.actionsContainer).removeClass('selected');
 			$('.tele-listitem-inner', widget.element).addClass('selected');
+			that.selectedIndex = $(widget.element).attr('id').split('-')[2] ;
 			that.expandRequest(widget.options.dataID);
 		};
 
