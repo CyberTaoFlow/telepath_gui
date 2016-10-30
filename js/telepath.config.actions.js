@@ -62,8 +62,8 @@ telepath.config.actions = {
 
 
 					$.each(data.data, function(i, row) {
-					
-						var text = row.host;
+
+						var text = row.display_name ? row.display_name : row.host;
 						//var children = [{ children: true, text: 'Root Domain', data: {id: row.host, type: 'app', ssl: row.ssl_flag }}];
 						//if (typeof row.subdomains != "undefined" && row.subdomains != null && row.subdomains.length > 0){
 						//	$.each(row.subdomains, function(i,subdomain){
@@ -433,7 +433,7 @@ telepath.config.actions = {
 				$(this).trigger("restart", data);
 			}
 		}).on('restart', function (e, data) {
-			data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+			data.instance.element.find('.jstree-wholerow').css('background-color', '');
 			data.instance.element.find('#' + data.selected[0]).children(":first").css("background-color", "rgba(189, 189, 189, 0.85)");
 
 			telepath.config.actions.contentRight.empty();

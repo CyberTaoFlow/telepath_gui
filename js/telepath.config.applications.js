@@ -339,7 +339,7 @@ telepath.config.applications = {
 			// console.log('App Changed');
 			// console.log(data);
 			if(data && data.node) {
-				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+				data.instance.element.find('.jstree-wholerow').css('background-color', '');
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 				telepath.config.application.editApp(data.node.data.host);
 			}

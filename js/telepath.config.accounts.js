@@ -404,7 +404,7 @@ telepath.config.accounts = {
 				resizable:true
 			},
 			}).on('changed.jstree', function (e, data) {
-				data.instance.element.find('.jstree-wholerow').css('background-color', '#FFFFFF');
+				data.instance.element.find('.jstree-wholerow').css('background-color', '');
 				data.instance.element.find('.jstree-wholerow-hovered').css("background-color", "rgba(189, 189, 189, 0.85)");
 				// console.log('Group Changed - ' + data.node.text );
 				telepath.config.accounts.selectedGroup = data.node.data.id;
