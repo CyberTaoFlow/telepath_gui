@@ -29,7 +29,7 @@ body {
 }
 
 .tele-login,
-.tele-reset {
+.tele-reset, .tele-registration {
 	margin: 65px 0px 0px 0px;
 	border-top: 1px solid #cecece;
 	padding: 65px 30px 0px 30px;
@@ -80,7 +80,7 @@ h1 {
 	margin-top: 25px;
 }
 
-.tele-login .tele-field .tele-input{
+.tele-login .tele-field .tele-input, .tele-registration .tele-field .tele-input{
 	border: 1px solid #555555;
     border-radius: 20px;
     margin-top: 0;

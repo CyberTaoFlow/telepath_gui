@@ -732,6 +732,17 @@ public function get_scheduler()
             return false;
     }
 
+    public function check_new_installation()
+    {
+
+        $query = $this->db->get('ci_users');
+        if ($query->result()) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
 
 ?>

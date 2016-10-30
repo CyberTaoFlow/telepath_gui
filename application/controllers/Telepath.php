@@ -104,15 +104,22 @@ class Telepath extends Tele_Controller
         $licence_valid = $this->M_Config->get('license_mode_id');
         $licence_valid = isset($licence_valid['license_mode_id']) && $licence_valid['license_mode_id'] == 'VALID';
 
+        $new_installation = $this->M_Config->check_new_installation();
+
         // Figure Login
         $logged_in = $this->ion_auth->logged_in();
 
         // Either login / ui
         if ($licence_valid) {
-            if ($logged_in) {
-                $this->load->view('telepath');
-            } else {
-                $this->load->view('login');
+            if ($new_installation){
+                $this->load->view('register');
+            }
+            else{
+                if ($logged_in) {
+                    $this->load->view('telepath');
+                } else {
+                    $this->load->view('login');
+                }
             }
         } else { // Or show license window
             $this->load->view('license');
