@@ -9,7 +9,7 @@ class M_Maintenence extends CI_Model {
 
 	function log($str) {
 		
-		if($this->input->is_cli_request()) {
+		if(is_cli()) {
 			$arr = json_decode($str, true);
 			if($arr && isset($arr['msg'])) {
 				if(isset($arr['index']) && isset($arr['total'])) {

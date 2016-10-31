@@ -11,7 +11,7 @@ class Setup extends CI_Controller
     public function cli($db_host, $db_port, $db_user, $db_pass)
     {
 
-        if ($this->input->is_cli_request()) {
+        if (is_cli()) {
 
             echo "Checking database .. \n";
 
