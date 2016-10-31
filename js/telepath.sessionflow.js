@@ -5,6 +5,7 @@ telepath.sessionflow = {
 	list: false,
 	searchkey: '',
 	selectedIndex: 0,
+	selectedBox:'',
 	similarities: [],
 	currentUID: -1,
 	reloadFlag: Date.now(),
@@ -76,73 +77,8 @@ telepath.sessionflow = {
 				return telepath.sessionflow.formatData(row);
 			},
 			callbacks: {
-				click: function (widget) { 
-					
-					that.requestData = widget.options.raw;
-					
-					$(widget.element).parent().find('.tele-listitem-inner.selected').removeClass('selected');
-					$('.tele-listitem-inner', widget.element).addClass('selected');
-					
-					if(that.similarityDetails) {
-						that.similarityDetails.remove();
-					}
-					$('.tele-similarity-details').remove();
-					that.similarityDetails = $('<div>').addClass('tele-request-details tele-similarity-details').addClass('tele-popup-2').css({ marginTop: 20 });
-
-					if (that.width < 1250) {
-						$('.tele-similarities-list.tele-block').before(that.similarityDetails.hide().fadeIn());
-					}
-					else{
-						that.boxMid.append(that.similarityDetails);
-					}
-					var wrap = $('<div>').addClass('tele-alert-details-info');
-					
-					that.requestData.score_average = parseFloat(that.requestData.score_average);
-					
-					//if(that.requestData.score > that.requestData.score_average) { that.requestData.score_average = that.requestData.score }
-					if(that.requestData.score_average > 0 && that.requestData.score_average <= 1) {
-						that.requestData.score_average = that.requestData.score_average * 100;
-					}
-					
-					// Severity
-					var severityPercent         = parseInt(that.requestData.score_average) + '%';
-					that.alertSeverityWrap      = $('<div>').addClass('tele-alert-severity-wrap');
-					that.alertSeverityLabel     = $('<div>').addClass('tele-alert-severity-label').text('Severity');
-					that.alertSeverityPercent   = $('<div>').addClass('tele-alert-severity-percent').text(severityPercent);
-					that.alertSeverityProgBar   = $('<div>').addClass('tele-alert-severity-progbar');
-					that.alertSeverityProgValue = $('<div>').addClass('tele-alert-severity-progbar-value').css({ width: severityPercent });
-					
-					that.alertSeverityWrap.append(that.alertSeverityLabel).append(that.alertSeverityPercent).append(that.alertSeverityProgBar);
-					that.alertSeverityProgBar.append(that.alertSeverityProgValue);
-					
-					wrap.append(that.alertSeverityWrap);
-					
-					
-					// Title
-					var title = $('<div>').addClass('tele-alert-details-info-title');
-					that.printLink(that.requestData, title);
-
-					// Time
-					this.alertDetailsTimeWrap   = $('<div>').addClass('tele-alert-details-info-time-wrap');
-					this.alertDetailsTimeLabel  = $('<div>').addClass('tele-alert-details-info-time-label').text('Request time:');
-					this.alertDetailsTime  		= $('<div>').addClass('tele-alert-details-info-time').text(date_format('d/m/y | H:i:s', that.requestData.ts));
-					this.alertDetailsTimeWrap.append(this.alertDetailsTimeLabel).append(this.alertDetailsTime);
-
-					// Response status
-					this.alertDetailsResponseWrap   = $('<div>').addClass('tele-alert-details-info-response-wrap');
-					this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
-					this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( that.requestData.status_code);
-					this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
-					
-					wrap.append(title).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap);
-					
-					that.similarityDetails.append(wrap);
-					
-	
-					that.printParamsTable(that.similarityDetails);
-					
-					that.resizeMid();
-					
+				click: function (widget) {
+					that.expandSimilar(widget.options.raw, widget.element)
 				},
 				hover_in: function(el, item) { 
 				
@@ -408,6 +344,9 @@ telepath.sessionflow = {
 
 		}
 
+		$('[class^="tele-box"]').on('mouseover', function() {
+			that.selectedBox = $(this).attr("class").split('-')[2];
+		});
 
 		// Print Stats
 		// ---------------------------------------------------
@@ -486,12 +425,10 @@ telepath.sessionflow = {
 		// Print Requests
 		this.lastAction = -1;
 		this.printed = 0;
-		
-		for(x in that.session.items) {
-		
+
+		for (var x in that.session.items) {
 			var req = that.session.items[x];
-			that.appendItem(req);
-			
+			that.appendItem(req, x);
 		}
 		if (this.width <= 1250){
 			var height = this.container.height() - statsEl.height() /*- durationEl.height()*/ - 70;
@@ -521,9 +458,10 @@ telepath.sessionflow = {
 							$('.tele-loader', that.actionsContainer).remove();
 						
 							if(data.items.length > 0) {
+								var length = that.session.items.length;
 								$.each(data.items, function(i, item) {
 									that.session.items.push(item);
-									that.appendItem(item);
+									that.appendItem(item, length + i);
 								});
 							}
 							 
@@ -540,7 +478,7 @@ telepath.sessionflow = {
 		this.overlay.titleEl.html('Session Flow');
 		
 	},
-	appendItem: function (req) {
+	appendItem: function (req, index) {
 		
 		if(this.lastAction == -1 || (req.business_actions && (req.business_actions[0].name != this.lastAction || req.business_actions[0].status == 2)) || (!req.business_actions && this.lastAction != -1 && this.lastAction != 'Browsing')) {
 				
@@ -569,7 +507,7 @@ telepath.sessionflow = {
 		}
 		
 		var item = this.formatData(req);
-		var newListItem = $('<li>').attr('id', 'alert-item-' + x);
+		var newListItem = $('<li>').attr('id', 'alert-item-' + index);
 		this.newList.append(newListItem);
 		newListItem.listitem(item);
 
@@ -686,36 +624,75 @@ telepath.sessionflow = {
 		
 		return false;
 	},
-	updateSelected: function() {
-	
+	delay: (function () {
+		var timer = 0;
+		return function (callback, ms) {
+			clearTimeout(timer);
+			timer = setTimeout(callback, ms);
+		};
+	})(),
+
+	updateSelected: function(state) {
+
+		var that = this;
+
+		// arrow key navigation on similar requests (right column)
+		if (this.selectedBox == 'right' && $('.tele-box-right .tele-list').length) {
+			var selected = $('.tele-box-right .selected').parent().index();
+			if ((this.similarities.hits.hits.length - 1 == selected && state == 'down') || (selected == 0 && state == 'up')) {
+				return;
+			}
+			selected += state == 'up' ? -1 : +1;
+			var newSelected = $('.tele-box-right li')[selected];
+
+			this.expandSimilar(this.similaritiesList.teleList('option').data[selected]._source, newSelected);
+
+			if ($('.selected', this.similaritiesList).length) {
+				var elTop = $('.selected', this.similaritiesList).offset().top - $(".tele-similarities-list .mCSB_container").offset().top;
+			}
+			else {
+				var elTop = 60;
+			}
+			$('.tele-similarities-list .tele-list').mCustomScrollbar("scrollTo", elTop - 50);
+			return;
+		}
+
+		// arrow key navigation on regular requests (left column)
+		if($('.selected', this.actionsContainer).length){
+			var elTop = $('.selected', this.actionsContainer).offset().top - $(".tele-requests-list .mCSB_container").offset().top;
+		}
+		else {
+			var elTop = 60;
+		}
 		$('.selected', this.actionsContainer).removeClass('selected');
-		var newSelected = $( "li:nth-child(" + (this.selectedIndex + 1) + ")", this.actionsContainer).first();
-		
+		var newSelected = $("#alert-item-" + this.selectedIndex, this.actionsContainer).first();
 		$('.tele-listitem-inner', newSelected).addClass('selected');
 		
 		if(newSelected.data('tele-listitem') && newSelected.data('tele-listitem').options) {
 			var dataID = newSelected.data('tele-listitem').options.dataID;
 		} else {
-			newSelected = $( "li:nth-child(1)", this.actionsContainer);
+			newSelected = $("#alert-item-" + this.selectedIndex, this.actionsContainer);
 			var dataID = newSelected.data('tele-listitem').options.dataID;
 		}
 
-		this.expandRequest(dataID);
-		
-		$(this.actionsContainer).mCustomScrollbar("scrollTo", "li:nth-child(" + (this.selectedIndex + 1) + ")");
-		
+		// delay similar server request, and send the request only if same request still selected
+		this.delay(function () {
+			that.expandRequest(dataID);
+		}, 500);
+
+		$('.tele-requests-list').mCustomScrollbar("scrollTo", state == 'up' ? elTop - 400 : elTop - 50);
 	},
 	scrollUp: function() {
 		if(this.selectedIndex > 0) {
 			this.selectedIndex--;
 		}
-		this.updateSelected();
+		this.updateSelected('up');
 	},
 	scrollDown: function() {
-		if(this.selectedIndex < this.session.items.length) {
+		if(this.selectedIndex < this.session.items.length -1) {
 			this.selectedIndex++;
 		}
-		this.updateSelected();
+		this.updateSelected('down');
 	},
 	keyDown: function(e) {
 		// Up/Down Navigation
@@ -835,6 +812,7 @@ telepath.sessionflow = {
 		result.callback = function (widget, el) {
 			$('.selected', that.actionsContainer).removeClass('selected');
 			$('.tele-listitem-inner', widget.element).addClass('selected');
+			that.selectedIndex = $(widget.element).attr('id').split('-')[2] ;
 			that.expandRequest(widget.options.dataID);
 		};
 
@@ -845,17 +823,10 @@ telepath.sessionflow = {
 		
 	},
 	expandRequest: function(uid) {
-		
-		if(this.currentUID == uid) {
-			// check if it is really open, Yuli
-			var ch = this.requestDetails.children();
-			if (ch.length > 0)
-			{
-				return;
-			}
-		} else {
-			this.currentUID = uid;
-		}
+
+		// Store last selected request ID, in case of multiple selections
+		this.currentUID = uid;
+
 		var that = this;
 	
 		this.requestDetails.empty();
@@ -933,7 +904,75 @@ telepath.sessionflow = {
 
 
 
-	}, 
+	},
+
+	expandSimilar: function(requestData,element){
+
+		this.requestData = requestData;
+
+		$(element).parent().find('.tele-listitem-inner.selected').removeClass('selected');
+		$('.tele-listitem-inner', element).addClass('selected');
+
+		if(this.similarityDetails) {
+			this.similarityDetails.remove();
+		}
+		$('.tele-similarity-details').remove();
+		this.similarityDetails = $('<div>').addClass('tele-request-details tele-similarity-details').addClass('tele-popup-2').css({ marginTop: 20 });
+
+		if (this.width < 1250) {
+			$('.tele-similarities-list.tele-block').before(this.similarityDetails.hide().fadeIn());
+		}
+		else{
+			this.boxMid.append(this.similarityDetails);
+		}
+		var wrap = $('<div>').addClass('tele-alert-details-info');
+
+		this.requestData.score_average = parseFloat(this.requestData.score_average);
+
+		//if(this.requestData.score > this.requestData.score_average) { this.requestData.score_average = this.requestData.score }
+		if(this.requestData.score_average > 0 && this.requestData.score_average <= 1) {
+			this.requestData.score_average = this.requestData.score_average * 100;
+		}
+
+		// Severity
+		var severityPercent         = parseInt(this.requestData.score_average) + '%';
+		this.alertSeverityWrap      = $('<div>').addClass('tele-alert-severity-wrap');
+		this.alertSeverityLabel     = $('<div>').addClass('tele-alert-severity-label').text('Severity');
+		this.alertSeverityPercent   = $('<div>').addClass('tele-alert-severity-percent').text(severityPercent);
+		this.alertSeverityProgBar   = $('<div>').addClass('tele-alert-severity-progbar');
+		this.alertSeverityProgValue = $('<div>').addClass('tele-alert-severity-progbar-value').css({ width: severityPercent });
+
+		this.alertSeverityWrap.append(this.alertSeverityLabel).append(this.alertSeverityPercent).append(this.alertSeverityProgBar);
+		this.alertSeverityProgBar.append(this.alertSeverityProgValue);
+
+		wrap.append(this.alertSeverityWrap);
+
+
+		// Title
+		var title = $('<div>').addClass('tele-alert-details-info-title');
+		this.printLink(this.requestData, title);
+
+		// Time
+		this.alertDetailsTimeWrap   = $('<div>').addClass('tele-alert-details-info-time-wrap');
+		this.alertDetailsTimeLabel  = $('<div>').addClass('tele-alert-details-info-time-label').text('Request time:');
+		this.alertDetailsTime  		= $('<div>').addClass('tele-alert-details-info-time').text(date_format('d/m/y | H:i:s', this.requestData.ts));
+		this.alertDetailsTimeWrap.append(this.alertDetailsTimeLabel).append(this.alertDetailsTime);
+
+		// Response status
+		this.alertDetailsResponseWrap   = $('<div>').addClass('tele-alert-details-info-response-wrap');
+		this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
+		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( this.requestData.status_code);
+		this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
+
+		wrap.append(title).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap);
+
+		this.similarityDetails.append(wrap);
+
+
+		this.printParamsTable(this.similarityDetails);
+
+		this.resizeMid();
+	},
 	//expandRequestData: function(data) {
 	//	$('.loader', this.requestDetails).remove();
 	//	this.requestData = data;

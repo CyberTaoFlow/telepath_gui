@@ -21,8 +21,8 @@
 }
 
 .tele-listitem .tele-title-2 span:last-of-type{
-	white-space: pre;
-	flex: 1;
+	/*white-space: pre;
+	flex: 1;*/
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
