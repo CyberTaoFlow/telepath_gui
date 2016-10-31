@@ -269,7 +269,7 @@ function get_gap($range) {
 		// LOG Request
 		$logfile = $context->config->item('telepath_ui_log');
 		$log     = array('timestamp' => time() ,
-						 'userdata' => $context->session->all_userdata(), 
+						 'userdata' => $context->session->userdata(),
 						 'class' => $class, 
 						 'function' => $function, 
 						 'request' => $request
