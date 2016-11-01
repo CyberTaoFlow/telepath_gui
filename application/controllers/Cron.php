@@ -115,7 +115,7 @@ class Cron extends Tele_Controller
     public function index()
     {
 
-        if (!$this->input->is_cli_request() && !ENVIRONMENT == 'development') {
+        if (!is_cli() && !ENVIRONMENT == 'development') {
             echo 'This script can be run via CLI only';
             die;
         }

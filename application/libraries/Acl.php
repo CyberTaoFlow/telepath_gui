@@ -20,7 +20,7 @@ class acl
 	// Determines if user has access to all apps
 	function all_apps() {
 		
-		if($this->ci->input->is_cli_request() || ENVIRONMENT == 'development') {
+		if(is_cli() || ENVIRONMENT == 'development') {
 			return true;
 		}
 	

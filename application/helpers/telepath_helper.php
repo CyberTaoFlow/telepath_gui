@@ -54,7 +54,7 @@ function append_range_query($base, $range)
 		$context = &get_instance();
 
 		// Admins == unlimited
-		if($context->input->is_cli_request() || $context->ion_auth->is_admin() ) {
+		if(is_cli() || $context->ion_auth->is_admin() ) {
 			return $base;
 		}
 		
@@ -269,7 +269,7 @@ function get_gap($range) {
 		// LOG Request
 		$logfile = $context->config->item('telepath_ui_log');
 		$log     = array('timestamp' => time() ,
-						 'userdata' => $context->session->all_userdata(), 
+						 'userdata' => $context->session->userdata(),
 						 'class' => $class, 
 						 'function' => $function, 
 						 'request' => $request
@@ -284,7 +284,7 @@ function get_gap($range) {
 		if(!$context) { $context = &get_instance(); }
 		
 		// Initialize access list.
-		if(!$context->input->is_cli_request()){
+		if(!is_cli()){
 		$context->acl->init_current_acl();
 		
 		telepath_log($class, $function, $context, $_REQUEST);
@@ -331,7 +331,7 @@ function get_gap($range) {
 		
 			// Passthru if Admin
 			
-			if(!$context->input->is_cli_request() && !$context->ion_auth->is_admin()) {
+			if(!is_cli() && !$context->ion_auth->is_admin()) {
 				
 				// Fail if not logged in.
 				if(!$context->ion_auth->logged_in()) {
@@ -408,7 +408,7 @@ function get_gap($range) {
     function logger($message, $file_path = false)
     {
         $context = &get_instance();
-        if (!$context->input->is_cli_request())
+        if (!is_cli())
             return;
 
         if ($file_path) {

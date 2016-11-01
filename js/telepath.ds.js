@@ -48,7 +48,13 @@ telepath.ds = {
 					// Success or Fail
 					if (data.success) {
 						if (cache) {
-							sessionStorage.setItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)), JSON.stringify(data));
+							// prevent QuotaExceededError 
+							try {
+								sessionStorage.setItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)), JSON.stringify(data));
+							}
+							catch (e) {
+								console.log(e);
+							}
 						}
 						if (typeof success == 'function') {
 							success(data, this.flag);
