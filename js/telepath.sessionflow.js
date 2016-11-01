@@ -181,28 +181,35 @@ telepath.sessionflow = {
 		//this.alerts_names = alerts_names;
 		this.searchkey = searchkey;
 		this.list = list;
-		this.suspect= '';
+		this.state= '';
 		this.range= true;
 
 		if (searchkey && state =='suspect')
 		{
 			this.filter = 'Search';
-			this.suspect = 'Suspect';
+			this.state = 'Suspect';
 		}else if (searchkey )
 		{
 			this.filter = 'Search';
 
 		}
-		else if(state && state == 'alert') {
-			this.filter = 'Alerts';
-		}else if(state && state == 'suspect') {
-			this.filter = 'Suspect';
-			this.suspect = 'Suspect';
-		} else if(state && state == 'case') {
-			this.range=false;
-			this.filter = 'All';
-		} else {
-			this.filter = 'All';
+		else if(state){
+			switch (state){
+				case 'alert':
+					this.filter = 'Alerts';
+					break;
+				case 'suspect':
+					this.filter = 'Suspects';
+					this.state = 'Suspect';
+					break;
+				case 'case':
+					this.range=false;
+					this.filter = 'All';
+					break;
+				default:
+					this.filter = 'All';
+					break;
+			}
 		}
 
 
@@ -224,7 +231,7 @@ telepath.sessionflow = {
 		that.session = {};
 		
 		// Load session stats, then items
-		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.suspect, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
+		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, state: that.state, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
 			
 			that.session.stats = data.items;
 			
