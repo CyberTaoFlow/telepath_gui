@@ -82,6 +82,26 @@ body { background-color: #bebebe; }
 	width: 64px;
 	background-position: -192px -192px;
 }
+.tele-icon-request {
+	height: 64px;
+	width: 64px;
+	background-position: -0px -192px;
+}
+.tele-icon-request.hover {
+	height: 64px;
+	width: 64px;
+	background-position: -64px -192px;
+}
+.tele-icon-request.click {
+	height: 64px;
+	width: 64px;
+	background-position: -128px -192px;
+}
+.tele-icon-request.active {
+	height: 64px;
+	width: 64px;
+	background-position: -192px -192px;
+}
 .tele-icon-reports { 
 	height: 64px;
 	width: 64px;

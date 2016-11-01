@@ -9,7 +9,7 @@ telepath.listitem.generic = {
 		if (mode=='dashboard') {
 			result = {
 				raw: item,
-				icon: 'suspect',
+				icon: 'request',
 				time: item.ts,
 				progbar: true,
 				itemID: item.sid,
@@ -31,7 +31,7 @@ telepath.listitem.generic = {
 		else {
 			result = {
 				raw: item,
-				icon: 'suspect',
+				icon: 'request',
 				time: item.ts,
 				progbar: true,
 				itemID: item.sid,
