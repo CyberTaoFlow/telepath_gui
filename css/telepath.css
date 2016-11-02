@@ -399,6 +399,21 @@ a.tele-refresh-value:hover {
 	color: #999;
 }
 
+.tele-clear {
+	margin-top: 15px;
+	margin-right: 24px;
+	height: 20px;
+	float: left;
+}
+
+.tele-clear-button {
+	font-weight: normal;
+	font-size: 15px;
+}
+
+a.tele-clear-button:hover {
+	color: #999;
+}
 .tele-panel-dashboard .tele-graph-realtime {
 	display: none;
 }
@@ -1040,6 +1055,7 @@ a.tele-refresh-value:hover {
 	min-height: 38px;
 	margin-top: 6px;
 	margin-right: 13px;
+	padding-left: 20px;
 }
 
 .tele-radios-title {
