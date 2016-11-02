@@ -9,7 +9,8 @@ $.widget("tele.teleInput", {
         'link': false,
         'disabled': false,
         'type': false,
-        'range': false
+        'range': false,
+        'port': null
     },
     _create: function () {
         this.element.addClass("tele-input");
@@ -59,7 +60,10 @@ $.widget("tele.teleInput", {
             this.element.append(this.input);
         }
 
-
+        if (this.options.port != null) {
+            this.port = $('<input>').addClass('tele-input-port').val(escapeHtml(this.options.port));
+            this.element.append('&nbsp;<b>:</b>&nbsp;',this.port);
+        }
 
         if (this.options.suffix) {
             this.suffix = $('<label>').addClass('tele-input-suffix').html(this.options.suffix);

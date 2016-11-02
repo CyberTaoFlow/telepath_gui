@@ -140,6 +140,10 @@
 	margin: 8px 25px 0 0;
 }
 
+#tele-app-details .tele-multi-value .tele-input{
+	width: 280px;
+}
+
 .tele-rule-editor .tele-multi .tele-multi-value .tele-browse .tele-input{
 	width: 390px;
 }
@@ -319,6 +323,10 @@
 	line-height: 20px;
 	margin-left: 10px;
 	
+}
+
+.tele-multi-value .tele-input-port{
+	width: 60px;
 }
 
 .tele-password .tele-input-label {
@@ -687,6 +695,9 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 	width: 520px;
 }
 
+#tele-app-details .tele-multi-value{
+	width: 315px;
+}
 
 .tele-autocomplete-select {
 	z-index: 9999;
