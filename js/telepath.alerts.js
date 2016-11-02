@@ -136,10 +136,20 @@ telepath.alerts = {
 				telepath.alerts.hardRefresh();
 			}
 		});
-		
+
+		//Clear filters
+		var clearFilters = $('<div>').addClass('tele-clear');
+		var clearFiltersButton = $('<a>').attr('href', '#').addClass('tele-clear-button').html('Clear Filters').click(function(){
+			that.resetFilters();
+		});
+
+		clearFilters.append(clearFiltersButton);
+
 		// Append All
-		container.append(sortRadios).append('<div class="tele-navsep"></div>').append(filterDateRange)
-			.append('<div class="tele-navsep"></div>').append(filterApps).append('<div class="tele-navsep"></div>').append(cmdRefresh);
+		container.append(clearFilters).append('<div class="tele-navsep"></div>').append(sortRadios)
+			.append('<div class="tele-navsep"></div>').append(filterDateRange)
+			.append('<div class="tele-navsep"></div>').append(filterApps)
+			.append('<div class="tele-navsep"></div>').append(cmdRefresh);
 		
 
 		/*var typingTimer;                //timer identifier
@@ -417,12 +427,12 @@ telepath.alerts = {
 
 		} });
 
-		var reset = $('<a>').attr('href', '#').addClass('reset-button').click(function (){
+		/*var reset = $('<a>').attr('href', '#').addClass('reset-button').click(function (){
 			console.log('came here');
 			that.resetFilters();
-		});
+		});*/
 
-		graphDistributionContainer.append(graphDistributionTitle).append(newToggle).append(reset).append(showPercent)
+		graphDistributionContainer.append(graphDistributionTitle).append(newToggle)/*.append(reset)*/.append(showPercent)
 			.append(graphDistributionLegend).append(this.graphDistributionCanvas);
 
 		// Add the 2 graph containers
@@ -801,8 +811,10 @@ telepath.alerts = {
 	resetFilters: function () {
 		this.alertsFilter = [];
 		this.actionsFilter = [];
-		this.refresh();
-
+		this.actionsFilterSessions = [];
+		$('.tele-panel-alerts .tele-search-input').val('');
+		telepath.alerts.searchString = '';
+		$('.tele-dropdown').data('teleAppSelect').resetApps()
 	},
 	_resize: function () {
 

@@ -76,10 +76,11 @@ telepath.config.application = {
 		
 		// IPS
 		app_data.app_ips = [];
-		$('input', this.app_ips).each(function () {
+		$('.tele-input', this.app_ips).each(function () {
 			//var ip = $(this).data('tele-ip').getIP();
-			if($(this).val() != '') {
-				app_data.app_ips.push($(this).val());
+			var value = $('input',this);
+			if(value[0].value != '') {
+				app_data.app_ips.push(value[0].value + (value[1].value ? ':' + value[1].value : ''));
 			}
 		});
 		// De-Dupe
@@ -509,7 +510,7 @@ telepath.config.application = {
 		} }).appendTo('#tele-app-details');
 		*/
 		this.app_ips     = $('<div>').teleMulti({ values: ips_val, title: 'Application IP Addresses', template: function(element, value) {
-			element.teleInput({ value: value });
+			element.teleInput({value: value.split(':')[0], port: value.split(':')[1] ? value.split(':')[1] : ''});
 			$('.tele-input-input', element).autocomplete({
 				autoFill: true,
 				source: that.app_data.ip_suggestion,

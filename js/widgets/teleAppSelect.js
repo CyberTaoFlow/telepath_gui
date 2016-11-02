@@ -73,6 +73,20 @@ $.widget( "tele.appSelect", {
 		
 		
     },
+
+	resetApps: function(){
+
+		var that= this;
+
+		telepath.ds.get('/telepath/set_app_filter', { apps: [] }, function (data) {
+
+			if(that.options.callback) {
+				telepath.app_filter = [];
+				that._update();
+				that.options.callback();
+			}
+		});
+	},
 	hoverIn: function() {
 		this.dropdownIcon.addClass('hover');
 		this.dropdownValue.addClass('hover');
