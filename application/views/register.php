@@ -46,6 +46,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <input type="password" class="tele-input" id="registration-password" name="registration-password">
         </div>
 
+        <div class="tele-field">
+            <label class="tele-label" for="registration-confirm">Confirm Password:</label>
+            <input type="password" class="tele-input" id="registration-confirm" name="confirm-password">
+        </div>
+
         <br>
 
 
