@@ -189,6 +189,11 @@ class Auth extends CI_Controller
 
         $username = $this->input->post('username', true);
         $password = $this->input->post('password', true);
+        $confirm = $this->input->post('confirm', true);
+
+        if ($password != $confirm) {
+            return_json(array('success' => false, 'error' => 'Incorrect password'));
+        }
 
         // Note the array(1) is setting default group for converted users to admin
         $user_id = $this->ion_auth->register($username, $password, '', array(), array(1));

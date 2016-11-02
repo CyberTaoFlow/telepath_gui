@@ -17,13 +17,23 @@ telepath.register = {
             $('#registration-error').html('Please enter password').show();
             return;
         }
+        if ($('#registration-confirm').val() == '') {
+            $('#registration-error').html('Please enter confirmation password').show();
+            return;
+        }
+
+        if ($('#registration-password').val() != $('#registration-confirm').val()) {
+            $('#registration-error').html("The password confirmation doesn't match").show();
+            return;
+        }
 
         $('.tele-registration').prepend(telepath.loader);
 
         // Indicator
         var registrationData = {
             username: $('#registration-username').val(),
-            password: $('#registration-password').val()
+            password: $('#registration-password').val(),
+            confirm: $('#registration-confirm').val()
         };
 
         $.post(telepath.controllerPath + '/auth/register', registrationData, function(result) {
