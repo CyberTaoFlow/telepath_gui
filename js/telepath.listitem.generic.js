@@ -9,7 +9,7 @@ telepath.listitem.generic = {
 		if (mode=='dashboard') {
 			result = {
 				raw: item,
-				icon: 'suspect',
+				icon: 'request',
 				time: item.ts,
 				progbar: true,
 				itemID: item.sid,
@@ -31,7 +31,7 @@ telepath.listitem.generic = {
 		else {
 			result = {
 				raw: item,
-				icon: 'suspect',
+				icon: 'request',
 				time: item.ts,
 				progbar: true,
 				itemID: item.sid,
@@ -48,7 +48,7 @@ telepath.listitem.generic = {
 					{key: 'host', value: grabNames(item.host)},
 					{key: 'alerts', value: item.alerts_count},
 					{key: 'actions', value: item.actions_count},
-					{key: 'cases', value: row.cases_count },
+					{key: 'cases', value: item.cases_count },
 					{key: 'user', value: item.user }
 				]
 			}

@@ -275,6 +275,8 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 /*Checked*/
 .tele-icon-suspect { background-position: -330px 0px; }
 
+.tele-icon-request { background-position: -330px 0px; }
+
 .tele-icon-suspect_red { 
 	background-position: -363px -16px; 
 	background-color: #fc3d3d;

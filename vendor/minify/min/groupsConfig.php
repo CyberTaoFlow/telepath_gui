@@ -121,7 +121,8 @@ $js_array = [
     $js_path . "telepath.config.users.js",
     $js_path . "telepath.config.webusers.js",
     $js_path . "telepath.config.groups.js",
-    $js_path . "telepath.config.system.js"
+    $js_path . "telepath.config.system.js",
+    $js_path . "telepath.config.livesessions.js"
 ];
 
 $css_array = [
