@@ -45,9 +45,9 @@ telepath.config = {
 			this.tabs.push({ icon: 'system', text: 'Advanced' });
 		}
 
-		if(telepath.access.admin || telepath.access.perm.LiveSessions_get) {
+		/*if(telepath.access.admin || telepath.access.perm.LiveSessions_get) {
 			this.tabs.push({ icon: 'liveSessions', text: 'Live Sessions' });
-		}
+		}*/
 		
 		for(x in this.tabs) {
 			var tab   = this.tabs[x];
