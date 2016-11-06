@@ -215,7 +215,7 @@ $.widget( "tele.listitem", {
 		}
 		
 		if(this.options.title) {
-			var titleEl = $('<div>').addClass('tele-listitem-title').html(this.options.title).attr('title', this.options.title);
+			var titleEl = $('<div>').addClass('tele-listitem-title').html(escapeHtml(this.options.title)).attr('title', escapeHtml(this.options.title));
 			el.append(titleEl);
 		}
 		if(this.options.updating) {
@@ -225,7 +225,7 @@ $.widget( "tele.listitem", {
 		if (this.options.description) {
 			var descEl = $('<div>').addClass('tele-title-2');
 			$.each(this.options.description.split(/,\s{1}/), function (i, val) {
-				var element = $('<span>').html(val);
+				var element = $('<span>').html(escapeHtml(val));
 
 				if (i == 0) {
 					descEl.append(element);

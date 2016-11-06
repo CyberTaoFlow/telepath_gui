@@ -206,14 +206,14 @@ class Config extends Tele_Controller
 
         $config = $this->input->post(NULL, true);
 
-        // Handle White list
-
-        $this->M_Config->changed();
+        // Check for changes in network interfaces settings
+        $this->M_Config->changed($this->M_Config->get_agents() != $config['agents']);
 
         if (isset($config['reverse_proxy_mode_id']) && $config['reverse_proxy_mode_id'] == '1') {
             exec('/opt/telepath/openresty/nginx/sbin/nginx -s reload');
         }
 
+        // Handle White list
 
         if (isset($config['whitelist'])) {
 
@@ -288,7 +288,7 @@ class Config extends Tele_Controller
                 case 'add_unknown_applications_id':
                 case 'proxy_mode_id':
                 case 'rep_pass_id':
-                case 'app_list_was_changed_id':
+                //case 'app_list_was_changed_id':
 
 
                     $config_response = $this->M_Config->update($key, $value);
