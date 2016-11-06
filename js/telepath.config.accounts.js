@@ -142,13 +142,20 @@ telepath.config.accounts = {
 		that.contentRight.append(that.permissions);
 
 		// Load provided by settings
-		
-		$.each(that.data.ranges, function (i, ip) {
-			that.limitRanges.append(getRangeUI(ip));
-		});
+
+		if(that.data.ranges.length){
+			// Load provided by settings
+			$.each(that.data.ranges, function (i, ip) {
+				that.limitRanges.append(getRangeUI(ip));
+			});
+		}
+		//else get empty range
+		else{
+			that.limitRanges.append(getRangeUI(''));
+		}
 
 		// Another blank
-		that.limitRanges.append(getRangeUI(''));
+		that.limitRanges.append(getRangeUI('last'));
 		
 		that.containerLimits.append(that.limitRanges);
 
