@@ -245,9 +245,6 @@ telepath.config.account = {
 		
 		userGroupsContainer.append(that.groupsContainer);
 
-		that.permissions = $('<div>').addClass('tele-user-permissions').append(telepath.loader).append('<div class="tele-title-1">Permissions</div>');
-
-
 		// Create tabs UI
 		that.perm_tabs   = $('<div>').addClass('tele-perm-tabs');
 		that.tabsEl = $('<div>').addClass('tabs');
@@ -314,8 +311,7 @@ telepath.config.account = {
 		});
 		
 		that.permissions.append(that.perm_tabs);
-		that.container.append(that.permissions);
-		
+
 		that.limitApps = $('<div>').teleSelect({ type: 'subdomain', values: apps_data, click: function () { } }).hide();
 		that.limitRanges = $('<div>').addClass('tele-limit-ranges').hide();
 		

@@ -19,12 +19,6 @@ telepath.config.accounts = {
 		that.contentRight.empty();
 		that.data = data;
 		
-		that.groupLeftWrap = $('<div>').addClass('tele-group-wrap-left');
-		that.groupRightWrap = $('<div>').addClass('tele-group-wrap-right');
-
-		that.contentRight.append(that.groupLeftWrap);
-		that.contentRight.append(that.groupRightWrap);
-		
 		that.groupInputs = $('<div>').addClass('group-input')
 		that.groupName = $('<div>').teleInput({ label: 'Group name', value: data.group.name });
 		that.groupDesc = $('<div>').teleInput({ label: 'Group description', value: data.group.description });
@@ -32,7 +26,7 @@ telepath.config.accounts = {
 		that.groupInputs.append(that.groupName);
 		that.groupInputs.append(that.groupDesc);
 		
-		that.groupLeftWrap.append(that.groupInputs);
+		that.contentRight.append(that.groupInputs);
 		
 		var btnContain = $('<div>').addClass('tele-button-container-group');
 		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
@@ -79,10 +73,10 @@ telepath.config.accounts = {
 			
 		}}).addClass('tele-limit-type-group');
 		
-		that.groupLeftWrap.append(that.toggleType);
+		that.contentRight.append(that.toggleType);
 
 		that.containerLimits =$('<div>').addClass('container-limits');
-		that.groupLeftWrap.append(that.containerLimits);
+		that.contentRight.append(that.containerLimits);
 		that.containerLimits.append(that.limitApps);
 
 		that.permissions = $('<div>').addClass('tele-group-permissions').append('<div class="tele-title-1">Permissions</div>');
@@ -145,7 +139,7 @@ telepath.config.accounts = {
 		});
 
 		that.permissions.append(that.perm_tabs);
-		that.groupRightWrap.append(that.permissions);
+		that.contentRight.append(that.permissions);
 
 		// Load provided by settings
 		

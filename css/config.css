@@ -710,7 +710,6 @@ a.jstree-anchor{
 }*/
 
 .tele-radios.tele-limit-type-group{
-	margin-left: 15px;
 	width: 100%;
 	margin-top: 20px;
 	clear: both;
@@ -986,19 +985,18 @@ a.jstree-anchor{
 }
 
 .tele-group-permissions{
-    min-height: 490px;
+	float: left;
+	max-width: 660px;
+	margin-left: 15px;
 }
-@media (max-width: 1400px) {
-	.tele-group-permissions{
-		margin-left: 15px;
-	}
-}
+
 .tele-group-permissions .tele-perm-tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all .tabs{
+	float: left;
 	margin-left: -20px;
 }
 
 .tele-group-permissions .tele-perm-tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all ul{
-	margin-top: -70px;
+	margin-top: -10px;
 }
 
 .tele-user-permissions .tele-checkbox .tele-input-label,
@@ -1021,32 +1019,25 @@ a.jstree-anchor{
 	margin-bottom: 60px;
 }
 
-.tele-config-content-right .tele-limit-type {
-	width: 100%;
+.tele-config-content-right .tele-limit-type,
+.tele-user-groups-container {
 	float: left;
+	width: 100%;
 	padding-left: 20px;
-	margin-bottom: 20px;
 }
 
 .container-limits{
-	margin-left: 20px;
+	float: left;
+	width: 100%;
+	padding-left: 20px;
+	margin-bottom: 30px;
 }
 
-.tele-user-groups-container{
-	float: right;
-    /*margin-top: 55px;*/
-    width: 50%;
+.tele-limit-type{
+	margin-right: 0;
+	margin-top: 20px;
 }
 
-@media (max-width: 1300px) {
-	.tele-user-permissions,
-	.tele-user-groups-container,
-	.tele-config-content-right .tele-limit-type{
-		width: 100%;
-		float: left;
-		padding-left: 20px;
-	}
-}
 
 .tele-config-system-step.active .tele-config-system-step-index {
 	color: white;
