@@ -135,7 +135,7 @@ class M_Nginx extends CI_Model {
 		foreach ($apps_dirty as $app) {
 
 			// If our domain name is somehow empty, we cant proxy it
-			if ($app['host'] == '') {
+			if (empty($app['host']) ) {
 				continue;
 			}
 

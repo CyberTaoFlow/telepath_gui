@@ -209,9 +209,6 @@ class Config extends Tele_Controller
         // Check for changes in network interfaces settings
         $this->M_Config->changed($this->M_Config->get_agents() != $config['agents']);
 
-        if (isset($config['reverse_proxy_mode_id']) && $config['reverse_proxy_mode_id'] == '1') {
-            exec('/opt/telepath/openresty/nginx/sbin/nginx -s reload');
-        }
 
         // Handle White list
 
@@ -391,6 +388,7 @@ class Config extends Tele_Controller
 
     }
 
+    // TODO: make www-data user sudoer for these commands in configure.sh:443
     public function do_upload()
     {
         @set_time_limit(-1);
@@ -435,7 +433,7 @@ class Config extends Tele_Controller
                } else {*/
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-            if (exec('head -n1 ' . $target_file . ' | tcpdump -r -') != "tcpdump: unknown file format") {
+            if (exec('sudo head -n1 ' . $target_file . ' | tcpdump -r -') != "tcpdump: unknown file format") {
                 return_success(['loader_mode' => $this->M_Config->check_file_loader_mode()]);
             }
         } else {
@@ -467,7 +465,7 @@ class Config extends Tele_Controller
     }
     public function empty_folder()
     {
-        exec('rm ' . FCPATH . 'upload/*');
+        exec(' rm ' . FCPATH . 'upload/*');
     }
 
 

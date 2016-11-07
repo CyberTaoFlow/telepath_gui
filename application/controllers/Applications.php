@@ -206,8 +206,15 @@ class Applications extends Tele_Controller
             $certs_created = $this->M_Nginx->create_certs($data);
             $conf = $this->M_Nginx->gen_config();
             $nginx_config_file = $this->config->item('nginx_config_file');
-            $confid_updated = file_put_contents($nginx_config_file, $conf);
-            return_success(['certs_created' => $certs_created, 'confid_updated' => $confid_updated]);
+            $config_updated = file_put_contents($nginx_config_file, $conf);
+            // Reload nginx without stopping the process
+            exec('sudo /opt/telepath/openresty/nginx/sbin/nginx -s reload 2>&1', $outpout);
+
+            return_success([
+                'certs_created' => $certs_created,
+                'confid_updated' => $config_updated,
+                'reload_outpout' => $outpout
+            ]);
     }
 
         return_success();
