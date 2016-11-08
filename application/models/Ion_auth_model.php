@@ -643,6 +643,13 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
+		// Please, don't delete this code, we need it for debugging. The count_all_results method is faster, but
+		// return 1 row result in case of DB error
+//		$this->db->select('*');
+//		$this->db->where('username', $username);
+//		$query = $this->db->get($this->tables['users']);
+//		return $query->num_rows() > 0;
+
 		return $this->db->where('username', $username)
 		                ->count_all_results($this->tables['users']) > 0;
 	}
