@@ -140,7 +140,7 @@ class M_Nginx extends CI_Model {
 			}
 
 			// Cant proxy application without destination IP
-			if (!isset($app['app_ips']) || $app['app_ips'] == '') {
+			if (empty($app['app_ips']) ) {
 				continue;
 			}
 
@@ -153,7 +153,8 @@ class M_Nginx extends CI_Model {
 			// Copy back to array just the clean valid values
 			$app['app_ips'] = [];
 			foreach ($app_ips as $ip) {
-				if (filter_var($ip, FILTER_VALIDATE_IP)) {
+				// Validate only the IP part of the string, before the port
+				if (filter_var(strstr($ip,':',true), FILTER_VALIDATE_IP)) {
 					$app['app_ips'][] = $ip;
 				}
 			}
