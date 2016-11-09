@@ -38,6 +38,7 @@
 }
 .tele-config-content {
 	height: 100%;
+	background-color: #E6E6E6;
 }
 .tele-config-content-left {
 	position: relative;
@@ -52,6 +53,7 @@
 	height: 100%;
 	float: left;
 	background-color: #E6E6E6;
+	padding: 20px 0;
 }
 .tele-config-bar .tele-button {
 	float: right;
@@ -173,6 +175,10 @@ a.jstree-anchor{
 }
 .tele-group-wrap-right .ui-tabs.ui-widget-content {
 	top: 60px;
+}
+
+.tele-config-content-right .ui-tabs-panel{
+	padding-left: 20px;
 }
 
 /* RECORD FLOW */
@@ -489,13 +495,6 @@ a.jstree-anchor{
 	text-align: center;
 }
 
-.tele-rule-editor .tele-button-container {
-  position: absolute;
-  top: 0px;
-  text-align: center;
-  left: 400px;
-}
-
 .tele-config-content-right.tele-stacked .tele-config-container .tele-button-container{
 	position: relative;
 	/*top: 450px;*/
@@ -504,9 +503,10 @@ a.jstree-anchor{
 	/*margin-right: 20%;*/
 }
 
-.tele-button-container-group{
-	clear: both;
-	margin-bottom: 50px;
+.tele-button-container-group,
+.tele-rule-editor .tele-button-container,
+.tele-stacked  .tele-button-container {
+	padding: 30px 0;
 	text-align: center;
 }
 
@@ -668,6 +668,9 @@ a.jstree-anchor{
 	/* height: 130px; */
 }
 
+.tele-rule-editor{
+	padding: 0 20px;
+}
 
 .tele-rule-anchor {
 	width: 165px;
@@ -842,7 +845,6 @@ a.jstree-anchor{
 
 .tele-action-container {
 	float: left;
-    height: 400px;
     margin-left: 20px;
 	margin-top: 20px;
     padding: 0;
@@ -987,7 +989,7 @@ a.jstree-anchor{
 .tele-group-permissions{
 	float: left;
 	max-width: 660px;
-	margin-left: 15px;
+	margin: 20px 0 0 15px;
 }
 
 .tele-group-permissions .tele-perm-tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all .tabs{
@@ -1030,7 +1032,6 @@ a.jstree-anchor{
 	float: left;
 	width: 100%;
 	padding-left: 20px;
-	margin-bottom: 30px;
 }
 
 .tele-limit-type{
@@ -1257,13 +1258,21 @@ a.jstree-anchor{
 	width: 400px;
 	clear: both;
 }
-
-#file-upload{
+.tele-file-upload{
+	overflow: hidden;
 	position: absolute;
-	right: 2%;
+	right: 3%;
 	width: 33%;
 	padding:10px 10px 10px 10px;
-	top: 350px;
+	top: 295px;
+}
+
+.file-upload-container{
+	position: relative;
+}
+#file-upload{
+	position: absolute;
+	width: 100%;
 }
 
 #dragandrophandler

@@ -125,7 +125,7 @@ telepath.header = {
 			telepath.dashboard.loading=true;
 
 			$('.tele-panel').empty().hide().removeClass('active');
-			$("#file-upload").hide();
+			$(".tele-file-upload").hide();
 			$('.tele-panel-dashboard').show().addClass('active');
 			telepath.ui.resize();
 			telepath.dashboard.init();
@@ -163,7 +163,7 @@ telepath.header = {
 
 			// Cleanup other panels
 			$('.tele-panel').empty().hide();
-			$("#file-upload").hide();
+			$(".tele-file-upload").hide();
 			$('.tele-nav a.active').removeClass('active');
 			$('.tele-search-input').val('');
 
@@ -215,7 +215,7 @@ telepath.header = {
 			telepath[id].loading=true;
 			
 			$('.tele-panel').empty().hide().removeClass('active');
-			$("#file-upload").hide();
+			$(".tele-file-upload").hide();
 			$('.tele-panel-' + id).show().addClass('active');
 			telepath.ui.resize();
 			telepath[id].init();

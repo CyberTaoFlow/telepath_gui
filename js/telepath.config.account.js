@@ -276,7 +276,7 @@ telepath.config.account = {
 
 		that.containerLimits =$('<div>').addClass('container-limits');
 		that.container.append(that.containerLimits);
-		that.container.append(btnContain);
+
 		that.containerLimits.append(that.limitApps);
 
 
@@ -298,7 +298,14 @@ telepath.config.account = {
 		that.limitRanges.append(getRangeUI('last'));
 			
 		that.containerLimits.append(that.limitRanges);
-		
+
+		this.container.mCustomScrollbar({scrollInertia: 150, advanced: {updateOnContentResize: true}});
+
+		this.container.append(btnContain);
+
+		telepath.config.accounts.resizeLayout();
+
+		this.container.mCustomScrollbar('update');
 	}
 	
 }

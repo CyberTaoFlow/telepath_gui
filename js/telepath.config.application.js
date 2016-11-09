@@ -541,6 +541,10 @@ telepath.config.application = {
 			});
 		} }).appendTo('#tele-app-details');
 
+		$("#tele-app-details").mCustomScrollbar({
+			advanced: {
+				updateOnContentResize: true
+			}});
 		// AUTHENTICATION
 		// AUTHENTICATION -- User Identification
 		
@@ -745,6 +749,11 @@ telepath.config.application = {
 		}}).css({ clear: 'both', 'float': 'left' }).addClass('tele-radio-on-off').appendTo('#tele-app-auth');*/
 		this.SC_wrap.appendTo('#tele-app-auth');
 
+		$('#tele-app-auth').mCustomScrollbar({
+			advanced: {
+				updateOnContentResize: true
+			}});
+
 		// SSL
 		var app_ssl_wrap   = $('<div>').addClass('tele-app-ssl-wrap');
 		var app_ssl_toggle_val = that.app_data.ssl_flag == '1' ? 'ON' : 'OFF';
@@ -789,7 +798,10 @@ telepath.config.application = {
 			that.nodeParent.find('.jstree-wholerow').css("background-color", "rgba(189, 189, 189, 0.85)");
 
 		}
-
+		$('#tele-app-ssl').mCustomScrollbar({
+			advanced: {
+				updateOnContentResize: true
+			}});
 	},
 	deleteApp: function(app_id, $nodeParent) {
 		

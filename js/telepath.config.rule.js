@@ -15,11 +15,10 @@ telepath.config.rule = {
 	
 		var that = this;
 		
-		this.container = $('<div>').css({ padding: 20 }).addClass('tele-rule-editor');
+		this.container = $('<div>').addClass('tele-rule-editor');
 		telepath.config.rules.contentRight.empty();
 		telepath.config.rules.contentRight.append(this.container);
-		telepath.config.rules.contentRight.mCustomScrollbar({ advanced:{ updateOnContentResize: true, autoScrollOnFocus: false } });
-	
+
 		// Containers
 		this.toolbar   = telepath.config.rules.barRight;
 		// Cleanup
@@ -262,8 +261,12 @@ telepath.config.rule = {
 		
 		this.command_exec_list.appendTo(this.cmd_wrap);
 		
-		
-		
+		this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true, autoScrollOnFocus: false } });
+
+		telepath.config.rules.resizeLayout();
+
+		this.container.mCustomScrollbar('update');
+
 		// Apply / Cancel buttons
 		
 		var btnContain = $('<div>').addClass('tele-button-container');
@@ -386,7 +389,7 @@ telepath.config.rule = {
 			}
 			if (checkIPS) {
 				telepath.dialog({msg: 'You have entered an invalid IP address!'});
-				telepath.config.rules.contentRight.mCustomScrollbar(
+				that.container.mCustomScrollbar(
 					"scrollTo", $('.tele-ip-segment.error').offset().top - 200, {scrollInertia: 0});
 
 				return
