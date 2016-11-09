@@ -17,7 +17,8 @@ http {
 		echo '	upstream application_' . md5($app['host']) . '_upstream {' . "\n";
 		
 		foreach($app['app_ips'] as $ip) {
-			echo '		server ' . $ip . ':' . (intval($app['ssl_flag']) == 1 ? $app['ssl_server_port'] : '80') . ';' . "\n";
+			echo '		server ' . $ip['ip'] . ':' . (intval($app['ssl_flag']) == 1 ? $app['ssl_server_port'] :
+					$ip['port']). '; ' . "\n";
 		}
 		
 		echo '	}' . "\n";
@@ -73,7 +74,7 @@ http {
 			echo '		ssl_certificate_key ' . $certs_dir . 'application_' . md5($app['host']) . '_private_key.key'  . ";\n";
 
 		} else {
-			echo '		listen 80;';
+			echo '		listen '.$app['app_ips'][0]['port'].';';
 		}
 		
 ?>		

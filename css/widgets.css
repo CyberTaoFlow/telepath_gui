@@ -144,6 +144,12 @@
 	width: 280px;
 }
 
+ /*For now, we don't need multiple values. The + and - buttons are temporary hided in CSS*/
+#tele-app-ip .tele-multi-value .tele-icon-delete, #tele-app-ip .tele-multi-value .tele-icon-plus{
+	display: none;
+}
+
+
 .tele-rule-editor .tele-multi .tele-multi-value .tele-browse .tele-input{
 	width: 390px;
 }
