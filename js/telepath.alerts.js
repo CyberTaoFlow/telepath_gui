@@ -814,7 +814,13 @@ telepath.alerts = {
 		this.actionsFilterSessions = [];
 		$('.tele-panel-alerts .tele-search-input').val('');
 		telepath.alerts.searchString = '';
-		$('.tele-dropdown').data('teleAppSelect').resetApps()
+		//clear filters button call to server side only if there are applications in application filter
+		if (telepath.app_filter.length){
+			$('.tele-dropdown').data('teleAppSelect').resetApps()
+		}
+		else {
+			this.refresh();
+		}
 	},
 	_resize: function () {
 
