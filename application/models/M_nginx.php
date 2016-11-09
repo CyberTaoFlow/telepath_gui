@@ -153,9 +153,10 @@ class M_Nginx extends CI_Model {
 			// Copy back to array just the clean valid values
 			$app['app_ips'] = [];
 			foreach ($app_ips as $ip) {
-				// Validate only the IP part of the string, before the port
-				if (filter_var(strstr($ip,':',true), FILTER_VALIDATE_IP)) {
-					$app['app_ips'][] = $ip;
+				// Separate the string to IP and port
+				$app_ip = explode(':', $ip);
+				if (filter_var($app_ip[0], FILTER_VALIDATE_IP)) {
+					$app['app_ips'][] = ['ip' => $app_ip[0], 'port' => (!empty($app_ip[1]) ? $app_ip[1] :  '80')];
 				}
 			}
 

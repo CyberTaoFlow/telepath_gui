@@ -509,7 +509,8 @@ telepath.config.application = {
 			element.ip({ data: value });
 		} }).appendTo('#tele-app-details');
 		*/
-		this.app_ips     = $('<div>').teleMulti({ values: ips_val, title: 'Application IP Addresses', template: function(element, value) {
+		// For now, we don't need multiple values. The + and - buttons are temporary hided in CSS
+		this.app_ips     = $('<div id="tele-app-ip">').teleMulti({ values: ips_val, title: 'Application IP Addresses', template: function(element, value) {
 			element.teleInput({value: value.split(':')[0], port: value.split(':')[1] ? value.split(':')[1] : ''});
 			$('.tele-input-input', element).autocomplete({
 				autoFill: true,
