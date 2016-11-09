@@ -212,7 +212,7 @@ class Applications extends Tele_Controller
 
             return_success([
                 'certs_created' => $certs_created,
-                'confid_updated' => $config_updated,
+                'config_updated' => $config_updated,
                 'reload_outpout' => $outpout
             ]);
     }
