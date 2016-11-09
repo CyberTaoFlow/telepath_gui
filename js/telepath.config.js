@@ -63,7 +63,7 @@ telepath.config = {
 				
 				// Cleanup container
 				that.container.empty();
-				$("#file-upload").hide();
+				$(".tele-file-upload").hide();
 				$('#sort-radio').remove();
 				
 				// Pass container and shared layout function
@@ -174,7 +174,7 @@ telepath.config = {
 		this.barEl.css({ height: 40, width: '100%', background: '#333333' });
 		
 		var height = $(window).height();
-		var width  = $(window).width();
+		var width  = window.innerWidth;
 		
 		if(width < 1200) {
 			
@@ -198,15 +198,16 @@ telepath.config = {
 		$('.tele-block').height(offset - 20);
 		$('.tele-block .tele-list').height(offset - 50);
 		$('.tele-list').mCustomScrollbar("update");
-		
+		$('.tele-block.no-title').parent().height(offset - 40);
+
 		this.contentEl.css({ height: offset });
 		
 		if(this.contentRight.hasClass('tele-stacked')) {
 			
 			this.contentLeft.width(width);
-			this.contentRight.width(width);
-			this.contentRight.css({ height: offset - this.contentLeft.outerHeight() - 20 });
-		
+			this.contentRight.width(width -20);
+			this.contentRight.css({ height: offset - this.contentLeft.outerHeight() - 160 });
+			$('.tele-file-upload').height(offset - this.contentLeft.outerHeight() - 160);
 		} else {
 		
 			var magic = 520;
@@ -221,8 +222,14 @@ telepath.config = {
 			this.contentLeft.css({ height: offset });
 			$('.tele-tree', this.contentLeft).css({ height: offset }).mCustomScrollbar("update");
 			
-			this.contentRight.css({ height: offset });
-			
+			this.contentRight.css({ height: offset -40 });
+			$('.tele-rule-editor').css({ height: offset - 197 });
+
+		}
+
+		if ($(this.contentRight).find('.tele-button-container-group').length) {
+
+			this.contentRight.css({height: offset -197});
 		}
 		
 		$('.tele-content').css({ height: $(window).height() - $('.tele-header').height() - 50 });

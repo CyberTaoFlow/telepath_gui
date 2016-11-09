@@ -152,7 +152,7 @@ telepath.config.webusers = {
                     }
                 }
             });
-
+            $(window).trigger('resize');
         }, 'Error loading users list.', false, true);
 
     },

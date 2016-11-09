@@ -6,13 +6,11 @@ telepath.config.system = {
 		this.contentRight.addClass('tele-stacked');
 		this.contentLeft.addClass('tele-stacked');
 		this.contentLeft.css({ width: '100%', minWidth: '100%', height: 100, maxHeight: 100 });
-		this.contentRight.css({ width: '100%', minWidth: '100%' });
+		this.contentRight.css({ /*width: '100%', minWidth: '100%' */});
 		this.contentRight.append(telepath.loader);
 		this.loadConfig();
 		
 		this.showConfigSteps();
-		this.contentRight.mCustomScrollbar({ advanced:{ updateOnContentResize: true },
-			scrollButtons:{ enable: false } });
 		
 	},
 	loadConfig: function() {
@@ -23,7 +21,7 @@ telepath.config.system = {
 			
 			that.data = data;
 			that.showConfig();
-			
+			$(window).trigger('resize');
 		}, 'Error loading configuration.');
 	
 	},
@@ -69,10 +67,10 @@ telepath.config.system = {
 				
 				var stepId = $(this).attr('id').split('-')[3];
 				$('.tele-config-system-tab').hide();
-				$("#file-upload").hide();
+				$(".tele-file-upload").hide();
 				$('.tele-config-system-' + stepId).show();
 				if(stepId=="mode"){
-					$("#file-upload").show();
+					$(".tele-file-upload").show();
 				}
 				
 				// Paint it orange..
@@ -639,14 +637,17 @@ telepath.config.system = {
 		// File upload
 		//this.fileUpload=$('<div>').addClass('file-upload').appendTo(this.c_mode);
 
-		if (!$("#file-upload").length) {
-			this.fileUpload = $('<div>').attr('id', 'file-upload').appendTo($('.tele-content'));
+		if (!$(".tele-file-upload").length) {
+			this.fileUploadContinar = $('<div>').addClass('tele-file-upload').appendTo($('.tele-content'));
+			this.fileUploadInner = $('<div>').addClass('file-upload-container').appendTo(this.fileUploadContinar);
+			this.fileUpload = $('<div>').attr('id', 'file-upload').appendTo(this.fileUploadInner);
 
 			this.dragandrophandler=$('<div>').attr('id', 'dragandrophandler').appendTo(this.fileUpload);
 
 			$('<div>').addClass('dragandroptext').html('Drag & drop files you want to upload here').prependTo(this.dragandrophandler);
 
-			$('<div>').addClass('statusbar-container').appendTo(this.dragandrophandler);
+			$('<div>').addClass('statusbar-container').mCustomScrollbar({advanced: {updateOnContentResize: true}})
+				.appendTo(this.dragandrophandler);
 
 			$('<input>').attr('id', 'input').attr('type', 'file').attr('multiple', 'true').css({
 				width: '0px',
@@ -681,7 +682,7 @@ telepath.config.system = {
 		{
 			var handler = $("#dragandrophandler");
 			var text = $(".dragandroptext");
-			var container = $(".statusbar-container");
+			var container = $(".statusbar-container .mCSB_container");
 
 			$('#input').change(function(e){
 				var files = e.currentTarget.files;
@@ -750,7 +751,7 @@ telepath.config.system = {
 		});
 		}
 		else{
-			$("#file-upload").show();
+			$(".tele-file-upload").show();
 		}
 
 		//Read the file contents using HTML5 FormData() when the files are dropped.
@@ -1137,12 +1138,52 @@ telepath.config.system = {
 		this.extentsions = $('<div>').teleMulti({ values: regex, title: 'Extension Ignore List', template: function(element, value) {
 			element.teleInput({ value: value });
 		} }).appendTo(this.c_ext);
-		
+
+
+		$('.tele-config-system-tab').hide();
+		$('.tele-config-system-mode').show();
+
+		// Updates engine status every 5 seconds
+		//if(telepath.config.system.engineTimer) { clearInterval(telepath.config.system.engineTimer);	}
+		//telepath.config.system.engineTimer = setInterval(function () { that.updateEngineStatus(); }, 5000);
+		//this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true } });
+
+
+		// -----------------------------------------------------------
+		// Add Scroll
+		// -----------------------------------------------------------
+		this.contentRight.mCustomScrollbar({
+			scrollButtons: {enable: false},
+			scrollInertia: 150,
+			advanced: {updateOnContentResize: true},
+			callbacks: {
+				whileScrolling: function () {
+					var top = $('.tele-config-content-right').find(".mCSB_container").position().top;
+					$('#file-upload').css({'top': 70 + top})
+				}
+			}
+		});
+
+		// scroll from file upload container
+		$('.tele-file-upload').on('mousewheel', function (e, delta) {
+			var scrollTo, mouseWheelPixels = 101;
+			var draggerPos = $('.mCSB_dragger', that.contentRight).position().top;
+			var limit = $('.mCSB_draggerContainer', that.contentRight).height() - $('.mCSB_dragger', that.contentRight).height();
+			if ((delta > 0 && draggerPos !== 0) || (delta < 0 && draggerPos !== limit)) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			}
+			var absPos = Math.abs($(".mCSB_container", that.contentRight).position().top);
+			scrollTo = absPos - (delta * mouseWheelPixels);
+			$('.tele-config-content-right').mCustomScrollbar("scrollTo", scrollTo);
+		});
+
+
 		// -----------------------------------------------------------
 		// Save / Cancel Buttons
 		// -----------------------------------------------------------
 		
-		var btnContain = $('<div>').addClass('tele-button-container').appendTo(this.contentLeft);
+		var btnContain = $('<div>').addClass('tele-button-container').appendTo(this.contentRight);
 		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
 		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
 		
@@ -1158,14 +1199,7 @@ telepath.config.system = {
 			e.preventDefault();
 			that.loadConfig();
 		});
-		
-		$('.tele-config-system-tab').hide();
-		$('.tele-config-system-mode').show();
-			
-		// Updates engine status every 5 seconds
-		//if(telepath.config.system.engineTimer) { clearInterval(telepath.config.system.engineTimer);	}
-		//telepath.config.system.engineTimer = setInterval(function () { that.updateEngineStatus(); }, 5000);
-		//this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true } });	
+
 	}
 
 }

@@ -134,7 +134,8 @@ telepath.action.recorder = {
 
 						that.initRecordingTools();
 
-						$('.tele-action-container').css({padding: 0, height: 400}).mCustomScrollbar({
+						$('.tele-action-container').css({padding: 0, height: $(that.container).parent().height() - 150})
+							.mCustomScrollbar({
 							scrollButtons: {enable: false},
 							scrollInertia: 150,
 							advanced: {
@@ -520,15 +521,22 @@ telepath.config.action = {
 		if(that.action_data) {
 			
 			// Another inner container for padding
-			var tmp = $('<div>').addClass('tele-action-container');
+			var tmp = $('<div>').addClass('tele-action-container').css({
+				padding: 0,
+				height: $(that.container).parent().height() - 150
+			});
 			that.container.append(tmp);
+			$(tmp).mCustomScrollbar({
+				advanced: {
+					updateOnContentResize: true
+				}});
 			that.container = tmp;
 		
 			$.each(that.action_data.business, function(i, request) {
 				
 				request.el = $('<div>').teleRequest({ data: request });
-				that.container.append(request.el);
-				
+				$('.mCSB_container', that.container).append(request.el);
+
 			});
 			
 			that.showSaveLoad();

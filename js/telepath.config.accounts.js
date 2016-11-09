@@ -159,10 +159,19 @@ telepath.config.accounts = {
 		
 		that.containerLimits.append(that.limitRanges);
 
+
+
+		that.contentRight.mCustomScrollbar({
+			scrollInertia: 150,
+			advanced: {
+				updateOnContentResize: true,
+				autoScrollOnFocus: false
+			}
+		});
+
 		that.contentRight.append(btnContain);
-		
 
-
+		this.resizeLayout();
 		// telepath.ds.get('/permissions/get_list', { }, function (data) {
 						
 		// 	$.each(data.items, function (i, row) {
