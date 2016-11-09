@@ -171,7 +171,7 @@ class M_Nginx extends CI_Model {
 			}
 
 			// If its SSL but we have no port, default to 443
-			if (intval($app['ssl_flag']) == 1 && (!isset($app['ssl_server_port']) || intval($app['ssl_server_port']) == 0)) {
+			if (intval($app['ssl_flag']) == 1 && (empty($app['ssl_server_port']))) {
 				$app['ssl_server_port'] = '443';
 			}
 

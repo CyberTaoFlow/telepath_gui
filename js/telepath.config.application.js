@@ -104,6 +104,7 @@ telepath.config.application = {
 		app_data.ssl_flag = this.app_ssl_toggle.data('teleTeleRadios').options.checked == "ON" ? 1 : 0;
 		app_data.app_ssl_certificate = $('input', this.app_ssl_certificate).data('file');
 		app_data.app_ssl_private = $('input', this.app_ssl_private).data('file');
+		app_data.ssl_server_port = $('input', this.app_ssl_port).val();
 
 		// Success Criteria -- Toggle
 		//app_data.form_authentication_flag = this.SC_toggle.teleRadios('option', 'checked') == 'ON' ? 1 : 0;
