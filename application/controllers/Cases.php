@@ -196,7 +196,7 @@ class Cases extends Tele_Controller
         }
 
         foreach ($cases as $cid) {
-            $requests = $this->M_Cases->get_case_docs(100, $cid);
+            $requests = $this->M_Cases->get_case_docs(1000, $cid);
             if (!empty($requests)) {
                 $similars = $this->M_Cases->get_similar_sessions($requests, $cid);
                 $this->M_Cases->store_similar_case_sessions($similars, $cid);
