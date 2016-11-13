@@ -122,10 +122,10 @@ $.widget( "tele.teleBrowser", {
 				if (!obj.data.host) {
 					obj.data.host = obj.data.text;
 				}
-				telepath.ds.get('/applications/get_app_pages', { host: obj.data.host }, function(data) {
+				telepath.ds.get('/applications/get_deep_items', { host: obj.data.host, mode: that.options.mode }, function(data) {
 
 
-					var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host);
+					var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host, that.options.mode);
 
 					function enable_expand(treeData) {
 						$.each(treeData, function(i, row) {
@@ -146,76 +146,6 @@ $.widget( "tele.teleBrowser", {
 				}, false, false, true);
 			}
 
-			if(obj.data.type == 'page' && that.options.mode != 'page') {
-
-
-
-				// EXPANDING PAGE , SHOW PARAMS
-
-				// console.log('NEED TO EXPAND A PAGE');
-
-				telepath.ds.get('/applications/get_page', { host: obj.data.host, path: obj.data.path, mode: that.options.mode }, function(data) {
-
-					var treeData = [];
-
-					if(data.items.length == 0) {
-						//callback.call(that, []);
-						//return;
-						treeData.push({ children: false, text: "No parameters" , icon: 'tele-icon-param' });
-
-					}
-					else if(data.items) {
-						$.each(data.items, function(i, item) {
-							item.type = 'param';
-							treeData.push({ children: false, text: escapeHtml(item.name) , icon: 'tele-icon-param', data: item });
-						});
-					}
-
-					callback.call(that, treeData);
-
-				}, false, false, true);
-
-
-			}
-
-			//else {
-			//
-			//	// EXPANDING APP , SHOW PAGES
-			//	// fixing bug Yuli
-			//	if (!obj.data.host) {
-			//		obj.data.host = obj.data.text;
-			//	}
-            //
-			//	// Trying to fix bug. get_pages instead of get_app. Yuli
-			//	telepath.ds.get('/applications/get_page', { host: obj.data.host, path: "", mode: that.options.mode }, function(data) {
-			//
-			//		//var treeData = telepath.config.applications.formatDataPages(data.items, '/', obj.data.host);
-			//		//callback.call(that, treeData);
-			//		var treeData = [];
-            //
-			//		if(data.items.length == 0) {
-			//			callback.call(that, []);
-			//			return;
-			//		}
-            //
-			//		if(data.items) {
-			//			$.each(data.items, function(i, item) {
-			//				if (item.type != 'page' && item.type != 'dir')
-			//				{
-			//					item.type = 'param';
-			//				}
-			//				treeData.push({ children: false, text: item.name, icon: 'tele-icon-' + item.type, data: item });
-			//			});
-			//		}
-            //
-             //                           callback.call(that, treeData);
-			//
-			//	});
-			//
-			//}
-			
-			
-		
 		}
 		
 		/*

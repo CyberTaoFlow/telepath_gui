@@ -102,25 +102,58 @@ telepath.config.applications = {
 		return treeData;
 
 	},
-	formatDataPages: function(data, i, host) {
+	formatDataPages: function (data, i, host, mode) {
 
-		if(!data) { return; }
+		if (!data) {
+			return;
+		}
 
 		var that = this;
 		var treeData = [];
-		$.each(data, function(i, row) {
+		$.each(data, function (i, row) {
 
-			if(typeof(row) == 'object') {
+			if (typeof(row) == 'object' && !$.isArray(row)) {
 
 				// EXPAND = LEVEL
-				var obj  = { children: that.formatDataPages(row, i, host), text: i, data: { type: 'dir', text: i }, 'icon': 'tele-icon-dir'};
+				var obj = {
+					children: that.formatDataPages(row, i, host, mode),
+					text: i,
+					data: {type: 'dir', text: i},
+					icon: 'tele-icon-dir'
+				};
 				treeData.push(obj);
 
 			} else {
+				var childrens = false;
+				if (mode != 'page') {
+					childrens = [];
 
-				var obj  = { children: true, text: i, data: { type: 'page', path: row, host: host }, 'icon': 'tele-icon-page'};
+					if (row.length == 0) {
+
+						childrens.push({children: false, text: "No parameters", icon: 'tele-icon-param'});
+
+					}
+					else {
+						$.each(row, function (i, item) {
+							childrens.push({
+								children: false,
+								text: escapeHtml(item),
+								icon: 'tele-icon-param',
+								// trick to hide the "plus" icon
+								li_attr: { "class" : "jstree-leaf" },
+								data: {type: 'param', name: escapeHtml(item), host: host}
+							});
+						});
+					}
+				}
+
+				var obj = {
+					children: childrens,
+					text: escapeHtml(i),
+					data: {type: 'page', path: row, host: host},
+					icon: 'tele-icon-page'
+				};
 				treeData.push(obj);
-				// EXPAND = PARAM
 			}
 
 		});
