@@ -119,6 +119,10 @@
 }
 #tele-app-auth .tele-app-auth-body {
 	width: 600px;
+	height: 45px;
+}
+.tele-app-auth-body input{
+	margin-top: 15px;
 }
 #tele-app-details{
 	position: relative;
