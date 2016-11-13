@@ -100,7 +100,7 @@ $.widget( "tele.teleBrowser", {
 
 				callback.call(that, treeData);
 
-			}, false, false, false);
+			}, false, false, true);
 
 		} else { // Expanding paths
 
