@@ -122,6 +122,10 @@ $.widget( "tele.teleRule", {
 		{
 			$(iconEl).click();
 		}
+
+		if (type == 'behaviour' || type == 'pattern') {
+			headerEl.css({height: $('.tele-ruletype-' + type + ' .brief').height()});
+		}
 	
 	},
     _update: function() {
