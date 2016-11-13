@@ -272,11 +272,12 @@ a.jstree-anchor{
 }
 
 .tele-rule-param-wrap {
-	border-right: 2px solid #555;
     float: left;
-    height: 200px;
-    margin-left: 20px;
-	margin-top: 5px;
+	margin: 10px 0 15px 20px;
+}
+
+.tele-rule-param-wrap .tele-input-label{
+	display: block;
 }
 
 .tele-rule-conditions {
@@ -641,31 +642,27 @@ a.jstree-anchor{
 }
 
 .tele-string-inspection {
-	float: left;
-    margin-left: 20px;
-    width: 200px;
+	margin-right: -25px;
+	margin-bottom: 15px;
 }
 .tele-string-inspection .tele-radio-label {
 	width: 140px;
 }
 .tele-rule-string-inspection, .tele-rule-codeStatus-wrap {
 	float: left;
-	width: 400px;
+	width: 255px;
+	margin-left: 20px;
 }
 
 .tele-rule-request-wrap {
-	width: 200px;
 	float: left;
 	margin-left: 20px;
 	height: auto;
 	border-right: 2px solid #555;
-	margin-top: 5px;
 }
 
 .tele-response-settings {
-	margin-left: 20px;
 	border-right: 2px solid #555;
-	/* height: 130px; */
 }
 
 .tele-rule-editor{
@@ -681,10 +678,22 @@ a.jstree-anchor{
 
 
 .tele-parameter-type {
-	border-right: 2px solid #555;
     clear: both;
-    /*height: 200px;*/
 	margin-left: 5px;
+	float: none;
+}
+
+.tele-parameter-type-container{
+	position: relative;
+}
+
+.tele-parameter-type-inner{
+	width: 100%;
+	position: absolute;
+	padding: 15px 0;
+	max-width: 515px;
+	background-color: #eee;
+	opacity: 0;
 }
 
 .tele-rule-trigger-wrap {

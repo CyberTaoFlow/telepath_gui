@@ -449,10 +449,16 @@ a.tele-input-input {
 	clear:both;
 }
 
+.tele-rule-string-inspection .tele-checkbox {
+	width: auto;
+	clear: none;
+}
+
 .tele-rule-inner{
 	float: left;
 	clear: both;
 	padding-bottom: 25px;
+	width: 100%;
 }
 
 .tele-rule-inner .tele-title-1{

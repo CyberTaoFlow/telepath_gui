@@ -785,12 +785,14 @@ $.widget( "tele.teleRule", {
 				// Type toggle
 				var toggleType = $('<div>').teleRadios({
 					radios: [
-						{key: 'Parameter', label: 'Parameter'},
-						{key: 'Request', label: 'Request'},
-						{key: 'Response', label: 'Response'},
-						{key: 'Uri', label: 'URI'}
+						{index: 0, key: 'Parameter', label: 'Parameter'},
+						{index: 1, key: 'Request', label: 'Request'},
+						{index: 2, key: 'Response', label: 'Response'},
+						{index: 3, key: 'Uri', label: 'URI'}
 					], callback: function (radio) {
 
+						$('.tele-parameter-type-inner').animate({opacity: 0}, {
+							duration: 100, complete:function(){
 						if (radio.key == 'Request' || radio.key == 'Response' || radio.key == 'Uri') {
 
 							inspectionType.children('.tele-radio-wrap').hide();
@@ -839,6 +841,19 @@ $.widget( "tele.teleRule", {
 							paramWRAP.show();
 						}
 
+								$(".tele-parameter-type .tele-radio-wrap").animate({'margin-bottom': '4px'}, {
+									duration: 200, queue: false
+								});
+								var height = $(toggleTypeInner).height() > 0 ? $(toggleTypeInner).height() : 260;
+
+								$(".tele-radio-radio[rel='" + radio.key + "']").parent().animate({'margin-bottom': height + 60 + 'px'}, {
+									duration: 200, queue: false, complete: function () {
+										$('.tele-parameter-type-inner').animate({opacity: 1});
+										$('.tele-parameter-type-inner').css({'margin-top': 22 * radio.index });
+									}
+								});
+							}
+						});
 					}
 				}).addClass('tele-parameter-type');
 				
@@ -1048,17 +1063,19 @@ $.widget( "tele.teleRule", {
 				var inspectionTitle = $('<div>').addClass('tele-title-1').html('String Inspection').hide();
 				var toggleReqTitle  = $('<div>').addClass('tele-title-1').html('Parameter').hide();
 
+				var toggleTypeContainer = $('<div>').addClass('tele-parameter-type-container');
+				var toggleTypeInner = $('<div>').addClass('tele-parameter-type-inner').append(paramWRAP).appendTo(toggleTypeContainer)
+					.append(requestWRAP)
+					.append(responseSettings)
+					.append(inspectionType)
+					.append(statusCodeWRAP)
+					.append(controlsWrap);
 
 				// Append all UI elements to rule inner container
 				ruleInner.append(toggleReqTitle)
 					.append(toggleType)
-					.append(paramWRAP)
-					.append(requestWRAP)
-					.append(responseSettings)
 					.append(inspectionTitle)
-					.append(inspectionType)
-					.append(statusCodeWRAP)
-					.append(controlsWrap);
+					.append(toggleTypeContainer);
 				// DONE BUILDING UI
 				
 				
