@@ -1251,6 +1251,19 @@ a.jstree-anchor{
 	margin-bottom: 40px;
 }
 
+.wc-cal-event .wc-time{
+	overflow: hidden;
+	height: 13px;
+}
+
+.delete-event-icon {
+	top: 0px;
+	position: absolute;
+	right: 0px;
+	background-color: rgb(255, 255, 255);
+	box-shadow: inset 1px 1px 8px 0px rgb(85, 141, 216);
+}
+
 .tele-rule-cmd-wrap {
 	clear: both;
 	float: left;

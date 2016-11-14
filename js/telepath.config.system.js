@@ -591,6 +591,16 @@ telepath.config.system = {
 				}
 			});
 
+			if (window.innerWidth < 1124) {
+				that.cal.weekCalendar({
+					eventMouseover: function (calEvent, element, DomEvent) {
+						$('.wc-cal-event-delete', element).addClass('delete-event-icon')
+					},
+					eventMouseout: function (calEvent, element, DomEvent) {
+						$('.wc-cal-event-delete', element).removeClass('delete-event-icon')
+					}
+				})
+			}
 
 		}, 'Error while trying to get the scheduler.');
 
