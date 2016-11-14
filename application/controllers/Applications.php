@@ -117,12 +117,13 @@ class Applications extends Tele_Controller
 
     }
 
-    public function get_app_pages(){
+    public function get_deep_items(){
         telepath_auth(__CLASS__, __FUNCTION__);
 
         $host = $this->input->post('host');
+        $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_app_pages($host));
+        return_success($this->M_Applications->get_deep_items($host, $mode));
     }
 
     public function get_app()

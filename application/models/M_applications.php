@@ -606,32 +606,68 @@ class M_Applications extends CI_Model {
 		return array_values($out);
 	
 	}
-	
-	function get_app_pages($host) {
+
+	function get_deep_items($host, $mode)
+	{
 
 		$params['index'] = 'telepath-20*';
 		$params['body'] = [
 			'size' => 1,
-			'aggs'   => [ 'canonical_url' => [ "terms" => [ "field" => "uri", "size" => 999 ], ], ],
-			'query' => [ "bool" => [ "filter" => [ 'term' => [ "host" => $host ]	] ] ]
+			'aggs' => ['canonical_url' => ["terms" => ["field" => "uri", "size" => 999],],],
+			// the cost of query on nested parameters is very expensive
+			//						'aggs' => [
+//				'canonical_url' => [
+//					"terms" => ["field" => "uri", "size" => 999],
+//					"aggs" => [
+//						"parameters" => [
+//							"nested" => ["path" => "parameters"],
+//							"aggs" => [
+//								"params_type" => [
+//									"terms" => ["field" => "parameters.type", "size" => 999],
+//									"aggs" => [
+//										"params_name" => [
+//											"terms" => ["field" => "parameters.name", "size" => 999]
+//										]
+//									]
+//								]
+//							]
+//						]
+//					]
+//				]
+//			],
+			'query' => ["bool" => ["filter" => ['term' => ["host" => $host]]]]
 		];
-		
+		if ($mode == 'param') {
+			$params['body']['aggs']['canonical_url']['aggs']['params_name']['terms'] = [
+				"field" => "parameters.name",
+				"size" => 999
+			];
+		}
+
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
 
-		if(!empty($results) && isset($results['aggregations'])) {
-			
+		if (!empty($results) && isset($results['aggregations'])) {
+
 			$ans = array();
-			foreach($results['aggregations']['canonical_url']['buckets'] as $bucket) {
-				$ans[$bucket['key']] = $bucket['key'];
+			if ($mode == 'param') {
+				foreach ($results['aggregations']['canonical_url']['buckets'] as $uri) {
+					foreach ($uri['params_name']['buckets'] as $param) {
+						$ans[$uri['key']][] = $param['key'];
+					}
+				}
+			} else {
+				foreach ($results['aggregations']['canonical_url']['buckets'] as $uri) {
+					$ans[$uri['key']] = $uri['key'];
+				}
 			}
-			
+
 			return $this->detect_paths($ans);
-			
+
 		}
 
 		return array('key' => '/', 'hits' => 0);
-	
+
 	}
 
 	function old_get_ip_suggestion($host)
