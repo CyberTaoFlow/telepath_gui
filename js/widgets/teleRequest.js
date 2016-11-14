@@ -79,7 +79,7 @@ $.widget( "tele.teleRequest", {
 		// Create popup
 		this.pop = $('<div>').css({ position: 'absolute', top: $(this.element).offset().top + 20, left: $(this.element).offset().left + 600 });
 		if (window.innerWidth < 1600){
-			this.pop.css({top: $(this.element).offset().top - 20 , left: $(this.element).offset().left + 280})
+			this.pop.css({left: $(this.element).offset().left - 500 +  $(this.element).parent().width()});
 		}
 		$('body').append(this.pop);
 		
@@ -154,7 +154,7 @@ $.widget( "tele.teleRequest", {
 			title: title, 
 			html: true,
 			content: content,
-			placement: window.innerWidth < 1600 ? 'top' : 'right'
+			placement:'right'
 		}).popover('show');
 		
 		$('.popover').addClass('tele-params-popover');
