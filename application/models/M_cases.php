@@ -321,26 +321,32 @@ class M_Cases extends CI_Model {
 
 	}
 
+	// Get document ids of distinct sessions matching requested cases
 	public function get_case_docs($limit = 100, $cid)
 	{
 
 		$params['index'] = 'telepath-20*';
 		$params['type'] = 'http';
-		$params['_source'] = false;
-		$params['body'] ['size'] = $limit;
+		$params['body'] ['size'] = 0;
 		$params['body']['query']['bool']['filter'][] = ['term' => ["cases_name" => $cid]];
+		$params['body']["aggs"]["sid"]["terms"] = ["field" => "sid", "size" => $limit];
+		$params['body']["aggs"]["sid"]["aggs"]['top_similar_hits']['top_hits'] = ['_source' => false, 'size' => 1];
 
 
 		$params = append_access_query($params);
 		$result = $this->elasticClient->search($params);
 
-
-		if (!empty($result['hits']['hits'])) {
-			foreach ($result['hits']['hits'] as $key => $val) {
-				unset($result['hits']['hits'][$key]['_score']);
+		$ids = [];
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid"]) &&
+			!empty($result["aggregations"]["sid"]["buckets"])
+		) {
+			foreach ($result["aggregations"]["sid"]["buckets"] as $sid) {
+				unset($sid['top_similar_hits']['hits']['hits'][0]['_score']);
+				$ids[] = $sid['top_similar_hits']['hits']['hits'][0];
 			}
 		}
-		return $result['hits']['hits'];
+		return $ids;
 
 	}
 
