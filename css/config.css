@@ -1043,6 +1043,23 @@ a.jstree-anchor{
 	padding-left: 20px;
 }
 
+@media (max-width: 1050px) {
+
+	.container-limits .tele-mini-toggle-left,
+	.container-limits .tele-mini-toggle-middle,
+	.container-limits .tele-mini-toggle-right {
+		margin: 5px 3px 0 3px;
+	}
+
+	.container-limits .tele-mini-toggle-middle {
+		margin-top: 0;
+	}
+
+	.container-limits .tele-icon {
+		margin-right: 4px;
+	}
+}
+
 .tele-limit-type{
 	margin-right: 0;
 	margin-top: 20px;
