@@ -866,6 +866,12 @@ a.jstree-anchor{
 	width: 550px;
 }
 
+@media (max-width: 1600px) {
+	.tele-request {
+		width: 90%;
+	}
+}
+
 .tele-request-page-title {
 	font-weight: bold;
 	font-size: 16px;
@@ -900,6 +906,9 @@ a.jstree-anchor{
 	min-width: 455px;
 	max-width: 455px;
 	width: 455px;
+}
+.tele-params-popover.bottom {
+	margin-top: 88px;
 }
 .tele-request-param {
 	float: left;
