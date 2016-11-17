@@ -866,6 +866,12 @@ a.jstree-anchor{
 	width: 550px;
 }
 
+@media (max-width: 1600px) {
+	.tele-request {
+		width: 90%;
+	}
+}
+
 .tele-request-page-title {
 	font-weight: bold;
 	font-size: 16px;
@@ -900,6 +906,9 @@ a.jstree-anchor{
 	min-width: 455px;
 	max-width: 455px;
 	width: 455px;
+}
+.tele-params-popover.bottom {
+	margin-top: 88px;
 }
 .tele-request-param {
 	float: left;
@@ -1041,6 +1050,23 @@ a.jstree-anchor{
 	float: left;
 	width: 100%;
 	padding-left: 20px;
+}
+
+@media (max-width: 1050px) {
+
+	.container-limits .tele-mini-toggle-left,
+	.container-limits .tele-mini-toggle-middle,
+	.container-limits .tele-mini-toggle-right {
+		margin: 5px 3px 0 3px;
+	}
+
+	.container-limits .tele-mini-toggle-middle {
+		margin-top: 0;
+	}
+
+	.container-limits .tele-icon {
+		margin-right: 4px;
+	}
 }
 
 .tele-limit-type{
@@ -1249,6 +1275,19 @@ a.jstree-anchor{
 	float: left;
 	width: 60%;
 	margin-bottom: 40px;
+}
+
+.wc-cal-event .wc-time{
+	overflow: hidden;
+	height: 13px;
+}
+
+.delete-event-icon {
+	top: 0px;
+	position: absolute;
+	right: 0px;
+	background-color: rgb(255, 255, 255);
+	box-shadow: inset 1px 1px 8px 0px rgb(85, 141, 216);
 }
 
 .tele-rule-cmd-wrap {

@@ -302,8 +302,13 @@ telepath.config.accounts = {
 			var selected = that.list.data('tele-teleList').getSelected();
 			var data = telepath.config.accounts.data;
 			var to_delete = [];
-			$.each(data, function(d_index, d_val) {
-				$.each(selected, function(s_index, s_val) {
+			var goOut = false;
+			$.each(data, function (d_index, d_val) {
+				$.each(selected, function (s_index, s_val) {
+					if (s_val == that.current_user) {
+						goOut = true;
+						return
+					}
 					var user_id = d_val['id'];
 					if(s_val == user_id){
 						if(d_val['login'] != 'admin'){
@@ -313,14 +318,29 @@ telepath.config.accounts = {
 						};
 					}
 				});
+				if (goOut) {
+					return
+				}
 			});
-			telepath.dialog({type:'dialog', 
-				msg:'This operation will delete the selected user(s). Are you sure?', 
-				callback:function(){
-								telepath.ds.get('/users/del_user', { id: to_delete }, function (data) {
-									that.loadData();
-								})}});
-		}});
+			if (!goOut) {
+				telepath.dialog({
+					type: 'dialog',
+					msg: 'This operation will delete the selected user(s). Are you sure?',
+					callback: function () {
+						telepath.ds.get('/users/del_user', {id: to_delete}, function (data) {
+							that.loadData();
+						})
+					}
+				});
+			}
+			else {
+				telepath.dialog({
+					type: 'msg',
+					msg: 'Cannot remove logged in user'
+				});
+			}
+		}
+		});
 	
 		this.barRight.append(this.cmdDeleteUsers).append(rightTitle);
 		
@@ -432,8 +452,9 @@ telepath.config.accounts = {
 		var that = this;
 		
 		telepath.ds.get('/users/get_list', { group: this.selectedGroup }, function (data) {
-		
-		that.data = data.items;
+
+			that.data = data.items.users;
+			that.current_user = data.items.current_user;
 		
 		// Create List
 		that.list = $('<div>');

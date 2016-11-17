@@ -80,7 +80,8 @@ telepath.config.actions = {
 									children: false,
 									text: action.action_name,
 									icon: "tele-icon tele-icon-actions",
-									data: {id: action.action_name, type: "action", raw: action}
+									data: {id: action.action_name, type: "action", raw: action},
+									a_attr: {title: action.action_name}
 								};
 								childrens.push(flow_obj);
 							});
@@ -102,7 +103,8 @@ telepath.config.actions = {
 							children: (childrens.length > 0) ? childrens : true,
 							state: {opened: (childrens.length > 0) ? true : false},
 							text: text,
-							data: {id: row.host, type: 'app', ssl: row.ssl_flag, domain: "root"}
+							data: {id: row.host, type: 'app', ssl: row.ssl_flag, domain: "root"},
+							a_attr: {title: text}
 						}
 						treeData.push(obj);
 						
@@ -143,7 +145,9 @@ telepath.config.actions = {
 					if(data.actions.length > 0) {
 					
 						$.each(data.actions, function(i, action) {
-							var flow_obj = { children: false, text: action.action_name, icon:"tele-icon tele-icon-actions",data: {id: action.action_name, type: "action", raw: action }};
+							var flow_obj = {children: false, text: action.action_name, icon: "tele-icon tele-icon-actions",
+								data: {id: action.action_name, type: "action", raw: action},
+								a_attr: {title: action.action_name}};
 							treeData.push(flow_obj);
 						});
 					

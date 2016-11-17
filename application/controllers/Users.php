@@ -71,7 +71,7 @@ class Users extends CI_Controller
         $ans = array();
 
         foreach ($users as $user) {
-            $ans[] = array('id' => $user->id,
+            $ans['users'][] = array('id' => $user->id,
                 'login' => $user->username,
                 'created_on' => $user->created_on,
                 'last_login' => $user->last_login,
@@ -82,6 +82,7 @@ class Users extends CI_Controller
                 'company' => $user->company,
                 'phone' => $user->phone);
         }
+       $ans['current_user']=  $this->ion_auth->get_user_id();
 
         return_success($ans);
 
