@@ -153,6 +153,11 @@
 	display: none;
 }
 
+#tele-app-ip{
+	height: 200px;
+	float: left;
+	clear: both;
+}
 
 .tele-rule-editor .tele-multi .tele-multi-value .tele-browse .tele-input{
 	width: 390px;
@@ -627,6 +632,11 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 .ui-autocomplete.ui-widget-content {
 	background: #fff;
 	border-radius: 20px;
+}
+.ui-menu-item a{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .tele-radios .tele-input-label {

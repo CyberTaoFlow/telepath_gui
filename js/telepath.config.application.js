@@ -498,8 +498,15 @@ telepath.config.application = {
 				appendTo:'#tele-app-details'
 			}).focus(function () {
 				$(this).autocomplete('search',"");
-			});
-			
+			}).data("ui-autocomplete")._resizeMenu = function() {
+				this.menu.element.css({'max-height': 200, width: 170});
+				this.menu.element.mCustomScrollbar();
+			};
+			$('.tele-input-input', element).data("ui-autocomplete")._renderItem = function (ul, item) {
+				return $( "<li>" )
+					.append( $( "<a>" ).text( item.label).attr('title', item.label) )
+					.appendTo( ul );
+			}
 		} }).appendTo('#tele-app-details');
 
 		// APP DETAILS -- IPS
@@ -540,8 +547,11 @@ telepath.config.application = {
                                     return false;
                                 }
 
-			});
-		} }).appendTo('#tele-app-details');
+			}).data("ui-autocomplete")._resizeMenu = function() {
+				this.menu.element.css({'max-height': 100, width: 170});
+				this.menu.element.mCustomScrollbar();
+			};
+		} }).appendTo('#tele-app-details') ;
 
 		$("#tele-app-details").mCustomScrollbar({
 			advanced: {
