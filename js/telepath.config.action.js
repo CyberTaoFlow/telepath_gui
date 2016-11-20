@@ -523,7 +523,7 @@ telepath.config.action = {
 			// Another inner container for padding
 			var tmp = $('<div>').addClass('tele-action-container').css({
 				padding: 0,
-				height: $(that.container).parent().height() - 150
+				height: $(that.container).parent().height() - 210
 			});
 			that.container.append(tmp);
 			$(tmp).mCustomScrollbar({
