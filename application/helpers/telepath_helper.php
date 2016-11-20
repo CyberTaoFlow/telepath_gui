@@ -15,10 +15,8 @@
 			return $base;
 		}
 		
-		if(isset($base['body']) && isset($base['body']['query']) && isset($base['body']['query']['bool'])) {
-			$base['body']['query']['bool']['must'][] = [ "terms" => [ "host" => $apps ] ];
-		}
-		
+		$base['body']['query']['bool']['filter'][] = [ "terms" => [ "host" => $apps ] ];
+
 		return $base;
 		
 	}
