@@ -24,6 +24,7 @@ telepath.suspects = {
 				count: item.count,
 				progbarValue: item.score_average,
 				time: item.date,
+				state: 'dashboard',
 				details: [
 					{ key: 'country', value: item.country },
 					{ key: 'host', value: grabNames(item.host) },

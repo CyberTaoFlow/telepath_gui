@@ -776,6 +776,7 @@ telepath.sessionflow = {
 		}
 		
 
+		result.state = 'sessionFlow';
 		result.progbar = true;
 		result.time    = item.ts;
 		result.timeFormat = 'h:i A';
