@@ -95,7 +95,8 @@ telepath.config.applications = {
 				state: {opened: (typeof row.open != "undefined" && row.open) ? true : false},
 				text: text,
 				data: {type: 'app', host: row.host, count: row.learning_so_far },
-				icon: 'tele-icon-app'
+				icon: 'tele-icon-app',
+				a_attr : {title: text}
 			};
 			treeData.push(obj);
 		});
@@ -377,7 +378,6 @@ telepath.config.applications = {
 				telepath.config.application.editApp(data.node.data.host);
 			}
 		}).on('hover_node.jstree',function(e,data){
-			$("#"+data.node.id +' a').prop('title', data.node.text);
 			$("#"+data.node.id+' .learning-so-far' ).prop('title', 'Overall Transactions');
 		});
 		/*.on('ready.jstree', function(e, data) {
