@@ -155,6 +155,12 @@ class M_Applications extends CI_Model {
 		delete_by_query($this->elasticClient, $params, 1);
 	}
 
+	function update_flag($host){
+		$redisObj = new Redis();
+		$redisObj->connect('localhost', '6379');
+		return $redisObj->lpush("D", $host);
+	}
+
 	function get($host)
 	{
 
