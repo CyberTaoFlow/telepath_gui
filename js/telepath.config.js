@@ -195,8 +195,8 @@ telepath.config = {
 					 $('.tele-panel-topbar').outerHeight() - 
 					 $('.tele-panel-subtitle').outerHeight();
 		
-		$('.tele-block').height(offset - 20);
-		$('.tele-block .tele-list').height(offset - 50);
+		$('.tele-panel-config .tele-block').height(offset - 20);
+		$('.tele-panel-config .tele-block .tele-list').height(offset - 50);
 		$('.tele-list').mCustomScrollbar("update");
 		$('.tele-block.no-title').parent().height(offset - 40);
 
