@@ -31,7 +31,8 @@ telepath['case'] = {
 				//time: item.created,
 				count: item.count,
 				time: item.last_time,
-				favorite: item.favorite
+				favorite: item.favorite,
+				state: 'dashboard',
 				};
 		}
 		else if(mode == 'search'){

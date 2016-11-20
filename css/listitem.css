@@ -2,6 +2,11 @@
 .tele-list {
 	padding: 0px 20px;
 }
+
+.tele-dashboard-block .tele-list{
+	padding: 0px 3%;
+	/*background-color: #eee;*/
+}
 .tele-listitem {
 	clear: both;
 	width: 100%;
@@ -123,13 +128,12 @@
 .tele-listitem-title {
 	float: left;
 	margin-left: 15px;
-	min-width: 55%;
-	max-width: 55%;
 	font-size: 18px;
 	margin-bottom: 10px;
 	margin-top: -4px;
 	overflow: hidden;
 	text-overflow:ellipsis;
+	white-space: nowrap;
 	height: 20px;
 	font-family: 'Roboto Condensed Regular';
 }
@@ -195,6 +199,8 @@ ul.tele-listitem-info li {
 	padding-right: 10px;
 	height: 15px;
 	border-right: 1px solid #999;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 ul.tele-listitem-info li:last-child {
 	border-right: none;

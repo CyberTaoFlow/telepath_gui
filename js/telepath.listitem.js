@@ -22,6 +22,7 @@ $.widget( "tele.listitem", {
 		details: [],
 		offset: 30,
 		raw: [],
+		state: false,
     },
 	_resize: function() {
 		
@@ -37,7 +38,7 @@ $.widget( "tele.listitem", {
 			$('.tele-listitem-inner', this.element).width($('.tele-box-right').width()-80);
 		}
 		else{
-			$('.tele-listitem-inner', this.element).width(innerWidth  - 15 );
+			$('.tele-listitem-inner', this.element).width(innerWidth + (this.options.state == 'dashboard' ? +5 : -15));
 		}
 
 		
@@ -109,8 +110,13 @@ $.widget( "tele.listitem", {
 					
 					
 				} else {
-					$(this).hide();
-					$(this).prev().css({ borderRightWidth: 0 });
+					if ($(this).siblings().length) {
+						$(this).hide();
+						$(this).prev().css({borderRightWidth: 0});
+					}
+					else {
+						$(this).css({width: infoWidth - 40, overflow: 'hidden'});
+					}
 				}				
 			} else {
 				
@@ -120,7 +126,20 @@ $.widget( "tele.listitem", {
 				
 			}
 		});
-				
+		var icons = $('.tele-listitem-alerts-count:visible, .tele-listitem-actions-count:visible,' +
+			' .tele-listitem-cases-count:visible', this.element);
+		var titleWidth = innerWidth - 176;
+		if (this.options.state == "sessionFlow"){
+			titleWidth += 50;
+		}
+		else if (this.options.state == "dashboard"){
+			titleWidth += 15
+		}
+		else {
+			titleWidth -= icons.outerWidth() * icons.length
+		}
+		$('.tele-listitem-title', this.element).css({width: titleWidth});
+
 	},
     _create: function() {
 	

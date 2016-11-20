@@ -27,6 +27,7 @@ telepath.alert = {
 				progbarValue: row.score_average,
 				time: row.date,
 				title:  telepath.alert.grabNames(row.alerts_names),
+				state: 'dashboard',
 				details: [
 					identification,
 					{ key: 'country', value: row.country },
