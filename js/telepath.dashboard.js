@@ -319,7 +319,7 @@ telepath.dashboard = {
 		
 		var width = $(window).width();
 
-		var current_div = parseInt(100/this.divs);
+		var current_div = 100 / this.divs;
 		
 		if(width < 1025) {
 		

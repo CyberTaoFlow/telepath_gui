@@ -2,6 +2,11 @@
 .tele-list {
 	padding: 0px 20px;
 }
+
+.tele-dashboard-block .tele-list{
+	padding: 0px 3%;
+	/*background-color: #eee;*/
+}
 .tele-listitem {
 	clear: both;
 	width: 100%;

@@ -38,7 +38,7 @@ $.widget( "tele.listitem", {
 			$('.tele-listitem-inner', this.element).width($('.tele-box-right').width()-80);
 		}
 		else{
-			$('.tele-listitem-inner', this.element).width(innerWidth  - 15 );
+			$('.tele-listitem-inner', this.element).width(innerWidth + (this.options.state == 'dashboard' ? +5 : -15));
 		}
 
 		
