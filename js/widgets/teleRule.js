@@ -801,7 +801,13 @@ $.widget( "tele.teleRule", {
 
 							inspectionType.children('.tele-radio-wrap').hide();
 							inspectionType.find('.tele-radio-radio[rel="regex"]').parent().show();
-							inspectionType.find('.tele-radio-radio[rel="regex"]').click();
+
+							if (data.subtype && (data.subtype == 'regex' || data.subtype == 'stringmatch')){
+								inspectionType.find('.tele-radio-radio[rel="'+ data.subtype +'"]').click();
+							}else {
+								inspectionType.find('.tele-radio-radio[rel="regex"]').click();
+							}
+
 							// Display stringmatch when user is creating title match rule, Yuli
 							inspectionType.find('.tele-radio-radio[rel="stringmatch"]').parent().show();
 
