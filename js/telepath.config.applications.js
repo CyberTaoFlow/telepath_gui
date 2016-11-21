@@ -113,7 +113,8 @@ telepath.config.applications = {
 		var treeData = [];
 		$.each(data, function (i, row) {
 
-			if (typeof(row) == 'object' && !$.isArray(row)) {
+			// create directory only if it's an object without array (page) or string (param)
+			if (typeof(row) == 'object' && !$.isArray(row) && typeof row[0] == 'undefined') {
 
 				// EXPAND = LEVEL
 				var obj = {
@@ -136,14 +137,48 @@ telepath.config.applications = {
 					}
 					else {
 						$.each(row, function (i, item) {
-							childrens.push({
-								children: false,
-								text: escapeHtml(item),
-								icon: 'tele-icon-param',
-								// trick to hide the "plus" icon
-								li_attr: { "class" : "jstree-leaf" },
-								data: {type: 'param', name: escapeHtml(item), host: host}
-							});
+							// check item if it's an object without array (page) or string (param)
+							if (typeof(item) == 'object' && !$.isArray(item) && typeof item[0] == 'undefined') {
+								var obj = {
+									children: that.formatDataPages(item, i, host, mode),
+									text: i,
+									data: {type: 'dir', text: i},
+									icon: 'tele-icon-dir'
+								};
+								childrens.push(obj);
+							}
+							// if it's an array (page)
+							else if (typeof(item) == 'object') {
+								var childs = [];
+								$.each(item, function (i, param) {
+									childs.push({
+										children: false,
+										text: escapeHtml(param),
+										icon: 'tele-icon-param',
+										// trick to hide the "plus" icon
+										li_attr: {"class": "jstree-leaf"},
+										data: {type: 'param', name: escapeHtml(param), host: host}
+									});
+								});
+								var obj = {
+									children: childs,
+									text: escapeHtml(i),
+									data: {type: 'page', path: row, host: host},
+									icon: 'tele-icon-page'
+								};
+								childrens.push(obj);
+							}
+							// if it's a string (param)
+							else {
+								childrens.push({
+									children: false,
+									text: escapeHtml(item),
+									icon: 'tele-icon-param',
+									// trick to hide the "plus" icon
+									li_attr: {"class": "jstree-leaf"},
+									data: {type: 'param', name: escapeHtml(item), host: host}
+								});
+							}
 						});
 					}
 				}

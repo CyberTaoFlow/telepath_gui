@@ -367,10 +367,9 @@ class Applications extends Tele_Controller
         // remove it from elastic search
         $this->M_Applications->delete($app_id);
 
+        $flag = $this->M_Applications->update_flag($app_id);
 
-
-
-        return_success();
+        return_success(['flag' => $flag]);
 
     }
 
