@@ -238,15 +238,7 @@ class CI_Config {
 
 		if (isset($protocol))
 		{
-			// For protocol-relative links
-			if ($protocol === '')
-			{
-				$base_url = substr($base_url, strpos($base_url, '//'));
-			}
-			else
-			{
-				$base_url = $protocol.substr($base_url, strpos($base_url, '://'));
-			}
+			$base_url = $protocol.substr($base_url, strpos($base_url, '://'));
 		}
 
 		if (empty($uri))
@@ -301,15 +293,7 @@ class CI_Config {
 
 		if (isset($protocol))
 		{
-			// For protocol-relative links
-			if ($protocol === '')
-			{
-				$base_url = substr($base_url, strpos($base_url, '//'));
-			}
-			else
-			{
-				$base_url = $protocol.substr($base_url, strpos($base_url, '://'));
-			}
+			$base_url = $protocol.substr($base_url, strpos($base_url, '://'));
 		}
 
 		return $base_url.ltrim($this->_uri_string($uri), '/');
