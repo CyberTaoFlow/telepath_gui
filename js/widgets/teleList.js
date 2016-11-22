@@ -142,7 +142,12 @@ $.widget( "tele.teleList", {
 			$('.tele-listitem-info li b, .tele-country, .tele-user', newItem).css('cursor','url(img/search_icon.png), pointer');
 
 			$('.tele-listitem-info li b, .tele-country, .tele-user', newItem).hover(function(){
-				$(this).css('color','#4174a7');
+				if ( $(this).text().match("Not ")) {
+					$(this).attr('style','')
+				}
+				else {
+					$(this).css('color', '#4174a7');
+				}
 			},function(){
 				$(this).css('color','#333333');
 			});
@@ -196,9 +201,10 @@ $.widget( "tele.teleList", {
                         field = 'country_code:';
                     }
                 }
-
-                telepath.header.searchInput.val(field + '"' + search + '"');
-                telepath.search.init(field + '"' + search + '"');
+				if (!$(this).text().match("Not ") ){
+					telepath.header.searchInput.val(field + '"' + search + '"');
+					telepath.search.init(field + '"' + search + '"');
+				}
             });
         }
 		

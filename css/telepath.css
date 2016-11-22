@@ -1208,6 +1208,9 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 	clear: left;
 	margin-left: 57px;
 	font-size: 17px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .tele-panel-topbar .tele-button {

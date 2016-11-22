@@ -349,6 +349,8 @@ telepath.casePanel = {
 
 		});
 		$('span:last', that.caseDesc).remove();
+
+		this.caseDesc.attr('title',this.caseDesc.text());
 		
 		// Go Back Button
 		this.goBack = $('<a>').attr('href', '#').addClass('tele-panel-case-close').html('|&nbsp;Back to all cases');

@@ -73,15 +73,10 @@ $.widget( "tele.listitem", {
 			
 			$(this).show();
 			$(this).prev().css({ borderRightWidth: 1 });
-		
-			total = total + $(this).outerWidth();
 
+			total = total + $(this).outerWidth() - 20;
 
-
-			
 			if(total > infoWidth) {
-
-
 
 				if($(this).hasClass('tele-list-hosts')) {
 					
