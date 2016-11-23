@@ -51,31 +51,27 @@ class M_Suspects extends CI_Model {
 		return 0.80;
 
 	}
-	
-	public function get($range, $apps, $sort, $sortorder, $displayed = false, $limit = 100, $suspect_threshold, $search = '', $distinct_ip=false) {
-		
-		//$suspect_threshold = $this->get_threshold();
-		//ROI CHECK THIS OUT (Yuli)
-//		$suspect_threshold = 0.75;
-		
+
+	public function get($range, $apps, $sort, $sortorder, $displayed = false, $limit = 100, $suspect_threshold, $search = '') {
+
 		$sortfield = 'count';
-		
+
 		// fix undefined variabale (Yuli)
 		$count = 0;
-		
-		switch($sort) {
+
+		switch ($sort) {
 			case 'date':
 				$sortfield = 'date';
-			break;
+				break;
 			case 'count':
 //			case 'score':
 				$sortfield = '_count';
-			break;
+				break;
 //			case 'alerts':
 //				$sortfield = 'alerts_count';
 //			break;
 		}
-		
+
 		if ($range) {
 			$params['index'] = $range['indices'];
 		} else {
@@ -83,59 +79,31 @@ class M_Suspects extends CI_Model {
 		}
 		$params['type'] = 'http';
 
-		if ($distinct_ip) {
-			$params['body']["aggs"] = [
-				"ip_orig" => [
-					"terms" => [
-						"field" => "ip_orig",
-						"size" => $limit,
-						"order" => [$sortfield => $sortorder]],
-					'aggs' => [
-						"sid" => [
-							'terms' => [
-								"field" => "sid",
-								"size" => 1
-							]
-						],
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"sid" => [
+					"terms" => ["field" => "sid", "size" => $limit, "order" => [$sortfield => strtolower($sortorder)]],
+					"aggs" => [
 						"score_average" => [
 							"avg" => ["field" => "score_average"]
 						]
-
-					],
+					]
 				],
 				"sid_count" => [
 					"cardinality" => ["field" => "sid"],
 				]
+			],
+		];
 
-			];
-		}
-		else{
-			$params['body'] = [
-				'size' => 0,
-				"aggs" => [
-					"sid" => [
-						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ],
-						"aggs" => [
-							"score_average" => [
-								"avg" => ["field" => "score_average"]
-							]
-						]
-					],
-					"sid_count" => [
-						"cardinality" => [ "field" => "sid" ],
-					]
-				],
-			];
-		}
 
 		if ($displayed) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $displayed]];
 		}
 
 
-		if ($sortfield == "date")
-		{
-			$params['body']["aggs"]["sid"]["aggs"]["date"] =  [ "max" => [ "field" => "ts" ] ] ;
+		if ($sortfield == "date") {
+			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
 		}
 //		else if ($sortfield == "alerts_count")
 //		{
@@ -143,13 +111,13 @@ class M_Suspects extends CI_Model {
 //		}
 //		$params['body']["aggs"]["sid"]["aggs"] = [ "cases_count" => [ "sum" => [ "field" => "cases_count" ] ] ];
 
-		$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-		$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-		$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+		$params['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
+		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
+		$params['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
 
 		$params = append_range_query($params, $range);
 
-		if($search && strlen($search) > 1) {
+		if ($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['filter'][] = [
 				'query_string' => [
 					"query" => $search,
@@ -166,129 +134,112 @@ class M_Suspects extends CI_Model {
 
 		$sid_buckets = false;
 
-		if ($distinct_ip) {
-			if(isset($result["aggregations"]) &&
-				isset($result["aggregations"]["ip_orig"]) &&
-				!empty($result["aggregations"]["ip_orig"]["buckets"])) {
 
-				$sid_buckets = $result["aggregations"]["ip_orig"]["buckets"];
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid"]) &&
+			!empty($result["aggregations"]["sid"]["buckets"])
+		) {
+
+			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 		}
-		}else {
-			if (isset($result["aggregations"]) &&
-				isset($result["aggregations"]["sid"]) &&
-				!empty($result["aggregations"]["sid"]["buckets"])
-			) {
 
-				$sid_buckets = $result["aggregations"]["sid"]["buckets"];
-			}
-		}
-		if($sid_buckets){
-				foreach($sid_buckets as $sid) {
-				
-						if ($distinct_ip) {
-							$sid_key = $sid['sid']["buckets"][0]['key'];
-						}
-						else{
-							$sid_key = $sid['key'];
-						}
+		if ($sid_buckets) {
+			foreach ($sid_buckets as $sid) {
 
-						$doc_count = $sid['doc_count'];
-						$score_average = $sid['score_average']['value'];
+				$sid_key = $sid['key'];
+				$doc_count = $sid['doc_count'];
+				$score_average = $sid['score_average']['value'];
 
-						$params2 = array();
-						if ($range) {
-							$params2['index'] = $range['indices'];
-						} else {
-							$params2['index'] = 'telepath-20*';
-						}
-						$params2['type'] = 'http';
-						$params2['body'] = [
-								'size' => 0,
-								"aggs" => [
-									"country_code" => [
-										"terms" => [ "field" => "country_code", "size" => 1 ]
-									],
-									"city" => [
-										"terms" => [ "field" => "city" , "size" => 1 ]
-									],
-									"ip_orig" => [
-										"terms" => [ "field" => "ip_orig" , "size" => 1 ]
-									],
-									"host" => [
-										"terms" => [ "field" => "host" , "size" => 100 ]
-									],
-									"cases_count" => [
-										"sum" => [ "field" => "cases_count" ]
-									],
-									"cases_names" => [
-										"terms" => [ "field" => "cases_name", "size" => 10 ]
-									],
-									"actions_count" => [
-										"sum" => [ "field" => "business_actions_count" ]
-									],
-									"actions_names" => [
-										"terms" => [ "field" => "business_actions.name", "size" => 10 ]
-									],
-									"date" => [
-										"max" => [ "field" => "ts" ]
-									],
-									"user" => [
-										"terms" => [ "field" => "username",
-											"order" => ["_term" => "desc" ],
-											"size" => 1 ]
-									],
-									/*"last_score" => [
-										"terms" => [
-												"field" => "ip_score",
-											"order"=>["max_ts" => "desc" ]
-											],
-										'aggs'=>[
-											'max_ts'=>[
-													"max" => [ "field" => "ts"]
-											]
-										]
-									]*/
-								]
-							];
-						if ($distinct_ip){
-							$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' =>
-								$sid['sid']["buckets"][0]['key'] ]];
-						}
-						else{
-							$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-						}
-						$params2['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-						$params2['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-						$params2['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
-
-						$params2 = append_range_query($params2, $range);
-
-						$result2 = $this->elasticClient->search($params2);
-						$sid = $result2['aggregations'];
-						if (count($sid['city']['buckets']) > 0)
-						{
-							$results['items'][] = array(
-								"sid"     => $sid_key,
-								"city"    => $sid['city']['buckets'][0]['key'],
-								"cases_count"=> $sid['cases_count']['value'],
-								"cases_names"=>	$sid['cases_names']['buckets'],
-								"country" => $sid['country_code']['buckets'][0]['key'],
-								"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
-								"host"    => $sid['host']['buckets'],
-								"count"   => $doc_count,
-								"actions_count"  => $sid['actions_count']['value'],
-								"actions_names"  => $sid['actions_names']['buckets'],
-								"date"  => $sid['date']['value'],
-								"score_average" => $score_average,
-								"user" => $sid['user']['buckets'][0]['key']
-							);
-
-						} else {
-							// can not return record details here !!!
-						}
-
-
+				$params2 = array();
+				if ($range) {
+					$params2['index'] = $range['indices'];
+				} else {
+					$params2['index'] = 'telepath-20*';
 				}
+				$params2['type'] = 'http';
+				$params2['body'] = [
+					'size' => 0,
+					"aggs" => [
+						"country_code" => [
+							"terms" => ["field" => "country_code", "size" => 1]
+						],
+						"city" => [
+							"terms" => ["field" => "city", "size" => 1]
+						],
+						"ip_orig" => [
+							"terms" => ["field" => "ip_orig", "size" => 1]
+						],
+						"host" => [
+							"terms" => ["field" => "host", "size" => 100]
+						],
+						"cases_count" => [
+							"sum" => ["field" => "cases_count"]
+						],
+						"cases_names" => [
+							"terms" => ["field" => "cases_name", "size" => 10]
+						],
+						"actions_count" => [
+							"sum" => ["field" => "business_actions_count"]
+						],
+						"actions_names" => [
+							"terms" => ["field" => "business_actions.name", "size" => 10]
+						],
+						"date" => [
+							"max" => ["field" => "ts"]
+						],
+						"user" => [
+							"terms" => [
+								"field" => "username",
+								"order" => ["_term" => "desc"],
+								"size" => 1
+							]
+						],
+						/*"last_score" => [
+                            "terms" => [
+                                    "field" => "ip_score",
+                                "order"=>["max_ts" => "desc" ]
+                                ],
+                            'aggs'=>[
+                                'max_ts'=>[
+                                        "max" => [ "field" => "ts"]
+                                ]
+                            ]
+                        ]*/
+					]
+				];
+
+				$params2['body']['query']['bool']['filter'][] = ['term' => ['sid' => $sid['key']]];
+				$params2['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
+				$params2['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
+				$params2['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
+
+				$params2 = append_range_query($params2, $range);
+
+				$result2 = $this->elasticClient->search($params2);
+				$sid = $result2['aggregations'];
+				if (count($sid['city']['buckets']) > 0) {
+					$results['items'][] = array(
+						"sid" => $sid_key,
+						"city" => $sid['city']['buckets'][0]['key'],
+						"cases_count" => $sid['cases_count']['value'],
+						"cases_names" => $sid['cases_names']['buckets'],
+						"country" => $sid['country_code']['buckets'][0]['key'],
+						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
+						"host" => $sid['host']['buckets'],
+						"count" => $doc_count,
+						"actions_count" => $sid['actions_count']['value'],
+						"actions_names" => $sid['actions_names']['buckets'],
+						"date" => $sid['date']['value'],
+						"score_average" => $score_average,
+						"user" => $sid['user']['buckets'][0]['key']
+					);
+
+				} else {
+					// can not return record details here !!!
+				}
+
+
+			}
 
 			$count = $result["aggregations"]["sid_count"]["value"];
 
@@ -316,22 +267,21 @@ class M_Suspects extends CI_Model {
 		}
 
 
-
-		$results['success'] = true;
-		$results['count']   = $count;
-		$results['query']   = $params;
-		$results['std']     = $suspect_threshold;
+		$results['count'] = $count;
+		$results['query'] = $params;
+		$results['std'] = $suspect_threshold;
 		return $results;
 
 
 
 	}
 
-	public function dashboard_get($range, $apps, $sort, $sortorder, $limit = 5, $suspect_threshold, $distinct_ip = false) {
+	public function dashboard_get($range, $apps, $sort, $sortorder, $limit, $suspect_threshold, $exclude_ips)
+	{
 
 		$sortfield = 'count';
 
-		switch($sort) {
+		switch ($sort) {
 			case 'date':
 				$sortfield = 'date';
 				break;
@@ -351,65 +301,56 @@ class M_Suspects extends CI_Model {
 		}
 		$params['type'] = 'http';
 
-		if ($distinct_ip) {
-			$params['body']["aggs"] = [
-				"ip_orig" => [
+
+		$params['body'] = [
+			'size' => 0,
+			"aggs" => [
+				"sid" => [
 					"terms" => [
-						"field" => "ip_orig",
-						"size" => $limit,
-						"order" => [$sortfield => $sortorder]],
-					'aggs' => [
-						"sid" => [
-							'terms' => [
-								"field" => "sid",
-								"size" => 1
-							]
+						"field" => "sid",
+						"size" => $limit * 2, // Get more sessions to return distinct IPs
+						"order" => [
+							$sortfield => strtolower($sortorder)
 						]
 					],
-				],
-				"sid_count" => [
-					"cardinality" => ["field" => "sid"],
-				]
-
-			];
-		}
-		else{
-			$params['body'] = [
-				'size' => 0,
-				"aggs" => [
-					"sid" => [
-						"terms" => [ "field" => "sid", "size" => $limit, "order" => [ $sortfield => strtolower($sortorder) ] ],
-                                            "aggs" => [
-                                                "country_code" => [
-                                                    "terms" => [ "field" => "country_code", "size" => 1 ]
-                                                ],
-												"ip_orig" => [
-													"terms" => [ "field" => "ip_orig" , "size" => 1 ]
-												],
-                                                "host" => [
-                                                    "terms" => [ "field" => "host" , "size" => 100 ]
-                                                ],
-                                                "score_average" => [
-                                                    "avg" => [ "field" => "score_average" ]
-                                                ],
-                                                "date" => [
-                                                    "max" => [ "field" => "ts" ]
-                                                ],
-												"user" => [
-													"terms" => [ "field" => "username",
-														"order" => ["_term" => "desc" ],
-														"size" => 1 ]
-												],
-                                            ],
+					"aggs" => [
+						"country_code" => [
+							"terms" => ["field" => "country_code", "size" => 1]
+						],
+						"ip_orig" => [
+							"terms" => ["field" => "ip_orig", "size" => 1]
+						],
+						"host" => [
+							"terms" => ["field" => "host", "size" => 100]
+						],
+						"score_average" => [
+							"avg" => ["field" => "score_average"]
+						],
+						"date" => [
+							"max" => ["field" => "ts"]
+						],
+						"user" => [
+							"terms" => [
+								"field" => "username",
+								"order" => ["_term" => "desc"],
+								"size" => 1
+							]
+						],
 					],
-
 				],
-			];
+
+			],
+		];
+
+
+		$params['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
+		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
+		$params['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
+
+		if (!empty($exclude_ips)) {
+			$params['body']['query']['bool']['must_not'][] = ['terms' => ['ip_orig' => $exclude_ips]];
 		}
 
-		$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-		$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
-		$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
@@ -417,76 +358,48 @@ class M_Suspects extends CI_Model {
 
 		$result = $this->elasticClient->search($params);
 
+		$results = [];
 
-		$sid_buckets = false;
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["sid"]) &&
+			!empty($result["aggregations"]["sid"]["buckets"])
+		) {
 
-		if ($distinct_ip) {
-			if(isset($result["aggregations"]) &&
-				isset($result["aggregations"]["ip_orig"]) &&
-				!empty($result["aggregations"]["ip_orig"]["buckets"])) {
+			$ips = [];
+			foreach ($result["aggregations"]["sid"]["buckets"] as $sid) {
 
-				$sid_buckets = $result["aggregations"]["ip_orig"]["buckets"];
-			}
-		}else {
-			if (isset($result["aggregations"]) &&
-				isset($result["aggregations"]["sid"]) &&
-				!empty($result["aggregations"]["sid"]["buckets"])
-			) {
-
-				$sid_buckets = $result["aggregations"]["sid"]["buckets"];
-			}
-		}
-		if($sid_buckets){
-			foreach($sid_buckets as $sid) {
-
-				if ($distinct_ip) {
-					$sid_key = $sid['sid']["buckets"][0]['key'];
-				}
-				else{
-					$sid_key = $sid['key'];
+				// Return only the number of sessions requested
+				if (sizeof($ips) > $limit - 1) {
+					break;
 				}
 
+				$ip = $sid['ip_orig']['buckets'][0]['key_as_string'];
 
-					$results['items'][] = array(
-						"sid"     => $sid_key,
-						"country" => $sid['country_code']['buckets'][0]['key'],
-						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
-						"host"    => $sid['host']['buckets'],
-						"count"   => $sid['doc_count'],
-						"date"  => $sid['date']['value'],
-						"user" => $sid['user']['buckets'][0]['key'],
-						"score_average" =>  $sid['score_average']['value']
-					);
+				// Return only distinct IPs
+				if (in_array($ip, $ips)) {
+					continue;
+				}
+
+				$results['items'][] = array(
+					"sid" => $sid['key'],
+					"country" => $sid['country_code']['buckets'][0]['key'],
+					"ip_orig" => $ip,
+					"host" => $sid['host']['buckets'],
+					"count" => $sid['doc_count'],
+					"date" => $sid['date']['value'],
+					"user" => $sid['user']['buckets'][0]['key'],
+					"score_average" => $sid['score_average']['value']
+				);
+				$ips[] = $ip;
 
 			}
 
-			# Fix the problem we have with sort.
-			# When sorting by date we get other requests
-			# with the same session id. As a result we need to perform
-			# second sort.
-			if ($sort == 'date') {
-
-				if ($sortorder == 'ASC') {
-					$sortorder = SORT_ASC;
-				} elseif ($sortorder == 'DESC') {
-					$sortorder = SORT_DESC;
-				}
-
-				$temp = array();
-				$ar = $results['items'];
-				foreach ($ar as $key => $row) {
-					$temp[$key] = $row['date'];
-				}
-				array_multisort($temp, $sortorder, $ar);
-				$results['items'] = $ar;
-			}
-
-
+			$results['ips'] = $ips;
 		}
 
-		$results['success'] = true;
-		$results['query']   = $params;
-		$results['std']     = $suspect_threshold;
+
+		$results['query'] = $params;
+		$results['std'] = $suspect_threshold;
 		return $results;
 
 	}

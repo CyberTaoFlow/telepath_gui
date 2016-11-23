@@ -80,10 +80,44 @@ class Dashboard extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
 
-       // $suspects = $this->M_Dashboard->get_suspects($range, $apps, $sort, $dir);
-
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        $suspects = $this->M_Suspects->dashboard_get($range, $apps, $sort, $dir, 5, $suspect_threshold, $distinct_ip = false);
+
+        $suspects ['items'] = [];
+        $ips = [];
+
+        // Get 5 top suspects with distinct IP. If we get less than 5 items, we send another query to get more items,
+        // but we need to exclude the ips that we got already
+        while (sizeof($suspects ['items']) < 5) {
+            $results = $this->M_Suspects->dashboard_get($range, $apps, $sort, $dir, 5 - sizeof($suspects ['items']), $suspect_threshold, $ips);
+            if (empty($results['items'])) {
+                break;
+            }
+            $suspects['items'] = array_merge($suspects['items'], $results['items']);
+            $ips = array_merge($ips, $results['ips']);
+        }
+
+        $suspects['query'] = $results['query'];
+        $suspects['std'] = $results['std'];
+
+
+        # Fix the problem we have with sort. When we sort by date we get other requests with the same session id.
+        # As a result we need to perform a second sort.
+        if ($sort == 'date') {
+
+            if ($dir == 'ASC') {
+                $dir = SORT_ASC;
+            } elseif ($dir == 'DESC') {
+                $dir = SORT_DESC;
+            }
+
+            $temp = array();
+            $ar = $suspects['items'];
+            foreach ($ar as $key => $row) {
+                $temp[$key] = $row['date'];
+            }
+            array_multisort($temp, $dir, $ar);
+            $suspects['items'] = $ar;
+        }
 
         $data = array('suspects' => $suspects);
 
