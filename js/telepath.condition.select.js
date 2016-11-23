@@ -17,18 +17,18 @@ telepath.formatConditionBrief = function(container, data) {
 		
 		case 'rules':
 			
-			result = $.map(data.value.split(','), function(v){ return v.split('::')[1]; }).join(', ');
+			result += $.map(data.value.split(','), function(v){ return v.split('::')[1]; }).join(', ');
 		break;
 		
 		case 'IP':
 		
-			result = data.value.replace(',', ', ');
+			result += data.value.replace(',', ', ');
 			
 		break;
 		
 		case 'application':
 			
-			result = data.value.replace(',', ', ');
+			result += data.value.replace(',', ', ');
 			
 		break;
 
@@ -44,7 +44,7 @@ telepath.formatConditionBrief = function(container, data) {
 
 		case 'parameter':
 
-			result = data.value.replace(',', ', ');
+			result += data.value.replace(',', ', ');
 
 			break;
 		
