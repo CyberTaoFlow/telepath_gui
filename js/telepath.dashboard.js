@@ -53,7 +53,7 @@ telepath.dashboard = {
 				else {
 					that.data.items.map_traffic = data.items.map;
 				}
-			});
+			},false, false, true);
 		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_chart', { }, function (data, flag) {
