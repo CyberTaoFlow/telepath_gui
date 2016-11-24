@@ -1082,7 +1082,7 @@ telepath.sessionflow = {
 		if (!$.isEmptyObject(get_params)) {
 			path += '?' + $.param(get_params);
 		}
-		path = escapeHtml(path);
+		path = unescapeHtml(escapeHtml(path));
 		var link = $('<a>').attr('target', '_blank').text(path).attr('href',path ).attr('title' ,path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Browsing';
 		container.append(link);
