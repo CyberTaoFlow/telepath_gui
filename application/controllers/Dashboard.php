@@ -135,10 +135,44 @@ class Dashboard extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'ASC' : 'DESC';
 
-//        $alerts = $this->M_Dashboard->get_alerts($range, $apps, $sort, $dir);
-
         $this->load->model('M_Alerts');
-        $alerts = $this->M_Alerts->dashboard_get_alerts($sort, $dir, 5, $range, $apps);
+        $alerts ['items'] = [];
+        $sessions_id = [];
+
+        // Get 5 sessions with distinct details. If we get less than 5 items, we send another query to get more items,
+        // but we need to exclude the sessions that we got already
+        while (sizeof($alerts ['items']) < 5) {
+            $results = $this->M_Alerts->dashboard_get_alerts($sort, $dir, 5 - sizeof($alerts['items']), $range, $apps,
+                $sessions_id);
+            if (empty($results['items'])) {
+                break;
+            }
+            $alerts['items'] = array_merge($alerts['items'], $results['items']);
+            $sessions_id = array_merge($sessions_id, $results['sessions_id']);
+        }
+
+        $alerts['query'] = $results['query'];
+
+        if ($sort == 'date') {
+
+            if ($dir == 'ASC') {
+                $dir = SORT_ASC;
+            } elseif ($dir == 'DESC') {
+                $dir = SORT_DESC;
+            }
+
+            # Fix the problem we have with sort.
+            # When sorting alerts by date we get other requests
+            # with the same session id. As a result we need to perform
+            # second sort.
+            $temp = array();
+            $ar = $alerts['items'];
+            foreach ($ar as $key => $row) {
+                $temp[$key] = $row['date'];
+            }
+            array_multisort($temp, $dir, $ar);
+            $alerts['items'] = $ar;
+        }
 
         $data = array('alerts' => $alerts);
 
