@@ -263,7 +263,6 @@
 }
 
 .tele-alert-params-table-wrap {
-	max-height: 250px;
 	max-width: auto;
 	/*overflow-y: scroll;*/
 	padding: 10px;
@@ -462,10 +461,13 @@
 	.tele-box-right{
 		/*width: 58%;*/
 	}
+	.tele-box-right .mCSB_container{
+		padding-right: 15px;
+	}
 	.tele-box-right{
 		float: right;
-		margin-right: 10px;
 		padding-right: 10px;
+		margin-left: auto;
 	}
 	.tele-alert-params-table-wrap {
 		max-height: none;
@@ -473,23 +475,17 @@
 
 }
 
-@media (min-width: 1100px) and (max-width:1250px ){
+@media (min-width: 1160px) and (max-width:1250px ){
 
 	.tele-alert-info-table {
 		text-align: left;
-		font-size: 13px;
+		font-size: 14px;
 		padding: 5px;
-
 	}
 
 	.tele-overlay-header-right{
 		-webkit-flex-direction: row;/* Safari */
 		flex-direction: row;
-
-	}
-
-	.tele-alert-params-table {
-		font-size: 13px;
 	}
 	.tele-alert-details-info-time-wrap {
 		clear: both;
@@ -505,6 +501,14 @@
 	}
 	.tele-similarities-list .tele-list{
 		margin-left: 0;
+	}
+
+	.tele-box-left,
+	.tele-alert-stats{
+		width: 300px;
+	}
+	.tele-alert-action{
+		width: 280px;
 	}
 
 }
