@@ -267,6 +267,7 @@ class M_Suspects extends CI_Model {
 		}
 
 
+		$results['success'] = true;
 		$results['count'] = $count;
 		$results['query'] = $params;
 		$results['std'] = $suspect_threshold;
