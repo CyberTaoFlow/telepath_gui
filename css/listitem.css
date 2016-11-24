@@ -304,9 +304,12 @@ ul.tele-listitem-info li.tele-listitem-cases-count{
 .tele-panel-alerts ul.tele-listitem-info li.tele-listitem-alerts-count,
 .tele-panel-alerts ul.tele-listitem-info li.tele-listitem-actions-count,
 .tele-panel-alerts ul.tele-listitem-info li.tele-listitem-cases-count,
-.tele-panel-search ul.tele-listitem-info li.tele-listitem-alerts-count,
-.tele-panel-search ul.tele-listitem-info li.tele-listitem-actions-count,
-.tele-panel-search ul.tele-listitem-info li.tele-listitem-cases-count
+.tele-alerts-block ul.tele-listitem-info li.tele-listitem-alerts-count,
+.tele-alerts-block ul.tele-listitem-info li.tele-listitem-actions-count,
+.tele-alerts-block ul.tele-listitem-info li.tele-listitem-cases-count,
+.tele-cases-block ul.tele-listitem-info li.tele-listitem-alerts-count,
+.tele-cases-block ul.tele-listitem-info li.tele-listitem-actions-count,
+.tele-cases-block ul.tele-listitem-info li.tele-listitem-cases-count
 {
 	top: -22px;
 }
