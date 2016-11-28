@@ -138,17 +138,19 @@ class Dashboard extends Tele_Controller
         $this->load->model('M_Alerts');
         $alerts ['items'] = [];
         $sessions_id = [];
+        $sessions_details = [];
 
         // Get 5 sessions with distinct details. If we get less than 5 items, we send another query to get more items,
         // but we need to exclude the sessions that we got already
         while (sizeof($alerts ['items']) < 5) {
             $results = $this->M_Alerts->dashboard_get_alerts($sort, $dir, 5 - sizeof($alerts['items']), $range, $apps,
-                $sessions_id);
+                $sessions_id, $sessions_details);
             if (empty($results['items'])) {
                 break;
             }
             $alerts['items'] = array_merge($alerts['items'], $results['items']);
             $sessions_id = array_merge($sessions_id, $results['sessions_id']);
+            $sessions_details = $sessions_details + $results['sessions_details'];
         }
 
         $alerts['query'] = $results['query'];

@@ -485,7 +485,7 @@ class M_Alerts extends CI_Model {
 
 	}
 
-	public function dashboard_get_alerts($sort, $sortorder, $limit, $range, $apps, $exclude_sessions)
+	public function dashboard_get_alerts($sort, $sortorder, $limit, $range, $apps, $exclude_sessions, $sessions_details)
 	{
 
 		switch ($sort) {
@@ -574,8 +574,6 @@ class M_Alerts extends CI_Model {
 			!empty($result["aggregations"]["sid"]["buckets"])
 		) {
 
-            $sessions_details = [];
-
             foreach ($result["aggregations"]["sid"]["buckets"] as $sid) {
 
                 // Return only the number of sessions requested
@@ -583,7 +581,11 @@ class M_Alerts extends CI_Model {
                     break;
                 }
 
-                $session_details = [
+				// Add sid to sid displayed list for "pagination"
+				$results['sessions_id'][] = $sid['key'];
+
+				// Session details to check for similar session details
+				$session_details = [
                     "country" => $sid['country_code']['buckets'][0]['key'],
                     "ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
                 ];
@@ -596,10 +598,10 @@ class M_Alerts extends CI_Model {
                     $session_details['host'][] = $host['key'];
                 }
 
+				$key = array_search($session_details, $sessions_details);
 
                 // When the same IP creates the exact same alert/s, within a time window of 1 hour, we not show it twice
-                if (($key = array_search($session_details, $sessions_details))
-                    && (abs($sid['date']['value'] - $key) < 3600)
+                if (($key) && (abs($sid['date']['value'] - $key) < 3600)
                 ) {
                     continue;
                 }
@@ -617,13 +619,12 @@ class M_Alerts extends CI_Model {
 				);
 
                 $sessions_details[$sid['date']['value']] = $session_details;
-                $results['sessions_id'][] = $sid['key'];
 			}
 
 
 		}
 
-
+		$results['sessions_details'] = $sessions_details;
 		$results['success'] = true;
 		$results['query'] = $params;
 		return $results;
