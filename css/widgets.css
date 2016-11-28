@@ -718,10 +718,15 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 	border: 1px solid #b5b8c8;
 	max-height: 200px;
 	overflow: auto;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
 }
 .tele-autocomplete-item {
 	padding: 4px;
 	cursor: pointer;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .tele-autocomplete-item.hover {
 	background: #e7f4f9;

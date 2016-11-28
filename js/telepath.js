@@ -8,7 +8,7 @@ $(document).ready(function () {
 
             if($(this).hasClass('hook')) {
 
-                if($(e.target).parents('.tele-popup').size() == 0 && $(e.target).parents('body').size() > 0) {
+                if ($(e.target).parents('.tele-popup').size() == 0 && $(e.target).parents('body').size() > 0 && $(e.target).parents('.tele-autocomplete-select').size() == 0) {
                     $('.tele-popup').remove();
                 }
 

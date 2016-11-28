@@ -18,7 +18,15 @@ class Applications extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
         $text = $this->input->post('text', true);
-        return_success($this->M_Applications->get_subdomain_autocomplete($text));
+        $offset = $this->input->post('offset', true);
+
+        $results = $this->M_Applications->get_subdomain_autocomplete($text, $offset);
+
+        $items = [];
+        foreach ($results as $result) {
+            $items [] = $result['_source']['host'];
+        }
+        return_success($items);
 
     }
 

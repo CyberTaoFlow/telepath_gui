@@ -13,10 +13,16 @@ telepath.autocomplete = {
     disabled: false,
     appendTo: 'body',
     position: 'top',
+    offset: 0,
     get: function (element, type, value) {
 
+        var that =this;
         $('.tele-loader', element.parent()).remove();
-        $('.tele-autocomplete-select', 'body').remove();
+        if (!this.offset){
+            $('.tele-autocomplete-select', 'body').remove();
+        }
+
+        this.type = type;
 
         if (this.disabled) {
             return;
@@ -55,10 +61,11 @@ telepath.autocomplete = {
 
         }
 
-        telepath.ds.get(url, {text: value}, function (data) {
+        telepath.ds.get(url, {text: value, offset: this.offset }, function (data) {
             $('.tele-loader', element.parent()).remove();
             $(element).css({backgroundColor: 'white'});
             if (data.items) {
+                that.offset += data.items.length;
                 telepath.autocomplete.render(element, data.items);
             }
         }, 'Failed autocomplete', false, true);
@@ -66,6 +73,7 @@ telepath.autocomplete = {
     },
     render: function (element, items) {
 
+        var that = this;
         var container = element.parent();
         var resultsEl = $('<div>').addClass('tele-autocomplete-select');
         var offset = element.offset();
@@ -75,37 +83,54 @@ telepath.autocomplete = {
                 $('.tele-autocomplete-select').remove();
             }
         });
+        if (this.offset == 999) {
+            $('.tele-autocomplete-select', 'body').remove();
 
-        $('.tele-autocomplete-select', 'body').remove();
+            if (this.appendTo == 'body') {
+                resultsEl.css({
+                    position: 'absolute',
+                    top: offset.top + 24,
+                    left: offset.left,
+                    width: element.outerWidth() - 2
+                }).appendTo(this.appendTo);
+            }
+            else if (this.position == 'bottom') {
+                resultsEl.css({
+                    position: 'absolute',
+                    bottom: $(window).height() - offset.top,
+                    left: offset.left - $(this.appendTo).offset().left,
+                    width: element.outerWidth() - 2
+                }).appendTo(this.appendTo);
+            } else {
+                resultsEl.css({
+                    position: 'absolute',
+                    bottom: offset.top - $(this.appendTo).offset().top,
+                    left: offset.left - $(this.appendTo).offset().left,
+                    width: element.outerWidth() - 2
+                }).appendTo(this.appendTo);
+            }
 
-        if (this.appendTo == 'body') {
-            resultsEl.css({
-                position: 'absolute',
-                top: offset.top + 24,
-                left: offset.left,
-                width: element.outerWidth() - 2
-            }).appendTo(this.appendTo);
+            resultsEl.mCustomScrollbar({
+                callbacks: {
+                    advanced: {
+                        updateOnContentResize: true
+                    },
+                    onTotalScroll: function () {
+                        element.parent().append(telepath.loader);
+                        telepath.autocomplete.get(element, that.type)
+                    }
+                }
+            });
         }
-        else if (this.position == 'bottom'){
-            resultsEl.css({
-                position: 'absolute',
-                bottom: $(window).height() - offset.top,
-                left: offset.left - $(this.appendTo).offset().left,
-                width: element.outerWidth() - 2
-            }).appendTo(this.appendTo);
-        }else {
-            resultsEl.css({
-                position: 'absolute',
-                bottom: offset.top - $(this.appendTo).offset().top,
-                left: offset.left - $(this.appendTo).offset().left,
-                width: element.outerWidth() - 2
-            }).appendTo(this.appendTo);
-        }
+
+        resultsEl = $('.tele-autocomplete-select .mCSB_container');
+
         $.each(items, function (i, item) {
 
             var resultEl = $('<div>').addClass('tele-autocomplete-item')
-                .text(item.key)
+                .text(item)
                 .data('tele-select', item)
+                .attr('title', item)
                 .hover(function () {
                     $(this).addClass('hover');
                 }, function () {
@@ -120,7 +145,7 @@ telepath.autocomplete = {
 
             resultEl.click(function () {
                 telepath.autocomplete.disabled = true;
-                element.val(item.key);
+                element.val(item);
                 element.data('tele-select', item);
                 $('.tele-autocomplete-select', 'body').remove();
                 setTimeout(function () {
@@ -132,6 +157,8 @@ telepath.autocomplete = {
             }).h();
             resultsEl.append(resultEl);
         });
+
+        $('.tele-autocomplete-select').mCustomScrollbar('update');
     }
 }
 
@@ -160,6 +187,7 @@ $.widget("tele.teleSelect", {
 
             telepath.autocomplete.appendTo = this.appendTo;
             telepath.autocomplete.position = this.position;
+            telepath.autocomplete.offset = 0;
 
             var that = this;
             var input = $('<input>');
@@ -205,10 +233,12 @@ $.widget("tele.teleSelect", {
                 if ($(this).val() == 'All') {
                     $(this).select();
                     setTimeout(function () {
+                        telepath.autocomplete.offset = 0;
                         telepath.autocomplete.get(input, that.type, '');
                     }, 500);
                 } else {
                     setTimeout(function () {
+                        telepath.autocomplete.offset = 0;
                         telepath.autocomplete.get(input, that.type);
                     }, 500);
                 }

@@ -737,12 +737,13 @@ class M_Applications extends CI_Model {
 		
 	}
 	
-	function get_subdomain_autocomplete($filter = '') {
+	function get_subdomain_autocomplete($filter = '', $offset = 0){
 		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';
+		$params['_source_include'] = ['host'];
 		$params['body'] = array(
-			'size'  => 0,
-			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
+			'size' => 999,
+			'from' => $offset,
 			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "default_field" => "host", "query" =>'*'. $filter . '*' ] ] ] ],
 		);
 		
@@ -758,7 +759,7 @@ class M_Applications extends CI_Model {
 //
 //		}
 
-		$ans=$results['aggregations']['host']['buckets'];
+		$ans = $results['hits']['hits'];
 		sort($ans);
 		return $ans;
 
