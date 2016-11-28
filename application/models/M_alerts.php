@@ -1,10 +1,10 @@
 <?php
 
 class M_Alerts extends CI_Model {
-	
+
 	function __construct() {
 		parent::__construct();
-		
+
 		// Connect elastic
 		//$params = array('hosts' => array('127.0.0.1:9200'));
 //$params['logging'] = true;
@@ -13,15 +13,15 @@ class M_Alerts extends CI_Model {
 	}
 
 	public function get_time_chart($range, $apps = array(), $search = '', $alerts_filter = [], $actions_sid = []) {
-		
-		
+
+
 		$dots  = 10;
 		$step  = ($range['end'] - $range['start']) / $dots;
 
 		$chart = array();
-		
+
 		for($x = 0; $x < $dots; $x++) {
-			
+
 			// LIM
 
 			$scope_start = $range['start'] + ($x * $step);       // 4JS
@@ -68,23 +68,23 @@ class M_Alerts extends CI_Model {
 			// QUERY
 			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
 				$scope_end ] ] ];
-			
+
 			$params = append_application_query($params, $apps);
 			$params = append_access_query($params);
-			
+
 			$results   = $this->elasticClient->search($params);
-			
+
 			if(!empty($results) && isset($results['aggregations']['sid'])) {
 				$val     = intval($results['aggregations']['sid']['value']);
 				$chart[] = array($scope_end * 1000, $val);
 			}
 
 		}
-		
+
 		return $chart;
-		
+
 	}
-	
+
 
 	public function get_action_distribution_chart($range, $apps, $search = '', $alerts_filter = [])
 	{
@@ -225,30 +225,30 @@ class M_Alerts extends CI_Model {
 
 		$result = $this->elasticClient->search($params);
 		$results = array();
-		
-		if(isset($result["aggregations"]) && 
-		   isset($result["aggregations"]["alerts_names"]) && 
-		   isset($result["aggregations"]["alerts_names"]["buckets"]) && 
+
+		if(isset($result["aggregations"]) &&
+		   isset($result["aggregations"]["alerts_names"]) &&
+		   isset($result["aggregations"]["alerts_names"]["buckets"]) &&
 		   !empty($result["aggregations"]["alerts_names"]["buckets"])) {
-		   
+
 				$alerts_buckets = $result["aggregations"]["alerts_names"]["buckets"];
 				foreach($alerts_buckets as $alerts_bucket) {
-				
+
 					$results[] = [
 						"label"     => $alerts_bucket['key'],
-						"data"    => $alerts_bucket['doc_count'], 
+						"data"    => $alerts_bucket['doc_count'],
 					];
 			}
 		}
-		
+
 		return $results;
 
 	}
-	
+
 	public function get_alerts($sort, $sortorder, $displayed = [], $limit = 100, $range = [], $apps = [], $search = '', $alerts_filter = [], $actions_sid = []) {
-		
+
 		switch($sort) {
-		
+
 			case 'date':
 				$sortfield = 'date';
 			break;
@@ -275,7 +275,7 @@ class M_Alerts extends CI_Model {
 		$params['body'] = [
 			'size' => 0,
 			"aggs" => [
-				"sid" => [ 
+				"sid" => [
 
 					"terms" => [ "field" => "sid", "size" => $limit , "order" => [ $sortfield => $sortorder ] ],
 					"aggs" =>[
@@ -341,16 +341,16 @@ class M_Alerts extends CI_Model {
 		$params = append_access_query($params);
 
 		$result = $this->elasticClient->search($params);
-	
+
 		$results = array('items' => array());
 
 		$count = 0;
 
 
-		if(isset($result["aggregations"]) && 
-		   isset($result["aggregations"]["sid"]) && 
+		if(isset($result["aggregations"]) &&
+		   isset($result["aggregations"]["sid"]) &&
 		   !empty($result["aggregations"]["sid"]["buckets"])) {
-		   
+
 			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
 			foreach($sid_buckets as $sid) {
 
@@ -432,7 +432,7 @@ class M_Alerts extends CI_Model {
 
 						$results['items'][] = array(
 							"sid"     => $sid_key,
-							"city"    => $sid['city']['buckets'][0]['key'], 
+							"city"    => $sid['city']['buckets'][0]['key'],
 							"alerts_count"  => $sid['alerts_count']['value'],
 							"alerts_names"  => $sid['alerts_names']['buckets'],
 							"actions_count"  => $sid['actions_count']['value'],
@@ -449,7 +449,7 @@ class M_Alerts extends CI_Model {
 						);
 
 			}
-			
+
 			$count = $result["aggregations"]["sid_count"]["value"];
 
 			# Fix the problem we have with sort.
@@ -472,20 +472,20 @@ class M_Alerts extends CI_Model {
 				array_multisort($temp, $sortorder, $ar);
 				$results['items'] = $ar;
 			}
-				
+
 		}
 
 
-		
+
 		$results['success'] = true;
 		$results['query'] = $params;
 		$results['count'] = $count;
 		return $results;
-		
-			
+
+
 	}
 
-	public function dashboard_get_alerts($sort, $sortorder, $limit = 5, $range = [], $apps = [])
+	public function dashboard_get_alerts($sort, $sortorder, $limit, $range, $apps, $exclude_sessions, $sessions_details)
 	{
 
 		switch ($sort) {
@@ -512,7 +512,7 @@ class M_Alerts extends CI_Model {
 			"aggs" => [
 				"sid" => [
 
-					"terms" => ["field" => "sid", "size" => $limit, "order" => [$sortfield => $sortorder]],
+					"terms" => ["field" => "sid", "size" => $limit + 1, "order" => [$sortfield => $sortorder]],
 
 					"aggs" => [
 						"alerts_count" => [
@@ -555,6 +555,10 @@ class M_Alerts extends CI_Model {
 			],
 		];
 
+        if (!empty($exclude_sessions)) {
+            $params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $exclude_sessions]];
+        }
+
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
@@ -570,13 +574,40 @@ class M_Alerts extends CI_Model {
 			!empty($result["aggregations"]["sid"]["buckets"])
 		) {
 
-			$sid_buckets = $result["aggregations"]["sid"]["buckets"];
-			foreach ($sid_buckets as $sid) {
+            foreach ($result["aggregations"]["sid"]["buckets"] as $sid) {
 
-				$sid_key = $sid['key'];
+                // Return only the number of sessions requested
+                if (sizeof($results['items']) > $limit - 1) {
+                    break;
+                }
 
-				$results['items'][] = array(
-					"sid" => $sid_key,
+				// Add sid to sid displayed list for "pagination"
+				$results['sessions_id'][] = $sid['key'];
+
+				// Session details to check for similar session details
+				$session_details = [
+                    "country" => $sid['country_code']['buckets'][0]['key'],
+                    "ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
+                ];
+
+                // Remove doc_count that is not relevant for our array comparison
+                foreach ($sid['alerts_names']['buckets'] as $alert) {
+                    $session_details['alerts_names'][] = $alert['key'];
+                }
+                foreach ($sid['host']['buckets'] as $host) {
+                    $session_details['host'][] = $host['key'];
+                }
+
+				$key = array_search($session_details, $sessions_details);
+
+                // When the same IP creates the exact same alert/s, within a time window of 1 hour, we not show it twice
+                if (($key) && (abs($sid['date']['value'] - $key) < 3600)
+                ) {
+                    continue;
+                }
+
+                $results['items'][] = array(
+                    "sid" => $sid['key'],
 					"alerts_count" => $sid['alerts_count']['value'],
 					"alerts_names" => $sid['alerts_names']['buckets'],
 					"country" => $sid['country_code']['buckets'][0]['key'],
@@ -586,31 +617,14 @@ class M_Alerts extends CI_Model {
 					'score_average' => $sid['score_average']['value'],
 					"user" => $sid['user']['buckets'][0]['key']
 				);
+
+                $sessions_details[$sid['date']['value']] = $session_details;
 			}
 
-			if ($sort == 'date') {
 
-				if ($sortorder == 'ASC') {
-					$sortorder = SORT_ASC;
-				} elseif ($sortorder == 'DESC') {
-					$sortorder = SORT_DESC;
-				}
-
-				# Fix the problem we have with sort.
-				# When sorting alerts by date we are getting other requests
-				# with the same session id. As a result we need to perform
-				# second sort.
-				$temp = array();
-				$ar = $results['items'];
-				foreach ($ar as $key => $row) {
-					$temp[$key] = $row['date'];
-				}
-				array_multisort($temp, $sortorder, $ar);
-				$results['items'] = $ar;
-			}
 		}
 
-
+		$results['sessions_details'] = $sessions_details;
 		$results['success'] = true;
 		$results['query'] = $params;
 		return $results;
@@ -656,32 +670,32 @@ class M_Alerts extends CI_Model {
 
 		return $actions_sid;
 	}
-	
+
 	// Generic
-		
+
 	// TODO::
-	
+
 	public function alerts_for_RIDS($RIDS = array()) {
 		if(empty($RIDS)) { return array(); }
 		return $alerts;
 	}
-	
+
 	public function alert_for_RID($RID) {
 		return empty($res) ? false : $res[0];
 	}
-	
+
 	public function get($limit = false) {
 		return array();
 	}
-	
+
 	public function count_alerts($to, $from, $rule_group, $apps = array(), $case_id = -1) {
 		return 0;
 	}
-	
+
 	public function time_diff($date, $count, $mode) {
 		return 0; // PHP based (copy from v2 dashboard)
 	}
-	
+
 }
 
 ?>

@@ -405,7 +405,6 @@ function get_gap($range) {
 
     function logger($message, $file_path = false)
     {
-        $context = &get_instance();
         if (!is_cli())
             return;
 

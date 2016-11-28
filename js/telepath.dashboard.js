@@ -152,7 +152,7 @@ telepath.dashboard = {
 			$('.tele-panel-dashboard').append(this.alertsList);
 
 			this.alertsList.teleList({
-			title: 'Recent Alerts',
+			title: 'Top Alerts',
 			titleCallback: function () {
 				$(".tele-nav-alerts a").click();
 			},

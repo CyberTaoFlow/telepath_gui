@@ -45,11 +45,12 @@ class Config extends Tele_Controller
             'wordwrap' => TRUE
         );
 
-        $config['mailtype'] = 'html';
-        $this->load->library('email', $test_config);
+        $this->load->library('email');
+        $this->email->initialize($test_config);
+
         $this->email->set_newline("\r\n");
-        $this->email->from('telepath@hybridsec.com'); // change it to yours
-        $this->email->to($target);// change it to yours
+        $this->email->from('telepath@hybridsec.com');
+        $this->email->to($target);
         $this->email->subject('Telepath test mail');
         $this->email->set_mailtype("html");
         $this->email->message('Telepath test mail');
