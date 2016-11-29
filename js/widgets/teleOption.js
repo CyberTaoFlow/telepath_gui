@@ -93,7 +93,7 @@ $.widget('tele.teleOption', {
             var selected = $(this).html();
             select.append('<span class="text-button">' + selected + '</span>');
             that.options.selected =  selected;
-
+            options.hide();
         });
 
 

@@ -746,6 +746,7 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 
 .tele-dropdown-options{
 	position: relative;
+	float: left;
 	font-size: 16px;
 }
 
@@ -759,14 +760,14 @@ body .vakata-context li > a .vakata-contextmenu-sep {
 	padding: 0px 25px 0px 5px;
 	border-radius: 20px;
 	height: 24px;
+	background-color: #fff;
 }
 
 .tele-dropbtn .caret {
-	margin: 10px;
+	margin: 8px;
 	border-top-color: #000;
 	position: absolute;
 	right: 5px;
-	top: 3px;
 }
 
 .caret {
