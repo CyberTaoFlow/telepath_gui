@@ -444,9 +444,22 @@ a.tele-clear-button:hover {
 	height: 200px;
 	clear: left;
 }
-.tele-graph-canvas {
+.tele-panel-dashboard  .tele-graph-canvas-master {
+	height: 72px;
+	width: 25%;
+	float: right;
+	padding-right: 20px;
+}
+.tele-graph-canvas, .tele-graph-canvas-master-inner {
 	height: 100%;
 	width: 100%;
+}
+.tele-graph-canvas-master {
+	visibility:hidden;
+}
+.tele-graph-close {
+	margin-left: 188px;
+	margin-top: -95px;
 }
 
 .tele-panel-dashboard .tele-mini-toggle {

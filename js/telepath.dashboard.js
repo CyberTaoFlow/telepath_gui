@@ -224,9 +224,9 @@ telepath.dashboard = {
 			legend: { show: false },
 			series: { lines: { show: true, fill: true }, points: { show: true, fillColor: '#446077' } },
 			yaxis: { alignTicksWithAxis: true, labelWidth: 30, ticks: 5, color: '#446077', font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" } },
-			selection: { mode: "x" },
+			selection: { mode: "xy" },
 			xaxis: { alignTicksWithAxis: true, tickColor: '#cccccc', tickLength: 7, font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" }, mode: "time", timezone: "browser", timeformat: timeformat },
-			grid: { borderColor: '#446077', borderWidth: 1, hoverable:true, clickable:true },
+			grid: { borderColor: '#446077', borderWidth: 2, hoverable:true, clickable:true },
 			tooltip:true,
 			tooltipOpts:{
 				content: "%s | date & time: %x | sessions: %y"

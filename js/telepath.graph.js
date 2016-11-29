@@ -26,7 +26,20 @@ $.widget( "tele.flotGraph", {
 		
 		this.canvasOuter = $('<div>').addClass('tele-graph-canvas-outer');
 		this.canvasInner = $('<div>').addClass('tele-graph-canvas');
-		
+		this.masterCanvasInner =$('<div>').addClass('tele-graph-canvas-master-inner');
+		this.masterCanvas =$('<div>').addClass('tele-graph-canvas-master');
+		this.closeEl     = $('<a>').attr('href', '#').addClass('tele-graph-close').addClass('tele-icon').addClass('tele-icon-close');
+
+		this.closeEl.click(function () {
+			that.masterCanvas.css({visibility: 'hidden'});
+			that.plotObj.destroy();
+			that.plot();
+		}).hover(function () {
+			$(this).addClass('hover');
+		}, function () {
+			$(this).removeClass('hover');
+		});
+
 		this.element.empty();
 		
 		if(this.options.title) {
@@ -35,7 +48,8 @@ $.widget( "tele.flotGraph", {
 		}
 		
 		this.canvasOuter.append(this.canvasInner);
-		this.element.append(this.canvasOuter);
+		this.masterCanvas.append(this.masterCanvasInner).append(this.closeEl );
+		this.element.append(this.masterCanvas).append(this.canvasOuter);
 		
 		if(this.options.dashboard) {
 			
@@ -147,7 +161,34 @@ $.widget( "tele.flotGraph", {
 	
 	},
 	plot: function() {
+
+		var that = this;
 		this.plotObj = $.plot(this.canvasInner, this.printData, this.options.options);
+		var timeformat = ((telepath.range.end - telepath.range.start) / 3600 > 48) ? "%d/%m/%y" : "%d/%m %h:%M:%S";
+		var options = {
+			legend: {show: false},
+			series: {lines: {show: true, fill: true}},
+			yaxis: {ticks: 0},
+			selection: {mode: "xy"},
+			xaxis: {ticks: 0,},
+			grid: {borderColor: '#446077', borderWidth: 1, hoverable: false, clickable: false}
+		};
+		this.masterPlotObj = $.plot(this.masterCanvasInner, this.printData, options);
+
+		$(".tele-panel-dashboard  .tele-graph-canvas").bind("plotselected", function (event, ranges) {
+			that.masterCanvas.css({visibility: 'visible'});
+			that.plotObj = $.plot($(".tele-panel-dashboard  .tele-graph-canvas"), that.printData,
+				$.extend(true, {}, that.options.options, {
+					xaxis: {min: ranges.xaxis.from, max: ranges.xaxis.to},
+					yaxis: {min: ranges.yaxis.from, max: ranges.yaxis.to}
+				}));
+
+			that.masterPlotObj.setSelection(ranges, true);
+		});
+
+		$(".tele-panel-dashboard  .tele-graph-canvas-master-inner").bind("plotselected", function (event, ranges) {
+			that.plotObj.setSelection(ranges);
+		});
 	},
 	resize: function () {
 		
