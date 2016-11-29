@@ -1182,7 +1182,7 @@ a.jstree-anchor{
 }
 
 .tele-config-system-network .tele-multi-value {
-	width: 720px;
+	width: 850px;
 }
 
 .tele-multi-value input.tele-ip-segment {
@@ -1190,7 +1190,7 @@ a.jstree-anchor{
 }
 
 .tele-network-wrap {
-	width: 670px;
+	width: 800px;
 	height: 32px;
 	float: left;
 	clear: both;
@@ -1206,9 +1206,13 @@ a.jstree-anchor{
 .tele-network-wrap .tele-input {
 	clear: none;
 }
-.tele-network-select {
-	float: left;
-	margin: 9px 10px;
+.tele-network-wrap .tele-dropbtn{
+	padding: 4px 25px 0px 5px;
+	height: 21px;
+	border-color: #555;
+}
+.tele-network-wrap .tele-dropdown-content{
+	top: 34px;
 }
 .tele-network-filter.tele-input {
 	width: 350px;

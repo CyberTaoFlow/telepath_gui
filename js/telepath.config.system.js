@@ -316,7 +316,7 @@ telepath.config.system = {
 		
 			//var IDX  = $('.tele-network-idx', this).html();
 			var NAME = $('.tele-network-name input', this).val();
-			var ETH  = $('.tele-network-select', this).val();
+			var ETH = $('.tele-dropdown-options', this).teleOption('option', 'selected');
 			var MASK = $('.tele-network-filter input', this).val();
 			
 			data.agents.push({ /*idx: IDX,*/ agent_name: NAME, interface_name: ETH, pcap_filter: MASK });
@@ -1041,14 +1041,10 @@ telepath.config.system = {
 			//var IDX       = $('<div>').html(value.idx).addClass('tele-network-idx');
 			var Name      = $('<div>').teleInput({ label: 'Name', width: 120, value: value.agent_name }).addClass('tele-network-name');
 			var Filter    = $('<div>').teleInput({ label: 'Filter Expression', width: 120, value: value.pcap_filter }).addClass('tele-network-filter');
-			var Interface = $('<select>').addClass('tele-network-select');
+			var Interface =$('<div>').teleOption({label: '', options: telepath.config.system.data.interfaces, selected: value.interface_name});
 
 
 			Wrap.append(Name).append(Filter).append(Interface);
-			$.each(telepath.config.system.data.interfaces, function (i, interfaceName) {
-				var selected = interfaceName == value.interface_name ? 'selected="selected"' : '';
-				Interface.append('<option ' + selected + ' value=' + interfaceName + '>' + interfaceName + '</option>');
-			});
 			
 			element.append(Wrap);
 			
