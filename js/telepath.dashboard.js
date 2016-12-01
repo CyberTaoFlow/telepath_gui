@@ -218,12 +218,25 @@ telepath.dashboard = {
 	drawGraph: function () {
 		
 		var timeformat = ((telepath.range.end - telepath.range.start) / 3600 > 48) ? "%d/%m/%y" : "%d/%m %h:%M:%S";
-	
+
+		var chartData = [{ label: "Alerts", 		     data: this.data.items.chart.alerts,      color: '#64a5bc' },
+			{ label: "Normal",      data: this.data.items.chart.sessions,    color: '#986da0' },
+			{ label: "Cases",       data: this.data.items.chart.cases, color: '#ff850b' },
+			{ label: "Suspects", data: this.data.items.chart.suspects,    color: '#6ab789' }
+			//{label: "Score", data: this.data.items.chart.score}
+		];
+		var xVals = chartData.map(function(obj) { return obj.data; });
+		var result = Math.max.apply(Math, xVals.map(function(arr) {
+			return Math.max.apply(Math, arr.map(function(i) {
+				return i[1];
+			}))
+		})).toString().length;
+
 		var options = {
 		
 			legend: { show: false },
 			series: { lines: { show: true, fill: true }, points: { show: true, fillColor: '#446077' } },
-			yaxis: { alignTicksWithAxis: true, labelWidth: 30, ticks: 5, color: '#446077', font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" } },
+			yaxis: { alignTicksWithAxis: true, labelWidth: result*7, ticks: 5, color: '#446077', font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" } },
 			selection: { mode: "xy" },
 			xaxis: { alignTicksWithAxis: true, tickColor: '#cccccc', tickLength: 7, font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" }, mode: "time", timezone: "browser", timeformat: timeformat },
 			grid: { borderColor: '#446077', borderWidth: 2, hoverable:true, clickable:true },
@@ -234,13 +247,6 @@ telepath.dashboard = {
 			
 		};
 
-		var chartData = [{ label: "Alerts", 		     data: this.data.items.chart.alerts,      color: '#64a5bc' },
-						 { label: "Normal",      data: this.data.items.chart.sessions,    color: '#986da0' },
-						 { label: "Cases",       data: this.data.items.chart.cases, color: '#ff850b' },
-						 { label: "Suspects", data: this.data.items.chart.suspects,    color: '#6ab789' }
-						//{label: "Score", data: this.data.items.chart.score}
-		];
-		
 		this.graph.flotGraph({ data: chartData, options: options, dashboard: true, title: 'Overall Transactions' });
 	
 	},

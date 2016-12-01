@@ -434,3 +434,12 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 
 .tele-icon-bot-rule,
 .tele-icon-aspect-rule  	      { background-position: -129px -518px; }
+
+.tele-graph-close {
+	/*float: right;*/
+	/*margin-right: -11px;*/
+	margin-top: -85px;
+	position: absolute;
+	right: 0;
+
+}
