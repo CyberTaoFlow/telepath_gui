@@ -693,7 +693,12 @@ class M_Cases extends CI_Model {
 							$query_string=str_replace(',', ' OR ', $condition['value']);
 						}
 						// The query to find the requests that match the case details
-						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => $query_string ]];
+						$params['body']['query']['bool'][$appear][] = [
+							'query_string' => [
+								"default_field" => $term,
+								"query" => json_encode($query_string)
+							]
+						];
 
 					}
 

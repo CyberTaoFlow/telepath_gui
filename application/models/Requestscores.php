@@ -18,7 +18,7 @@ class RequestScores extends CI_Model {
 			'query' => array(
 				'bool' => array(
 					'filter' => array(
-						array('query_string' => array('default_field' => 'http.uid', 'query' => $uid)),
+						array('query_string' => array('default_field' => 'http.uid', 'query' => json_encode($uid))),
 					)
 				)
 			)
