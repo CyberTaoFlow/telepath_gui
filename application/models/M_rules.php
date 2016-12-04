@@ -228,7 +228,7 @@ class M_Rules extends CI_Model {
 		}
 
 		if ($ids){
-			$params['body']['fields']= '_id';
+			$params['body']['_source']= false;
 
 			$results = $this->elasticClient->search($params);
 
