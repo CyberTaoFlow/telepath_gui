@@ -641,7 +641,8 @@ $.widget( "tele.teleRule", {
 			
 				json.kind = 'g';
 				json.type = $(".tele-geo-type .tele-radio-knob",c).parent().attr('rel');
-				
+				json.subtype = 'Network';
+
 				switch(json.type) {
 					
 					case 'velocity':
