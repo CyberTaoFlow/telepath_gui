@@ -208,6 +208,10 @@ telepath.config.application = {
 		telepath.ds.get('/applications/set_app', app_data, function (data) {
 			if (data.success){
 				telepath.config.applications.reload();
+				// Empty right screen, in case of engine change rejection (for example from production
+				// mode to hybrid mode)
+				that.container.empty();
+				that.toolbar.empty();
 				//that.editApp(app_data.host);
 				telepath.dialog({msg:'Application successfully updated'});
 			}

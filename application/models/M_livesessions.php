@@ -37,7 +37,7 @@ class M_Livesessions extends CI_Model
                         [
                             'query_string' => [
                                 "fields" => ['host'],
-                                "query" => $host,
+                                "query" => json_encode($host),
                                 "default_operator" => 'AND'
                             ]
                         ],

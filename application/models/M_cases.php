@@ -588,7 +588,6 @@ class M_Cases extends CI_Model {
 			logger('Start index: ' . $index_name );
 
 			$params = [
-//				"search_type" => "scan",    // use search_type=scan
 				"scroll" => "1m",          // how long between scroll requests.
 				"size" => 9999,               // how many results *per shard* you want back
 				"index" => $index_name,
@@ -693,7 +692,12 @@ class M_Cases extends CI_Model {
 							$query_string=str_replace(',', ' OR ', $condition['value']);
 						}
 						// The query to find the requests that match the case details
-						$params['body']['query']['bool'][$appear][] = ['query_string' => ["default_field" => $term, "query" => $query_string ]];
+						$params['body']['query']['bool'][$appear][] = [
+							'query_string' => [
+								"default_field" => $term,
+								"query" => json_encode($query_string)
+							]
+						];
 
 					}
 
