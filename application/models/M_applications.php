@@ -772,8 +772,7 @@ class M_Applications extends CI_Model {
 					"filter" => [
 						"query_string" => [
 							"default_field" => "host",
-							"query" => '*' .
-								json_encode($filter) . '*'
+							"query" => '*' . json_encode($filter) . '*'
 						]
 					]
 				]

@@ -49,7 +49,7 @@ class M_Alerts extends CI_Model {
 
 
 			if ($search && strlen($search) > 1) {
-				$query .= ' AND ' . $search ;
+				$query .= ' AND ' . json_encode($search) ;
 			}
 
 			if ($actions_sid) {
@@ -60,7 +60,7 @@ class M_Alerts extends CI_Model {
 
 			$params['body']['query']['bool']['filter'][] = [
 				'query_string' => [
-					"query" => json_encode($query),
+					"query" => $query,
 					"default_operator" => 'AND'
 				]
 			];
@@ -130,12 +130,12 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= ' AND ' . $search;
+			$query .= ' AND ' . json_encode($search);
 		}
 
 		$params['body']['aggs']['sid']['aggs']['alerts']['filter'] = [
 			'query_string' => [
-				"query" => json_encode($query),
+				"query" => $query,
 				"default_operator" => 'AND'
 			]
 		];
@@ -209,12 +209,12 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= ' AND ' . $search;
+			$query .= ' AND ' . json_encode($search);
 		}
 
 		$params['body']['query']['bool']['filter'][] = [
 			'query_string' => [
-				"query" => json_encode($query),
+				"query" => $query,
 				"default_operator" => 'AND'
 			]
 		];
@@ -316,12 +316,12 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= ' AND ' . $search ;
+			$query .= ' AND ' . json_encode($search);
 		}
 
 		$params['body']['query']['bool']['filter'][] = [
 			'query_string' => [
-				"query" => json_encode($query),
+				"query" => $query,
 				"default_operator" => 'AND'
 			]
 		];
@@ -663,7 +663,7 @@ class M_Alerts extends CI_Model {
 
 		$params['body']['query']['bool']['filter'][] = [
 			'query_string' => [
-				"query" => json_encode($query),
+				"query" => $query,
 				"default_operator" => 'AND'
 			]
 		];

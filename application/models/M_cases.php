@@ -695,7 +695,7 @@ class M_Cases extends CI_Model {
 						$params['body']['query']['bool'][$appear][] = [
 							'query_string' => [
 								"default_field" => $term,
-								"query" => json_encode($query_string)
+								"query" => $query_string
 							]
 						];
 
