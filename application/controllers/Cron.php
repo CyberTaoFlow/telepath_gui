@@ -53,12 +53,12 @@ class Cron extends Tele_Controller
             "query" => ['bool' => ['must' => []]]
         ];
         $params['index'] = 'telepath-20*';
+        $params['type'] = 'http';
 
         $ts_start = intval(strtotime('-1 minute'));
 
-        $params['body']['query']['bool']['must'][] = ['term' => ['_type' => 'http']];
-        $params['body']['query']['bool']['must'][] = ['filtered' => ['filter' => ['exists' => ['field' => 'alerts']]]];
-        $params['body']['query']['bool']['must'][] = ['range' => ['ts' => ['gte' => $ts_start]]];
+        $params['body']['query']['bool']['filter'][] = ['exists' => ['field' => 'alerts']];
+        $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $ts_start]]];
 
         $alerts = $client->search($params);
 
