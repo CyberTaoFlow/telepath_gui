@@ -96,8 +96,11 @@ class Dashboard extends Tele_Controller
             $ips = array_merge($ips, $results['ips']);
         }
 
-        $suspects['query'] = $results['query'];
-        $suspects['std'] = $results['std'];
+        if (ENVIRONMENT == 'development') {
+            $suspects['query'] = $results['query'];
+            $suspects['std'] = $results['std'];
+        }
+
 
 
         # Fix the problem we have with sort. When we sort by date we get other requests with the same session id.
@@ -153,7 +156,9 @@ class Dashboard extends Tele_Controller
             $sessions_details = $sessions_details + $results['sessions_details'];
         }
 
-        $alerts['query'] = $results['query'];
+        if (ENVIRONMENT == 'development') {
+            $alerts['query'] = $results['query'];
+        }
 
         if ($sort == 'date') {
 

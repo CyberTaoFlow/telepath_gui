@@ -269,7 +269,9 @@ class M_Suspects extends CI_Model {
 
 		$results['success'] = true;
 		$results['count'] = $count;
-		$results['query'] = $params;
+		if (ENVIRONMENT == 'development') {
+			$results['query'] = $params;
+		}
 		$results['std'] = $suspect_threshold;
 		return $results;
 
@@ -399,7 +401,9 @@ class M_Suspects extends CI_Model {
 		}
 
 
-		$results['query'] = $params;
+		if (ENVIRONMENT == 'development') {
+			$results['query'] = $params;
+		}
 		$results['std'] = $suspect_threshold;
 		return $results;
 

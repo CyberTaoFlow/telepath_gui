@@ -488,7 +488,9 @@ class M_Alerts extends CI_Model {
 
 
 		$results['success'] = true;
-		$results['query'] = $params;
+		if (ENVIRONMENT == 'development') {
+			$results['query'] = $params;
+		}
 		$results['count'] = $count;
 		return $results;
 
@@ -636,7 +638,9 @@ class M_Alerts extends CI_Model {
 
 		$results['sessions_details'] = $sessions_details;
 		$results['success'] = true;
-		$results['query'] = $params;
+		if (ENVIRONMENT == 'development') {
+			$results['query'] = $params;
+		}
 		return $results;
 
 
