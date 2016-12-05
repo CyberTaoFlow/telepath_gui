@@ -138,7 +138,7 @@ telepath.autocomplete = {
                                 that.offset += data.items.length;
                                 $.each(data.items, function (i, item) {
 
-                                    that.appendItem(resultsEl, item);
+                                    that.appendItem(element, resultsEl, item);
                                 });
                                 $('.tele-autocomplete-select').mCustomScrollbar('update');
                             }
@@ -151,13 +151,13 @@ telepath.autocomplete = {
         resultsEl = $('.tele-autocomplete-select .mCSB_container');
 
         $.each(items, function (i, item) {
-            that.appendItem(resultsEl, item);
+            that.appendItem(element, resultsEl, item);
         });
 
         $('.tele-autocomplete-select').mCustomScrollbar('update');
     },
 
-    appendItem: function(container, item){
+    appendItem: function(element, container, item){
         var resultEl = $('<div>').addClass('tele-autocomplete-item')
             .text(item)
             .data('tele-select', item)
