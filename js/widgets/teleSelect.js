@@ -37,7 +37,8 @@ telepath.autocomplete = {
                 //return;
             }
         }
-
+        this.value = value;
+        
         $(element).css({backgroundColor: '#cecece'});
         element.parent().append(telepath.loader);
 
@@ -62,7 +63,7 @@ telepath.autocomplete = {
 
         }
 
-        telepath.ds.get(this.url, {text: value, offset: this.offset }, function (data) {
+        telepath.ds.get(this.url, {text: this.value, offset: this.offset }, function (data) {
             $('.tele-loader', element.parent()).remove();
             $(element).css({backgroundColor: 'white'});
             if (data.items) {
