@@ -23,6 +23,7 @@ telepath.autocomplete = {
         }
 
         this.type = type;
+        this.value = value;
 
         if (this.disabled) {
             return;
@@ -36,32 +37,33 @@ telepath.autocomplete = {
                 //return;
             }
         }
-
+        this.value = value;
+        
         $(element).css({backgroundColor: '#cecece'});
         element.parent().append(telepath.loader);
 
         // console.log('Seeking autocomplete of type ' + type + ' value ' + value);
 
-        var url = '';
+        this.url = '';
         switch (type) {
             //not used
             case 'page':
-                url = '/applications/get_autocomplete_page';
+                this.url = '/applications/get_autocomplete_page';
                 break;
             //not used
             case 'application':
-                url = '/applications/get_autocomplete';
+                this.url = '/applications/get_autocomplete';
                 break;
             case 'subdomain':
-                url = '/applications/get_subdomain_autocomplete';
+                this.url = '/applications/get_subdomain_autocomplete';
                 break;
             case 'action':
-                url = '/actions/get_action_autocomplete';
+                this.url = '/actions/get_action_autocomplete';
                 break;
 
         }
 
-        telepath.ds.get(url, {text: value, offset: this.offset }, function (data) {
+        telepath.ds.get(this.url, {text: this.value, offset: this.offset }, function (data) {
             $('.tele-loader', element.parent()).remove();
             $(element).css({backgroundColor: 'white'});
             if (data.items) {
@@ -77,13 +79,15 @@ telepath.autocomplete = {
         var container = element.parent();
         var resultsEl = $('<div>').addClass('tele-autocomplete-select');
         var offset = element.offset();
+        $('.tele-autocomplete-select .tele-loader').remove();
+        this.loading = false;
 
         $('body').click(function (e) {
             if ($(e.target).parents('.tele-autocomplete-select').size() == 0) {
                 $('.tele-autocomplete-select').remove();
             }
         });
-        if (this.offset == 999) {
+        if (this.offset == items.length) {
             $('.tele-autocomplete-select', 'body').remove();
 
             if (this.appendTo == 'body') {
@@ -115,9 +119,30 @@ telepath.autocomplete = {
                     advanced: {
                         updateOnContentResize: true
                     },
+                    onTotalScrollOffset: 200,
+                    alwaysTriggerOffsets: false,
                     onTotalScroll: function () {
-                        element.parent().append(telepath.loader);
-                        telepath.autocomplete.get(element, that.type)
+
+                        if(that.loading) {
+                            return;
+                        }
+                        that.loading = true;
+
+                        resultsEl.append(telepath.loader);
+                        telepath.ds.get(that.url, {text: that.value, offset: that.offset }, function (data) {
+
+                            $('.tele-loader', resultsEl).remove();
+                            $(element).css({backgroundColor: 'white'});
+                            if (data.items.length) {
+                                that.loading=  false;
+                                that.offset += data.items.length;
+                                $.each(data.items, function (i, item) {
+
+                                    that.appendItem(resultsEl, item);
+                                });
+                                $('.tele-autocomplete-select').mCustomScrollbar('update');
+                            }
+                        }, 'Failed autocomplete', false, true);
                     }
                 }
             });
@@ -126,41 +151,44 @@ telepath.autocomplete = {
         resultsEl = $('.tele-autocomplete-select .mCSB_container');
 
         $.each(items, function (i, item) {
-
-            var resultEl = $('<div>').addClass('tele-autocomplete-item')
-                .text(item)
-                .data('tele-select', item)
-                .attr('title', item)
-                .hover(function () {
-                    $(this).addClass('hover');
-                }, function () {
-                    $(this).removeClass('hover');
-                });
-
-            if (item.root) {
-                resultEl.addClass('rootdomain');
-            } else {
-                resultEl.addClass('subdomain');
-            }
-
-            resultEl.click(function () {
-                telepath.autocomplete.disabled = true;
-                element.val(item);
-                element.data('tele-select', item);
-                $('.tele-autocomplete-select', 'body').remove();
-                setTimeout(function () {
-                    telepath.autocomplete.disabled = false;
-                }, 1500);
-                $(element).parents('.tele-multi').data('tele-teleSelect').options.click();
-                // Lookup another event listener
-
-            }).h();
-            resultsEl.append(resultEl);
+            that.appendItem(resultsEl, item);
         });
 
         $('.tele-autocomplete-select').mCustomScrollbar('update');
+    },
+
+    appendItem: function(container, item){
+        var resultEl = $('<div>').addClass('tele-autocomplete-item')
+            .text(item)
+            .data('tele-select', item)
+            .attr('title', item)
+            .hover(function () {
+                $(this).addClass('hover');
+            }, function () {
+                $(this).removeClass('hover');
+            });
+
+        if (item.root) {
+            resultEl.addClass('rootdomain');
+        } else {
+            resultEl.addClass('subdomain');
+        }
+
+        resultEl.click(function () {
+            telepath.autocomplete.disabled = true;
+            element.val(item);
+            element.data('tele-select', item);
+            $('.tele-autocomplete-select', 'body').remove();
+            setTimeout(function () {
+                telepath.autocomplete.disabled = false;
+            }, 1500);
+            $(element).parents('.tele-multi').data('tele-teleSelect').options.click();
+            // Lookup another event listener
+
+        }).h();
+        container.append(resultEl);
     }
-}
+};
 
 $.widget("tele.teleSelect", {
     items: [],

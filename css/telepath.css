@@ -21,6 +21,9 @@
 	top: 130px;
 }
 
+.tele-autocomplete-select .tele-loader{
+	margin-top: -65px;
+}
 body {
 	background-color: rgb(214,214,214);
 }

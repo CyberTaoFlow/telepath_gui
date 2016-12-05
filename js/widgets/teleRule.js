@@ -286,7 +286,7 @@ $.widget( "tele.teleRule", {
 
 								break;
 							case 'regex':
-							case 'stringmatch':
+							//case 'stringmatch':
 								json.negate    = $('.tele-rule-string-inspection .tele-checkbox .checked',c).size() > 0;
 								json.str_match = $('.tele-rule-string-inspection .tele-input-str-'+ json.subtype +' input',c).val();
 
@@ -641,7 +641,8 @@ $.widget( "tele.teleRule", {
 			
 				json.kind = 'g';
 				json.type = $(".tele-geo-type .tele-radio-knob",c).parent().attr('rel');
-				
+				json.subtype = 'Network';
+
 				switch(json.type) {
 					
 					case 'velocity':
@@ -878,10 +879,10 @@ $.widget( "tele.teleRule", {
 				var r_regex_check = $('<div>').teleCheckbox({ label: 'Not', checked: false }).addClass('tele-checkbox-str-regex');
 				r_regex_control.append(r_regex_input).append(r_regex_check)
 				// Con
-				var r_contains_control = $('<div>').addClass('rules_string_control_bool');
-				var r_contains_input = $('<div style="width:200px">').teleInput({ value: '' }).addClass('tele-input-str-stringmatch');;
-				var r_contains_check = $('<div>').teleCheckbox({ label: 'Not', checked: false }).addClass('tele-checkbox-str-stringmatch');
-				r_contains_control.append(r_contains_input).append(r_contains_check)
+				//var r_contains_control = $('<div>').addClass('rules_string_control_bool');
+				//var r_contains_input = $('<div style="width:200px">').teleInput({ value: '' }).addClass('tele-input-str-stringmatch');;
+				//var r_contains_check = $('<div>').teleCheckbox({ label: 'Not', checked: false }).addClass('tele-checkbox-str-stringmatch');
+				//r_contains_control.append(r_contains_input).append(r_contains_check)
 
 				// Fuz
 				var r_fuzzy_opt  = [ 'short', 'long', 'both' ];
@@ -940,7 +941,7 @@ $.widget( "tele.teleRule", {
 				// });
 				
 				controlsWrap.append(r_regex_control)
-					.append(r_contains_control)
+					//.append(r_contains_control)
 					.append(r_fuzzy_list)
 					.append(r_len_slider_div)
 					.append(r_bet_slider_div)
@@ -951,7 +952,7 @@ $.widget( "tele.teleRule", {
 					radios: [ 
 						{ key: 'heuristic', label: 'Heuristic', checked: true }, 
 						{ key: 'regex', label: 'Regex' },
-						{ key: 'stringmatch', label: 'String Contains' },
+						//{ key: 'stringmatch', label: 'String Contains' },
 						{ key: 'fuzzylength', label: 'Fuzzy Length' },
 						{ key: 'exactlength', label: 'Length' },
 						{ key: 'rangelength', label: 'Length Between' },
@@ -960,8 +961,8 @@ $.widget( "tele.teleRule", {
 						
 					r_regex_input.hide();
 					r_regex_check.hide();
-					r_contains_input.hide();
-					r_contains_check.hide();
+					//r_contains_input.hide();
+					//r_contains_check.hide();
 					r_fuzzy_list.hide();
 					r_len_slider_div.hide();
 					r_bet_slider_div.hide();
@@ -978,11 +979,11 @@ $.widget( "tele.teleRule", {
 								
 							break;
 							
-							case 'stringmatch': 
+							/*case 'stringmatch':
 							
 								r_contains_input.show();
 								r_contains_check.show();
-								
+								*/
 							break;
 							
 							case 'fuzzylength':
@@ -1166,7 +1167,7 @@ $.widget( "tele.teleRule", {
 					
 						switch(data.subtype) {
 										
-						case 'stringmatch':
+						/*case 'stringmatch':
 						
 							inspectionType.find('.tele-radio-radio[rel="stringmatch"]').click();
 							$('input', r_contains_input).val(data.str_match);
@@ -1175,7 +1176,7 @@ $.widget( "tele.teleRule", {
 							}
 
 							
-						break;
+						break;*/
 						case 'regex':
 							
 							inspectionType.find('.tele-radio-radio[rel="regex"]').click();
