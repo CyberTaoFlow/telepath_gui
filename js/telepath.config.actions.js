@@ -457,11 +457,26 @@ telepath.config.actions = {
 		 data.instance.search(that.searchString);
 		 });*/
 	},
-	checkNotFinishedRecord: function () {
+	checkNotFinishedRecord: function (callback) {
 		if (telepath.action.recorder.timer) {
-			clearInterval(telepath.action.recorder.timer);
-			telepath.action.recorder.endRecord();
-			telepath.action.recorder.timer = false;
+			telepath.dialog({
+				type: 'dialog',
+				title: 'Business Actions',
+				msg: 'Are you sure that you want to stop the Business Action record?',
+				callback: function () {
+					clearInterval(telepath.action.recorder.timer);
+					telepath.action.recorder.endRecord();
+					telepath.action.recorder.timer = false;
+					if (callback){
+						callback();
+					}
+				}
+			});
+		}
+		else {
+			if (callback){
+				callback();
+			}
 		}
 	}
 };
