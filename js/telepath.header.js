@@ -43,19 +43,17 @@ telepath.header = {
 
 		// Hook for icon click
 		$(this.searchIcon).click(function (e) {
-			if (telepath.search.loading){
-				return;
-			}
-			telepath.search.loading=true;
-			telepath.search.init(telepath.header.searchInput.val());
-			telepath.ui.resize();
+			telepath.config.actions.checkNotFinishedRecord(function(){
+				telepath.ui.displayPage('search')
+			});
 		});
 
 		// Hook for enter key
 		$(this.searchInput).keydown(function (e) {
 			if (e.keyCode == 13) {
-				telepath.search.init(telepath.header.searchInput.val());
-				telepath.ui.resize();
+				telepath.config.actions.checkNotFinishedRecord(function(){
+					telepath.ui.displayPage('search')
+				});
 			}
 		});
 
@@ -117,35 +115,6 @@ telepath.header = {
 		$('.tele-header').append(this.logo).append(this.nav).append(this.headerRight);
 		// End Build Header
 
-		$('.tele-logo').click(function(){
-
-			if(telepath.dashboard.loading) {
-				return;
-			}
-			telepath.dashboard.loading=true;
-
-			$('.tele-panel').empty().hide().removeClass('active');
-			$(".tele-file-upload").hide();
-			$('.tele-panel-dashboard').show().addClass('active');
-			telepath.ui.resize();
-			telepath.dashboard.init();
-
-
-			telepath.header.configCmd.removeClass('active');
-			$('.tele-nav a.active').removeClass('active');
-			$('.tele-nav-dashboard a').addClass('active');
-
-			telepath.activePage = 'dashboard';
-
-			setTimeout(function () {
-				$('.tele-popup, .popover').remove();
-			}, 100);
-
-			// check if there is a record in process and stop it
-			telepath.config.actions.checkNotFinishedRecord();
-		});
-		telepath.header.bindHooks();
-		
 		// Bind resize event
 		$(window).resize(function () { telepath.header.resize(); });
 		telepath.header.resize();
@@ -159,7 +128,7 @@ telepath.header = {
 		this.configCmd = $('<a>').attr('href', '#').addClass('tele-icon').addClass('tele-icon-config');
 		this.configDiv.append(this.configCmd);
 		
-		this.configCmd.click(function () {
+		this.configCmd/*.click(function () {
 
 			// Cleanup other panels
 			$('.tele-panel').empty().hide();
@@ -177,7 +146,7 @@ telepath.header = {
 			// check if there is a record in process and stop it
 			telepath.config.actions.checkNotFinishedRecord();
 	
-		}).hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });
+		})*/.hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });
 		
 		this.logoutCmd = $('<a>').attr('href', '#').addClass('tele-icon').addClass('tele-icon-logout').click(function () {
 			
@@ -189,51 +158,30 @@ telepath.header = {
 		
 		// Append
 		$('.tele-header-right')/*.append(this.notifications)*/.append(this.configDiv).append(this.logoutCmd);
-		
-	},
-	bindHooks: function () {
-		
-		/* Navigation */
-		$('.tele-nav a').click(function () {
 
-			$('.tele-search-input').val('');
+		$('.tele-logo img, .tele-nav a, a.tele-icon-config').click(function(){
+
+			console.log('clicked');
 
 			var id = $(this).parent().attr('class').split('-');
-
 			if(id[0] == 'tele' && id[1] == 'nav' && id[2] != '') {
 				id = id[2];
 			} else {
-				return false;
+				if (id[1] =='config'){
+					id = 'config'
+				}
+				else{
+					id = 'dashboard'
+				}
 			}
-			
-			if(id == 'dashboard' && telepath.dashboard.loading) {
-				return;
-			}
-			if(telepath[id].loading) {
-				return;
-			}
-			telepath[id].loading=true;
-			
-			$('.tele-panel').empty().hide().removeClass('active');
-			$(".tele-file-upload").hide();
-			$('.tele-panel-' + id).show().addClass('active');
-			telepath.ui.resize();
-			telepath[id].init();
-			
-		
-			telepath.header.configCmd.removeClass('active');
-			$('.tele-nav a.active').removeClass('active');
-			$(this).addClass('active');
 
-			telepath.activePage = id;
-			
-			setTimeout(function () {
-				$('.tele-popup, .popover').remove();
-			}, 100);
+			$('.tele-search-input').val('');
 
 			// check if there is a record in process and stop it
-			telepath.config.actions.checkNotFinishedRecord();
-			
+			telepath.config.actions.checkNotFinishedRecord(function(){
+				telepath.ui.displayPage(id)
+			});
+
 		});
 		
 	},

@@ -52,38 +52,38 @@ telepath.config = {
 		for(x in this.tabs) {
 			var tab   = this.tabs[x];
 			tab.callback = function(widget) {
-			
-				$('.tele-config-tab .active').removeClass('active');
-				$('.tele-icon', widget.element).addClass('active');
-				$('.tele-button-text', widget.element).addClass('active');
-				
-				var id = widget.options.icon;
-				
-				that.currentPanel = id;
-				
-				// Cleanup container
-				that.container.empty();
-				$(".tele-file-upload").hide();
-				$('#sort-radio').remove();
-				
-				// Pass container and shared layout function
-				telepath.config[id].container  = that.container;
-				telepath.config[id].initLayout = that.initLayout;
-				telepath.config[id].resizeLayout = that.resizeLayout;
-				
-				// Init Panel
-				telepath.config[id].initLayout();
-				telepath.config[id].resizeLayout();
-				telepath.config[id].init();
-				
-				$(window).resize(function () {
-					telepath.config[id].resizeLayout();
-				});
 
 				// check if there is a record in process and stop it
-				telepath.config.actions.checkNotFinishedRecord();
-				
-			}
+				telepath.config.actions.checkNotFinishedRecord(function(){
+
+					$('.tele-config-tab .active').removeClass('active');
+					$('.tele-icon', widget.element).addClass('active');
+					$('.tele-button-text', widget.element).addClass('active');
+
+					var id = widget.options.icon;
+
+					that.currentPanel = id;
+
+					// Cleanup container
+					that.container.empty();
+					$(".tele-file-upload").hide();
+					$('#sort-radio').remove();
+
+					// Pass container and shared layout function
+					telepath.config[id].container  = that.container;
+					telepath.config[id].initLayout = that.initLayout;
+					telepath.config[id].resizeLayout = that.resizeLayout;
+
+					// Init Panel
+					telepath.config[id].initLayout();
+					telepath.config[id].resizeLayout();
+					telepath.config[id].init();
+
+					$(window).resize(function () {
+						telepath.config[id].resizeLayout();
+					});
+				});
+			};
 			var tabBtn = $('<div>').btn(tab).addClass('tele-config-tab');
 			this.panelTopBar.append(tabBtn);
 			this.panelTopBar.append('<div class="tele-navsep"></div>'); // Sep
@@ -146,6 +146,7 @@ telepath.config = {
 		setTimeout(function () {
 			that.container.empty();
 			$('.tele-button.tele-config-tab:nth-child(1) .tele-button-text').trigger('click');
+			that.loading = false
 		}, 500);
 		
 	},

@@ -117,22 +117,13 @@ telepath.search = {
             suspects: [],
             requests: []
         };
-
-        // Reset nav states, clear panels, set container
-        telepath.header.configCmd.removeClass('active');
-        $('.tele-nav a.active').removeClass('active');
-        $('.tele-panel').empty().hide().removeClass('active');
-        $(".tele-file-upload").hide();
-        $('.tele-panel-search').show().addClass('active');
+        
         this.container = $('.tele-panel-search');
         this.container.empty();
 
         telepath.activePage = 'search';
 
         this.initPanel();
-
-        // check if there is a record in process and stop it
-        telepath.config.actions.checkNotFinishedRecord();
 
     },
     initPanel: function () {

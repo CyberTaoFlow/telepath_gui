@@ -201,6 +201,39 @@ telepath.ui = {
         }
 
 
+    },
+    displayPage: function(id){
+
+        if(id == 'dashboard' && telepath.dashboard.loading) {
+            return;
+        }
+        if(telepath[id].loading) {
+            return;
+        }
+        telepath[id].loading=true;
+
+        $('.tele-panel').empty().hide().removeClass('active');
+        telepath.header.configCmd.removeClass('active');
+        $('.tele-nav a.active').removeClass('active');
+        $(".tele-file-upload").hide();
+
+        $('.tele-panel-' + id).show().addClass('active');
+        $('.tele-nav-' + id +' a').addClass('active');
+
+        telepath.ui.resize();
+        if (id =='search'){
+            telepath[id].init(telepath.header.searchInput.val());
+        }
+        else{
+            telepath[id].init();
+        }
+
+        telepath.activePage = id;
+
+        setTimeout(function () {
+            $('.tele-popup, .popover').remove();
+        }, 100);
+
     }
 
 }
