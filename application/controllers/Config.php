@@ -73,6 +73,8 @@ class Config extends Tele_Controller
         //move data from sql to elasticsearch
 //        $this->M_Config->insert_to_config();
 
+        unset($ans['license_key_id']);
+        unset($ans['license_mode_id']);
 
         $ans['interfaces'] = $this->_interfaces();
         $ans['agents'] = $this->M_Config->get_agents();
