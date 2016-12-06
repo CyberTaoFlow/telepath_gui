@@ -653,7 +653,7 @@ telepath.alert = {
 		container.append(tableWrap);
 		tableWrap.append(table);
 		
-		$(tableWrap).mCustomScrollbar();
+		$(tableWrap).mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 		
 	}
 	

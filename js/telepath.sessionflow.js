@@ -163,7 +163,7 @@ telepath.sessionflow = {
 				$('.tele-request-details').detach().insertAfter($('.tele-overlay-header-right'));
 				$('.tele-similarities-list .tele-list').height('auto')/*.mCustomScrollbar("update")*/;
 				this.similaritiesList.attr('style', '');
-				this.boxRight.mCustomScrollbar();
+				this.boxRight.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 			}
 			$('.tele-request-details').attr('style', '').mCustomScrollbar("destroy");
 			var actionHeight = this.container.height() - $('.tele-alert-stats').height() - 70;
@@ -181,7 +181,7 @@ telepath.sessionflow = {
 			}
 
 			if (!$('.tele-request-details', this.boxMid).length) {
-				$('.tele-request-details').detach().appendTo(this.boxMid).mCustomScrollbar();
+				$('.tele-request-details').detach().appendTo(this.boxMid).mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 				this.boxRight.attr('style', '');
 				this.similaritiesList.css({'height': 'auto'});
 			}
@@ -495,6 +495,7 @@ telepath.sessionflow = {
 						}, false, false, true);
 				},
 			},
+			scrollInertia: telepath.scrollSpeed,
 			onTotalScrollOffset:200,
 			alwaysTriggerOffsets:false,
 			advanced:{ updateOnContentResize:true }
@@ -908,7 +909,7 @@ telepath.sessionflow = {
 		this.printParams();
 
 		telepath.sessionflow.reloadFlag = Date.now();
-		this.boxRight.mCustomScrollbar();
+		this.boxRight.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 		// Load similarities
 		telepath.ds.get('/similarities/', { param_type: 'request', uid: uid }, function(data, flag) {
 			if (flag && telepath.sessionflow.reloadFlag && flag != telepath.sessionflow.reloadFlag)
@@ -999,7 +1000,7 @@ telepath.sessionflow = {
 		}
 		else{
 			this.boxMid.append(this.similarityDetails);
-			this.similarityDetails.mCustomScrollbar();
+			this.similarityDetails.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 		}
 		this._resize()
 		//this.resizeMid();
@@ -1035,7 +1036,7 @@ telepath.sessionflow = {
 		this.printParamsFilters(container);
 		this.printAlertDetails(container);
 		this.printParamsTable(container);
-		this.requestDetails.mCustomScrollbar();
+		this.requestDetails.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 	},
 	printParamsFilters: function(container) {
 		

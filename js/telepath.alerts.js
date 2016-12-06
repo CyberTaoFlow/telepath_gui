@@ -490,6 +490,7 @@ telepath.alerts = {
 		$(graphsBlock).mCustomScrollbar({
 			advanced:{ updateOnContentResize:true },
 			scrollButtons:{	enable: false },
+			scrollInertia: telepath.scrollSpeed
 		});
 		// Rebind
 		$(window).unbind('resize', that._resize);

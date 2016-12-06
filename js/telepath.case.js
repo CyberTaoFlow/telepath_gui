@@ -123,7 +123,8 @@ telepath.caseOverlay = {
 		var cond = $('<div>').conditionList({data: data.case_data.details}).mCustomScrollbar({
 			advanced: {
 				updateOnContentResize: true
-			}
+			},
+			scrollInertia: telepath.scrollSpeed
 		}).height($('.tele-overlay').height() - 250);
 		telepath.overlay.contentEl.append(cond);
 		

@@ -121,6 +121,7 @@ telepath.autocomplete = {
                     },
                     onTotalScrollOffset: 200,
                     alwaysTriggerOffsets: false,
+                    scrollInertia: telepath.scrollSpeed,
                     onTotalScroll: function () {
 
                         if(that.loading) {

@@ -269,6 +269,7 @@ $.widget( "tele.teleList", {
 			},
 			onTotalScrollOffset:200,
 			alwaysTriggerOffsets:false,
+			scrollInertia: telepath.scrollSpeed,
 			advanced:{ updateOnContentResize:true }
 
 		});

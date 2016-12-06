@@ -261,7 +261,9 @@ telepath.config.rule = {
 		
 		this.command_exec_list.appendTo(this.cmd_wrap);
 		
-		this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true, autoScrollOnFocus: false } });
+		this.container.mCustomScrollbar({ advanced:{ updateOnContentResize: true, autoScrollOnFocus: false },
+			scrollInertia: telepath.scrollSpeed
+		});
 
 		telepath.config.rules.resizeLayout();
 

@@ -124,7 +124,8 @@ $.widget( "tele.teleCountry", {
 		
 		cList.mCustomScrollbar({
 			scrollButtons:{	enable: false },
-			advanced:{ updateOnContentResize: true }
+			advanced:{ updateOnContentResize: true },
+			scrollInertia: telepath.scrollSpeed
 		});
 		
 		

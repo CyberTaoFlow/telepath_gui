@@ -25,7 +25,7 @@ $(document).ready(function () {
 telepath.loader = '<img class="loader" src="img/loader.gif">';
 telepath.data = {};
 telepath.appFilter = [{ key: -1, label: 'All Applications' }];
-
+telepath.scrollSpeed = 300;
 /*
  telepath.el_id = 0;
  telepath.next_id = function() {

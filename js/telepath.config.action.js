@@ -528,7 +528,8 @@ telepath.config.action = {
 			that.container.append(tmp);
 			$(tmp).mCustomScrollbar({
 				advanced: {
-					updateOnContentResize: true
+					updateOnContentResize: true,
+					scrollInertia: telepath.scrollSpeed
 				}});
 			that.container = tmp;
 		

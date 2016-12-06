@@ -656,7 +656,9 @@ telepath.config.system = {
 
 			$('<div>').addClass('dragandroptext').html('Drag & drop files you want to upload here').prependTo(this.dragandrophandler);
 
-			$('<div>').addClass('statusbar-container').mCustomScrollbar({advanced: {updateOnContentResize: true}})
+			$('<div>').addClass('statusbar-container').mCustomScrollbar({advanced: {updateOnContentResize: true},
+					scrollInertia: telepath.scrollSpeed
+				})
 				.appendTo(this.dragandrophandler);
 
 			$('<input>').attr('id', 'input').attr('type', 'file').attr('multiple', 'true').css({

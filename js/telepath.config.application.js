@@ -504,7 +504,7 @@ telepath.config.application = {
 				$(this).autocomplete('search',"");
 			}).data("ui-autocomplete")._resizeMenu = function() {
 				this.menu.element.css({'max-height': 200, width: 170});
-				this.menu.element.mCustomScrollbar();
+				this.menu.element.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 			};
 			$('.tele-input-input', element).data("ui-autocomplete")._renderItem = function (ul, item) {
 				return $( "<li>" )
@@ -553,14 +553,16 @@ telepath.config.application = {
 
 			}).data("ui-autocomplete")._resizeMenu = function() {
 				this.menu.element.css({'max-height': 100, width: 170});
-				this.menu.element.mCustomScrollbar();
+				this.menu.element.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 			};
 		} }).appendTo('#tele-app-details') ;
 
 		$("#tele-app-details").mCustomScrollbar({
 			advanced: {
 				updateOnContentResize: true
-			}});
+			},
+		 scrollInertia: telepath.scrollSpeed
+		});
 		// AUTHENTICATION
 		// AUTHENTICATION -- User Identification
 		
@@ -768,7 +770,9 @@ telepath.config.application = {
 		$('#tele-app-auth').mCustomScrollbar({
 			advanced: {
 				updateOnContentResize: true
-			}});
+			},
+			scrollInertia: telepath.scrollSpeed
+		});
 
 		// SSL
 		var app_ssl_wrap   = $('<div>').addClass('tele-app-ssl-wrap');
@@ -817,7 +821,9 @@ telepath.config.application = {
 		$('#tele-app-ssl').mCustomScrollbar({
 			advanced: {
 				updateOnContentResize: true
-			}});
+			},
+			scrollInertia: telepath.scrollSpeed
+		});
 	},
 	deleteApp: function(app_id, $nodeParent) {
 		
