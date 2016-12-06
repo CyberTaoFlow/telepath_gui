@@ -13,19 +13,20 @@ class Cron extends Tele_Controller
 
         // Prep Config
         $this->load->model('M_Config');
-        $config = $this->M_Config->get();
+        $write_to_syslog_id = $this->M_Config->get_key('write_to_syslog_id');
+        $syslog_ip_id = $this->M_Config->get_key('syslog_ip_id');
 
         // Default Flag
         $syslog = false;
 
         // Check Config
-        if ($config['write_to_syslog_id'] == '1' && $config['syslog_ip_id'] != '') {
+        if ($write_to_syslog_id == '1' && $syslog_ip_id != '') {
 
             // Setup syslog library
             $this->load->library('Syslog');
             $syslog = new Syslog();
 
-            $syslog_addr = $config['syslog_ip_id'];
+            $syslog_addr = $syslog_ip_id;
             $syslog_addr = explode(':', $syslog_addr);
 
             if (count($syslog_addr) == 2) {

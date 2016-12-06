@@ -89,8 +89,7 @@ class Telepath extends Tele_Controller
         // Allow 3 second for engine to validate the key
         sleep(3);
 
-        $valid = $this->M_Config->get('license_mode_id');
-        $valid = $valid['license_mode_id'];
+        $valid = $this->M_Config->get_key('license_mode_id');
 
         return_json(array('success' => true, 'valid' => $valid));
 
@@ -101,8 +100,7 @@ class Telepath extends Tele_Controller
 
         // Figure Licence
         $this->load->model('M_Config');
-        $licence_valid = $this->M_Config->get('license_mode_id');
-        $licence_valid = isset($licence_valid['license_mode_id']) && $licence_valid['license_mode_id'] == 'VALID';
+        $licence_valid = $this->M_Config->get_key('license_mode_id') == 'VALID';
 
         $new_installation = $this->M_Config->check_new_installation();
 
