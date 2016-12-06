@@ -314,7 +314,9 @@ class M_Cases extends CI_Model {
 
 
 		$results['success'] = true;
-		$results['query']   = $params;
+		if (ENVIRONMENT == 'development') {
+			$results['query'] = $params;
+		}
 		$results['count'] = $count;
 
 		return $results;
@@ -936,7 +938,9 @@ class M_Cases extends CI_Model {
 		}
 
 		$results['success'] = true;
-		$results['query']   = $params;
+		if (ENVIRONMENT == 'development') {
+			$results['query'] = $params;
+		}
 		$results['count']   = intval($result["aggregations"]['sid_count']['value']);
 		return $results;
 	}
