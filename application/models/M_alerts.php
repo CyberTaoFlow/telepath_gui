@@ -49,7 +49,8 @@ class M_Alerts extends CI_Model {
 
 
 			if ($search && strlen($search) > 1) {
-				$query .= ' AND ' . json_encode($search) ;
+		//		$query .= ' AND ' . json_encode($search) ;
+				$query .= ' AND ' . $search ;
 			}
 
 			if ($actions_sid) {
@@ -130,7 +131,8 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= ' AND ' . json_encode($search);
+		//	$query .= ' AND ' . json_encode($search);
+			$query .= ' AND ' . $search;
 		}
 
 		$params['body']['aggs']['sid']['aggs']['alerts']['filter'] = [
@@ -209,7 +211,8 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= ' AND ' . json_encode($search);
+		//	$query .= ' AND ' . json_encode($search);
+			$query .= ' AND ' . $search;
 		}
 
 		$params['body']['query']['bool']['filter'][] = [
@@ -316,7 +319,8 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-			$query .= ' AND ' . json_encode($search);
+		//	$query .= ' AND ' . json_encode($search);
+			$query .= ' AND ' . $search;
 		}
 
 		$params['body']['query']['bool']['filter'][] = [

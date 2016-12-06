@@ -64,7 +64,8 @@ class M_Search extends CI_Model {
 					'filter' => [
 						[
                             'query_string' => [
-                                "query" => json_encode($settings['search']),
+//                                "query" => json_encode($settings['search']),
+                                "query" => $settings['search'],
 								"default_operator" => 'AND'
                             ] 
                         ]
