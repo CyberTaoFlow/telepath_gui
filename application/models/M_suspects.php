@@ -403,8 +403,8 @@ class M_Suspects extends CI_Model {
 
 		if (ENVIRONMENT == 'development') {
 			$results['query'] = $params;
+			$results['std'] = $suspect_threshold;
 		}
-		$results['std'] = $suspect_threshold;
 		return $results;
 
 	}
