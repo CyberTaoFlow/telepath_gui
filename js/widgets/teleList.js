@@ -203,7 +203,7 @@ $.widget( "tele.teleList", {
                 }
 				if (!$(this).text().match("Not ") ){
 					telepath.header.searchInput.val(field + '"' + search + '"');
-					telepath.search.init(field + '"' + search + '"');
+					telepath.ui.displayPage('search')
 				}
             });
         }
