@@ -120,7 +120,7 @@ class M_Suspects extends CI_Model {
 		if ($search && strlen($search) > 1) {
 			$params['body']['query']['bool']['filter'][] = [
 				'query_string' => [
-					"query" => json_encode($search),
+					"query" => $search,
 					"default_operator" => 'AND'
 				]
 			];

@@ -201,7 +201,7 @@ class M_Search extends CI_Model {
 		if ($scope == 'requests' || $scope == 'suspects') {
 			$params2['body']['post_filter']['bool']['filter'][] = [
 				'query_string' => [
-					"query" => json_encode($settings['search']),
+					"query" => $settings['search'],
 					"default_operator" => 'AND'
 				]
 			];
@@ -248,7 +248,7 @@ class M_Search extends CI_Model {
 						$params4['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 						$params4['body']['query']['bool']['filter'][] = [
 							'query_string' => [
-								"query" => json_encode($settings['search']),
+								"query" => $settings['search'],
 								"default_operator" => 'AND'
 							]
 						];

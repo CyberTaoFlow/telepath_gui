@@ -46,16 +46,7 @@ class M_Actions extends CI_Model {
 		$params['_source_include'] = ["application", "action_name"];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => [
-				"bool" => [
-					"filter" => [
-						"query_string" => [
-							"fields" => ["application", "action_name"],
-							"query" => '*' . json_encode($text) . '*'
-						]
-					]
-				]
-			],
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["application", "action_name"], "query" => '*' . $text . '*']]]],
 		];
 
 		$results = $this->client->search($params);
@@ -79,16 +70,8 @@ class M_Actions extends CI_Model {
 		$params['body'] = [
 			'size'=>$size,
 			'from'=>$start,
-			'query' => [
-				"bool" => [
-					"filter" => [
-						"query_string" => [
-							"fields" => ["action_name.search"],
-							"query" => '*' . json_encode($text) . '*'
-						]
-					]
-				]
-			],
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["action_name.search"], "query" => '*' .
+				$text . '*']]]],
 		];
 
 		$results = $this->elasticClient->search($params);

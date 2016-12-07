@@ -49,7 +49,6 @@ class M_Alerts extends CI_Model {
 
 
 			if ($search && strlen($search) > 1) {
-		//		$query .= ' AND ' . json_encode($search) ;
 				$query .= ' AND ' . $search ;
 			}
 
@@ -217,7 +216,7 @@ class M_Alerts extends CI_Model {
 
 		$params['body']['query']['bool']['filter'][] = [
 			'query_string' => [
-				"query" => $query,
+					"query" => $query,
 				"default_operator" => 'AND'
 			]
 		];
@@ -319,16 +318,10 @@ class M_Alerts extends CI_Model {
 
 
 		if ($search && strlen($search) > 1) {
-		//	$query .= ' AND ' . json_encode($search);
-			$query .= ' AND ' . $search;
+			$query .= ' AND ' . $search ;
 		}
 
-		$params['body']['query']['bool']['filter'][] = [
-			'query_string' => [
-				"query" => $query,
-				"default_operator" => 'AND'
-			]
-		];
+		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
 
 		if ($sortfield == "date") {
 			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
@@ -669,12 +662,7 @@ class M_Alerts extends CI_Model {
 			$query .= ' AND business_actions.name:("' . implode('" OR "', $actions_filter) . '")';
 		}
 
-		$params['body']['query']['bool']['filter'][] = [
-			'query_string' => [
-				"query" => $query,
-				"default_operator" => 'AND'
-			]
-		];
+		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND'] ];
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);

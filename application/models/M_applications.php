@@ -327,12 +327,7 @@ class M_Applications extends CI_Model {
 		];
 
 		if ($search){
-			$params['body']['query']['bool']['filter'][] = [
-				"query_string" => [
-					"fields" => $fields,
-					"query" => '*' . json_encode($search) . '*'
-				]
-			];
+			$params['body']['query']['bool']['filter'][] = [ "query_string" => [ "fields" => $fields , "query" => '*' . $search . '*' ] ];
 			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
 
@@ -462,16 +457,7 @@ class M_Applications extends CI_Model {
 		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
 		$params['body'] = [
 			'size'   => 9999,
-			'query' => [
-				"bool" => [
-					"filter" => [
-						"query_string" => [
-							"fields" => ["host", $field],
-							"query" => '*' . json_encode($search) . '*'
-						]
-					]
-				]
-			],
+			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
 
 		$params = append_access_query($params);
@@ -537,16 +523,7 @@ class M_Applications extends CI_Model {
 		$params['_source_include'] = ["host", "uri", "parameters.name", "parameters.type"];
 		$params['body'] = [
 			'size' => 9999,
-			'query' => [
-				"bool" => [
-					"filter" => [
-						"query_string" => [
-							"fields" => ["host", $field],
-							"query" => '*' . json_encode($search) . '*'
-						]
-					]
-				]
-			],
+			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["host", $field], "query" => '*' . $search . '*']]]],
 		];
 		$params['body']['highlight']['fields'] = ['host' => new \stdClass(), $field => new \stdClass()];
 		$params['body']['highlight']['pre_tags'] = [''];
@@ -767,16 +744,7 @@ class M_Applications extends CI_Model {
 		$params['body'] = array(
 			'size' => 999,
 			'from' => $offset,
-			'query' => [
-				"bool" => [
-					"filter" => [
-						"query_string" => [
-							"default_field" => "host",
-							"query" => '*' . json_encode($filter) . '*'
-						]
-					]
-				]
-			],
+			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "default_field" => "host", "query" =>'*'. $filter . '*' ] ] ] ],
 		);
 		
 		$params = append_access_query($params);

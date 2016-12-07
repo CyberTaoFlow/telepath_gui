@@ -111,12 +111,7 @@ class M_Sessionflow extends CI_Model {
 
 				$params = append_range_query($params, $range);
 
-				$params['body']['query']['bool']['filter'][] = [
-					'query_string' => [
-						"query" => json_encode($key),
-						"default_operator" => 'AND'
-					]
-				];
+				$params['body']['query']['bool']['filter'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 
 				$results = $this->elasticClient->search($params);
 
@@ -343,12 +338,7 @@ class M_Sessionflow extends CI_Model {
 			case 'Search':
 				if ($key)
 				{
-					$params['body']['query']['bool']['filter'][] = [
-						'query_string' => [
-							"query" => json_encode($key),
-							"default_operator" => 'AND'
-						]
-					];
+					$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
 					break;
 				}
             break;
