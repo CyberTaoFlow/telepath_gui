@@ -500,10 +500,6 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 
-
-// minify
-$config['minifying'] = TRUE;
-
 /*
 |--------------------------------------------------------------------------
 | File paths

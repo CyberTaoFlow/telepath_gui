@@ -59,7 +59,7 @@ if($logged_in && $can_access) {
 
     <?php
 
-    $minify = $this->config->item('minifying');
+    $minify = (ENVIRONMENT != 'development');
 
 
     if ($minify) {
