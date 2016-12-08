@@ -1225,7 +1225,7 @@ telepath.sessionflow = {
 			if(param_display) {
 				
 				var row = $('<tr>');
-				var col_name  = $('<td>').addClass('tele-param-name').html(escapeHtml(param.name)).attr('title',unescapeHtml(escapeHtml(param.name)));
+				var col_name  = $('<td>').addClass('tele-param-name').html(escapeHtml(param.name)).attr('title',escapeHtml(param.name));
 				var col_data  = $('<td>').addClass('tele-param-data').html(escapeHtml(param.value));
 				var col_score = $('<td>').addClass('tele-param-score').html(parseInt(param.score_data) + '%');
 				
