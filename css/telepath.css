@@ -827,6 +827,16 @@ a.tele-clear-button:hover {
 	
 }
 
+.tele-button-small{
+	margin: 10px 0;
+	-moz-box-shadow:inset 0px -3px 0px 0px #dd7d1d;
+	-webkit-box-shadow:inset 0px -3px 0px 0px #dd7d1d;
+	box-shadow:inset 0px -3px 0px 0px #dd7d1d;
+	background-color:#f7931e;
+	font-size:14px;
+	padding: 10px 25px;
+}
+
 .tele-button-cancel:hover {
 	background-color: #999999;
 }
@@ -1091,6 +1101,11 @@ a.tele-clear-button:hover {
 .tele-radio-title {
 	margin-top: 5px;
 	float: left;
+}
+
+.tele-operation-mode-popup .tele-radios{
+	padding-left: 10px;
+	margin-right: 0;
 }
 
 /* Search Widget */

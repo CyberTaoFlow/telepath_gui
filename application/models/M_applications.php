@@ -849,6 +849,24 @@ class M_Applications extends CI_Model {
 		
 	}
 
-	
+
+	public function set_operation_mode($app_ids, $mode)
+	{
+		$params = [];
+		foreach ($app_ids as $app_id) {
+			$params['body'][] = [
+				'update' => [
+					'_index' => 'telepath-domains',
+					'_type' => 'domains',
+					'_id' => $app_id
+				]
+			];
+			$params['body'][] =[
+				'doc' => ['operation_mode' => $mode]
+			];
+		}
+		return $this->elasticClient->bulk($params);
+	}
+
 }
 ?>

@@ -928,9 +928,59 @@
   font-size: 21px;
 }
 
+.application-tree .jstree-anchor.jstree-grid-col-0{
+  transform: scale(0.9);
+  font-size: 21px;
+  right: 20px;
+}
+
+.application-tree .jstree-anchor{
+  padding: 15px 0;
+}
 /*custom css*/
 
 .jstree-default .jstree-disabled, .jstree-wholerow[unselectable="on"], li[aria-disabled="true"] .jstree-ocl {
   cursor: default;
+}
+
+.jstree-default .jstree-icon.jstree-checkbox {
+  cursor: pointer;
+  width: 19px;
+  height: 19px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  left: 4px;
+  top: 4px;
+  background: #fff;
+  border: 2px solid #979797;
+  margin: -3px 20px 0 0;
+}
+
+.jstree-default .jstree-icon.jstree-checkbox:after {
+  opacity: 0;
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 4px;
+  background: transparent;
+  top: 5px;
+  left: 4px;
+  border: 3px solid #333;
+  border-top: none;
+  border-right: none;
+
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+.jstree-default .checked .jstree-icon.jstree-checkbox:after{
+  opacity: 1;
+}
+
+.jstree-default .jstree-icon.jstree-checkbox:hover::after {
+  opacity: 0.3;
 }
 

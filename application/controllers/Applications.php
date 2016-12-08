@@ -230,6 +230,22 @@ class Applications extends Tele_Controller
 
     }
 
+    public function set_app_operation_mode()
+    {
+        $app_ids = $this->input->post('app_ids', true);
+        $mode = $this->input->post('mode', true);
+
+       $this->M_Applications->set_operation_mode($app_ids, $mode);
+
+        $this->load->model('M_Config');
+
+        foreach($app_ids as $app_id){
+            $this->M_Config->update('app_list_was_changed_id', $app_id);
+        }
+        return_success();
+
+    }
+
     public function get_next_id()
     {
 
@@ -351,31 +367,33 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        $app_id = $this->input->post('app_id', true);
+        $app_ids = $this->input->post('app_id', true);
 
-        if (!$app_id) {
+        if (!$app_ids) {
             return_fail('No App ID specified');
         }
+        $flag = 0;
+        foreach ($app_ids as $app_id){
+            // if(in_array($app_id, $this->acl->allowed_apps) || $this->acl->all_apps())
+            //$result = $this->Apps->app_delete($app_id);
 
-        // if(in_array($app_id, $this->acl->allowed_apps) || $this->acl->all_apps())
-        //$result = $this->Apps->app_delete($app_id);
+            // if the deleted applications had an SSL authentication for reverse proxy, we need to delete the
+            // certificates and REWRITE OUR NGINX.CONF
+            $app = $this->M_Applications->get($app_id);
+            if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
+                $this->load->model('M_Nginx');
+                $this->M_Nginx->del_certs($app_id);
+                $conf = $this->M_Nginx->gen_config();
+                $this->load->model('M_Config');
+                $nginx_config_file = $this->config->item('nginx_config_file');
+                file_put_contents($nginx_config_file, $conf);
+            }
 
-        // if the deleted applications had an SSL authentication for reverse proxy, we need to delete the
-        // certificates and REWRITE OUR NGINX.CONF
-        $app = $this->M_Applications->get($app_id);
-        if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
-            $this->load->model('M_Nginx');
-            $this->M_Nginx->del_certs($app_id);
-            $conf = $this->M_Nginx->gen_config();
-            $this->load->model('M_Config');
-            $nginx_config_file = $this->config->item('nginx_config_file');
-            file_put_contents($nginx_config_file, $conf);
+            // remove it from elastic search
+            $this->M_Applications->delete($app_id);
+
+            $flag = $this->M_Applications->update_flag($app_id);
         }
-
-        // remove it from elastic search
-        $this->M_Applications->delete($app_id);
-
-        $flag = $this->M_Applications->update_flag($app_id);
 
         return_success(['flag' => $flag]);
 

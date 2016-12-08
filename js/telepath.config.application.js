@@ -211,7 +211,7 @@ telepath.config.application = {
 				// Empty right screen, in case of engine change rejection (for example from production
 				// mode to hybrid mode)
 				that.container.empty();
-				that.toolbar.empty();
+				$('.tele-config-bar-right ul').remove();
 				//that.editApp(app_data.host);
 				telepath.dialog({msg:'Application successfully updated'});
 			}
@@ -236,8 +236,8 @@ telepath.config.application = {
 		
 		// Cleanup
 		this.container.empty();
-		this.toolbar.empty();
-		
+		$('.tele-config-bar-right ul').remove();
+
 		// Tab Containers
 		this.tabsEl   = $('<div>').addClass('tabs');
 		this.tabsUl   = $('<ul>');
@@ -829,7 +829,7 @@ telepath.config.application = {
 		
 		context_confirm('Delete Application', 'Are you sure you want to delete this application?', function () {
 
-			telepath.ds.get('/applications/del_app', { app_id: app_id }, function(data) {
+			telepath.ds.get('/applications/del_app', { app_id: [app_id] }, function(data) {
 				if(data.success){
 					$nodeParent.remove();
 				}
