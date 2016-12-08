@@ -44,7 +44,7 @@ $.widget( "tele.teleBrowser", {
 					{
 						item.type = 'param';
 					}
-					treeData.push({ children: false, text: escapeHtml(item.name), icon: 'tele-icon-' + item.type, data: item });
+					treeData.push({ children: false, text: item.name, icon: 'tele-icon-' + item.type, data: item });
 					});
 				}
 

@@ -36,14 +36,14 @@ $.widget("tele.teleInput", {
         var tpl = this.options.pass ? ' type="password"' : '';
 
         if (this.options.link) {
-            this.link = $('<a>').addClass('tele-input-input').attr('href', escapeHtml(this.options.value)).attr('target', '_blank').html(escapeHtml(this.options.value));
+            this.link = $('<a>').addClass('tele-input-input').attr('href', this.options.value).attr('target', '_blank').html(this.options.value);
             this.element.append(this.link);
         } else if (this.options.type) {
             var type = 'type="' + this.options.type + '" ';
             if (this.options.range) {
                 type += 'min="' + this.options.range.min + '" max="' + this.options.range.max + '"';
             }
-            this.input = $('<input ' + type + '>').addClass('tele-input-input').val(escapeHtml(this.options.value));
+            this.input = $('<input ' + type + '>').addClass('tele-input-input').val(this.options.value);
             if (this.options.step) {
                 this.input.attr('step', this.options.step);
             }
@@ -51,7 +51,7 @@ $.widget("tele.teleInput", {
                 this.input.attr('disabled', 'disabled');
             this.element.append(this.input);
         } else {
-            this.input = $('<input' + tpl + '>').addClass('tele-input-input').val(escapeHtml(this.options.value));
+            this.input = $('<input' + tpl + '>').addClass('tele-input-input').val(this.options.value);
             if (this.options.step) {
                 this.input.attr('step', this.options.step);
             }
@@ -61,7 +61,7 @@ $.widget("tele.teleInput", {
         }
 
         if (this.options.port != null) {
-            this.port = $('<input>').addClass('tele-input-port').val(escapeHtml(this.options.port));
+            this.port = $('<input>').addClass('tele-input-port').val(this.options.port);
             this.element.append('&nbsp;<b>:</b>&nbsp;',this.port);
         }
 

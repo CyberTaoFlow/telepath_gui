@@ -93,12 +93,12 @@ telepath.sessionflow = {
 					
 					table.append(getRow('Time:', date_format('d/m/y | H:i:s', similarity.ts)));
 					//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
-					table.append(getRow('Application:', escapeHtml(similarity.host)));
+					table.append(getRow('Application:', similarity.host));
 					table.append(getRow('IP:', similarity.ip_orig));
 					table.append(getRow('Location:', (similarity.country_code!='00'?'<span class="flag flag-' + similarity.country_code + '"></span>':'') +
 										'<span class="tele-country">' + telepath.countries.a2n(similarity.country_code) + '</span>'));
 					if(similarity.username){
-						table.append(getRow('User:', escapeHtml(similarity.username)));
+						table.append(getRow('User:', similarity.username));
 					}
 					
 					table.append(getRow('Similarity:',similarity._score.toFixed(2)+ '%'));
@@ -1083,7 +1083,6 @@ telepath.sessionflow = {
 		if (!$.isEmptyObject(get_params)) {
 			path += '?' + $.param(get_params);
 		}
-		path = unescapeHtml(escapeHtml(path));
 		var link = $('<a>').attr('target', '_blank').text(path).attr('href',path ).attr('title' ,path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Browsing';
 		container.append(link);
@@ -1156,12 +1155,12 @@ telepath.sessionflow = {
 		table.append(getRow('Session Start:', date_format('d/m/y | H:i:s', this.session.stats.session_start)));
 		table.append(getRow('Session End:', date_format('d/m/y | H:i:s', this.session.stats.session_end)));
 		//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
-		table.append(getRow('Application:', escapeHtml(this.requestInfo.host)));
+		table.append(getRow('Application:', this.requestInfo.host));
 		table.append(getRow('IP:', this.requestInfo.ip_orig));
 		table.append(getRow('Location:', (this.requestInfo.country_code!='00'?'<span class="flag flag-' + this.requestInfo.country_code + '"></span>':'') +
 							'<span class="tele-country">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
 		if(this.requestInfo.username){
-			table.append(getRow('User:', escapeHtml(this.requestInfo.username)));
+			table.append(getRow('User:', this.requestInfo.username));
 		}
 
 
@@ -1225,8 +1224,8 @@ telepath.sessionflow = {
 			if(param_display) {
 				
 				var row = $('<tr>');
-				var col_name  = $('<td>').addClass('tele-param-name').html(escapeHtml(param.name)).attr('title',escapeHtml(param.name));
-				var col_data  = $('<td>').addClass('tele-param-data').html(escapeHtml(param.value));
+				var col_name  = $('<td>').addClass('tele-param-name').html(param.name).attr('title',param.name);
+				var col_data  = $('<td>').addClass('tele-param-data').html(param.value);
 				var col_score = $('<td>').addClass('tele-param-score').html(parseInt(param.score_data) + '%');
 				
 				/*if(parseInt(param.attribute_score_normal)) {
