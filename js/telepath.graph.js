@@ -56,8 +56,8 @@ $.widget( "tele.flotGraph", {
 			
 			// Graph Filters		
 			this.filterTypes = [
-				{ type: 'noncase-alerts', label: 'Alerts', count: 0, active: true, suffix: 'Tx' },
 				{ type: 'case-alerts', label: 'Cases', count: 0, active: true, suffix: 'Tx' },
+				{ type: 'noncase-alerts', label: 'Alerts', count: 0, active: true, suffix: 'Tx' },
 				{ type: 'suspicions', label: 'Suspects', count: 0, active: true, suffix: 'Tx' },
 				{ type: 'other-sessions', label: 'Normal', count: 0, active: true, suffix: 'Tx' },
 				//{ type: 'score', label: 'Score', count: 0, active: true, suffix: 'Tx' }
@@ -66,6 +66,13 @@ $.widget( "tele.flotGraph", {
 			var totalCount = 0;
 			
 			$.each(that.filterTypes, function(i, filter) {
+				if (filter.label == 'Cases'){
+					$.each(that.options.data[2].data, function(z, count) {
+						filter.count = filter.count + parseInt(count[1]);
+						//totalCount = totalCount + parseInt(count[1]);
+					});
+					return
+				}
 			$.each(that.options.data, function(x, data) {
 				
 				if(data.label == filter.label) {
@@ -86,18 +93,20 @@ $.widget( "tele.flotGraph", {
 			
 			$.each(this.filterTypes, function(i, filter) {
 				
-				var filterWrap    = $('<div>').addClass('tele-dashboard-graph-filter').addClass('tele-graph-filter-' + filter.type);
-				var filterToggle  = $('<a>').attr('href', '#').addClass('tele-graph-filter-toggle').html('&nbsp;');
+				var filterWrap    = $('<div>').addClass('tele-dashboard-graph-filter-inner').addClass('tele-graph-filter-' + filter.type);
+				var filterToggle  = $('<a>').attr('href', '#').addClass('tele-graph-filter-toggle');
 				var filterTitle   = $('<div>').addClass('tele-graph-filter-title').text(filter.label);
 				var filterPercent = $('<div>').addClass('tele-graph-filter-percent').text((totalCount > 0 ? parseFloat(filter.count / totalCount * 100).toFixed(2) : 0) + '%');
 				var filterCount   = $('<div>').addClass('tele-graph-filter-count').text(filter.count + ' ' + filter.suffix);
-				
-				filterWrap.append(filterToggle).append(filterTitle).append(filterPercent).append(filterCount);
-				
-				that.dashboardGraphFilters.append(filterWrap);
-				
-				filterPercent.css({ marginRight: 160 - filterTitle.width() });
-				filterCount.css({ marginRight: 160 - filterTitle.width() });
+
+				var div2 = $('<div>').addClass('tele-graph-filter-inner-right-content').append(filterPercent).append(filterCount);
+
+				filterWrap.append(filterToggle).append(filterTitle).append(div2);
+
+				var div = $('<div>').addClass('tele-dashboard-graph-filter').append(filterWrap);
+
+				that.dashboardGraphFilters.append(div);
+
 				
 				if(filter.active) {
 					filterToggle.addClass('active');
@@ -195,21 +204,8 @@ $.widget( "tele.flotGraph", {
 		}
 	},
 	resize: function () {
-		
-		var width       = this.dashboardGraphFilters.width();
-		
-		$('.tele-dashboard-graph-filter').css({ margin: 0 });
-		
-		var filterWidth = $('.tele-dashboard-graph-filter').outerWidth();
-		
-		//console.log(width + ' ' + filterWidth + ' ' + (width - (filterWidth * this.filterTypes.length)) + ' ! ' );
-		
-		var spare = Math.floor(Math.floor(width - (filterWidth * this.filterTypes.length)) / this.filterTypes.length) - 1;
-		
-		$('.tele-dashboard-graph-filter').css({ marginRight: spare });
-		
-		$('.tele-graph-filter-title').css({ fontSize: (width < 800 ? '16px' : '20px') });
-	
+
+		$(this.dashboardGraphFilters).css({marginLeft: this.options.options.yaxis.labelWidth })
 	}
 
 });

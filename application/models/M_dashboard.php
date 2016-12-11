@@ -617,7 +617,6 @@ class M_Dashboard extends CI_Model {
 					],
 					'must_not'=>[
 						[ 'exists' => [ 'field' => 'alerts' ] ],
-						[ 'exists' => [ 'field' => 'cases_name' ] ]
 					]
 
 				]

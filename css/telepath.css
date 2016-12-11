@@ -444,7 +444,7 @@ a.tele-clear-button:hover {
 }*/
 .tele-panel-dashboard  .tele-graph-canvas-outer {
 	padding: 20px;
-	height: 200px;
+	height: 270px;
 	clear: left;
 }
 .tele-panel-dashboard  .tele-graph-canvas-master {
@@ -509,57 +509,137 @@ a.tele-clear-button:hover {
 	margin-top: 20px;
 }
 
-.tele-dashboard-graph-filter {
-	float: left;
+.tele-dashboard-graph-filter-inner {
 	width: 200px;
-	margin-left: 20px;
-	margin-right: 50px;
-	margin-top: 20px;
-}
-.tele-graph-filter-toggle {
-	background: transparent url("../img/icons.png") no-repeat scroll -327px -842px;
-	height: 20px;
-	width: 20px;
-	float: left;
-	border: 1px solid #cecece;
-	background-color: white;
-	font-size: 0px;
-	text-decoration: none;
-	border-radius: 20px;
-}
-.tele-graph-filter-toggle.active {
-	background: transparent url("../img/icons.png") no-repeat scroll -365px -843px;
+	margin: 0 auto;
 }
 
+.tele-dashboard-graph-filter{
+	float: left;
+	width: 25%;
+}
+
+.tele-graph-filter-toggle{
+	position: relative;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	float: left;
+	-webkit-border-radius: 50px;
+	-moz-border-radius: 50px;
+	border-radius: 50px;
+	left: 4px;
+	top: 4px;
+	background-color: #cccccc;
+}
+
+.tele-graph-filter-toggle:after{
+	opacity: 0;
+	content: '';
+	position: absolute;
+	width: 11px;
+	height: 6px;
+	background: transparent;
+	top: 4px;
+	left: 2px;
+	border: 4px solid #333;
+	border-top: none;
+	border-right: none;
+
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+
+.tele-graph-filter-toggle.active:after{
+	opacity: 1;
+}
 .tele-graph-filter-title {
 	font-size: 20px;
 	color: white;
-}
-.tele-graph-filter-title,
-.tele-graph-filter-percent,
-.tele-graph-filter-count {
-	float: right;
-	text-align: right;
-	clear: right;
-}
-.tele-graph-filter-percent {
-	clear: left;
-}
-.tele-graph-filter-title {
 	float: left;
 	margin-left: 10px;
-	margin-bottom: 10px;
+}
+
+.tele-graph-filter-inner-right-content{
+	float: left;
+	margin-left: 10px;
+	margin-top: -5px;
 }
 
 .tele-graph-filter-percent {
 	font-weight: bold;
 	font-size: 30px;
 }
+
+.tele-graph-filter-count {
+	float: right;
+	margin-right: 2px;
+}
 .tele-graph-filter-case-alerts .tele-graph-filter-percent { color: #ff850b; }
 .tele-graph-filter-noncase-alerts .tele-graph-filter-percent { color: #64a5bc; }
 .tele-graph-filter-suspicions .tele-graph-filter-percent { color: #6ab789; }
 .tele-graph-filter-other-sessions .tele-graph-filter-percent { color: #986da0; }
 
+
+@media (min-width: 1025px) and (max-width: 1350px) {
+
+	.tele-dashboard-graph-filter-inner {
+		width: 150px;
+		margin: 0 auto;
+	}
+	
+	.tele-graph-filter-percent {
+		font-size: 20px;
+	}
+
+	.tele-graph-filter-title {
+		font-size: 15px;
+	}
+
+	.tele-graph-filter-count{
+		font-size: 12px;
+	}
+
+	.tele-graph-filter-toggle{
+		position: relative;
+		cursor: pointer;
+		width: 17px;
+		height: 17px;
+		-webkit-border-radius: 50px;
+		-moz-border-radius: 50px;
+		border-radius: 50px;
+		left: 4px;
+		top: 0;
+		background-color: #cccccc;
+	}
+
+	.tele-graph-filter-toggle:after{
+		opacity: 0;
+		content: '';
+		position: absolute;
+		width: 9px;
+		height: 5px;
+		background: transparent;
+		top: 4px;
+		left: 3px;
+		border: 2px solid #333;
+		border-top: none;
+		border-right: none;
+
+		-webkit-transform: rotate(-45deg);
+		-moz-transform: rotate(-45deg);
+		-o-transform: rotate(-45deg);
+		-ms-transform: rotate(-45deg);
+		transform: rotate(-45deg);
+	}
+
+	.tele-graph-filter-toggle.active:after{
+		opacity: 1;
+	}
+}
 .tele-dashboard-block .tele-listitem-info {
 	width: 80%;
 }
