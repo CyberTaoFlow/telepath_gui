@@ -135,28 +135,5 @@ class Sessionflow extends Tele_Controller
 
     }
 
-    function get_sessionflow_alert()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        // Read input
-        $alert_id = intval($this->input->post('alert_id'));
-        $start = intval($this->input->post('start'));
-
-        // Convert alert_id to RID
-        $RID = $this->M_Sessionflow->get_RID_for_alert($alert_id);
-
-        if (!$RID) {
-            return_fail('Session not found');
-        }
-
-        // Max requests data to send
-        $limit = 1000;
-        $sessionflow = $this->M_Sessionflow->get_sessionflow($RID, $start, $limit);
-        return_json(array('success' => true, 'RID' => $RID, 'items' => $sessionflow, 'total' => count($sessionflow)));
-
-    }
-
 
 }

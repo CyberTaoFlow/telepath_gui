@@ -6,7 +6,6 @@ class Rules extends Tele_Controller
     function __construct()
     {
         parent::__construct();
-        $this->load->model('RulesModel'); // DEPR
         $this->load->model('M_Rules');
     }
 

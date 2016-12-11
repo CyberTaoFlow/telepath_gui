@@ -682,30 +682,7 @@ class M_Alerts extends CI_Model {
 		return $actions_sid;
 	}
 
-	// Generic
 
-	// TODO::
-
-	public function alerts_for_RIDS($RIDS = array()) {
-		if(empty($RIDS)) { return array(); }
-		return $alerts;
-	}
-
-	public function alert_for_RID($RID) {
-		return empty($res) ? false : $res[0];
-	}
-
-	public function get($limit = false) {
-		return array();
-	}
-
-	public function count_alerts($to, $from, $rule_group, $apps = array(), $case_id = -1) {
-		return 0;
-	}
-
-	public function time_diff($date, $count, $mode) {
-		return 0; // PHP based (copy from v2 dashboard)
-	}
 
 }
 
