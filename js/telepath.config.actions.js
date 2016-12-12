@@ -177,19 +177,20 @@ telepath.config.actions = {
 	deleteFlow: function(node) {
 		
 		var that = this;
-		
-		telepath.ds.get('/actions/set_delete_action', {
-			
-			uid: node.uid,
-			action: node.action_name,
-			application: node.application
-			
-		}, function(data) {
-			
-			that.reload();
-			
-		});
-				
+		telepath.dialog({type: 'dialog', msg: 'Are you sure you want to delete this action?', callback:function(){
+
+			telepath.ds.get('/actions/set_delete_action', {
+
+				uid: node.uid,
+				action: node.action_name,
+				application: node.application
+
+			}, function(data) {
+
+				that.reload();
+
+			});
+		}});
 	},
 
 	input: function(){
