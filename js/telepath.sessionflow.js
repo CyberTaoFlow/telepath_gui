@@ -917,7 +917,7 @@ telepath.sessionflow = {
 				// session flow item was changed !
 				return;
 			}
-			that.showSimilarities(data);
+			that.showSimilarities(data.items);
 		}, null, telepath.sessionflow.reloadFlag, true);
 		
 		// Load param data
