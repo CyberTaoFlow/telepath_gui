@@ -53,7 +53,7 @@ class Notifications extends Tele_Controller
     public function db_time()
     {
         $result = $this->db->query('SELECT UNIX_TIMESTAMP() as time')->result();
-        return_success($result);
+        xss_return_success($result);
     }
 
     public function get_indexes()
@@ -78,7 +78,7 @@ class Notifications extends Tele_Controller
             */
         );
 
-        return_success($result);
+        xss_return_success($result);
 
     }
 
@@ -103,7 +103,7 @@ class Notifications extends Tele_Controller
 
         }
 
-        return_success($ans);
+        xss_return_success($ans);
 
     }
 

@@ -24,7 +24,7 @@ class Parameters extends Tele_Controller
         }
         $ans[] = 'user-agent';
         sort($ans);
-        return_success($ans) ;
+        xss_return_success($ans) ;
 
     }
     

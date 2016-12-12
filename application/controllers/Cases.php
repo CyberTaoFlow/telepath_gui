@@ -101,7 +101,7 @@ class Cases extends Tele_Controller
 
         }
 
-        return_success($res);
+        xss_return_success($res);
 
     }
 
@@ -124,7 +124,7 @@ class Cases extends Tele_Controller
         $apps = $this->_get_apps();
 
         $chart = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
-        return_success($chart);
+        xss_return_success($chart);
 
     }
 
@@ -149,7 +149,7 @@ class Cases extends Tele_Controller
 
         $requests = $this->M_Cases->get_case_sessions(15, $cid, $range, $apps, $sort, $dir, $displayed);
 
-        return_success($requests);
+        xss_return_success($requests);
 
     }
 
@@ -177,7 +177,7 @@ class Cases extends Tele_Controller
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
         $ans['case'] = array('case_data' => $this->M_Cases->get_case_data($cid));
 
-        return_success($ans);
+        xss_return_success($ans);
 
     }
 
@@ -218,7 +218,7 @@ class Cases extends Tele_Controller
         $this->M_Cases->update($cid,false,false,$fav);
        // $res = $this->M_Cases->get(array('id' => $cid));
         $res = $this->M_Cases->get_case_data($cid);
-        return_success($res);
+        xss_return_success($res);
 
     }
 
@@ -257,7 +257,7 @@ class Cases extends Tele_Controller
         // Validate
         $tmp = $this->M_Cases->get_case_data($name);
         if (isset($tmp['empty']) && !$tmp['empty'] ) {
-            return_success(array('existing' => true));
+            xss_return_success(array('existing' => true));
         }
 
         // Create

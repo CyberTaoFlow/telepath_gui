@@ -376,11 +376,6 @@ function get_gap($range) {
 		//	return preg_replace("/\\\\u([a-f0-9]{4})/e", "iconv('UCS-4LE','UTF-8',pack('V', hexdec('U$1')))", json_encode($struct));
 		//}
 
-		// Prevent XSS
-		array_walk_recursive($array, function (&$value) {
-			$value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML401, 'UTF-8');
-		});
-		
 		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($array);
 		die;
@@ -388,6 +383,14 @@ function get_gap($range) {
 	}
 
 	function return_success($items = array()) {
+		return_json(array('success' => true, 'items' => $items, 'total' => count($items), 'ip' => $_SERVER['REMOTE_ADDR']));
+	}
+
+	function xss_return_success($items = array()) {
+		// Prevent XSS
+		array_walk_recursive($items, function (&$value) {
+			$value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML401, 'UTF-8');
+		});
 		return_json(array('success' => true, 'items' => $items, 'total' => count($items), 'ip' => $_SERVER['REMOTE_ADDR']));
 	}
 	function return_fail($error_msg = '') {

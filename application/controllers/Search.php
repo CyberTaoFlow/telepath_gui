@@ -51,14 +51,14 @@ class Search extends Tele_Controller
     public function cases()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-        return_success($this->M_Search->search('cases', $this->_getSettings()));
+        xss_return_success($this->M_Search->search('cases', $this->_getSettings()));
     }
 
     // Alerts thread
     public function alerts()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-        return_success($this->M_Search->search('alerts', $this->_getSettings()));
+        xss_return_success($this->M_Search->search('alerts', $this->_getSettings()));
     }
 
     // Suspects thread
@@ -67,7 +67,7 @@ class Search extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        return_success($this->M_Search->search('suspects', $this->_getSettings(), $suspect_threshold));
+        xss_return_success($this->M_Search->search('suspects', $this->_getSettings(), $suspect_threshold));
     }
 
     // Requests thread
@@ -76,7 +76,7 @@ class Search extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        return_success($this->M_Search->search('requests', $this->_getSettings(), $suspect_threshold));
+        xss_return_success($this->M_Search->search('requests', $this->_getSettings(), $suspect_threshold));
     }
 
     function getAutoComplete()
@@ -85,7 +85,7 @@ class Search extends Tele_Controller
         $range = $this->_get_range();
         $apps = $this->_get_apps();
 
-        return_success($this->M_Search->getAutoComplete($search, $range, $apps)) ;
+        xss_return_success($this->M_Search->getAutoComplete($search, $range, $apps)) ;
 
     }
 

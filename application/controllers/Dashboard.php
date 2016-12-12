@@ -47,7 +47,7 @@ class Dashboard extends Tele_Controller
 
         $data = array('chart' => $chart);
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -64,7 +64,7 @@ class Dashboard extends Tele_Controller
         }
         $data = $this->M_Dashboard->get_gap_score($learning);
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -124,7 +124,7 @@ class Dashboard extends Tele_Controller
 
         $data = array('suspects' => $suspects);
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -183,7 +183,7 @@ class Dashboard extends Tele_Controller
 
         $data = array('alerts' => $alerts);
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -251,7 +251,7 @@ class Dashboard extends Tele_Controller
 
         $data = array('cases' => $result);
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 

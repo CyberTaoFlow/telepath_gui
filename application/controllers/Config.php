@@ -83,7 +83,7 @@ class Config extends Tele_Controller
         $ans['ip_balances'] = $this->M_Config->get_ip_balances();
         $ans['header_balances'] = $this->M_Config->get_header_balances();
 
-        return_success($ans);
+        xss_return_success($ans);
 
     }
 
@@ -113,7 +113,7 @@ class Config extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        return_success(array('scheduler' => $this->M_Config->get_scheduler()));
+        xss_return_success(array('scheduler' => $this->M_Config->get_scheduler()));
 
 
     }
@@ -424,7 +424,7 @@ class Config extends Tele_Controller
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
             if (exec('sudo head -n1 ' . $target_file . ' | tcpdump -r -') != "tcpdump: unknown file format") {
-                return_success(['loader_mode' => $this->M_Config->check_file_loader_mode()]);
+                xss_return_success(['loader_mode' => $this->M_Config->check_file_loader_mode()]);
             }
         } else {
             return_fail("An error occurred");

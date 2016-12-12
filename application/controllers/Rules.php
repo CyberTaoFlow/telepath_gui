@@ -34,7 +34,7 @@ class Rules extends Tele_Controller
         foreach ($scanned_directory as $v) {
             $out[] = $directory . '/' . $v;
         }
-        return_success($out);
+        xss_return_success($out);
 
     }
 
@@ -48,7 +48,7 @@ class Rules extends Tele_Controller
         $this->load->model('M_Config');
         $this->M_Config->update('rules_table_was_changed_id', '1');
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -130,7 +130,7 @@ class Rules extends Tele_Controller
         $this->load->model('M_Config');
         $this->M_Config->update('rules_table_was_changed_id', '1');
 
-        return_success($result);
+        xss_return_success($result);
 
     }
 
@@ -155,7 +155,7 @@ class Rules extends Tele_Controller
         $this->load->model('M_Config');
         $this->M_Config->update('rules_table_was_changed_id', '1');
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -276,7 +276,7 @@ class Rules extends Tele_Controller
         $rule = $this->M_Rules->get_rule_by_id($rule_id);
 
         if ($rule) {
-            return_success([$rule]);
+            xss_return_success([$rule]);
         }
 
     }

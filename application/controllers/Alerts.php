@@ -34,7 +34,7 @@ class Alerts extends Tele_Controller
 
         $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_filter_session);
 
-        return_success(['alerts' => $alerts]);
+        xss_return_success(['alerts' => $alerts]);
 
     }
 
@@ -60,7 +60,7 @@ class Alerts extends Tele_Controller
             }
         }
 
-        return_success([
+        xss_return_success([
             'time_chart' => $time_chart,
             'distribution_chart' => $distribution_chart
         ]);
@@ -88,7 +88,7 @@ class Alerts extends Tele_Controller
             }
         }
 
-        return_success(['action_distribution_chart' => $action_distribution_chart]);
+        xss_return_success(['action_distribution_chart' => $action_distribution_chart]);
     }
 
     public function get_action_filter_sessions()
@@ -101,7 +101,7 @@ class Alerts extends Tele_Controller
 
         $action_filter_sessions = $this->M_Alerts->get_action_filter_sessions($actions_filter, $range, $apps);
 
-        return_success(['action_filter_sessions' => $action_filter_sessions]);
+        xss_return_success(['action_filter_sessions' => $action_filter_sessions]);
     }
 
 

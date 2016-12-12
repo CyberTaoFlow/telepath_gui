@@ -23,7 +23,7 @@ class Similarities extends Tele_Controller
         $uid = $this->input->post('uid');
         $req = $this->M_Requests->get_similar($uid);
 
-        return_success($req);
+        xss_return_success($req);
 
     }
 

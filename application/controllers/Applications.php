@@ -26,7 +26,7 @@ class Applications extends Tele_Controller
         foreach ($results as $result) {
             $items [] = $result['_source']['host'];
         }
-        return_success($items);
+        xss_return_success($items);
 
     }
 
@@ -37,7 +37,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        return_success($this->M_Applications->get_index());
+        xss_return_success($this->M_Applications->get_index());
     }
 
     public function get_expand()
@@ -64,7 +64,7 @@ class Applications extends Tele_Controller
 //        if (isset($res) && $res) {
 //            $data = json_decode($res);
 //            if ($data && !empty($data)) {
-//                return_success($data);
+//                xss_return_success($data);
 //            }
 //        }
 
@@ -96,7 +96,7 @@ class Applications extends Tele_Controller
 
 //        $this->redisObj->set('cache_applications', json_encode($data), 600);
         // return the data and a boolean to indicate if all the data is loaded
-        return_success(['data'=>$data,'finished'=>$results['finished']]);
+        xss_return_success(['data'=>$data,'finished'=>$results['finished']]);
 
     }
 
@@ -108,7 +108,7 @@ class Applications extends Tele_Controller
         $search = $this->input->post('search');
         $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_search($search,$mode));
+        xss_return_success($this->M_Applications->get_search($search,$mode));
 
     }
 
@@ -121,7 +121,7 @@ class Applications extends Tele_Controller
         $path = $this->input->post('path');
         $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_page($host, $path, $mode));
+        xss_return_success($this->M_Applications->get_page($host, $path, $mode));
 
     }
 
@@ -131,7 +131,7 @@ class Applications extends Tele_Controller
         $host = $this->input->post('host');
         $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_deep_items($host, $mode));
+        xss_return_success($this->M_Applications->get_deep_items($host, $mode));
     }
 
     public function get_app()
@@ -167,7 +167,7 @@ class Applications extends Tele_Controller
 //
 //        }
 
-        return_success($app);
+        xss_return_success($app);
 
     }
 
@@ -208,7 +208,7 @@ class Applications extends Tele_Controller
             // Reload nginx without stopping the process
             exec('sudo /opt/telepath/openresty/nginx/sbin/nginx -s reload 2>&1', $outpout);
 
-            return_success([
+            xss_return_success([
                 'certs_created' => $certs_created,
                 'config_updated' => $config_updated,
                 'reload_outpout' => $outpout
@@ -229,7 +229,7 @@ class Applications extends Tele_Controller
             return_fail('No App ID specified');
         }
         $data = $this->M_Applications->get_ip_suggestion($app_id);
-        return return_success($data);
+        return xss_return_success($data);
     }
 
     public function del_app()
@@ -260,7 +260,7 @@ class Applications extends Tele_Controller
 
         $flag = $this->M_Applications->update_flag($app_id);
 
-        return_success(['flag' => $flag]);
+        xss_return_success(['flag' => $flag]);
 
     }
 

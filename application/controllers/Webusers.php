@@ -25,6 +25,6 @@ class WebUsers extends Tele_Controller
         $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
         $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
 
-        return_success($this->M_Users->get_users($search, $sort, $dir, $offset));
+        xss_return_success($this->M_Users->get_users($search, $sort, $dir, $offset));
     }
 }

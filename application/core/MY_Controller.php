@@ -80,7 +80,7 @@ class Tele_Controller extends CI_Controller
             return $data;
         }
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
@@ -134,7 +134,7 @@ class Tele_Controller extends CI_Controller
             return_fail($this->ion_auth->errors());
         }
 
-        return_success($parsed['time_range']);
+        xss_return_success($parsed['time_range']);
 
     }
 
@@ -281,7 +281,7 @@ class Tele_Controller extends CI_Controller
             return $data;
         }
 
-        return_success($data);
+        xss_return_success($data);
 
     }
 
