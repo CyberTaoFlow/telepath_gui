@@ -357,11 +357,11 @@ telepath.alerts = {
 					displayed: that.displayed
 				}, function (data) {
 					if (typeof (data.items) != 'undefined') {
-						data.items.map(function (a) {
+						data.items.alerts.items.map(function (a) {
 							that.displayed.push(a.sid)
 						});
 					}
-					callback(data);
+					callback(data.items.alerts);
 				}, false, false, true);
 				
 			}

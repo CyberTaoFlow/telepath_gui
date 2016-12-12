@@ -453,29 +453,6 @@ class M_Rules extends CI_Model {
 		return $result['hits']['hits'];
 	}
 
-	// Method declaration
-	// TODO:: implement using json
-	public function get_rule_groups($assoc = false) {}
-	public function get_group_by_id($group_id) {}
-	public function get_rules_by_group_id($group_id) {}
-	public function get_category_by_name($name) {}
-	public function get_category_by_id($id) {}
-	public function create_category($category_name) {}
-	public function update_category($category_id, $category_name) {}
-	public function find_group_by_name($name) {}
-	public function create_rule($rule_data) {}
-	public function create_group($name, $description, $category_id, $action_log, $score_numeric ) {}
-	public function toggle_rules_by_group($group_id, $value) {}
-	public function get_groups() {}
-	public function add_group_param($group_id, $param_id) {}
-	public function update_group($group_id, $group_data) {}
-	public function update_rule($rule_id, $rule_data) {}
-	public function delete_rule($rule_id) {}
-	public function delete_group($group_id) {}
-	public function delete_category($category_id) {}
-	public function create_new_rule($group_id) {}
-	
-	
 }
 
 ?>

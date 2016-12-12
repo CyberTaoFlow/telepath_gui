@@ -30,7 +30,7 @@ class Suspects extends Tele_Controller
 
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        return_json($this->M_Suspects->get($range, $apps, $sort, $dir, $displayed, 15, $suspect_threshold, $search));
+        xss_return_success($this->M_Suspects->get($range, $apps, $sort, $dir, $displayed, 15, $suspect_threshold, $search));
 
     }
 
@@ -47,7 +47,7 @@ class Suspects extends Tele_Controller
 
                 $this->load->model('RequestScores');
                 $scores = $this->RequestScores->get_avg_scores($key, $val);
-                return_success($scores);
+                xss_return_success($scores);
 
             default:
                 return_fail('Missing key');

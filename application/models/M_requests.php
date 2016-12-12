@@ -112,12 +112,7 @@ class M_Requests extends CI_Model {
 		return $results;
 		
 	}	
-	
-	function get_by_query($body) {
-		
-		
-		
-	}
+
 	
 }
 ?>

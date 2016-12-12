@@ -33,7 +33,7 @@ class Actions extends Tele_Controller
         $this->load->model('M_Config');
         $this->M_Config->update('business_flow_was_changed_id', '1');
 
-        return_success($uid);
+        xss_return_success($uid);
 
     }
 
@@ -46,7 +46,7 @@ class Actions extends Tele_Controller
         $text = str_replace(":", "", $text);
         $text = trim($text);
 
-        return $this->M_Actions->get_action_autocomplete($text);
+        xss_return_success($this->M_Actions->get_action_autocomplete($text)) ;
 
 
     }
@@ -78,7 +78,7 @@ class Actions extends Tele_Controller
             $subdomains=[];
         }
 
-        return_success(array('actions'=>$actions,'subdomains'=>$subdomains));
+        xss_return_success(array('actions'=>$actions,'subdomains'=>$subdomains));
     }
 
     public function check_existing_action_name()
@@ -99,7 +99,7 @@ class Actions extends Tele_Controller
             }
         }
 
-        return_success($exist);
+        xss_return_success($exist);
 
 
 
@@ -128,7 +128,7 @@ class Actions extends Tele_Controller
     public function _hybridrecord_to_sid($value, $host)
     {
 
-        return $this->M_Actions->_hybridrecord_to_sid($value,$host);
+        xss_return_success($this->M_Actions->_hybridrecord_to_sid($value,$host)) ;
 
     }
 
@@ -139,7 +139,7 @@ class Actions extends Tele_Controller
 
         $id = $this->input->post('id');
 
-        return $this->M_Actions->get_requests($id);
+        xss_return_success($this->M_Actions->get_requests($id)) ;
 
     }
 
@@ -159,7 +159,7 @@ class Actions extends Tele_Controller
 
         // Send record message to Redis, to begin the fast lane record
         if ($this->M_Actions->send_record_message($id, $mode, $value, $host)) {
-            return_success(['id' => $id, 'mode' => $mode, 'value' => $value, 'host' => $host]);
+            xss_return_success(['id' => $id, 'mode' => $mode, 'value' => $value, 'host' => $host]);
         } else {
             return_fail($id);
         }
@@ -179,7 +179,7 @@ class Actions extends Tele_Controller
         $delete = $this->M_Actions->delete_record_queue($id);
 
 
-        return_success(['sent' => $sent, 'delete' => $delete]);
+        xss_return_success(['sent' => $sent, 'delete' => $delete]);
 
     }
 
@@ -210,7 +210,7 @@ class Actions extends Tele_Controller
                 break;
         }
 
-        return_success($res);
+        xss_return_success($res);
 
     }
 
@@ -221,7 +221,7 @@ class Actions extends Tele_Controller
         $sid = $this->input->post('sid'); // at this sid
         $offset = $this->input->post('time'); // starting this stamp
 
-        return_success($result);
+        xss_return_success($result);
 
     }
 
@@ -237,7 +237,7 @@ class Actions extends Tele_Controller
 //        /*if (isset($res) && $res) {
 //            $data = json_decode($res);
 //            if ($data && !empty($data)) {
-//                return_success($data);
+//                xss_return_success($data);
 //            }
 //        }*/
 //
@@ -256,7 +256,7 @@ class Actions extends Tele_Controller
 //
 //        $this->redisObj->set('cache_applications', json_encode($data), 600);
 //
-//        return_success($data);
+//        xss_return_success($data);
 //
 //    }
 

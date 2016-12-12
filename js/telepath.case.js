@@ -272,18 +272,18 @@ telepath.casePanel = {
 			dir: this.dir,
 			cid : this.caseID
 		}, function (data) {
-			if(data){
-				that.data = data;
+			if(data.items){
+				that.data = data.items;
 
 				telepath.ds.get('/cases/get_case_data', {
 					cid : that.caseID
 				}, function (data) {
 					if(data){
-						that.loadData(data);
+						that.loadData(data.items);
 					}
 				}, false, false, true);
 
-				data.items.map(function (a) {
+				data.items.items.map(function (a) {
 					that.displayed.push(a.sid)
 				});
 			}
@@ -539,7 +539,7 @@ telepath.casePanel = {
 						cid : that.caseID,
 						displayed: that.displayed
 					}, function (data) {
-						data.items.map(function (a) {
+						data.items.items.map(function (a) {
 							that.displayed.push(a.sid)
 						});
 						if(typeof(callback) == 'function') {

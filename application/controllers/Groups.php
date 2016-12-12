@@ -21,7 +21,7 @@ class Groups extends CI_Controller
                 'description' => $group->description);
         }
 
-        return_success($ans);
+        xss_return_success($ans);
 
     }
 
@@ -59,7 +59,7 @@ class Groups extends CI_Controller
 
         $perm = $this->acl->get_group_perm(array($id));
 
-        return_success(array('group' => $group, 'users' => $users_clean, 'perm' => $perm, 'apps' => $group_apps, 'ranges' => $group_ranges));
+        xss_return_success(array('group' => $group, 'users' => $users_clean, 'perm' => $perm, 'apps' => $group_apps, 'ranges' => $group_ranges));
 
     }
 
@@ -109,7 +109,7 @@ class Groups extends CI_Controller
             }
         }
 
-        return_success(array('group_id' => $group_id));
+        xss_return_success(array('group_id' => $group_id));
 
     }
 
@@ -171,7 +171,7 @@ class Groups extends CI_Controller
             }
         }
 
-        return_success(array('group_id' => $group_id));
+        xss_return_success(array('group_id' => $group_id));
 
     }
 

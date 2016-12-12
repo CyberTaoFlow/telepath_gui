@@ -19,7 +19,7 @@ telepath.config.system = {
 		
 		telepath.ds.get('/config/get_config', { }, function (data) {
 			
-			that.data = data;
+			that.data = data.items;
 			that.showConfig();
 			$(window).trigger('resize');
 		}, 'Error loading configuration.');
@@ -564,7 +564,7 @@ telepath.config.system = {
 		
 		telepath.ds.get('/config/get_scheduler', { mode: "get_schedule" }, function(data) {
 			
-			var eventData = { events : that.parseRanges(data.scheduler)	};
+			var eventData = { events : that.parseRanges(data.items.scheduler)	};
 			that.cal = $(that.scheduler).weekCalendar({
 		
 				timeslotsPerHour: 1,

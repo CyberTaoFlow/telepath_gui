@@ -806,7 +806,7 @@ RecordFlow.prototype.getRequestTable = function(request) {
 	var ssl = '';//recordNode.parentNode.raw.ssl_flag;
 	
 	var url = (ssl==1?"https":"http")+"://"+ app + request.path;
-	var link = $('<a>').addClass('icon-link').text('').attr('href', escapeHtml(url)).attr('target', '_blank').hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover') });
+	var link = $('<a>').addClass('icon-link').text('').attr('href', url).attr('target', '_blank').hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover') });
 	var span = $('<span>').text(request.page_name != "" ? request.page_name : request.path).hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover') }).css('text-decoration', 'underline');
 	
 	span.click(function () {

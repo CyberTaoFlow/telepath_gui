@@ -26,7 +26,7 @@ class Applications extends Tele_Controller
         foreach ($results as $result) {
             $items []['key'] = $result['_source']['host'];
         }
-        return_success($items);
+        xss_return_success($items);
 
     }
 
@@ -37,7 +37,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        return_success($this->M_Applications->get_index());
+        xss_return_success($this->M_Applications->get_index());
     }
 
     public function get_expand()
@@ -64,7 +64,7 @@ class Applications extends Tele_Controller
 //        if (isset($res) && $res) {
 //            $data = json_decode($res);
 //            if ($data && !empty($data)) {
-//                return_success($data);
+//                xss_return_success($data);
 //            }
 //        }
 
@@ -96,7 +96,7 @@ class Applications extends Tele_Controller
 
 //        $this->redisObj->set('cache_applications', json_encode($data), 600);
         // return the data and a boolean to indicate if all the data is loaded
-        return_success(['data'=>$data,'finished'=>$results['finished']]);
+        xss_return_success(['data'=>$data,'finished'=>$results['finished']]);
 
     }
 
@@ -108,7 +108,7 @@ class Applications extends Tele_Controller
         $search = $this->input->post('search');
         $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_search($search,$mode));
+        xss_return_success($this->M_Applications->get_search($search,$mode));
 
     }
 
@@ -121,7 +121,7 @@ class Applications extends Tele_Controller
         $path = $this->input->post('path');
         $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_page($host, $path, $mode));
+        xss_return_success($this->M_Applications->get_page($host, $path, $mode));
 
     }
 
@@ -131,7 +131,7 @@ class Applications extends Tele_Controller
         $host = $this->input->post('host');
         $mode = $this->input->post('mode');
 
-        return_success($this->M_Applications->get_deep_items($host, $mode));
+        xss_return_success($this->M_Applications->get_deep_items($host, $mode));
     }
 
     public function get_app()
@@ -167,21 +167,10 @@ class Applications extends Tele_Controller
 //
 //        }
 
-        return_success($app);
+        xss_return_success($app);
 
     }
 
-    public function set_application_alias()
-    {
-
-        $app_id = $this->input->post('app_id', true);
-        $app_alias = $this->input->post('app_alias', true);
-        $this->Apps->app_update($app_id, array('display_name' => $app_alias));
-        $app = $this->Apps->app_get($app_id);
-
-        return_json(array('success' => true, 'app' => $app[0]));
-
-    }
 
 
     // Updates Application
@@ -219,7 +208,7 @@ class Applications extends Tele_Controller
             // Reload nginx without stopping the process
             exec('sudo /opt/telepath/openresty/nginx/sbin/nginx -s reload 2>&1', $outpout);
 
-            return_success([
+            xss_return_success([
                 'certs_created' => $certs_created,
                 'config_updated' => $config_updated,
                 'reload_outpout' => $outpout
@@ -242,70 +231,10 @@ class Applications extends Tele_Controller
         foreach($app_ids as $app_id){
             $this->M_Config->update('app_list_was_changed_id', $app_id);
         }
-        return_success();
+        xss_return_success();
 
     }
 
-    public function get_next_id()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-        return_json(array('success' => true, 'app_id' => $this->Apps->get_last_id() + 1));
-
-    }
-
-    public function set_ssl_certificate()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->_set_ssl('certificate');
-    }
-
-    public function set_ssl_private_key()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->_set_ssl('private_key');
-    }
-
-    private function _set_ssl($mode)
-    {
-
-        $app_id = $this->input->post('app_id', true);
-        $waitMsg = $this->input->post('waitMsg', true);
-        $file_name = $this->input->get('file_name', true);
-
-        if ($mode != 'certificate' && $mode != 'private_key') {
-            echo json_encode(array('success' => false, 'error' => 'No such certificate upload mode'));
-            die;
-        }
-        if (!$app_id) {
-            echo json_encode(array('success' => false, 'error' => 'No application was selected, please try again'));
-            die;
-        }
-        if (!isset($_FILES) || !isset($_FILES['file'])) {
-            echo json_encode(array('success' => false, 'error' => 'No file was uploaded'));
-            die;
-        }
-        if ($_FILES['file']['error'] > 0) {
-            echo json_encode(array('success' => false, 'error' => 'There was an error during upload'));
-            die;
-        }
-        if ($_FILES['file']['size'] > 1048576) {
-            echo json_encode(array('success' => false, 'error' => 'File size cannot exceed 1MB'));
-            die;
-        }
-
-        $file_name = $_FILES['file']['name'];
-        $file_data = file_get_contents($_FILES['file']['tmp_name']);
-
-        $this->Apps->set_certificate($mode, $app_id, $file_name, $file_data);
-
-        // Notice 'true', not true;
-        return_json(array('success' => 'true', 'file' => $file_name));
-    }
 
     public function get_ip_suggestion()
     {
@@ -317,49 +246,7 @@ class Applications extends Tele_Controller
             return_fail('No App ID specified');
         }
         $data = $this->M_Applications->get_ip_suggestion($app_id);
-        return return_success($data);
-    }
-
-    public function get_cookie_suggestion()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $default = array('success' => true, 'items' => array());
-        $default['items'][] = array('cookie' => 'PHPSESSID');
-        $default['items'][] = array('cookie' => 'PHPSESSIONID');
-        $default['items'][] = array('cookie' => 'JSESSIONID');
-        $default['items'][] = array('cookie' => 'ASPSESSIONID');
-        $default['items'][] = array('cookie' => 'ASP.NET_SessionId');
-        $default['items'][] = array('cookie' => 'VisitorID');
-        $default['items'][] = array('cookie' => 'SESS');
-        $default['total'] = count($default['items']);
-
-        $suggest = array('success' => true, 'items' => array());
-
-        $app_id = $this->input->get('app_id', true);
-
-        /*
-                // THIS CODE IS NOT WORKING (Yuli)
-                $cookies = $this->Apps->get_cookie_suggestion($app_id);
-                if(!empty($cookies)) {
-                    $cookies = $cookies[0]->cookie_suggestion;
-                    if(strlen($cookies) > 0) {
-                        $cookies = explode(',', $cookies);
-                        foreach($cookies as $cookie) {
-                            $suggest['items'][] = array('cookie' => $cookie);
-                        }
-                    }
-                }
-        */
-
-        $suggest['total'] = count($suggest['items']);
-        if ($suggest['total'] > 0) {
-            return_json($suggest);
-        } else {
-            return_json($default);
-        }
-
+        return xss_return_success($data);
     }
 
     public function del_app()
@@ -389,161 +276,35 @@ class Applications extends Tele_Controller
                 file_put_contents($nginx_config_file, $conf);
             }
 
+        // if the deleted applications had an SSL authentication for reverse proxy, we need to delete the
+        // certificates and REWRITE OUR NGINX.CONF
+        $app = $this->M_Applications->get($app_id);
+        if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
+            $this->load->model('M_Nginx');
+            $this->M_Nginx->del_certs($app_id);
+            $conf = $this->M_Nginx->gen_config();
+            $this->load->model('M_Config');
+            $nginx_config_file = $this->config->item('nginx_config_file');
+            file_put_contents($nginx_config_file, $conf);
+        }
+
+        // remove it from elastic search
+        $this->M_Applications->delete($app_id);
+
+        $flag = $this->M_Applications->update_flag($app_id);
+
             // remove it from elastic search
             $this->M_Applications->delete($app_id);
 
             $flag = $this->M_Applications->update_flag($app_id);
         }
 
-        return_success(['flag' => $flag]);
+        xss_return_success(['flag' => $flag]);
 
     }
 
-    // Just an alias
-    public function get_list()
-    {
 
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        $apps = $this->Apps->index('app_domain', 'asc');
-        $ans = array(array('id' => -1, 'domain' => 'All', 'display' => 'All'));
 
-        foreach ($apps as $app) {
-            $ans[] = array(
-                'id' => intval($app->app_id),
-                'domain' => $app->app_domain,
-                'display' => $app->display_name
-            );
-        }
-
-        return_success($ans);
-
-    }
-
-    public function get_apps_combobox_general()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->_get_apps_combobox();
-    }
-
-    public function get_apps_combobox_general_without_all()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->_get_apps_combobox(false);
-    }
-
-    private function _get_apps_combobox($with_all = true)
-    {
-
-        $sortorder = $this->input->get('sortorder', true);
-        $sortfield = $this->input->get('sortfield', true);
-        $sort = $this->input->get('sort', true);
-        $sort = json_decode($sort, true);
-
-        if ($sort && is_array($sort) && !empty($sort)) {
-            $sortfield = $sort[0]['property'];
-            $sortorder = $sort[0]['direction'];
-        }
-
-        $sortfield = $this->_i2c($sortfield);
-
-        $this->load->model('Apps');
-
-        if (!$sortfield) {
-            $sortfield = 'app_domain';
-        }
-        if (!$sortorder) {
-            $sortorder = 'asc';
-        }
-
-        $apps = $this->Apps->index($sortfield, $sortorder);
-
-        $ans = array();
-
-        if ($with_all) {
-            $ans[] = array(
-                'id' => '-1',
-                'app' => 'All',
-                'ssl' => 0
-            );
-        }
-        foreach ($apps as $app) {
-            $ans[] = array(
-                'id' => intval($app->app_id),
-                'app' => $app->app_domain,
-                'ssl' => intval($app->ssl_flag)
-            );
-        }
-
-        return_success($ans);
-
-    }
-
-    private function _i2c($i)
-    {
-
-        $i_to_c = array(
-            "td0" => 'app_id',
-            "td1" => 'app_domain',
-            "td2" => 'display_name',
-            "td3" => 'login_att_id',
-            "td4" => 'logged_condition',
-            "td5" => 'condition_value',
-            "td6" => 'logout_page_id',
-            "td7" => 'logout_att_id',
-            "td8" => 'logout_att_value',
-            "td9" => 'AppCookieName',
-            "td10" => 'cpt_name',
-            "td11" => 'cpt_val',
-            "td12" => 'ntlm',
-            "td13" => 'global_per_app',
-            "td14" => 'exclude_group_headers',
-            "td15" => 'global_pages',
-            "td16" => 'certificate',
-            "td17" => 'private_key',
-            "td18" => 'ssl_flag',
-            "td19" => 'ssl_server_port',
-            "td20" => 'app_ips',
-            "td21" => 'ssl_certificate_password',
-            "td22" => 'cpt_injected_header_name',
-            "td23" => 'basic_flag',
-            "td24" => 'digest_flag',
-            "td25" => 'form_flag',
-            "td26" => 'form_param_id',
-            "td27" => 'form_param_name',
-            "td28" => 'form_authentication_flag',
-            "td29" => 'form_authentication_cookie_flag',
-            "td30" => 'form_authentication_redirect_flag',
-            "td31" => 'form_authentication_redirect_page_id',
-            "td32" => 'form_authentication_redirect_page_name',
-            "td33" => 'form_authentication_redirect_response_range',
-            "td34" => 'form_authentication_body_flag',
-            "td35" => 'form_authentication_body_value',
-            "td36" => 'form_authentication_cookie_name',
-            "td37" => 'form_authentication_cookie_value',
-            "td38" => 'cookie_suggestion',
-            "td39" => 'certificate_path',
-            "td40" => 'private_key_path'
-        );
-
-        if (!in_array($i, array_values($i_to_c))) {
-
-            if (isset($i_to_c[$i])) {
-                return $i_to_c[$i];
-            } else {
-                return 'app_id';
-            }
-
-        } else {
-
-            return $i;
-
-        }
-
-    }
 
 }

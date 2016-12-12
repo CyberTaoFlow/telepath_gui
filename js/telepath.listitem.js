@@ -234,7 +234,7 @@ $.widget( "tele.listitem", {
 		}
 		
 		if(this.options.title) {
-			var titleEl = $('<div>').addClass('tele-listitem-title').html(escapeHtml(this.options.title)).attr('title', escapeHtml(this.options.title));
+			var titleEl = $('<div>').addClass('tele-listitem-title').html(this.options.title).attr('title', this.options.title);
 			el.append(titleEl);
 		}
 		if(this.options.updating) {
@@ -244,7 +244,7 @@ $.widget( "tele.listitem", {
 		if (this.options.description) {
 			var descEl = $('<div>').addClass('tele-title-2');
 			$.each(this.options.description.split(/,\s{1}/), function (i, val) {
-				var element = $('<span>').html(escapeHtml(val));
+				var element = $('<span>').html(val);
 
 				if (i == 0) {
 					descEl.append(element);
@@ -294,7 +294,7 @@ $.widget( "tele.listitem", {
 							case 'city':
 								
 								if(detail.key && detail.key == 'city' && detail.value && detail.value != 'Unknown') {
-									li.append(detail.key).append(':&nbsp;').append('<b>' + escapeHtml(detail.value) + '</b>');
+									li.append(detail.key).append(':&nbsp;').append('<b>' + detail.value + '</b>');
 								} else {
 									li = false;
 								}
@@ -306,7 +306,7 @@ $.widget( "tele.listitem", {
 								
 								if(detail.key && detail.key == 'user' && detail.value && detail.value != '') {
 									var iconEl = $('<div>').addClass('tele-listitem-user-name');
-									li.append(iconEl).append('&nbsp&nbsp;').append('<span class="tele-user">' + escapeHtml(detail.value) + '</span>');
+									li.append(iconEl).append('&nbsp&nbsp;').append('<span class="tele-user">' + detail.value + '</span>');
 								} else {
 									li = false;
 								}
@@ -317,7 +317,7 @@ $.widget( "tele.listitem", {
 							
 							case 'Email':
 								
-								var mailTo = $('<a>').attr('href', 'mailto:' + escapeHtml(detail.value)).text(escapeHtml(detail.value));
+								var mailTo = $('<a>').attr('href', 'mailto:' +  detail.value).text(detail.value);
 								li.append(mailTo);
 							
 							break;
@@ -331,14 +331,14 @@ $.widget( "tele.listitem", {
 								}
 								else if(detail.value.length == 2) {
 
-									li.append('<span class="flag flag-' + escapeHtml(detail.value) + '"></span>');
+									li.append('<span class="flag flag-' + detail.value + '"></span>');
 									li.append('<span class="tele-country">' + telepath.countries.a2n(detail.value) + '</span>');
 									
 								} else {
 									
 									li.append(detail.key);
 									if(detail.value) { li.append(':&nbsp;'); }
-									li.append('<b>' + escapeHtml(detail.value) + '</b>');
+									li.append('<b>' + detail.value + '</b>');
 
 								}
 
@@ -421,16 +421,16 @@ $.widget( "tele.listitem", {
 									if (detail.value.indexOf(",") > -1) {
 										$.each(detail.value.split(/,\s{1}/), function (i, val) {
 											if (i == 0) {
-												li.append('<b>' + escapeHtml(val) + '</b>');
+												li.append('<b>' + val + '</b>');
 											}
 											else {
-												li.append(',&nbsp;<b>' + escapeHtml(val) + '</b>');
+												li.append(',&nbsp;<b>' + val + '</b>');
 											}
 
 										});
 									}
 									else {
-										li.append('<b>' + escapeHtml(detail.value) + '</b>');
+										li.append('<b>' + detail.value + '</b>');
 									}
 
 								}

@@ -82,9 +82,8 @@ class Config extends Tele_Controller
         $ans['whitelist'] = $this->M_Config->whitelist_get_ips();
         $ans['ip_balances'] = $this->M_Config->get_ip_balances();
         $ans['header_balances'] = $this->M_Config->get_header_balances();
-        $ans['success'] = true;
 
-        return_json($ans);
+        xss_return_success($ans);
 
     }
 
@@ -114,46 +113,47 @@ class Config extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        return_json(array('scheduler' => $this->M_Config->get_scheduler(), 'success' => true));
+        xss_return_success(array('scheduler' => $this->M_Config->get_scheduler()));
 
 
     }
+// Not used
+//    public function add_scheduler_event()
+//    {
+//        telepath_auth(__CLASS__, __FUNCTION__, $this);
+//
+//        $mode = $this->input->post('mode', true);
+//        $event = $this->input->post('event');
+//        $table = false;
+//        if ($mode == 'get_schedule') {
+//            $table = 'scheduler';
+//        }
+//        if ($mode == 'get_report_schedule') {
+//            $table = 'report_scheduler';
+//        }
+//        if ($table) {
+//            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event), 'success' => true));
+//        }
+//    }
 
-    public function add_scheduler_event()
-    {
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $mode = $this->input->post('mode', true);
-        $event = $this->input->post('event');
-        $table = false;
-        if ($mode == 'get_schedule') {
-            $table = 'scheduler';
-        }
-        if ($mode == 'get_report_schedule') {
-            $table = 'report_scheduler';
-        }
-        if ($table) {
-            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event), 'success' => true));
-        }
-    }
-
-    public function del_scheduler_event()
-    {
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $mode = $this->input->post('mode', true);
-        $event = $this->input->post('event');
-        $table = false;
-        if ($mode == 'get_schedule') {
-            $table = 'scheduler';
-        }
-        if ($mode == 'get_report_schedule') {
-            $table = 'report_scheduler';
-        }
-        if ($table) {
-            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event, 0), 'success' => true));
-        }
-    }
+// Not used
+//    public function del_scheduler_event()
+//    {
+//        telepath_auth(__CLASS__, __FUNCTION__, $this);
+//
+//        $mode = $this->input->post('mode', true);
+//        $event = $this->input->post('event');
+//        $table = false;
+//        if ($mode == 'get_schedule') {
+//            $table = 'scheduler';
+//        }
+//        if ($mode == 'get_report_schedule') {
+//            $table = 'report_scheduler';
+//        }
+//        if ($table) {
+//            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event, 0), 'success' => true));
+//        }
+//    }
 
 
     /*public function set_scheduler()
@@ -189,18 +189,6 @@ class Config extends Tele_Controller
 
         $mode = $this->input->post('mode', true);
     }
-
-    public function get_num_of_studied()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->load->model('ConfigModel');
-        $count = $this->ConfigModel->get_learning_so_far();
-        return_json(array('success' => true, 'items' => $count));
-
-    }
-
 
     public function set_config()
     {
@@ -437,7 +425,7 @@ class Config extends Tele_Controller
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
             if (exec('sudo head -n1 ' . $target_file . ' | tcpdump -r -') != "tcpdump: unknown file format") {
-                return_success(['loader_mode' => $this->M_Config->check_file_loader_mode()]);
+                xss_return_success(['loader_mode' => $this->M_Config->check_file_loader_mode()]);
             }
         } else {
             return_fail("An error occurred");

@@ -250,13 +250,13 @@ telepath.suspects = {
 
 			that.loading = false;
 			
-			if (typeof (data.items) != 'undefined') {
-				data.items.map(function (a) {
+			if (typeof (data.items.items) != 'undefined') {
+				data.items.items.map(function (a) {
 					that.displayed.push(a.sid)
 				});
 			}
-			that.count = data.count;
-			that.data  = data.items;
+			that.count = data.items.count;
+			that.data  = data.items.items;
 			
 			telepath.suspects.loadData();
 			
@@ -317,13 +317,13 @@ telepath.suspects = {
 					displayed: that.displayed
 				}, function (data) {
 
-					if (typeof (data.items) != 'undefined') {
-						data.items.map(function (a) {
+					if (typeof (data.items.items) != 'undefined') {
+						data.items.items.map(function (a) {
 							that.displayed.push(a.sid)
 						});
 					}
 					that.loading = false;
-						callback(data);
+						callback(data.items);
 				}, false, false, true);
 			}
 		} });

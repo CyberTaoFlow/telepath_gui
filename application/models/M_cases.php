@@ -313,7 +313,6 @@ class M_Cases extends CI_Model {
 
 
 
-		$results['success'] = true;
 		if (ENVIRONMENT == 'development') {
 			$results['query'] = $params;
 		}

@@ -154,16 +154,16 @@ telepath.config.applications = {
 								$.each(item, function (i, param) {
 									childs.push({
 										children: false,
-										text: escapeHtml(param),
+										text: param,
 										icon: 'tele-icon-param',
 										// trick to hide the "plus" icon
 										li_attr: {"class": "jstree-leaf"},
-										data: {type: 'param', name: escapeHtml(param), host: host}
+										data: {type: 'param', name: param, host: host}
 									});
 								});
 								var obj = {
 									children: childs,
-									text: escapeHtml(i),
+									text: i,
 									data: {type: 'page', path: row, host: host},
 									icon: 'tele-icon-page'
 								};
@@ -173,11 +173,11 @@ telepath.config.applications = {
 							else {
 								childrens.push({
 									children: false,
-									text: escapeHtml(item),
+									text: item,
 									icon: 'tele-icon-param',
 									// trick to hide the "plus" icon
 									li_attr: {"class": "jstree-leaf"},
-									data: {type: 'param', name: escapeHtml(item), host: host}
+									data: {type: 'param', name: item, host: host}
 								});
 							}
 						});
@@ -186,7 +186,7 @@ telepath.config.applications = {
 
 				var obj = {
 					children: childrens,
-					text: escapeHtml(i),
+					text: i,
 					data: {type: 'page', path: row, host: host},
 					icon: 'tele-icon-page'
 				};

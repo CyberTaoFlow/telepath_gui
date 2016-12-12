@@ -53,7 +53,7 @@ class Sessionflow extends Tele_Controller
         }
 
         $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $state, $range, $suspect_threshold);
-        return_success($stats);
+        xss_return_success($stats);
 
     }
 
@@ -67,7 +67,7 @@ class Sessionflow extends Tele_Controller
         $anchor_value=$this->input->post('sid');
 
         $scores = $this->M_Sessionflow->get_session_scores($anchor_field, $anchor_value);
-        return_success($scores);
+        xss_return_success($scores);
 
     }
 
@@ -119,7 +119,7 @@ class Sessionflow extends Tele_Controller
 
         $sessionflow = $this->M_Sessionflow->get_sessionflow($anchor_field, $anchor_value, $offset, 100, $filter,
             $key, $range, $suspect_threshold);
-        return_success($sessionflow);
+        xss_return_success($sessionflow);
 
     }
 
@@ -131,30 +131,7 @@ class Sessionflow extends Tele_Controller
         $uid = $this->input->post('uid', true);
         $params = $this->M_Sessionflow->get_sessionflow_params($uid);
 
-        return_success($params);
-
-    }
-
-    function get_sessionflow_alert()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        // Read input
-        $alert_id = intval($this->input->post('alert_id'));
-        $start = intval($this->input->post('start'));
-
-        // Convert alert_id to RID
-        $RID = $this->M_Sessionflow->get_RID_for_alert($alert_id);
-
-        if (!$RID) {
-            return_fail('Session not found');
-        }
-
-        // Max requests data to send
-        $limit = 1000;
-        $sessionflow = $this->M_Sessionflow->get_sessionflow($RID, $start, $limit);
-        return_json(array('success' => true, 'RID' => $RID, 'items' => $sessionflow, 'total' => count($sessionflow)));
+        xss_return_success($params);
 
     }
 

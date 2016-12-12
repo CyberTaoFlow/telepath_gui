@@ -47,7 +47,7 @@ class Permissions extends CI_Controller
             );
         }
 
-        return_success($ans);
+        xss_return_success($ans);
 
     }
 
@@ -89,7 +89,7 @@ class Permissions extends CI_Controller
         }
         $perm['params'] = json_encode($decode);
 
-        return_success(array('permission' => $perm, 'applications' => array()));
+        xss_return_success(array('permission' => $perm, 'applications' => array()));
 
     }
 
@@ -127,7 +127,7 @@ class Permissions extends CI_Controller
 
         }
 
-        return_success(array('permission_id' => $permission_id));
+        xss_return_success(array('permission_id' => $permission_id));
 
     }
 

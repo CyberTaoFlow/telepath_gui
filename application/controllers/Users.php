@@ -18,7 +18,7 @@ class Users extends CI_Controller
             'company' => $user->company,
             'phone' => $user->phone);
 
-        return_success(array('user' => $user));
+        xss_return_success(array('user' => $user));
 
     }
 
@@ -84,7 +84,7 @@ class Users extends CI_Controller
         }
        $ans['current_user']=  $this->ion_auth->get_user_id();
 
-        return_success($ans);
+        xss_return_success($ans);
 
     }
 
@@ -123,7 +123,7 @@ class Users extends CI_Controller
         //print_r($this->acl->user_extra);
         //die;
 
-        return_success(array('user' => $user, 'groups' => $groups, 'perm' => $perm, 'apps' => $apps, 'ranges' => $ranges));
+        xss_return_success(array('user' => $user, 'groups' => $groups, 'perm' => $perm, 'apps' => $apps, 'ranges' => $ranges));
 
     }
 
@@ -169,7 +169,7 @@ class Users extends CI_Controller
         // Update user apps
         $this->_upd_user_apps_and_ranges($user_id, $post);
 
-        return_success(array('user_id' => $user_id));
+        xss_return_success(array('user_id' => $user_id));
 
     }
 
@@ -257,7 +257,7 @@ class Users extends CI_Controller
         // Update user apps
         $this->_upd_user_apps_and_ranges($user_id, $post);
 
-        return_success(array('user_id' => $user_id));
+        xss_return_success(array('user_id' => $user_id));
 
     }
 
