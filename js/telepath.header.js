@@ -161,8 +161,6 @@ telepath.header = {
 
 		$('.tele-logo img, .tele-nav a, a.tele-icon-config').click(function(){
 
-			console.log('clicked');
-
 			var id = $(this).parent().attr('class').split('-');
 			if(id[0] == 'tele' && id[1] == 'nav' && id[2] != '') {
 				id = id[2];

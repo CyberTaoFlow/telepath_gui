@@ -324,6 +324,7 @@ telepath.search = {
 
             });
             this.tabsEl.tabs({collapsible: false} );
+            this.loading= false;
             return false;
         }
 
