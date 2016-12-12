@@ -24,7 +24,7 @@ class Applications extends Tele_Controller
 
         $items = [];
         foreach ($results as $result) {
-            $items [] = $result['_source']['host'];
+            $items []['key'] = $result['_source']['host'];
         }
         return_success($items);
 
