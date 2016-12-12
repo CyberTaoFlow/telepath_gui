@@ -160,9 +160,9 @@ telepath.autocomplete = {
 
     appendItem: function(element, container, item){
         var resultEl = $('<div>').addClass('tele-autocomplete-item')
-            .text(item)
+            .text(item.key)
             .data('tele-select', item)
-            .attr('title', item)
+            .attr('title', item.key)
             .hover(function () {
                 $(this).addClass('hover');
             }, function () {
@@ -177,7 +177,7 @@ telepath.autocomplete = {
 
         resultEl.click(function () {
             telepath.autocomplete.disabled = true;
-            element.val(item);
+            element.val(item.key);
             element.data('tele-select', item);
             $('.tele-autocomplete-select', 'body').remove();
             setTimeout(function () {

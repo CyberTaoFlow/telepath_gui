@@ -236,7 +236,7 @@ telepath.dashboard = {
 		
 			legend: { show: false },
 			series: { lines: { show: true, fill: true }, points: { show: true, fillColor: '#446077' } },
-			yaxis: { alignTicksWithAxis: true, labelWidth: result*7, ticks: 5, color: '#446077', font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" } },
+			yaxis: { alignTicksWithAxis: true, labelWidth: result*7, ticks: 8, color: '#446077', font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" } },
 			selection: { mode: "xy" },
 			xaxis: { alignTicksWithAxis: true, tickColor: '#cccccc', tickLength: 7, font: { family: 'Arial', color: '#cccccc', size: 11, weight: "normal" }, mode: "time", timezone: "browser", timeformat: timeformat },
 			grid: { borderColor: '#446077', borderWidth: 2, hoverable:true, clickable:true },
@@ -323,7 +323,7 @@ telepath.dashboard = {
 
 		if($('.tele-panel-dashboard').children().size() == 0) return;
 		
-		var width = $(window).width();
+		var width = window.innerWidth;
 
 		var current_div = 100 / this.divs;
 		

@@ -206,6 +206,8 @@ body .tele-browser .jstree-default .jstree-themeicon-custom.tele-icon-param {
 /*Checked*/
 .tele-icon-edit { background-position: -445px -353px }
 .tele-icon-edit.hover { background-position: -475px -353px }
+.tele-config-bar-left .tele-icon-edit { background-position: -415px -353px;}
+.tele-config-bar-left .tele-icon-edit.hover { background-position: -445px -353px;}
 
 /*Checked*/
 .tele-icon-delete {	background-position: -325px -263px; }
