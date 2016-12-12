@@ -189,18 +189,6 @@ class Config extends Tele_Controller
         $mode = $this->input->post('mode', true);
     }
 
-    public function get_num_of_studied()
-    {
-
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $this->load->model('ConfigModel');
-        $count = $this->ConfigModel->get_learning_so_far();
-        return_json(array('success' => true, 'items' => $count));
-
-    }
-
-
     public function set_config()
     {
 
