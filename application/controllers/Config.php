@@ -117,42 +117,43 @@ class Config extends Tele_Controller
 
 
     }
+// Not used
+//    public function add_scheduler_event()
+//    {
+//        telepath_auth(__CLASS__, __FUNCTION__, $this);
+//
+//        $mode = $this->input->post('mode', true);
+//        $event = $this->input->post('event');
+//        $table = false;
+//        if ($mode == 'get_schedule') {
+//            $table = 'scheduler';
+//        }
+//        if ($mode == 'get_report_schedule') {
+//            $table = 'report_scheduler';
+//        }
+//        if ($table) {
+//            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event), 'success' => true));
+//        }
+//    }
 
-    public function add_scheduler_event()
-    {
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $mode = $this->input->post('mode', true);
-        $event = $this->input->post('event');
-        $table = false;
-        if ($mode == 'get_schedule') {
-            $table = 'scheduler';
-        }
-        if ($mode == 'get_report_schedule') {
-            $table = 'report_scheduler';
-        }
-        if ($table) {
-            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event), 'success' => true));
-        }
-    }
-
-    public function del_scheduler_event()
-    {
-        telepath_auth(__CLASS__, __FUNCTION__, $this);
-
-        $mode = $this->input->post('mode', true);
-        $event = $this->input->post('event');
-        $table = false;
-        if ($mode == 'get_schedule') {
-            $table = 'scheduler';
-        }
-        if ($mode == 'get_report_schedule') {
-            $table = 'report_scheduler';
-        }
-        if ($table) {
-            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event, 0), 'success' => true));
-        }
-    }
+// Not used
+//    public function del_scheduler_event()
+//    {
+//        telepath_auth(__CLASS__, __FUNCTION__, $this);
+//
+//        $mode = $this->input->post('mode', true);
+//        $event = $this->input->post('event');
+//        $table = false;
+//        if ($mode == 'get_schedule') {
+//            $table = 'scheduler';
+//        }
+//        if ($mode == 'get_report_schedule') {
+//            $table = 'report_scheduler';
+//        }
+//        if ($table) {
+//            return_json(array('scheduler' => $this->M_Config->add_scheduler_event($table, $event, 0), 'success' => true));
+//        }
+//    }
 
 
     /*public function set_scheduler()
