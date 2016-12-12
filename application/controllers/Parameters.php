@@ -17,14 +17,14 @@ class Parameters extends Tele_Controller
         $this->load->model('M_Globalheaders');
         $headers = $this->M_Globalheaders->get_global_headers();
 
-        $ans = array('items' => array(), 'success' => true);
+        $ans = [];
 
         foreach ($headers as $header) {
-            $ans['items'][] = $header;
+            $ans[] = $header;
         }
-        $ans['items'][] = 'user-agent';
-        sort($ans['items']);
-        return_json($ans);
+        $ans[] = 'user-agent';
+        sort($ans);
+        return_success($ans) ;
 
     }
     

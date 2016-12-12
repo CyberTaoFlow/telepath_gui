@@ -374,7 +374,7 @@ telepath.search = {
                     that.count++;
                     that.container = $('#tele-search-' + type);
                     that.container.empty();
-                    if (!data.items || data.items.length == 0) {
+                    if (!data.items.items || data.items.items.length == 0) {
                         var p = $('<p>').text("No results");
                         that.container.append(p);
                         if (that.count==4)
@@ -382,10 +382,10 @@ telepath.search = {
                         return;
                     }
 
-                    that.results[type] = data.items;
-                    $('.tele-search-tab[rel="' + type + '"] span').html(thousandsFormat(data.total));
+                    that.results[type] = data.items.items;
+                    $('.tele-search-tab[rel="' + type + '"] span').html(thousandsFormat(data.items.total));
 
-                    data.items.map(function(a) { that.displayed[type].push(a.sid)});
+                    data.items.items.map(function(a) { that.displayed[type].push(a.sid)});
 
                     if (that.count==4)
                         that.selectTab();
@@ -528,8 +528,8 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.cases
                     }, function (data) {
-                        callback(data);
-                        data.items.map(function(a) {
+                        callback(data.items);
+                        data.items.items.map(function(a) {
                             that.displayed.cases.push(a.sid);
                             that.results.cases.push(a);
                         });
@@ -571,11 +571,11 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.alerts
                     }, function (data) {
-                        data.items.map(function(a) {
+                        data.items.items.map(function(a) {
                             that.displayed.alerts.push(a.sid);
                             that.results.alerts.push(a);
                         });
-                        callback(data);
+                        callback(data.items);
                     }, false, false, true)
                 }
             }
@@ -611,11 +611,11 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.suspects
                     }, function (data) {
-                        data.items.map(function(a) {
+                        data.items.items.map(function(a) {
                             that.displayed.suspects.push(a.sid);
                             that.results.suspects.push(a);
                         });
-                        callback(data);
+                        callback(data.items);
                     }, false, false, true)
                 }
             }
@@ -651,11 +651,11 @@ telepath.search = {
                         dir: that.dir,
                         displayed: that.displayed.requests
                     }, function (data) {
-                        data.items.map(function(a) {
+                        data.items.items.map(function(a) {
                             that.displayed.requests.push(a.sid);
                             that.results.requests.push(a);
                         });
-                        callback(data);
+                        callback(data.items);
                     }, false, false, true)
                 }
             }

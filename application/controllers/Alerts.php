@@ -34,12 +34,6 @@ class Alerts extends Tele_Controller
 
         $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_filter_session);
 
-        if ($displayed) {
-            // We need just the alert items
-            return_json($alerts);
-        }
-
-
         return_success(['alerts' => $alerts]);
 
     }

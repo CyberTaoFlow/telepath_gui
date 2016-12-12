@@ -58,7 +58,7 @@ class M_Actions extends CI_Model {
 				$ans[] = array('key' => $fields['application'] . ' :: ' . $fields['action_name'], 'raw' => $fields);
 			}
 		}
-		return_success($ans);
+		return $ans;
 	}
 
 	function search_actions($text, $size, $start){
@@ -186,7 +186,7 @@ class M_Actions extends CI_Model {
 					foreach ($row['parameters'] as $param) {
 						// We got our session, return its SID and offset timestamp
 						if ($param['name'] == 'hybridrecord' && $param['value'] == $value) {
-							return_success(array('sid' => $row['sid'], 'ts' => $row['ts']));
+							return array('sid' => $row['sid'], 'ts' => $row['ts']);
 						}
 					}
 				}
@@ -194,11 +194,11 @@ class M_Actions extends CI_Model {
 
 		} else {
 			// Return empty array to UI, nothing found (yet)
-			return_success();
+			return $results;
 		}
 
 		// Something went wrong
-		return_success();
+		return $results;
 	}
 
 	function old_get_requests($mode, $value, $host, $offset, $lockon)
@@ -376,7 +376,7 @@ class M_Actions extends CI_Model {
 
 		}
 
-		return_success($ans);
+		return $ans;
 
 	}
 

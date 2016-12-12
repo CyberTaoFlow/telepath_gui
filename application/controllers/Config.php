@@ -82,9 +82,8 @@ class Config extends Tele_Controller
         $ans['whitelist'] = $this->M_Config->whitelist_get_ips();
         $ans['ip_balances'] = $this->M_Config->get_ip_balances();
         $ans['header_balances'] = $this->M_Config->get_header_balances();
-        $ans['success'] = true;
 
-        return_json($ans);
+        return_success($ans);
 
     }
 
@@ -114,7 +113,7 @@ class Config extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        return_json(array('scheduler' => $this->M_Config->get_scheduler(), 'success' => true));
+        return_success(array('scheduler' => $this->M_Config->get_scheduler()));
 
 
     }

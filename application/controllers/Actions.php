@@ -46,7 +46,7 @@ class Actions extends Tele_Controller
         $text = str_replace(":", "", $text);
         $text = trim($text);
 
-        return $this->M_Actions->get_action_autocomplete($text);
+        return_success($this->M_Actions->get_action_autocomplete($text)) ;
 
 
     }
@@ -128,7 +128,7 @@ class Actions extends Tele_Controller
     public function _hybridrecord_to_sid($value, $host)
     {
 
-        return $this->M_Actions->_hybridrecord_to_sid($value,$host);
+        return_success($this->M_Actions->_hybridrecord_to_sid($value,$host)) ;
 
     }
 
@@ -139,7 +139,7 @@ class Actions extends Tele_Controller
 
         $id = $this->input->post('id');
 
-        return $this->M_Actions->get_requests($id);
+        return_success($this->M_Actions->get_requests($id)) ;
 
     }
 

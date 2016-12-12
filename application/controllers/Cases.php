@@ -149,7 +149,7 @@ class Cases extends Tele_Controller
 
         $requests = $this->M_Cases->get_case_sessions(15, $cid, $range, $apps, $sort, $dir, $displayed);
 
-        return_json($requests);
+        return_success($requests);
 
     }
 
@@ -176,9 +176,8 @@ class Cases extends Tele_Controller
 
         $ans['chart'] = $this->M_Cases->get_case_sessions_chart($range, $apps, $cid);
         $ans['case'] = array('case_data' => $this->M_Cases->get_case_data($cid));
-        $ans['success'] = true;
 
-        return_json($ans);
+        return_success($ans);
 
     }
 

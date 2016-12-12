@@ -482,9 +482,6 @@ class M_Alerts extends CI_Model {
 
 		}
 
-
-
-		$results['success'] = true;
 		if (ENVIRONMENT == 'development') {
 			$results['query'] = $params;
 		}

@@ -316,7 +316,6 @@ class M_Search extends CI_Model {
 
 				
 		
-		$results['success'] = true;
 		if (ENVIRONMENT == 'development') {
 			$results['query'] = $params;
 		}
@@ -372,7 +371,7 @@ class M_Search extends CI_Model {
 			}
 
 		}
-		return_success($data);
+		return $data;
 
 
 	}

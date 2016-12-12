@@ -108,7 +108,7 @@ telepath.config.liveSessions = {
         var that = this;
         this.contentRight.empty().append(telepath.loader);
         telepath.ds.get('/livesessions/index', {host: host}, function (data) {
-            that.data = data.items;
+            that.data = data.items.items;
             // Create List
             that.list = $('<div>');
             that.contentRight.empty().append(that.list);

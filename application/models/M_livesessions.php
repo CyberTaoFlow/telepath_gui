@@ -153,7 +153,6 @@ class M_Livesessions extends CI_Model
         }
 
         $results['total'] = $result["aggregations"]["sid_count"]["value"];
-        $results['success'] = true;
         return $results;
     }
 

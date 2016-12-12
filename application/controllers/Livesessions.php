@@ -14,6 +14,6 @@ class LiveSessions extends Tele_Controller
     public function index()
     {
         $host = $this->input->post('host');
-        return_json($this->M_Livesessions->index($host));
+        return_success($this->M_Livesessions->index($host));
     }
 }
