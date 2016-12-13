@@ -34,27 +34,4 @@ class Suspects extends Tele_Controller
 
     }
 
-    public function get_avg_score()
-    {
-
-        $key = $this->input->post('key');
-        $val = $this->input->post('value');
-
-        switch ($key) {
-            case 'SID':
-            case 'user_ip':
-            case 'RID':
-
-                $this->load->model('RequestScores');
-                $scores = $this->RequestScores->get_avg_scores($key, $val);
-                xss_return_success($scores);
-
-            default:
-                return_fail('Missing key');
-                break;
-        }
-
-
-    }
-
 }
