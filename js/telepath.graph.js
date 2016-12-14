@@ -97,7 +97,8 @@ $.widget( "tele.flotGraph", {
 				var filterToggle  = $('<a>').attr('href', '#').addClass('tele-graph-filter-toggle');
 				var filterTitle   = $('<div>').addClass('tele-graph-filter-title').text(filter.label);
 				var filterPercent = $('<div>').addClass('tele-graph-filter-percent').text((totalCount > 0 ? parseFloat(filter.count / totalCount * 100).toFixed(2) : 0) + '%');
-				var filterCount   = $('<div>').addClass('tele-graph-filter-count').text(filter.count + ' ' + filter.suffix);
+				var filterCount   = $('<div>').addClass('tele-graph-filter-count')
+					.text(filter.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + filter.suffix);
 
 				var div2 = $('<div>').addClass('tele-graph-filter-inner-right-content').append(filterPercent).append(filterCount);
 
