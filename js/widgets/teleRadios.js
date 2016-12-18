@@ -19,6 +19,7 @@ $.widget( "tele.teleRadios", {
     _update: function() {
 
 		var that = this;
+		this.element.empty();
 		
 		if(this.options.title) {
 			$('<div>').html(this.options.title).addClass('tele-title-1').appendTo(this.element);
