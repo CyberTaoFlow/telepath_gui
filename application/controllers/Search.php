@@ -51,14 +51,24 @@ class Search extends Tele_Controller
     public function cases()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-        xss_return_success($this->M_Search->search('cases', $this->_getSettings()));
+        $settings = $this->_getSettings();
+        $cases = $this->M_Search->search('cases', $settings);
+        if ($settings['sort'] == 'date') {
+            $cases['items'] = sort_by_date($cases['items'], $settings['dir']);
+        }
+        xss_return_success($cases);
     }
 
     // Alerts thread
     public function alerts()
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
-        xss_return_success($this->M_Search->search('alerts', $this->_getSettings()));
+        $settings = $this->_getSettings();
+        $alerts = $this->M_Search->search('alerts', $settings);
+        if ($settings['sort'] == 'date') {
+            $alerts['items'] = sort_by_date($alerts['items'], $settings['dir']);
+        }
+        xss_return_success($alerts);
     }
 
     // Suspects thread
@@ -66,8 +76,13 @@ class Search extends Tele_Controller
     {
         telepath_auth(__CLASS__, __FUNCTION__, $this);
         $this->load->model('M_Suspects');
+        $settings = $this->_getSettings();
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        xss_return_success($this->M_Search->search('suspects', $this->_getSettings(), $suspect_threshold));
+        $suspects = $this->M_Search->search('suspects', $settings, $suspect_threshold);
+        if ($settings['sort'] == 'date') {
+            $suspects['items'] = sort_by_date($suspects['items'], $settings['dir']);
+        }
+        xss_return_success($suspects);
     }
 
     // Requests thread
@@ -76,7 +91,12 @@ class Search extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        xss_return_success($this->M_Search->search('requests', $this->_getSettings(), $suspect_threshold));
+        $settings = $this->_getSettings();
+        $requests = $this->M_Search->search('requests', $settings, $suspect_threshold);
+        if ($settings['sort'] == 'date') {
+            $alerts['items'] = sort_by_date($requests['items'], $settings['dir']);
+        }
+        xss_return_success($requests);
     }
 
     function getAutoComplete()

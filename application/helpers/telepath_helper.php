@@ -144,6 +144,27 @@ function get_source_and_ip($results) {
 	return $result;
 }
 
+# Fix the problem we have with sort. When sorting alerts by date we get other requests with the same session id. As a
+# result we need to perform a second sort.
+function sort_by_date($results, $dir)
+{
+	if ($dir == 'ASC') {
+		$dir = SORT_ASC;
+	} elseif ($dir == 'DESC') {
+		$dir = SORT_DESC;
+	}
+
+	$temp = [];
+	foreach ($results as $key => $row) {
+		$temp[$key] = $row['date'];
+	}
+
+	array_multisort($temp, $dir, $results);
+
+	return $results;
+
+}
+
 function delete_by_query($client, $params, $max = 0)
 {
 	#$results = $this->elasticClient->deleteByQuery($params);
