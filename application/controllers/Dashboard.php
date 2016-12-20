@@ -102,24 +102,8 @@ class Dashboard extends Tele_Controller
         }
 
 
-
-        # Fix the problem we have with sort. When we sort by date we get other requests with the same session id.
-        # As a result we need to perform a second sort.
         if ($sort == 'date') {
-
-            if ($dir == 'ASC') {
-                $dir = SORT_ASC;
-            } elseif ($dir == 'DESC') {
-                $dir = SORT_DESC;
-            }
-
-            $temp = array();
-            $ar = $suspects['items'];
-            foreach ($ar as $key => $row) {
-                $temp[$key] = $row['date'];
-            }
-            array_multisort($temp, $dir, $ar);
-            $suspects['items'] = $ar;
+            $suspects['items'] = sort_by_date( $suspects['items'], $dir);
         }
 
         $data = array('suspects' => $suspects);
@@ -161,24 +145,7 @@ class Dashboard extends Tele_Controller
         }
 
         if ($sort == 'date') {
-
-            if ($dir == 'ASC') {
-                $dir = SORT_ASC;
-            } elseif ($dir == 'DESC') {
-                $dir = SORT_DESC;
-            }
-
-            # Fix the problem we have with sort.
-            # When sorting alerts by date we get other requests
-            # with the same session id. As a result we need to perform
-            # second sort.
-            $temp = array();
-            $ar = $alerts['items'];
-            foreach ($ar as $key => $row) {
-                $temp[$key] = $row['date'];
-            }
-            array_multisort($temp, $dir, $ar);
-            $alerts['items'] = $ar;
+            $alerts['items'] = sort_by_date( $alerts['items'], $dir);
         }
 
         $data = array('alerts' => $alerts);

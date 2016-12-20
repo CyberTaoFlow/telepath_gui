@@ -30,29 +30,11 @@ class Suspects extends Tele_Controller
 
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
-        xss_return_success($this->M_Suspects->get($range, $apps, $sort, $dir, $displayed, 15, $suspect_threshold, $search));
-
-    }
-
-    public function get_avg_score()
-    {
-
-        $key = $this->input->post('key');
-        $val = $this->input->post('value');
-
-        switch ($key) {
-            case 'SID':
-            case 'user_ip':
-            case 'RID':
-
-                $this->load->model('RequestScores');
-                $scores = $this->RequestScores->get_avg_scores($key, $val);
-                xss_return_success($scores);
-
-            default:
-                return_fail('Missing key');
-                break;
+        $suspects = $this->M_Suspects->get($range, $apps, $sort, $dir, $displayed, 15, $suspect_threshold, $search);
+        if ($sort == 'date') {
+            $suspects['items'] = sort_by_date( $suspects['items'], $dir);
         }
+        xss_return_success($suspects);
 
 
     }

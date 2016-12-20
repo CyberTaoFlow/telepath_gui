@@ -387,6 +387,9 @@ telepath.search = {
                     $('.tele-search-tab[rel="' + type + '"] span').html(thousandsFormat(data.items.total));
 
                     data.items.items.map(function(a) { that.displayed[type].push(a.sid)});
+                    if (typeof data.items.duplicated_sessions != "undefined" && data.items.duplicated_sessions != null && data.items.duplicated_sessions.length > 0) {
+                        $.merge(that.displayed[type], data.items.duplicated_sessions);
+                    }
 
                     if (that.count==4)
                         that.selectTab();
@@ -576,6 +579,9 @@ telepath.search = {
                             that.displayed.alerts.push(a.sid);
                             that.results.alerts.push(a);
                         });
+                        if (typeof data.items.duplicated_sessions != "undefined" && data.items.duplicated_sessions != null && data.items.duplicated_sessions.length > 0) {
+                            $.merge(that.displayed.alerts, data.items.duplicated_sessions);
+                        }
                         callback(data.items);
                     }, false, false, true)
                 }
@@ -616,6 +622,9 @@ telepath.search = {
                             that.displayed.suspects.push(a.sid);
                             that.results.suspects.push(a);
                         });
+                        if (typeof data.items.duplicated_sessions != "undefined" && data.items.duplicated_sessions != null && data.items.duplicated_sessions.length > 0) {
+                            $.merge(that.displayed.suspects, data.items.duplicated_sessions);
+                        }
                         callback(data.items);
                     }, false, false, true)
                 }

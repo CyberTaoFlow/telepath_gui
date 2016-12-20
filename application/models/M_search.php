@@ -209,6 +209,9 @@ class M_Search extends CI_Model {
 
 		$params2 = append_range_query($params2, $settings['range']);
 
+		$duplicated_sessions = [];
+		$displayed_sessions = [];
+
 		if(isset($result["aggregations"]) && 
 		   isset($result["aggregations"]["sid"]) && 
 		   isset($result["aggregations"]["sid"]["buckets"]) && 
@@ -235,6 +238,7 @@ class M_Search extends CI_Model {
 					// tab
 					if($scope == 'requests' && $doc_count < $result2['hits']['total']){
 						$result["aggregations"]["sid_count"]["value"]--;
+						$duplicated_sessions[] = $sid_key;
 						continue;
 					}
 
@@ -256,6 +260,7 @@ class M_Search extends CI_Model {
 
 						if ($result4['hits']['total']){
 							$result["aggregations"]["sid_count"]["value"]--;
+							$duplicated_sessions[] = $sid_key;
 							continue;
 						}
 					}
@@ -285,32 +290,16 @@ class M_Search extends CI_Model {
 					}
 
 						$results['items'][] = $item;
+						$displayed_sessions[] = $sid_key;
 					
 				}
 				
 				$results['total'] = $result["aggregations"]["sid_count"]["value"];
 
-			# Fix the problem we have with sort.
-			# When sorting by date we get other requests
-			# with the same session id. As a result we need to perform
-			# second sort.
-			if ($settings['sort'] == 'date') {
 
-				if ($settings['dir'] == 'ASC') {
-					$sortorder = SORT_ASC;
-				} elseif ($settings['dir'] == 'DESC') {
-					$sortorder = SORT_DESC;
-				}
+				$results['duplicated_sessions'] = $duplicated_sessions;
+				$results['displayed_sessions'] = $displayed_sessions;
 
-				$temp = array();
-				$ar = $results['items'];
-				foreach ($ar as $key => $row) {
-					$temp[$key] = $row['date'];
-				}
-				array_multisort($temp, $sortorder, $ar);
-				$results['items'] = $ar;
-			}
-				
 		}
 
 

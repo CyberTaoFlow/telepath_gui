@@ -34,6 +34,10 @@ class Alerts extends Tele_Controller
 
         $alerts = $this->M_Alerts->get_alerts($sort, $dir, $displayed, 15, $range, $apps, $search, $alerts_filter, $actions_filter_session);
 
+        if ($sort == 'date') {
+            $alerts['items'] = sort_by_date( $alerts['items'], $dir);
+        }
+
         xss_return_success(['alerts' => $alerts]);
 
     }
