@@ -161,7 +161,7 @@ telepath.sessionflow = {
 			if (this.boxMid.children().length) {
 				this.boxMid.width(0);
 				$('.tele-request-details').detach().insertAfter($('.tele-overlay-header-right'));
-				$('.tele-similarities-list .tele-list').height('auto')/*.mCustomScrollbar("update")*/;
+				$('.tele-similarities-list .tele-list').height('auto').mCustomScrollbar("update");
 				this.similaritiesList.attr('style', '');
 				this.boxRight.mCustomScrollbar({ scrollInertia: telepath.scrollSpeed });
 			}
