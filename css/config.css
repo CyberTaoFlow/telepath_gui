@@ -61,6 +61,20 @@
 	margin-top: 4px;
 	color: white;
 }
+.tele-config-bar-left .tele-checkbox {
+	margin: 3px 0 0 11px;
+}
+
+@media(max-width: 1200px) {
+
+	.tele-config-bar .tele-button.application-bar {
+		margin: 5px 7px 0 0;
+	}
+
+	.tele-config-bar-left .tele-checkbox {
+		margin: 3px 0 0 6px;
+	}
+}
 
 body .jstree-default-contextmenu {
 	z-index: 1001;

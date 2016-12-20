@@ -224,12 +224,29 @@ class Applications extends Tele_Controller
         $app_ids = $this->input->post('app_ids', true);
         $mode = $this->input->post('mode', true);
 
-       $this->M_Applications->set_operation_mode($app_ids, $mode);
+        // not use for now
+        if ($app_ids == 'all'){
 
-        $this->load->model('M_Config');
+            if ($mode == 3){
+                $this->M_Applications->set_all_operation_mode($mode, 2);
+                $this->M_Applications->set_all_operation_mode(2, 1);
+            }
+            else{
+                $this->M_Applications->set_all_operation_mode($mode);
+            }
+        }
+        else{
 
-        foreach($app_ids as $app_id){
-            $this->M_Config->update('app_list_was_changed_id', $app_id);
+            $this->M_Applications->set_operation_mode($app_ids, $mode);
+
+            $this->load->model('M_Config');
+
+            $apps = [];
+            foreach ($app_ids as $app_id) {
+                $apps[] = $app_id['host'];
+            }
+            $this->M_Config->update('app_list_was_changed_id', $apps);
+
         }
         xss_return_success();
 
@@ -260,7 +277,8 @@ class Applications extends Tele_Controller
             return_fail('No App ID specified');
         }
         $flag = 0;
-        foreach ($app_ids as $app_id){
+        $gen_config =false;
+        foreach ($app_ids as $app_id) {
             // if(in_array($app_id, $this->acl->allowed_apps) || $this->acl->all_apps())
             //$result = $this->Apps->app_delete($app_id);
 
@@ -270,28 +288,8 @@ class Applications extends Tele_Controller
             if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
                 $this->load->model('M_Nginx');
                 $this->M_Nginx->del_certs($app_id);
-                $conf = $this->M_Nginx->gen_config();
-                $this->load->model('M_Config');
-                $nginx_config_file = $this->config->item('nginx_config_file');
-                file_put_contents($nginx_config_file, $conf);
+                $gen_config = true;
             }
-
-        // if the deleted applications had an SSL authentication for reverse proxy, we need to delete the
-        // certificates and REWRITE OUR NGINX.CONF
-        $app = $this->M_Applications->get($app_id);
-        if (intval($app['ssl_flag']) == 1 && $app['app_ssl_certificate'] != '' && $app['app_ssl_private'] != '') {
-            $this->load->model('M_Nginx');
-            $this->M_Nginx->del_certs($app_id);
-            $conf = $this->M_Nginx->gen_config();
-            $this->load->model('M_Config');
-            $nginx_config_file = $this->config->item('nginx_config_file');
-            file_put_contents($nginx_config_file, $conf);
-        }
-
-        // remove it from elastic search
-        $this->M_Applications->delete($app_id);
-
-        $flag = $this->M_Applications->update_flag($app_id);
 
             // remove it from elastic search
             $this->M_Applications->delete($app_id);
@@ -299,6 +297,12 @@ class Applications extends Tele_Controller
             $flag = $this->M_Applications->update_flag($app_id);
         }
 
+        if ($gen_config) {
+            $conf = $this->M_Nginx->gen_config();
+            $this->load->model('M_Config');
+            $nginx_config_file = $this->config->item('nginx_config_file');
+            file_put_contents($nginx_config_file, $conf);
+        }
         xss_return_success(['flag' => $flag]);
 
     }

@@ -49,6 +49,8 @@ $.widget( "tele.teleCheckbox", {
 		
 		if(this.options.checked) {
 			this.input.addClass('checked');
+		}else{
+			this.input.removeClass('checked');
 		}
 		
 		this.input.click(function () {

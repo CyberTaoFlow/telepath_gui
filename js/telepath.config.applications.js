@@ -95,7 +95,7 @@ telepath.config.applications = {
 				children: children,
 				state: {opened: (typeof row.open != "undefined" && row.open) ? true : false},
 				text: text,
-				data: {type: 'app', host: row.host, count: row.learning_so_far },
+				data: {type: 'app', host: row.host, count: row.learning_so_far, operation_mode: row.operation_mode },
 				icon: 'tele-icon-app',
 				a_attr : {title: text}
 			};
@@ -246,6 +246,7 @@ telepath.config.applications = {
 
 		// reset the selected app
 		that.selected= [];
+		$(that.checkAll).teleCheckbox('option', 'checked', false);
 
 		that.appTree = $('<div>').addClass('application-tree');
 
@@ -263,7 +264,7 @@ telepath.config.applications = {
 
 					that.loading = true;
 
-					var anotherTree = $('<div>');
+					var anotherTree = $('<div>').addClass('application-tree');
 					var treedata = telepath.config.applications.expand;
 
 					that.createTree(anotherTree,treedata);
@@ -288,6 +289,31 @@ telepath.config.applications = {
 		that.createTree(that.appTree,that.data);
 
 
+	},
+	updateOperationMode: function (app_ids, mode) {
+		var that = this;
+		telepath.ds.get('/applications/set_app_operation_mode', {
+			app_ids: app_ids,
+			mode: mode
+		}, function (data) {
+			if (data.success) {
+				$('.tele-popup').remove();
+				$('.tele-config-bar-right ul').remove();
+				$(telepath.config.applications.contentRight).empty();
+				//that.selected = [];
+				$('.application-tree').each(function () {
+					var currentNode = '.' + $(this).attr("class").split(' ')[2];
+					$(currentNode+' ul.jstree-container-ul >li').each(function () {
+						if (that.selected.indexOf($(currentNode).jstree(true).get_node($(this).attr('id')).data) > -1) {
+							$(currentNode).jstree(true).get_node($(this).attr('id')).data.operation_mode = mode;
+						}
+					})
+
+				});
+
+				telepath.dialog({msg: 'Applications successfully updated'});
+			}
+		});
 	},
 
 	init: function () {
@@ -337,7 +363,7 @@ telepath.config.applications = {
 		// Create
 		this.create     = $('<div>').btn({ icon: 'plus', text: 'New', callback: function () {
 			telepath.config.application.createApp();
-		} });
+		} }).addClass('application-bar');
 
 		// Edit
 		this.edit = $('<div>').btn({
@@ -369,36 +395,46 @@ telepath.config.applications = {
 					.css({'margin-left': 17}).appendTo(this.popup);
 
 				saveBtn.click(function () {
-
-					telepath.ds.get('/applications/set_app_operation_mode', {
-						app_ids: that.selected,
-						mode: that.optmod.data('tele-teleRadios').options.checked
-					}, function (data) {
-						if (data.success) {
-							$('.tele-popup').remove();
-							$('.tele-config-bar-right ul').remove();
-							$(telepath.config.applications.contentRight).empty();
-							//that.selected = [];
-							telepath.dialog({msg: 'Applications successfully updated'});
-						}
-					});
+					var app_ids = that.selected;
+					var mode = that.optmod.data('tele-teleRadios').options.checked;
+					if (mode == 3) {
+						telepath.dialog({
+							type: 'dialog',
+							msg: 'Please note that you cannot switch from Training mode to Hybrid mode. In this case,' +
+							' the application will switch to Production.',
+							callback: function () {
+								that.updateOperationMode(app_ids, mode)
+							}
+						});
+					}
+					else {
+						that.updateOperationMode(app_ids, mode)
+					}
 				})
 			}
-		}).attr('title', 'edit operation mode');
+		}).attr('title', 'edit operation mode').addClass('application-bar');
 
 		// Delete
 		this.delete = $('<div>').btn({
 			icon: 'delete', text: 'Delete', callback: function () {
 
+				if (!that.selected.length) {
+					telepath.dialog({msg: 'No application selected'});
+					$('.tele-popup').remove();
+					return;
+				}
+
 				context_confirm('Delete Applications', 'Are you sure you want to delete this applications?', function () {
 
-					telepath.ds.get('/applications/del_app', {app_id: that.selected}, function (data) {
+					telepath.ds.get('/applications/del_app', {app_id: that.selected.map(function (val) {
+						if (val && val.host) {return val.host}})
+					}, function (data) {
 						if (data.success) {
 							telepath.config.applications.contentRight.empty();
 							$('.tele-config-bar-right ul').remove();
 							$('.tele-popup').remove();
 							$(that.selected.map(function (val) {
-								return 'a:contains(' + val + ')'
+								return 'a:contains(' + val.host + ')'
 							}).join(', ')).parent().remove();
 							that.selected = [];
 							telepath.dialog({msg: 'Applications successfully deleted'});
@@ -406,11 +442,30 @@ telepath.config.applications = {
 					}, 'Error deleting application');
 				});
 			}
-		});
+		}).addClass('application-bar');
 
+		this.checkAll = $('<div>').teleCheckbox({
+			callback: function () {
+				if (this.checked) {
+					$('.jstree-default .jstree-checkbox').parent().addClass('checked');
+					that.selected = [];
+					$('.application-tree').each(function () {
+						var currentNode = '.'+$(this).attr("class").split(' ')[2];
+						$(currentNode+' ul.jstree-container-ul >li > a').each(function () {
+							that.selected.push($(currentNode).jstree(true).get_node($(this).parent().attr('id')).data);
+						})
+					})
+
+				}
+				else {
+					$('.jstree-default .jstree-checkbox').parent().removeClass('checked');
+					that.selected = [];
+				}
+			}
+		}).attr('title', 'To choose everything');
 
 		this.barRight.append(this.search);
-		this.barLeft.append(this.create).append(this.edit).append(this.delete);
+		this.barLeft.append(this.edit).append(this.delete).append(this.create).append(this.checkAll);
 
 		var typingTimer;                //timer identifier
 		var doneTypingInterval = 1000;
@@ -445,8 +500,8 @@ telepath.config.applications = {
 			contextmenu: {items: telepath.contextMenu},
 			grid: {
 				columns: [
-					{width: $(window).width() < 1200 ? 195 : 365},
-					{width: 50, value: "count", cellClass: "learning-so-far"},
+					{width: $(window).width() < 1200 ? 225 : 345},
+					{width: 35, value: "count", cellClass: "learning-so-far"},
 					{
 						value: function (node) {
 							return $('<div>').btn({
@@ -456,7 +511,7 @@ telepath.config.applications = {
 								}
 							});
 
-						}, width: 40
+						}, width: 32
 					},
 					{
 						value: function (node) {
@@ -467,7 +522,7 @@ telepath.config.applications = {
 								}
 							});
 
-						}, width: 40
+						}, width: 32
 					}
 				],
 				resizable: true
@@ -491,16 +546,44 @@ telepath.config.applications = {
 		}).on('hover_node.jstree',function(e,data){
 			$("#"+data.node.id+' .learning-so-far' ).prop('title', 'Overall Transactions');
 		}).bind("loaded.jstree", function (event, data) {
+			
+			// create check checkbox event
 			$('.jstree-default .jstree-checkbox').on('click', function (e) {
 				e.stopPropagation();
 				if ($(this).parent().hasClass('checked')) {
 					$(this).parent().removeClass('checked');
-					that.selected.pop($(div).jstree(true).get_node($(this).parent().parent().attr('id')).data.host)
+					var index = that.selected.indexOf($(div).jstree(true).get_node($(this).parent().parent().attr('id')).data);
+					if (index > -1) {
+						that.selected.splice(index, 1);
+					}
 				} else {
-					that.selected.push($(div).jstree(true).get_node($(this).parent().parent().attr('id')).data.host);
+					that.selected.push($(div).jstree(true).get_node($(this).parent().parent().attr('id')).data);
 					$(this).parent().addClass('checked')
 				}
 			})
+		}).on("open_node.jstree", function (e, data) {
+
+			// save the current state
+			var currentNode = '#'+data.node.id;
+			var index = that.selected.indexOf(data.node.data);
+			if (index > -1) {
+				$(currentNode+' a').addClass('checked');
+			}
+
+			// create new event again, because the node is created again when the user open the child node
+			$('.jstree-default '+ currentNode+' .jstree-checkbox').on('click', function (e) {
+				e.stopPropagation();
+				if ($(this).parent().hasClass('checked')) {
+					$(this).parent().removeClass('checked');
+					var index = that.selected.indexOf($(div).jstree(true).get_node($(this).parent().parent().attr('id')).data);
+					if (index > -1) {
+						that.selected.splice(index, 1);
+					}
+				} else {
+					that.selected.push($(div).jstree(true).get_node($(this).parent().parent().attr('id')).data);
+					$(this).parent().addClass('checked')
+				}
+			});
 		});
 		/*.on('ready.jstree', function(e, data) {
 		 data.instance.search(that.searchString);

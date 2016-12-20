@@ -144,7 +144,7 @@ class M_Applications extends CI_Model {
 
 		if ($exists){
 			$this->elasticClient->delete($params);
-			$this->elasticClient->indices()->refresh(array('index' => 'telepath-domains'));
+//			$this->elasticClient->indices()->refresh(array('index' => 'telepath-domains'));
 		}
 
 		# Delete all records where HTTP host is used the same ias $host, Yuli
@@ -308,10 +308,10 @@ class M_Applications extends CI_Model {
 //		);
 
 		if($learning_so_far){
-            $include=["host","subdomains","learning_so_far", "display_name"];
+            $include=["host","subdomains","learning_so_far", "display_name", "operation_mode"];
         }
 		else{
-			$include=["host","subdomains", "display_name"];
+			$include=["host","subdomains", "display_name", "operation_mode"];
 		}
 
 
@@ -850,6 +850,30 @@ class M_Applications extends CI_Model {
 	}
 
 
+	/*public function set_all_operation_mode($mode, $limit = false)
+	{
+
+		$params = [
+			"index" => "telepath-domains",
+			'type' => 'domains',
+			'body' => [
+				'query' => ['bool' => ['must_not' => ['term' => ['operation_mode' => $mode]]]],
+			]
+		];
+
+		$update = [
+			'operation_mode' => $mode,
+		];
+
+		if ($limit){
+			$params['body']['query']['bool'] = ['must' => ['term' => ['operation_mode' => $limit]]];
+		}
+
+		 update_by_query($this->elasticClient, $params, $update);
+
+	}*/
+
+
 	public function set_operation_mode($app_ids, $mode)
 	{
 		$params = [];
@@ -858,11 +882,25 @@ class M_Applications extends CI_Model {
 				'update' => [
 					'_index' => 'telepath-domains',
 					'_type' => 'domains',
-					'_id' => $app_id
+					'_id' => $app_id['host']
 				]
 			];
+
+			//check if define operation mode to Hybrid
+			if ($mode == 3) {
+
+				//if now operation mode is Training, set to Production else set to Hybrid
+				if ($app_id['operation_mode'] == 1) {
+					$new_mode = "2";
+				} else {
+					$new_mode = "3";
+				}
+			} else {
+				$new_mode = $mode;
+			}
+
 			$params['body'][] =[
-				'doc' => ['operation_mode' => $mode]
+				'doc' => ['operation_mode' => $new_mode]
 			];
 		}
 		return $this->elasticClient->bulk($params);
