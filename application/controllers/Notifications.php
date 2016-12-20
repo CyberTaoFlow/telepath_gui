@@ -30,6 +30,7 @@ class Notifications extends Tele_Controller
                     ]
                 )
             ),
+            // TODO: deprecated query
             'query' => [
                 'bool' => [
                     'must' => [
