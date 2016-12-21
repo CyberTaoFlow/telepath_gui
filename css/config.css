@@ -61,6 +61,20 @@
 	margin-top: 4px;
 	color: white;
 }
+.tele-config-bar-left .tele-checkbox {
+	margin: 3px 0 0 11px;
+}
+
+@media(max-width: 1200px) {
+
+	.tele-config-bar .tele-button.application-bar {
+		margin: 5px 7px 0 0;
+	}
+
+	.tele-config-bar-left .tele-checkbox {
+		margin: 3px 0 0 6px;
+	}
+}
 
 body .jstree-default-contextmenu {
 	z-index: 1001;
@@ -432,9 +446,17 @@ a.jstree-anchor{
 .tele-condition-accordion .ui-accordion-header .brief {
 	position: absolute;
 	top: 20px;
-	left: 250px;
 	font-size: 15px;
 	font-family: 'Roboto Condensed', sans-serif;
+}
+
+.tele-condition-accordion .ui-accordion-header .brief {
+	left: 18%;
+	text-transform: none;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 75%;
 }
 
 .tele-ruletype-accordion .ui-accordion-header .brief {

@@ -700,7 +700,7 @@ telepath.alerts = {
 			},
 			grid:{
 				hoverable: true,
-				clickable: true
+				clickable: false
 			},
 			legend: { 
 				show: true,
@@ -723,11 +723,11 @@ telepath.alerts = {
 		    	return;
 			percent = parseFloat(obj.series.percent).toFixed(2);
 			$("#alert-distribution-showPercent").html('<span style="font-weight: bold; color: '+obj.series.color+'">'+obj.series.label+' ('+percent+'%)</span>');
-			$('.tele-graph-canvas .flot-overlay').css({"cursor": "pointer"})
+			//$('.tele-graph-canvas .flot-overlay').css({"cursor": "pointer"})
 		}
 		function pieClick(event, pos, obj){
 
-			if (!obj)
+			/*if (!obj)
 				return;
 			if (obj.series.label ){
 				if (that.actionsFilter.length == 1 && obj.series.label == that.actionsFilter[0]){
@@ -744,13 +744,13 @@ telepath.alerts = {
 				}
 
 			}
-			that.refresh()
+			that.refresh()*/
 
 		}
 
 
 		function legendClick(){
-			$('.legend tr').on('click',function(){
+			/*$('.legend tr').on('click',function(){
 				// fill the filter array
 				if(that.allActions){
 					that.actionsFilter = [];
@@ -781,12 +781,12 @@ telepath.alerts = {
 				}
 				that.refresh()
 
-			});
+			});*/
 		}
 
 		function set_legend(){
 
-			$('.legend tr').css({"cursor":"pointer"});
+			//$('.legend tr').css({"cursor":"pointer"});
 			if (that.actionsFilter.length>0 && that.allActions == false ){
 				$.each($('.legend tr'),function (i, val){
 					if ($.inArray(val.children[1].innerText , that.actionsFilter)==-1){

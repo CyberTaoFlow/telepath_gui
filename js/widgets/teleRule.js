@@ -144,7 +144,7 @@ $.widget( "tele.teleRule", {
 			},
 			'behaviour': {
 				title: 'Behaviour',
-				desc: 'Inspect one aspect of the web user\'s behavior such as: landing speed, path, geographic location and so on.',
+				desc: 'Inspect one aspect of the web user\'s behavior such as: landing speed, navigation, geographic location and so on.',
 			},
 			'geographic': {
 				title: 'Geographic',

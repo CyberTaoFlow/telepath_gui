@@ -77,10 +77,9 @@ $.widget( "tele.teleRequest", {
 		this.hideParameters();
 		
 		// Create popup
-		this.pop = $('<div>').css({ position: 'absolute', top: $(this.element).offset().top + 20, left: $(this.element).offset().left + 600 });
-		if (window.innerWidth < 1600){
-			console.log(width);
-			this.pop.css({top: $(this.element).offset().top - 15 , left: $(this.element).offset().left +(($(this.element).width()/2 ))  })
+		this.pop = $('<div>').css({ position: 'absolute', top: $(this.element).offset().top + 25, left: $(this.element).offset().left + 600 });
+		if (window.innerWidth < 1610){
+			this.pop.css({ left: $(this.element).offset().left - 500 +(($(this.element).parent().width()))  })
 		}
 		$('body').append(this.pop);
 		
@@ -155,20 +154,7 @@ $.widget( "tele.teleRequest", {
 			title: title, 
 			html: true,
 			content: content,
-			//placement:'right'
-			placement: function (context, source) {
-
-				if (window.innerWidth > 1600) {
-					return 'right';
-				}
-				var position = $(source).position();
-
-				if (position.top < window.innerHeight / 2){
-					return 'bottom'
-				}
-					return "top";
-			},
-			//placement: window.innerWidth < 1600 ? 'top' : 'right'
+			placement:'right'
 		}).popover('show');
 		
 		$('.popover').addClass('tele-params-popover');

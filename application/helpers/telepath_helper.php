@@ -194,6 +194,116 @@ function delete_by_query($client, $params, $max = 0)
 	}
 }
 
+/**
+ * @param $client : the elastic
+ * @param $params
+ * @param int $max
+ */
+function new_delete_by_query($client, $params, $max = 0)
+{
+
+	$limit = true;
+	if (!isset($params['body']['size'])){
+		$params['body']['size'] = 9999;
+		$limit = false;
+	}
+
+	while (true) {
+
+		$results = $client->search($params);
+
+		if (!$results || count($results['hits']['hits']) == 0) {
+
+			return;
+
+		} elseif ($max == 1 || count($results['hits']['hits']) == 1) {
+
+			$result = $results['hits']['hits'][0];
+
+			$params2 = [
+				'index' => $result['_index'],
+				'type' => $result['_type'],
+				'id' => $result['_id']
+			];
+			$client->delete($params2);
+
+			return;
+		}
+
+		$params2 = [];
+		foreach ($results['hits']['hits'] as $result) {
+
+			$params2['body'][] = [
+				'delete' => [
+					'_index' => $result['_index'],
+					'_type' => $result['_type'],
+					'_id' => $result['_id']
+				]
+			];
+		}
+		$params2['refresh'] = true;
+		$client->bulk($params2);
+
+		if ($limit){
+			return;
+		}
+	}
+}
+
+
+/**
+ * @param $client: the elastic client
+ * @param $params: parameter query
+ * @param $update: the update value
+ * @param $influence: boolean. If the updated value influence the query (example: change location of US citizens to
+ * 	Canada, the parameter is true. But change work group of US citizens, the parameter is false).
+ */
+function update_by_query($client, $params, $update, $influence = false)
+{
+	$from = 0;
+	$limit = true;
+
+	if (!isset($params['body']['size'])){
+		$params['body']['size'] = 9999;
+		$limit = false;
+	}
+
+	while (true) {
+
+		$params['body']['from'] = $from;
+		$results = $client->search($params);
+
+		if (!$results || count($results['hits']['hits']) == 0) {
+			return;
+		}
+
+		if (!$influence){
+			$from += count($results['hits']['hits']);
+		}
+
+		$params2 = [];
+		foreach ($results['hits']['hits'] as $result) {
+
+			$params2['body'][] = [
+				'update' => [
+					'_index' => $result['_index'],
+					'_type' => $result['_type'],
+					'_id' => $result['_id']
+				]
+			];
+			$params2['body'][] = [
+				'doc' => $update
+			];
+		}
+		$params2['refresh'] = true;
+		$client->bulk($params2);
+
+		if($limit){
+			return;
+		}
+	}
+}
+
 
 function prepare_elastic_results($results) {
 	$result  = array();
