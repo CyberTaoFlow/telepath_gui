@@ -151,8 +151,7 @@ $.widget( "tele.conditionList", {
 			
 			headerEl.append('<span class="brief"></span>');
 			telepath.formatConditionBrief($('.brief', headerEl), that.getOpt(condition));
-			$('.brief', headerEl).css('text-transform', 'none');
-			
+			$('.brief', headerEl).css('text-transform', 'none').attr('title', telepath.formatConditionBrief(false, that.getOpt(condition)));
 		});
 		
 		this.accordion.accordion({ 
