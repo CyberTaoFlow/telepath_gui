@@ -199,7 +199,7 @@ function delete_by_query($client, $params, $max = 0)
  * @param $params
  * @param int $max
  */
-function new_delete_by_query($client, $params, $max = 0)
+function new_delete_by_query($client, $params)
 {
 
 	$limit = true;
@@ -212,39 +212,26 @@ function new_delete_by_query($client, $params, $max = 0)
 
 		$results = $client->search($params);
 
-		if (!$results || count($results['hits']['hits']) == 0) {
+		if (!empty($results) && isset($results['hits']) && !empty($results['hits']['hits'])) {
 
-			return;
+			$params2 = [];
+			foreach ($results['hits']['hits'] as $result) {
 
-		} elseif ($max == 1 || count($results['hits']['hits']) == 1) {
+				$params2['body'][] = [
+					'delete' => [
+						'_index' => $result['_index'],
+						'_type' => $result['_type'],
+						'_id' => $result['_id']
+					]
+				];
+			}
+			$params2['refresh'] = true;
+			$client->bulk($params2);
 
-			$result = $results['hits']['hits'][0];
-
-			$params2 = [
-				'index' => $result['_index'],
-				'type' => $result['_type'],
-				'id' => $result['_id']
-			];
-			$client->delete($params2);
-
-			return;
-		}
-
-		$params2 = [];
-		foreach ($results['hits']['hits'] as $result) {
-
-			$params2['body'][] = [
-				'delete' => [
-					'_index' => $result['_index'],
-					'_type' => $result['_type'],
-					'_id' => $result['_id']
-				]
-			];
-		}
-		$params2['refresh'] = true;
-		$client->bulk($params2);
-
-		if ($limit){
+			if ($limit) {
+				return;
+			}
+		} else {
 			return;
 		}
 	}

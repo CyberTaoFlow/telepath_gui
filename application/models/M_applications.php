@@ -148,11 +148,11 @@ class M_Applications extends CI_Model {
 		}
 
 		# Delete all records where HTTP host is used the same ias $host, Yuli
-//		$params = array();
-//		$params['index'] = 'telepath-20*';
-//		$params['type'] = 'http';
-//		$params['body']['query']['bool']['filter']['term']['host'] = $host;
-//		delete_by_query($this->elasticClient, $params, 1);
+		$params = array();
+		$params['index'] = 'telepath-20*';
+		$params['type'] = 'http';
+		$params['body']['query']['bool']['filter']['term']['host'] = $host;
+		new_delete_by_query($this->elasticClient, $params);
 	}
 
 	function update_flag($host)
