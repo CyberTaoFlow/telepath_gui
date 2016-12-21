@@ -462,7 +462,7 @@ telepath.config.applications = {
 					that.selected = [];
 				}
 			}
-		}).attr('title', 'To choose everything');
+		}).attr('title', 'Select All');
 
 		this.barRight.append(this.search);
 		this.barLeft.append(this.edit).append(this.delete).append(this.create).append(this.checkAll);

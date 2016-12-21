@@ -446,9 +446,17 @@ a.jstree-anchor{
 .tele-condition-accordion .ui-accordion-header .brief {
 	position: absolute;
 	top: 20px;
-	left: 250px;
 	font-size: 15px;
 	font-family: 'Roboto Condensed', sans-serif;
+}
+
+.tele-condition-accordion .ui-accordion-header .brief {
+	left: 18%;
+	text-transform: none;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 75%;
 }
 
 .tele-ruletype-accordion .ui-accordion-header .brief {
