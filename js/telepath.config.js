@@ -176,6 +176,7 @@ telepath.config = {
 		
 		var height = $(window).height();
 		var width  = window.innerWidth;
+		var scrollWidth = getScrollBarWidth();
 		
 		if(width < 1200) {
 			
@@ -218,7 +219,7 @@ telepath.config = {
 			}
 			
 			this.contentLeft.width(magic);
-			this.contentRight.width(width - magic - 20);
+			this.contentRight.width(width - magic - scrollWidth - 2);
 			
 			this.contentLeft.css({ height: offset });
 			$('.tele-tree', this.contentLeft).css({ height: offset }).mCustomScrollbar("update");
@@ -235,7 +236,7 @@ telepath.config = {
 		
 		$('.tele-content').css({ height: $(window).height() - $('.tele-header').height() - 50 });
 		this.barLeft.width(magic);
-		this.barRight.width(width - magic - 20);
+		this.barRight.width(width - magic - scrollWidth - 2);
 		
 	},
 	// return if the search value start with the value
