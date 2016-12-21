@@ -22,13 +22,13 @@ telepath.formatConditionBrief = function(container, data) {
 		
 		case 'IP':
 		
-			result += data.value.replace(',', ', ');
+			result += data.value.replace(/,/g, ', ');
 			
 		break;
 		
 		case 'application':
 			
-			result += data.value.replace(',', ', ');
+			result += data.value.replace(/,/g, ', ');
 			
 		break;
 
@@ -44,7 +44,7 @@ telepath.formatConditionBrief = function(container, data) {
 
 		case 'parameter':
 
-			result += data.value.replace(',', ', ');
+			result += data.value.replace(/,/g, ', ');
 
 			break;
 		
