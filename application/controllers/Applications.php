@@ -193,7 +193,7 @@ class Applications extends Tele_Controller
         $data = $this->M_Applications->get($data['host']);
 
         $this->load->model('M_Config');
-        $this->M_Config->update('app_list_was_changed_id',$data['host']);
+        $this->M_Config->update('app_list_was_changed_id', [$data['host']]);
 
         // if there was a change in the SSL configuration, we need to update the certificates and update our nginx.conf
         if ($old_data['ssl_flag'] != $data['ssl_flag'] || $old_data['app_ssl_certificate'] != $data['app_ssl_certificate']
