@@ -47,7 +47,7 @@ class Dashboard extends Tele_Controller
 
         $data = array('chart' => $chart);
 
-        xss_return_success($data);
+        return_success($data);
 
     }
 
