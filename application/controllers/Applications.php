@@ -188,7 +188,17 @@ class Applications extends Tele_Controller
         // store the old data to check for a change
         $old_data = $this->M_Applications->get($data['host']);
 
-        $this->M_Applications->set($data);
+        if ($data['operation_mode'] == 3 && ($old_data['operation_mode'] == '' || $old_data['operation_mode'] == 1)) {
+
+            $data['operation_mode'] = 2;
+            $this->M_Applications->set($data);
+
+            sleep(1);
+            $this->M_Applications->set_operation_mode([['host' => $data['host'], 'operation_mode' => 2]], 3);
+
+        } else {
+            $this->M_Applications->set($data);
+        }
 
         $data = $this->M_Applications->get($data['host']);
 

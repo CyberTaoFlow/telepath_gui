@@ -462,11 +462,7 @@ telepath.config.application = {
 				} else {
 					that.eta.hide();
 				}
-				if (state != 'new' && that.app_data.operation_mode == 1 && radio.key == 'hybrid') {
-					telepath.dialog({title: 'alert', msg: 'You can\'t switch from training mode to hybrid mode.'});
-					that.opmod.teleRadios({checked: 'production'});
-				}
-				else if (state == 'new'&& radio.key != 'training'){
+				if (state == 'new'&& radio.key != 'training'){
 					telepath.dialog({title: 'alert', msg: 'New application need to be saved on training mode.'});
 					that.opmod.teleRadios({checked: 'training'});
 				}
