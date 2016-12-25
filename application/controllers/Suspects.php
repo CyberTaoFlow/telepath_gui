@@ -31,7 +31,7 @@ class Suspects extends Tele_Controller
         $this->load->model('M_Suspects');
         $suspect_threshold = $this->M_Suspects->get_threshold();
         $suspects = $this->M_Suspects->get($range, $apps, $sort, $dir, $displayed, 15, $suspect_threshold, $search);
-        if ($sort == 'date') {
+        if (isset($suspects['items']) && $sort == 'date') {
             $suspects['items'] = sort_by_date( $suspects['items'], $dir);
         }
         xss_return_success($suspects);
