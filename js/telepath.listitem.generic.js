@@ -216,8 +216,7 @@ telepath.listitem.generic = {
 			if ($(el).hasClass('tele-listitem-progbar')) {
 				var left=$(el).offset().left;
 				var placement;
-				if(left+422>$( window ).width()){
-					left-=100;
+				if(left+500>$( window ).width()){
 					placement= 'left';
 				}
 				else{
