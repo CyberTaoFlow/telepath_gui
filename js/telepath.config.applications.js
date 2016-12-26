@@ -500,8 +500,8 @@ telepath.config.applications = {
 			contextmenu: {items: telepath.contextMenu},
 			grid: {
 				columns: [
-					{width: $(window).width() < 1200 ? 225 : 345},
-					{width: 35, value: "count", cellClass: "learning-so-far"},
+					{width: $(window).width() < 1200 ? 215 : 345},
+					{width: 45, value: "count", cellClass: "learning-so-far"},
 					{
 						value: function (node) {
 							return $('<div>').btn({
