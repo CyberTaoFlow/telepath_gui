@@ -99,7 +99,7 @@ class Actions extends Tele_Controller
             }
         }
 
-        xss_return_success($exist);
+        return_success($exist);
 
 
 

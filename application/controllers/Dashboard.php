@@ -102,7 +102,7 @@ class Dashboard extends Tele_Controller
         }
 
 
-        if ($sort == 'date') {
+        if (isset ($suspects['items']) && $sort == 'date') {
             $suspects['items'] = sort_by_date( $suspects['items'], $dir);
         }
 
@@ -144,7 +144,7 @@ class Dashboard extends Tele_Controller
             $alerts['query'] = $results['query'];
         }
 
-        if ($sort == 'date') {
+        if (isset($alerts['items']) && $sort == 'date') {
             $alerts['items'] = sort_by_date( $alerts['items'], $dir);
         }
 

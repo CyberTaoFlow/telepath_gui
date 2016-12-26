@@ -149,7 +149,7 @@ class Cases extends Tele_Controller
 
         $requests = $this->M_Cases->get_case_sessions(15, $cid, $range, $apps, $sort, $dir, $displayed);
 
-        if ($sort == 'date') {
+        if (isset ($requests['items']) && $sort == 'date') {
             $requests['items'] = sort_by_date( $requests['items'], $dir);
         }
 

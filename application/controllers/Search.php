@@ -53,7 +53,7 @@ class Search extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
         $settings = $this->_getSettings();
         $cases = $this->M_Search->search('cases', $settings);
-        if ($settings['sort'] == 'date') {
+        if (isset($cases['items']) && $settings['sort'] == 'date') {
             $cases['items'] = sort_by_date($cases['items'], $settings['dir']);
         }
         xss_return_success($cases);
@@ -65,7 +65,7 @@ class Search extends Tele_Controller
         telepath_auth(__CLASS__, __FUNCTION__, $this);
         $settings = $this->_getSettings();
         $alerts = $this->M_Search->search('alerts', $settings);
-        if ($settings['sort'] == 'date') {
+        if (isset($alerts['items']) && $settings['sort'] == 'date') {
             $alerts['items'] = sort_by_date($alerts['items'], $settings['dir']);
         }
         xss_return_success($alerts);
@@ -112,7 +112,7 @@ class Search extends Tele_Controller
 
         $suspects['duplicated_sessions'] = $duplicated_sessions;
 
-        if ($settings['sort'] == 'date') {
+        if (isset($suspects['items']) && $settings['sort'] == 'date') {
             $suspects['items'] = sort_by_date($suspects['items'], $settings['dir']);
         }
         xss_return_success($suspects);
@@ -160,7 +160,7 @@ class Search extends Tele_Controller
 
         $requests['duplicated_sessions'] = $duplicated_sessions;
 
-        if ($settings['sort'] == 'date') {
+        if (isset($alerts['items']) && $settings['sort'] == 'date') {
             $alerts['items'] = sort_by_date($requests['items'], $settings['dir']);
         }
         xss_return_success($requests);
