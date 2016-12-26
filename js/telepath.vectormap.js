@@ -81,9 +81,9 @@ $.widget( "tele.vMap", {
 			onRegionClick: function (x, y) {
 
 				if (telepath.dashboard.map_mode == "traffic"){
-					telepath.search.init('country_code:' + y.toUpperCase());
 					$('.jqvmap-label').remove();
 					$('.tele-search-top .tele-search-input').val('country_code:' + y.toUpperCase())
+					telepath.ui.displayPage('search')
 				}
 				else {
 					telepath.alerts.searchString = 'country_code:' + y.toUpperCase();
