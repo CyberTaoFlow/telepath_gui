@@ -123,7 +123,7 @@ class Users extends CI_Controller
         //print_r($this->acl->user_extra);
         //die;
 
-        xss_return_success(array('user' => $user, 'groups' => $groups, 'perm' => $perm, 'apps' => $apps, 'ranges' => $ranges));
+        return_success(array('user' => $user, 'groups' => $groups, 'perm' => $perm, 'apps' => $apps, 'ranges' => $ranges));
 
     }
 
