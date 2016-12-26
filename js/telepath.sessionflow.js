@@ -551,7 +551,7 @@ telepath.sessionflow = {
 
 			telepath.overlay.destroy();
 			telepath.header.searchInput.val(search);
-			telepath.search.init(search);
+			telepath.ui.displayPage('search')
 		});
 
 		this.printed++;
