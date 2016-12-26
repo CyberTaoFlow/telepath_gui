@@ -7,15 +7,15 @@ telepath.dashboard = {
 	refreshTimer: false,
 	refreshInterval: 5,
 	reloadFlag: Date.now(),
-	loading: 0,
+	loading: false,
 	map_mode:false,
 	getData: function() {
 		
-		this.loading = 5;
+		this.loading = true;
 		$('.tele-refresh-button').hide();
 		$('.tele-refresh').css('paddingRight','+=47px');
 		setTimeout(function () {
-			//telepath.dashboard.loading = false;
+			telepath.dashboard.loading = false;
 			$('.tele-refresh-button').fadeIn();
 			$('.tele-refresh').css('paddingRight','-=47px');
 		}, 5000);
@@ -25,7 +25,6 @@ telepath.dashboard = {
 
 		this.map_mode = this.map_mode ? this.map_mode : 'alerts';
 		telepath.ds.get('/dashboard/get_map', { map_mode: this.map_mode }, function (data, flag) {
-			that.loading --;
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -58,7 +57,6 @@ telepath.dashboard = {
 		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_chart', { }, function (data, flag) {
-			that.loading --;
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -70,7 +68,6 @@ telepath.dashboard = {
 		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_suspects', { sort: this.sort, dir: this.dir }, function (data, flag) {
-			that.loading --;
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !	
@@ -82,7 +79,6 @@ telepath.dashboard = {
 		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_alerts', { sort: this.sort, dir: this.dir }, function (data, flag) {
-			that.loading --;
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -94,7 +90,6 @@ telepath.dashboard = {
 		}, null, telepath.dashboard.reloadFlag, true);
 
 		telepath.ds.get('/dashboard/get_cases', {}, function (data, flag) {
-			that.loading --;
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -432,9 +427,6 @@ telepath.dashboard = {
 			], 
 			selected: this.sort,
 			callback: function(e, id) {
-				if (that.loading){
-					return;
-				}
 				if(that.sort == id) {
 					that.dir = !that.dir;
 				}
@@ -444,7 +436,6 @@ telepath.dashboard = {
 					}
 				});
 				that.sort = id;
-				//that.loading=2;
 				that.refresh();
 			}
 		});
