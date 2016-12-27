@@ -987,7 +987,14 @@ telepath.sessionflow = {
 		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( this.requestData.status_code);
 		this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
 
-		wrap.append(title).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap);
+		// Operation mode
+		this.alertDetailsOperationWrap   = $('<div>').addClass('tele-alert-details-info-operation-wrap');
+		this.alertDetailsOperationLabel  = $('<div>').addClass('tele-alert-details-info-operation-label').text('Operation Mode:');
+		var operationMode = this.requestData.operation_mode == 1 ? 'Training' : (this.requestData.operation_mode == 2 ? 'Production' : 'Hybrid');
+		this.alertDetailsOperation  		= $('<div>').addClass('tele-alert-details-info-operation').text( operationMode);
+		this.alertDetailsOperationWrap.append(this.alertDetailsOperationLabel).append(this.alertDetailsOperation);
+
+		wrap.append(title).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap).append(this.alertDetailsOperationWrap);
 
 		this.similarityDetails.append(wrap);
 
@@ -1110,6 +1117,13 @@ telepath.sessionflow = {
 		this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
 		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( this.requestInfo.status_code);
 		this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
+
+		// Operation mode
+		this.alertDetailsOperationWrap   = $('<div>').addClass('tele-alert-details-info-operation-wrap');
+		this.alertDetailsOperationLabel  = $('<div>').addClass('tele-alert-details-info-operation-label').text('Operation Mode:');
+		var operationMode = this.requestInfo.operation_mode == 1 ? 'Training' : (this.requestInfo.operation_mode == 2 ? 'Production' : 'Hybrid');
+		this.alertDetailsOperation  		= $('<div>').addClass('tele-alert-details-info-operation').text( operationMode);
+		this.alertDetailsOperationWrap.append(this.alertDetailsOperationLabel).append(this.alertDetailsOperation);
 		
 		//if(this.requestData.score > this.requestData.score_average) { this.requestData.score_average = this.requestData.score }
 		
@@ -1127,7 +1141,8 @@ telepath.sessionflow = {
 		this.alertSeverityWrap.append(this.alertSeverityLabel).append(this.alertSeverityPercent).append(this.alertSeverityProgBar);
 		this.alertSeverityProgBar.append(this.alertSeverityProgValue);
 		
-		this.alertDetails.append(this.alertSeverityWrap).append(this.alertDetailsTitle).append(this.alertDetailsTimeWrap).append(this.alertDetailsResponseWrap);
+		this.alertDetails.append(this.alertSeverityWrap).append(this.alertDetailsTitle).append(this.alertDetailsTimeWrap)
+			.append(this.alertDetailsResponseWrap).append(this.alertDetailsOperationWrap);
 		
 	},
 	printRequestInfo: function(container) {
