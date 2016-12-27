@@ -10,7 +10,7 @@ telepath.header = {
 		// Start Build Header
 
 		// LOGO
-		this.logo = '<div class="tele-logo"><img src="img/logo.png" alt="Hybrid Security Telepath" /></div>';
+		this.logo = '<div class="tele-logo"><img src="img/CyKickLogo.png" alt="Hybrid Security Telepath" /></div>';
 
 		// NAV
 		this.nav = $('<ul>').addClass('tele-nav');
@@ -188,14 +188,14 @@ telepath.header = {
 		// Nav
 		var width = window.innerWidth;
 		
-		$('.tele-logo').css({ width: 200, overflow: 'hidden' });
+		$('.tele-logo').css({ width: 290, overflow: 'hidden' });
 		
 		if(width < 1300) {
 		
-			$(this.searchInput).css({ width: 100 });
+			$(this.searchInput).css({ width: 140 });
 			
-			if(width < 1200) {
-				if(width < 800) {
+			if(width < 1100) {
+				if(width < 1000) {
 					$('.tele-logo').css({ width: 65, overflow: 'hidden' });
 					$('.tele-nav li').css({ margin: '0px 0px' });
 				} else {
@@ -203,13 +203,13 @@ telepath.header = {
 				}
 				$('.tele-logo').css({ width: 65 });
 			} else {
-				$('.tele-nav li').css({ margin: '0px 25px' });
+				$('.tele-nav li').css({ margin: '0px 15px' });
 			}
 			
 		} else {
 			$(this.search).css({input:'{padding: 5px 75px 5px 20px}' });
 		
-			$(this.searchInput).css({ width: 140 });
+			$(this.searchInput).css({ width: 180 });
 
 			$('.tele-nav li').css({ margin: '0px 25px' });
 			

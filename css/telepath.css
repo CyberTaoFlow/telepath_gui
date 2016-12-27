@@ -101,7 +101,7 @@ td {
 	height: 60px;
 	width: 200px;
 	float: left;
-	margin-top: 8px;
+	margin-top: 4px;
 	margin-left: 10px;
 	cursor: pointer;
 }
@@ -152,7 +152,7 @@ td {
 	border: none;
 	border-radius: 20px;
 	background-color: #ccc;
-	padding: 5px 75px 5px 20px;
+	padding: 5px 45px 5px 20px;
 	font-size: 15px;
 	font-weight: bold;
 	margin: 4px;
