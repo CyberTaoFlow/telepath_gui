@@ -234,7 +234,7 @@ $.widget( "tele.listitem", {
 		}
 		
 		if(this.options.title) {
-			var titleEl = $('<div>').addClass('tele-listitem-title').html(this.options.title).attr('title', this.options.title);
+			var titleEl = $('<div>').addClass('tele-listitem-title').html(this.options.title).attr('title', decodeEntities(this.options.title));
 			el.append(titleEl);
 		}
 		if(this.options.updating) {

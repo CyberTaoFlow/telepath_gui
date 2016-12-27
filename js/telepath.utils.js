@@ -577,4 +577,10 @@ function getScrollBarWidth () {
   document.body.removeChild (outer);
 
   return (w1 - w2);
-};
+}
+
+function decodeEntities(encodedString) {
+  var textArea = document.createElement('textarea');
+  textArea.innerHTML = encodedString;
+  return textArea.value;
+}
