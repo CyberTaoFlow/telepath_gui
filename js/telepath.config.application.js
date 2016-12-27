@@ -422,10 +422,10 @@ telepath.config.application = {
 
 		this.AD_app_domain = $('<div>').teleInput({
 			label: 'Application Host',
-			value: that.app_data.host,
+			value: decodeEntities(that.app_data.host),
 			disabled: state != 'new'
 		});
-		this.AD_display_name = $('<div>').teleInput({label: 'Display Name', value: that.app_data.display_name});
+		this.AD_display_name = $('<div>').teleInput({label: 'Display Name', value: decodeEntities(that.app_data.display_name)});
 
 		$('#tele-app-details').append(this.AD_app_domain).append(this.AD_display_name);
 

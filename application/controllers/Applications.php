@@ -117,7 +117,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = $this->input->post('host');
+        $host = htmlspecialchars_decode($this->input->post('host'));
         $path = $this->input->post('path');
         $mode = $this->input->post('mode');
 
@@ -128,7 +128,7 @@ class Applications extends Tele_Controller
     public function get_deep_items(){
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = $this->input->post('host');
+        $host = htmlspecialchars_decode($this->input->post('host'));
         $mode = $this->input->post('mode');
 
         xss_return_success($this->M_Applications->get_deep_items($host, $mode));
@@ -139,10 +139,9 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = $this->input->post('host', true);
-    //    $context = $this->input->post('context', true);
+        $host = $this->input->post('host');
 
-        $app = $this->M_Applications->get($host);
+        $app = $this->M_Applications->get(htmlspecialchars_decode($host, ENT_QUOTES));
 
         if (isset($app['app_ssl_certificate'])) {
             unset($app['app_ssl_certificate']);
@@ -231,7 +230,12 @@ class Applications extends Tele_Controller
 
     public function set_app_operation_mode()
     {
-        $app_ids = $this->input->post('app_ids', true);
+        $app_ids = $this->input->post('app_ids');
+
+        array_walk_recursive($app_ids, function (&$value) {
+            $value = htmlspecialchars_decode($value, ENT_QUOTES);
+        });
+
         $mode = $this->input->post('mode', true);
 
         // not use for now
@@ -281,7 +285,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__, $this);
 
-        $app_ids = $this->input->post('app_id', true);
+        $app_ids = $this->input->post('app_id');
 
         if (!$app_ids) {
             return_fail('No App ID specified');
@@ -291,6 +295,8 @@ class Applications extends Tele_Controller
         foreach ($app_ids as $app_id) {
             // if(in_array($app_id, $this->acl->allowed_apps) || $this->acl->all_apps())
             //$result = $this->Apps->app_delete($app_id);
+
+            $app_id = htmlspecialchars_decode($app_id, ENT_QUOTES);
 
             // if the deleted applications had an SSL authentication for reverse proxy, we need to delete the
             // certificates and REWRITE OUR NGINX.CONF
