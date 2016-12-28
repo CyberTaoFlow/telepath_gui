@@ -183,7 +183,7 @@ telepath.config.rule = {
 		//}
 		
 		// IP , APP Filters
-		var title1 = $('<div>').addClass('tele-title-1').text('Limit rule by IP').appendTo(this.container);
+		var title1 = $('<div>').addClass('tele-title-1').text('IP exemption ').appendTo(this.container);
 		if(!this.data.ip) { this.data.ip = '' }
 		
 		var is_range = this.data.ip.from != this.data.ip.to ;
@@ -213,7 +213,7 @@ telepath.config.rule = {
 		ipWrap.append(ipToggle).append(ipStart).append(ipDash).append(ipEnd).appendTo(this.container);
 		
 		
-		var title1 = $('<div>').addClass('tele-title-1').text('Limit rule by Application').appendTo(this.container);
+		var title1 = $('<div>').addClass('tele-title-1').text('Host name exemption ').appendTo(this.container);
 			
 		if(!this.data.domain) { this.data.domain = '' }	
 		var app_filter_data = [ { text: this.data.domain } ];
