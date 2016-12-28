@@ -294,22 +294,6 @@ telepath.alerts = {
 			}
 		}, false, false, true);
 
-
-		// BA filter data
-		// empty BA filter data
-		telepath.alerts.data.action_distribution_chart = false;
-		telepath.ds.get('/alerts/get_action_distribution_chart', {
-			search: this.searchString,
-			alertsFilter: that.alertsFilter,
-			actionsFilter: that.actionsFilter
-		}, function (data) {
-			// set data
-			telepath.alerts.data.action_distribution_chart = data.items.action_distribution_chart;
-			// if the BA toogle filter is displayed and is waiting for data, we need to show the data
-			if (!that.alertsFilterDisplayed) {
-				that.show_action_distribution();
-			}
-		}, false, false, true);
 	},
 	hardRefresh: function(callback){
 		deleteCache('telecache');
@@ -424,7 +408,21 @@ telepath.alerts = {
 			} else {
 				$("#alert-distribution-showPercent").empty();
 				that.alertsFilterDisplayed = false;
-				that.show_action_distribution();
+
+				// BA filter data
+				that.graphDistributionCanvas.empty().append(telepath.loader);
+
+				// empty BA filter data
+				telepath.alerts.data.action_distribution_chart = false;
+				telepath.ds.get('/alerts/get_action_distribution_chart', {
+					search: this.searchString,
+					alertsFilter: that.alertsFilter,
+					actionsFilter: that.actionsFilter
+				}, function (data) {
+					// set data
+					telepath.alerts.data.action_distribution_chart = data.items.action_distribution_chart;
+					that.show_action_distribution();
+				}, false, false, true);
 			}
 
 		} });
