@@ -143,6 +143,13 @@ $.widget( "tele.teleBrowser", {
 
 					callback.call(that, treeData);
 
+					// if there are no child remove "+" button after the user clicked on it
+					if (!treeData.length) {
+						var selectedNode = $('a:contains(' + obj.data.host + ')');
+						$(selectedNode).siblings('.jstree-ocl').remove();
+						$(selectedNode).css({marginLeft: 22})
+					}
+
 				}, false, false, true);
 			}
 
