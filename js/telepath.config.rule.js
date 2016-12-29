@@ -63,7 +63,7 @@ telepath.config.rule = {
 		// this.ruleToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data['enable']}).css('color', 'black').appendTo(this.container);
 		
 		// Rule Name
-		var ruleName = $('<div>').teleInput({ label: 'Name', value: this.data['name'] == 'new' ? '' : this.data['name']  }).addClass('tele-rule-name');
+		var ruleName = $('<div>').teleInput({ label: 'Name', value: this.data['name'] == 'new' ? '' : decodeEntities(this.data['name']) }).addClass('tele-rule-name');
 		this.container.append(ruleName);
 		
 		// Rule Owner
@@ -71,7 +71,7 @@ telepath.config.rule = {
 		this.container.append(ruleOwner);*/
 		
 		// Rule Desc
-		var ruleDesc = $('<div>').teleInput({ label: 'Description', value: this.data['desc'] == '' ? '' : this.data['desc'] }).addClass('tele-rule-desc');
+		var ruleDesc = $('<div>').teleInput({ label: 'Description', value: this.data['desc'] == '' ? '' : decodeEntities(this.data['desc']) }).addClass('tele-rule-desc');
 		this.container.append(ruleDesc);
 		
 		var ruleScore = $('<div>').teleInput({ label: 'Score', width: 30, value: this.data['score'] == '' ? '95' :  this.data['score'] }).addClass('tele-rule-score');
@@ -216,7 +216,7 @@ telepath.config.rule = {
 		var title1 = $('<div>').addClass('tele-title-1').text('Host name exemption ').appendTo(this.container);
 			
 		if(!this.data.domain) { this.data.domain = '' }	
-		var app_filter_data = [ { text: this.data.domain } ];
+		var app_filter_data = [ { text: decodeEntities(this.data.domain) } ];
 		var filterApps = $('<div>').teleSelect({ type: 'subdomain', values: app_filter_data, appendTo: this.container, position:'bottom',click: function () { } })
 			.appendTo(this.container).attr('id', 'limit-application');
 		$('.tele-multi-control', filterApps).hide();
