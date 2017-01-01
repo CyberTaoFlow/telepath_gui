@@ -507,7 +507,7 @@ function get_gap($range) {
 	function xss_return_success($items = array()) {
 		// Prevent XSS
 		array_walk_recursive($items, function (&$value) {
-			$value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML401);
+			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
 		});
 		return_json(array('success' => true, 'items' => $items, 'total' => count($items), 'ip' => $_SERVER['REMOTE_ADDR']));
 	}
