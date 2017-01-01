@@ -12,6 +12,10 @@ telepath.dashboard = {
 	getData: function() {
 		
 		this.loading = 5;
+		var barRight = $('.tele-panel-dashboard .tele-panel-topbar-right');
+
+		barRight.addClass('wait');
+
 		$('.tele-refresh-button').hide();
 		$('.tele-refresh').css('paddingRight','+=47px');
 		setTimeout(function () {
@@ -26,6 +30,10 @@ telepath.dashboard = {
 		this.map_mode = this.map_mode ? this.map_mode : 'alerts';
 		telepath.ds.get('/dashboard/get_map', { map_mode: this.map_mode }, function (data, flag) {
 			that.loading --;
+			if (!that.loading){
+				barRight.removeClass('wait');
+			}
+
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -59,6 +67,10 @@ telepath.dashboard = {
 
 		telepath.ds.get('/dashboard/get_chart', { }, function (data, flag) {
 			that.loading --;
+			if (!that.loading){
+				barRight.removeClass('wait');
+			}
+
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -71,6 +83,10 @@ telepath.dashboard = {
 
 		telepath.ds.get('/dashboard/get_suspects', { sort: this.sort, dir: this.dir }, function (data, flag) {
 			that.loading --;
+			if (!that.loading){
+				barRight.removeClass('wait');
+			}
+
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !	
@@ -83,6 +99,10 @@ telepath.dashboard = {
 
 		telepath.ds.get('/dashboard/get_alerts', { sort: this.sort, dir: this.dir }, function (data, flag) {
 			that.loading --;
+			if (!that.loading){
+				barRight.removeClass('wait');
+			}
+
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !
@@ -95,6 +115,10 @@ telepath.dashboard = {
 
 		telepath.ds.get('/dashboard/get_cases', {}, function (data, flag) {
 			that.loading --;
+			if (!that.loading){
+				barRight.removeClass('wait');
+			}
+
 			if (flag && telepath.dashboard.reloadFlag && flag != telepath.dashboard.reloadFlag)
 			{
 				// date filter was changed !

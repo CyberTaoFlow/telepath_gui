@@ -1523,7 +1523,13 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 	font-size: 20px;
 }
 
+.wait {
+	cursor:wait;
+}
 
+.wait > * {
+	pointer-events:none;
+}
 
 @media (max-width: 1200px){
   #alert-distribution-legend{

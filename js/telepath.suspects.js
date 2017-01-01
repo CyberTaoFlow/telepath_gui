@@ -107,6 +107,8 @@ telepath.suspects = {
 					return
 				}
 				that.loading=true;
+				that.panelTopBarRight.addClass('wait');
+
 				if(that.sort == id) {
 					that.dir = !that.dir;
 				}
@@ -236,7 +238,8 @@ telepath.suspects = {
 	refresh: function (callback) {
 
 		this.displayed =[];
-		
+		this.loading = true;
+
 		$('.tele-block, .tele-loader', this.container).remove();
 		this.container.append(telepath.loader);
 		
@@ -249,6 +252,7 @@ telepath.suspects = {
 		}, function (data) {
 
 			that.loading = false;
+			that.panelTopBarRight.removeClass('wait');
 			
 			if (typeof (data.items.items) != 'undefined') {
 				data.items.items.map(function (a) {
@@ -323,6 +327,7 @@ telepath.suspects = {
 						});
 					}
 					that.loading = false;
+					that.panelTopBarRight.removeClass('wait');
 						callback(data.items);
 				}, false, false, true);
 			}

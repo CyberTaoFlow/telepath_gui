@@ -9,7 +9,7 @@ telepath.alerts = {
 	actionsFilterSessions: [],
 	allAlerts: true, // indicate if all the data is shown, without alert filter
 	allActions: true, // indicate if all the data is shown, without action filter
-	loading: false,
+	loading: 0,
 	displayed: [],
 	init: function () {
 		
@@ -219,8 +219,8 @@ telepath.alerts = {
 		// Call Once
 		$(window).trigger('resize');
 
-		this.loading = true;
-		this.counter = 0;
+		this.loading = 2;
+		$('.tele-panel-alerts .tele-panel-topbar-right').addClass('wait');
 
 		if(this.actionsFilter.length){
 			telepath.ds.get('/alerts/get_action_filter_sessions', {
@@ -255,9 +255,9 @@ telepath.alerts = {
 			actionsFilterSessions: that.actionsFilterSessions
 		}, function (data) {
 
-			that.counter++;
-			if (that.counter>1){
-				that.loading = false;
+			that.loading--;
+			if(!that.loading){
+				$('.tele-panel-alerts .tele-panel-topbar-right').removeClass('wait');
 			}
 
 			if (typeof (data.items) != 'undefined') {
@@ -283,9 +283,9 @@ telepath.alerts = {
 			actionsFilterSessions: that.actionsFilterSessions
 		}, function (data) {
 
-			that.counter++;
-			if (that.counter>1){
-				that.loading = false;
+			that.loading--;
+			if(!that.loading){
+				$('.tele-panel-alerts .tele-panel-topbar-right').removeClass('wait');
 			}
 
 			telepath.alerts.setGraphData(data.items);
