@@ -250,7 +250,7 @@ telepath.casePanel = {
 		this.panelTitle   = $('<div>').addClass('tele-panel-title');
 		
 		this.panelTopBar.append(this.panelTitle);
-		this.panelTitle.html('Loading Case # ' + caseID);
+		this.panelTitle.html('Loading Case: ' + caseID);
 		
 		this.container.append(this.panelTopBar);
 		this.container.append(telepath.loader);
