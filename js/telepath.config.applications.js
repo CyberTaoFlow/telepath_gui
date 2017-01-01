@@ -97,7 +97,7 @@ telepath.config.applications = {
 				text: text,
 				data: {type: 'app', host: row.host, count: row.learning_so_far, operation_mode: row.operation_mode },
 				icon: 'tele-icon-app',
-				a_attr : {title: text}
+				a_attr : {title: decodeEntities(text)}
 			};
 			treeData.push(obj);
 		});
