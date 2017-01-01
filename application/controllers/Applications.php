@@ -117,7 +117,7 @@ class Applications extends Tele_Controller
 
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = htmlspecialchars_decode($this->input->post('host'));
+        $host = htmlspecialchars_decode($this->input->post('host'), ENT_QUOTES);
         $path = $this->input->post('path');
         $mode = $this->input->post('mode');
 
@@ -128,7 +128,7 @@ class Applications extends Tele_Controller
     public function get_deep_items(){
         telepath_auth(__CLASS__, __FUNCTION__);
 
-        $host = htmlspecialchars_decode($this->input->post('host'));
+        $host = htmlspecialchars_decode($this->input->post('host'), ENT_QUOTES);
         $mode = $this->input->post('mode');
 
         xss_return_success($this->M_Applications->get_deep_items($host, $mode));
