@@ -10,9 +10,9 @@ class M_Globalheaders extends CI_Model {
 	}
 
 
-	public function get_global_headers($app_id = 0) {
+	public function get_global_headers()
+	{
 
-//		/telepath-config/headers/globalheaders_id
 		$params = [
 			'index' => 'telepath-config',
 			'type' => 'headers',
@@ -22,7 +22,6 @@ class M_Globalheaders extends CI_Model {
 		$result = $this->elasticClient->get($params);
 
 		return $result['_source']['headers'];
-
 
 	}
 	
