@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <body>
 	<div class="tele-container">
-		<img class="tele-logo" src="img/logo_big.png" alt="Hybrid Telepath" />
+		<img class="tele-logo" src="img/CyKickLogo.png" alt="CyKickLabs" />
 		<div class="tele-reset">
 			
 			<h1>Reset Password</h1>
