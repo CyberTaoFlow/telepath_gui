@@ -16,15 +16,8 @@ class Parameters extends Tele_Controller
 
         $this->load->model('M_Globalheaders');
         $headers = $this->M_Globalheaders->get_global_headers();
-
-        $ans = [];
-
-        foreach ($headers as $header) {
-            $ans[] = $header;
-        }
-        $ans[] = 'user-agent';
-        sort($ans);
-        xss_return_success($ans) ;
+        sort($headers);
+        return_success($headers) ;
 
     }
     
