@@ -204,14 +204,6 @@ telepath.ui = {
     },
     displayPage: function(id){
 
-        if(id == 'dashboard' && telepath.dashboard.loading) {
-            return;
-        }
-        if(telepath[id].loading) {
-            return;
-        }
-        telepath[id].loading=true;
-
         $('.tele-panel').empty().hide().removeClass('active');
         telepath.header.configCmd.removeClass('active');
         $('.tele-nav a.active').removeClass('active');
