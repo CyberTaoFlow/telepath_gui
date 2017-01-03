@@ -280,7 +280,7 @@ telepath.sessionflow = {
 		$(document).bind('overlay_destroy', telepath.alert.destroy);
 		
 		// Show loading
-		telepath.overlay.init('alerts', 'Loading Sessionflow', true, 500);
+		telepath.overlay.init('alerts', 'Loading session flow', true, 500);
 		this.overlay = telepath.overlay;
 		this.container = this.overlay.contentEl;
 		
