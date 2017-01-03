@@ -84,9 +84,7 @@ class Telepath extends Tele_Controller
         $key = $this->input->post('key');
         $this->M_Config->update('license_key_id', $key);
 
-        // This code should work but currently using the other way around
-        exec($this->checkFunction . " > /dev/null &");
-        // Allow 3 second for engine to validate the key
+        // Allow 5 second for engine to validate the key
         sleep(5);
 
         $valid = $this->M_Config->get_key('license_mode_id');
