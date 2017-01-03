@@ -30,7 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <body>
 	<div class="tele-container-license">
-		<img class="tele-logo" src="img/logo_big.png" alt="Hybrid Telepath" />
+		<img class="tele-logo" src="img/CyKickLogo.png" alt="CyKickLabs" />
 		<div class="tele-license">
 		
 			<h1>License Management</h1>
