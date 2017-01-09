@@ -98,11 +98,19 @@ class Cron extends Tele_Controller
                 $row_syslog .= '|';
             }
 
-            $row_syslog .= $alert['uri'] . '|' . $alert['host'] . '|';
+            $row_syslog .= $alert['uri'] . '|' . $alert['host'] . '|' . $alert['country_code'] . '|' . $alert['city'] . '|' . $alert['score_presence'] . '|' . $alert['score_landing'] . '|' . $alert['score_average'] . $alert['score_query'] . '|' . $alert['score_flow'] . '|' . $alert['score_geo'] . '|';
+
+            if (!empty($alert['cases_name'])) {
+                foreach ($alert['cases_name'] as $case) {
+                    $row_syslog .= $case . ' ';
+                }
+                $row_syslog = trim($row_syslog);
+                $row_syslog .= '|';
+            }
 
             if (!empty($alert['parameters'])) {
 
-                // Concat interecting parameters
+                // Concat interacting parameters
                 foreach ($alert['parameters'] as $p) {
                     if (intval($p['score_data']) > 85) {
                         $row_syslog .= $p['name'] . '=' . $p['value'] . ',';
