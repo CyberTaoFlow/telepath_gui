@@ -1326,22 +1326,68 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
 }
 
 .tele-panel-case .tele-panel-topbar .tele-button,
+.tele-panel-case .tele-panel-topbar .tele-dropdown,
 .tele-panel-case .tele-panel-topbar .tele-radios{
-	float: right;
 	margin-top: 15px;
 }
 
 .tele-panel-case .tele-panel-topbar .tele-refresh{
-	float: right;
 	margin-top: 25px;
 }
 
-.tele-panel-case .tele-case-graph .tele-navsep {
-	float: right;
-}
 .tele-panel-case .tele-panel-topbar .tele-navsep {
-	float: right;
 	margin-top: 20px;
+}
+.tele-panel-case .tele-panel-topbar .tele-panel-title{
+	display: inline-flex;
+	max-width: 395px;
+}
+.case-title{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.session-count{
+	white-space: nowrap;
+}
+
+@media (max-width: 1450px) {
+	.tele-panel-case .tele-panel-topbar a.tele-panel-case-close{
+		display: none;
+	}
+}
+
+@media (max-width: 1330px) {
+	.tele-panel-case .tele-panel-topbar .tele-button,
+
+	.tele-panel-case .tele-panel-topbar .tele-radios{
+		margin-left: 5px;
+		margin-right: 5px;
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.tele-panel-case .tele-panel-topbar .tele-refresh,
+	.tele-panel-case .tele-panel-topbar .tele-dropdown{
+		margin-left: 5px;
+		margin-right: 0;
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.tele-panel-case .tele-panel-topbar  a.tele-refresh-button{
+		margin-left: 0;
+	}
+
+	.tele-panel-case .tele-panel-topbar .tele-panel-title{
+		max-width: 440px;
+	}
+}
+
+@media (max-width: 1150px) {
+	.tele-panel-case .tele-panel-topbar .tele-panel-title{
+		max-width: 300px;
+	}
 }
 
 .tele-panel-case .tele-case-graph {

@@ -235,6 +235,7 @@ telepath.casePanel = {
 	sort: 'date',
 	dir: false,
 	displayed: [],
+	loading: false,
 	init: function (caseID) {
 
 		// Remove existing panels if any
@@ -264,6 +265,9 @@ telepath.casePanel = {
 
 		this.displayed = [];
 
+		this.loading = true;
+		$('.tele-panel-cases .tele-panel-topbar-right').addClass('wait');
+
 		$(".tele-case-graph, .tele-wrapper, .tele-panel-subtitle, .tele-infoblock, .mCustomScrollbar, .tele-loader", this.container).remove();
 		this.container.append(telepath.loader);
 
@@ -278,6 +282,8 @@ telepath.casePanel = {
 				telepath.ds.get('/cases/get_case_data', {
 					cid : that.caseID
 				}, function (data) {
+					that.loading = true;
+					$('.tele-panel-cases .tele-panel-topbar-right').removeClass('wait');
 					if(data){
 						that.loadData(data.items);
 					}
@@ -286,6 +292,9 @@ telepath.casePanel = {
 				data.items.items.map(function (a) {
 					that.displayed.push(a.sid)
 				});
+			}else{
+				that.loading = true;
+				$('.tele-panel-cases .tele-panel-topbar-right').removeClass('wait');
 			}
 
 			if(typeof(callback) == 'function') {
@@ -318,13 +327,16 @@ telepath.casePanel = {
 
 		// Case Title
 		this.panelTitle   = $('<div>').addClass('tele-panel-title');
-		this.panelTopBar.append(this.panelTitle);
+		this.panelTopBarRight = $('<div>').addClass('tele-panel-topbar-right');
+		this.panelTopBar.append(this.panelTitle).append(this.panelTopBarRight);
 		var HebrewChars = new RegExp("^[\u0590-\u05FF]+$");
 		var caseName= this.data['case']['case_data']['case_name'];
 		var lang = HebrewChars.test(caseName);
-		var text = lang ? '<span dir="ltr"> | ' + thousandsFormat(this.data.count) + ' Sessions </span> ':  ' | ' + thousandsFormat(this.data.count) + ' Sessions';
-		this.panelTitle.html(this.data['case']['case_data']['case_name'] + text );
-		
+		var text = lang ? $('<div>').attr('dir', 'ltr').addClass("session-count").html('&nbsp; | ' + thousandsFormat(this.data.count) + ' Sessions') :
+			$('<div>').addClass("session-count").html('&nbsp; | ' + thousandsFormat(this.data.count) + ' Sessions');
+		var title = $('<div>').addClass('case-title').html(caseName).attr('title',caseName);
+		this.panelTitle.append(title).append(text);
+
 		// Case Favorite Flag
 		this.favEl = $('<a>').cb({ icon: 'favorites', checked: data['case']['favorite'] == '1', callback: function(widget) {
 			
@@ -366,15 +378,10 @@ telepath.casePanel = {
 			telepath.casePanel.hardRefresh();
 		});
 
-		this.panelTopBar.append(cmdRefresh);
-		this.panelTopBar.append('<div class="tele-navsep"></div>');
-
 		// Edit Case
 		this.editCase = $('<div>').btn({ icon: 'caseConfig', text: 'Edit Case', callback: function () {
 			telepath.caseOverlay.editCase(that['data']['case']);			
 		}});
-		
-		this.panelTopBar.append(this.editCase);
 
 		// Temporary Hide Archive Case
 		// this.panelTopBar.append('<div class="tele-navsep"></div>');
@@ -407,9 +414,35 @@ telepath.casePanel = {
 				that.refresh();
 			}
 		});
-		this.panelTopBar.append('<div class="tele-navsep"></div>');
-		this.panelTopBar.append(sortRadios);
 
+		// DateRange
+		var filterDateRange 	  = $('<div>').daterange({
+
+			start: telepath.range.start,
+			end: telepath.range.end,
+			change: function(start, end) {
+
+				telepath.range.start = start;
+				telepath.range.end = end;
+
+				that.hardRefresh();
+
+			}});
+
+		// Applications
+		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
+			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
+			that.hardRefresh(function () {
+				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
+			});
+		}});
+
+
+		this.panelTopBarRight.append(this.editCase)
+			.append('<div class="tele-navsep"></div>').append(sortRadios)
+			.append('<div class="tele-navsep"></div>').append(filterDateRange)
+			.append('<div class="tele-navsep"></div>').append(filterApps)
+			.append('<div class="tele-navsep"></div>').append(cmdRefresh);
 
 		// Description
 		this.panelTopBar.append(this.caseDesc);
@@ -422,7 +455,7 @@ telepath.casePanel = {
 			// Restore visibility to all cases
 			//$('.tele-panel-cases-inner').show();
 		});
-		
+
 		/* CASE CHART */
 		/* ********************************************** */
 
@@ -439,37 +472,15 @@ telepath.casePanel = {
 		};
 
 		var caseGraph = $('<div>').addClass('tele-case-graph');
-		
-		// DateRange
-		var filterDateRange 	  = $('<div>').daterange({ 
-			
-			start: telepath.range.start, 
-			end: telepath.range.end, 
-			change: function(start, end) { 
-			
-			telepath.range.start = start;
-			telepath.range.end = end;
-			
-				that.hardRefresh();
-			
-		}});
-		
-		// Applications
-		var filterApps		     = $('<div>').appSelect({ callback: function (app_id) {
-			$('.tele-icon-application', filterApps).removeClass('tele-icon-application').addClass('tele-icon-loader');
-			that.hardRefresh(function () {
-				$('.tele-icon-loader', filterApps).removeClass('tele-icon-loader').addClass('tele-icon-application');
-			});
-		}});
-		
+
 		this.container.append(caseGraph);
 		
 		caseGraph.flotGraph({ data: chartData, options: options });
 		// Append All
-		
+
 		var graphTitle = $('<div>').addClass('tele-graph-title').html('Case Sessions');
-		
-		caseGraph.prepend(graphTitle).prepend(filterDateRange).prepend('<div class="tele-navsep"></div>').prepend(filterApps);
+
+		caseGraph.prepend(graphTitle);
 		
 		
 		/* CASE SUB-BAR */

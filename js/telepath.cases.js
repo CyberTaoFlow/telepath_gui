@@ -13,6 +13,8 @@ telepath.cases = {
 	},
 	refresh: function(callback) {
 
+		this.loading = true;
+		$('.tele-panel-cases .tele-panel-topbar-right').addClass('wait');
 		this.container = $('.tele-panel-cases .tele-panel-cases-inner');
 		$('.tele-block, .tele-loader', this.container).remove();
 		this.container.append(telepath.loader);
@@ -27,6 +29,8 @@ telepath.cases = {
 		}, function (data) {
 			// Hide deleted cases. Yuli
 			that.loading=false;
+			$('.tele-panel-cases .tele-panel-topbar-right').removeClass('wait');
+
 			var cases = []
 			var index = 0;
 			for (index = 0; index < data.items.length; ++index) {
