@@ -177,7 +177,9 @@
         var $_msg;
         var $_server;   // Syslog destination server
         var $_port;     // Standard syslog port is 514
-        var $_timeout;  // Timeout of the UDP connection (in seconds)
+        var $_timeout;  // Timeout of the connection (in seconds)
+        var $_protocol;  // TCP or UDP (default: UDP)
+
         
         function __construct($facility = 16, $severity = 5, $hostname = "", $fqdn= "", $ip_from = "", $process="", $content = "")
         {
@@ -185,7 +187,8 @@
             $this->_server   = '127.0.0.1';
             $this->_port     = 514;
             $this->_timeout  = 10;
-            
+            $this->_protocol  = 'udp';
+
             $this->_facility = $facility;
             
             $this->_severity = $severity;
@@ -302,6 +305,11 @@
             }
         }
 
+        function SetProtocol($protocol)
+        {
+            $this->_protocol = $protocol;
+        }
+
 
         function SetTimeout($timeout)
         {
@@ -312,7 +320,7 @@
         }
         
         
-        function Send($server = "", $content = "", $timeout = 0)
+        function Send($server = "", $content = "", $timeout = 0, $protocol = "")
         {
             if ($server != "")
             {
@@ -323,7 +331,12 @@
             {
                 $this->_content = $content;
             }
-            
+
+            if ($protocol != "")
+            {
+                $this->_protocol = $protocol;
+            }
+
             if (intval($timeout) > 0)
             {
                 $this->_timeout = intval($timeout);
@@ -344,7 +357,7 @@
             
             $pri    = "<".($this->_facility*8 + $this->_severity).">";
             $header = $timestamp." ".$this->_hostname;
-            
+
             if ($this->_msg != "")
             {
                 $msg = $this->_msg;
@@ -355,8 +368,8 @@
             }
             
             $message = substr($pri.$header." ".$msg, 0, 1024);
-            
-            $fp = fsockopen("udp://".$this->_server, $this->_port, $errno, $errstr);
+
+            $fp = fsockopen($this->_protocol . "://" . $this->_server, $this->_port, $errno, $errstr);
             if ($fp)
             {
                 fwrite($fp, $message);

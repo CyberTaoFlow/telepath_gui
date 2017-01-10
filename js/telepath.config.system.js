@@ -150,7 +150,10 @@ telepath.config.system = {
 		// Syslog
 		data.write_to_syslog_id  = this.syslogToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
 		data.syslog_ip_id = $('input', this.syslogIP).val();
-				
+		data.syslog_port_id = $('input', this.syslogPort).val();
+		data.syslog_protocol_id = this.syslogProtocol.teleOption('option', 'selected');
+		data.syslog_delimiter_id = this.syslogDelimiter.teleOption('option', 'selected');
+
 		// Proxy
 		data.proxy_mode_id = this.proxyToggle.data('tele-toggleFlip').options.flipped ? 1 : 0;
 		data.proxy_ip_id   = $('input', this.proxyIP).val();
@@ -923,10 +926,10 @@ telepath.config.system = {
 		
 		$('<div>').addClass('tele-title-1').html('Syslog').appendTo(this.c_reports).addClass('tele-title-syslog');
 		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.write_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
-		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.syslog_ip_id }).addClass('tele-config-syslog-host').appendTo(this.c_reports);
-		this.syslogPort = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.syslog_port_id }).addClass('tele-config-syslog-port').appendTo(this.c_reports);
-		this.syslogProtocol = $('<div>').teleOption({label: 'Protocol', options: ['TCP', 'UDP'], selected: this.data.syslog_protocol_id}).addClass('tele-config-syslog-protocol').appendTo(this.c_reports);
-		this.syslogDelimiter = $('<div>').teleInput({ label: 'Delimiter', width: 70, value: this.data.syslog_delimiter_id }).addClass('tele-config-syslog-delimiter').appendTo(this.c_reports);
+		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.syslog_ip_id }).addClass('tele-config-syslog').appendTo(this.c_reports);
+		this.syslogPort = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.syslog_port_id, css: {clear: 'none'} }).addClass('tele-config-syslog').appendTo(this.c_reports);
+		this.syslogProtocol = $('<div>').teleOption({label: 'Protocol', options: ['UDP', 'TCP'], selected: this.data.syslog_protocol_id}).addClass('tele-config-syslog').appendTo(this.c_reports);
+		this.syslogDelimiter = $('<div>').teleOption({label: 'Delimiter', options: ['Tab', 'Vertical Bar'], selected: this.data.syslog_delimiter_id}).addClass('tele-config-syslog').appendTo(this.c_reports);
 
 
 

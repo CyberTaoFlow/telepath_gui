@@ -31,8 +31,8 @@ $.widget('tele.teleOption', {
         }
 
 
-        if (this.options.label) {
-            var label = $('<span>').html(that.options.label).addClass('tele-title-option');
+        if (this.options.title) {
+            var label = $('<span>').html(that.options.title).addClass('tele-title-option');
 
             label.css({'position': 'absolute', 'visibility': 'hidden'});
 
@@ -45,6 +45,11 @@ $.widget('tele.teleOption', {
             label.removeAttr('style');
 
             that.element.append(label)
+        }
+
+        if (this.options.label) {
+            this.label = $('<label>').addClass('tele-input-label').html(this.options.label);
+            this.element.append(this.label);
         }
         var select = $('<span>').addClass('tele-dropbtn');
 

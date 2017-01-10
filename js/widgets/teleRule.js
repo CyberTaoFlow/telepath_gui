@@ -1566,7 +1566,7 @@ $.widget( "tele.teleRule", {
 				if(data && data.aspect) {
 					botSelect.val(data.aspect);
 				}*/
-				$('<div>').teleOption({label: 'Bot Type', options: botTypes, selected: data.type ? data.type : '',
+				$('<div>').teleOption({title: 'Bot Type', options: botTypes, selected: data.type ? data.type : '',
 					css: {float: 'left', 'margin-top': '12px'}, appendTo: ruleInner
 				});
 

@@ -272,6 +272,9 @@ class Config extends Tele_Controller
                 case 'rep_user_id':
                 case 'proxy_port_id':
                 case 'syslog_ip_id':
+                case 'syslog_port_id':
+                case 'syslog_protocol_id':
+                case 'syslog_delimiter_id':
                 case 'write_to_syslog_id':
                 case 'add_unknown_applications_id':
                 case 'proxy_mode_id':

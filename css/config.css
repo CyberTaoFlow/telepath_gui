@@ -1203,6 +1203,23 @@ a.jstree-anchor{
 	float: left;
 }
 
+.tele-config-system-reports .tele-config-syslog{
+	width: auto;
+	margin-right: 15px;
+}
+
+.tele-config-syslog .tele-input-label{
+	width: 50px;
+}
+
+.tele-config-syslog .tele-dropdown-content{
+	left: 61px;
+}
+
+.tele-config-syslog .text-button{
+	line-height: 24px;
+}
+
 .tele-config-system-network .tele-multi-value {
 	width: 850px;
 }

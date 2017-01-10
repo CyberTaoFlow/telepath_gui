@@ -79,6 +79,9 @@ $.widget("tele.teleInput", {
        if (this.options.marginleft) {
             this.input.css({'margin-left': this.options.marginleft});
         }
+        if (this.options.css) {
+            this.element.css(this.options.css);
+        }
 
     }
 

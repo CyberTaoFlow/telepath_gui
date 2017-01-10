@@ -26,15 +26,15 @@ class Cron extends Tele_Controller
             $this->load->library('Syslog');
             $syslog = new Syslog();
 
-            $syslog_addr = $syslog_ip_id;
-            $syslog_addr = explode(':', $syslog_addr);
+            $syslog->SetServer($syslog_ip_id);
 
-            if (count($syslog_addr) == 2) {
-                $syslog->SetServer($syslog_addr[0]);
-                $syslog->SetPort($syslog_addr[1]);
-            } else {
-                $syslog->SetServer($syslog_addr[0]);
+            if($syslog_port_id = $this->M_Config->get_key('syslog_port_id')){
+                $syslog->SetPort($syslog_port_id);
             }
+
+            $syslog->SetProtocol(strtolower($this->M_Config->get_key('syslog_protocol_id')));
+
+
 
             $syslog->SetFacility(3);
             $syslog->SetSeverity(7);
@@ -83,29 +83,42 @@ class Cron extends Tele_Controller
             return;
         }
 
+        $delimiter = $this->M_Config->get_key('syslog_delimiter_id');
+
+        switch ($delimiter) {
+            case "Tab":
+                $delimiter = "\t";
+                break;
+            case "Vertical Bar":
+                $delimiter = "|";
+                break;
+            default:
+                $delimiter = "\t";
+        }
+
         foreach ($alerts as $alert) {
 
             $alert = $alert['_source'];
 
             // new line for syslog
-            $row_syslog = $alert['ts'] . '|' . $alert['ip_orig'] . '|' . $alert['ip_resp'] . '|';
+            $row_syslog = $alert['ts'] . $delimiter . $alert['ip_orig'] . $delimiter . $alert['ip_resp'] . $delimiter;
             // Just in case..
             if (!empty($alert['alerts'])) {
                 foreach ($alert['alerts'] as $a) {
                     $row_syslog .= $a['name'] . ' ';
                 }
                 $row_syslog = trim($row_syslog);
-                $row_syslog .= '|';
+                $row_syslog .= $delimiter;
             }
 
-            $row_syslog .= $alert['uri'] . '|' . $alert['host'] . '|' . $alert['country_code'] . '|' . $alert['city'] . '|' . $alert['score_presence'] . '|' . $alert['score_landing'] . '|' . $alert['score_average'] . $alert['score_query'] . '|' . $alert['score_flow'] . '|' . $alert['score_geo'] . '|';
+            $row_syslog .= $alert['uri'] . $delimiter . $alert['host'] . $delimiter . $alert['country_code'] . $delimiter . $alert['city'] . $delimiter . $alert['score_presence'] . $delimiter . $alert['score_landing'] . $delimiter . $alert['score_average'] . $alert['score_query'] . $delimiter . $alert['score_flow'] . $delimiter . $alert['score_geo'] . $delimiter;
 
             if (!empty($alert['cases_name'])) {
                 foreach ($alert['cases_name'] as $case) {
                     $row_syslog .= $case . ' ';
                 }
                 $row_syslog = trim($row_syslog);
-                $row_syslog .= '|';
+                $row_syslog .= $delimiter;
             }
 
             if (!empty($alert['parameters'])) {
@@ -121,7 +134,7 @@ class Cron extends Tele_Controller
             }
 
             // add link to the specific alert
-            $row_syslog .= '|'.$this->config->base_url().'#'.$alert['sid'].'/'.$alert['ip_orig'].'/'.urlencode
+            $row_syslog .= $delimiter.$this->config->base_url().'#'.$alert['sid'].'/'.$alert['ip_orig'].'/'.urlencode
                 ($alert['alerts'][0]['name']);
 
             echo $row_syslog;
