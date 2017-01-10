@@ -349,14 +349,15 @@
             
             $this->_process = substr($this->_process, 0, 32);
             
-            $actualtime = time();
-            $month      = date("M", $actualtime);
-            $day        = substr("  ".date("j", $actualtime), -2);
-            $hhmmss     = date("H:i:s", $actualtime);
-            $timestamp  = $month." ".$day." ".$hhmmss;
+//            $actualtime = time();
+//            $month      = date("M", $actualtime);
+//            $day        = substr("  ".date("j", $actualtime), -2);
+//            $hhmmss     = date("H:i:s", $actualtime);
+//            $timestamp  = $month." ".$day." ".$hhmmss;
             
             $pri    = "<".($this->_facility*8 + $this->_severity).">";
-            $header = $timestamp." ".$this->_hostname;
+//            $header = $timestamp." ".$this->_hostname;
+            $header = $this->_hostname;
 
             if ($this->_msg != "")
             {
@@ -364,7 +365,8 @@
             }
             else
             {
-                $msg = $this->_process.": ".$this->_fqdn." ".$this->_ip_from." ".$this->_content;
+//                $msg = $this->_process.": ".$this->_fqdn." ".$this->_ip_from." ".$this->_content;
+                $msg = $this->_fqdn." ".$this->_ip_from." ".$this->_content;
             }
             
             $message = substr($pri.$header." ".$msg, 0, 1024);
