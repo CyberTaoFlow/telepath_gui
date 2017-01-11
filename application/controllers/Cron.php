@@ -48,17 +48,35 @@ class Cron extends Tele_Controller
         // Gather last minute alerts
         $client = new Elasticsearch\Client();
 
-        $params['body'] = [
-            "size" => 100,
-            "sort" => ['ts' => 'desc'],
-            "query" => ['bool' => ['must' => []]]
-        ];
+        // Get rules with checked 'syslog' input (in rules board)
+        $params['index'] = 'telepath-rules';
+        $params['type'] = 'rules';
+        $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
+        $params['_source_include'] = ['name'];
+        $results = $client->search($params);
+
+        if (isset($results['hits']) && !empty($results['hits']['hits'])) {
+            foreach ($results['hits']['hits'] as $syslog_alert) {
+                $syslog_alerts[] = $syslog_alert['_source']['name'];
+            }
+        } // If there are no rules with checked 'syslog' input we don't need to run the job
+        else {
+            return;
+        }
+
+        $params = [];
+
+
         $params['index'] = 'telepath-20*';
         $params['type'] = 'http';
+        $params['body'] = [
+            "size" => 1000,
+            "sort" => ['ts' => 'desc']
+        ];
 
         $ts_start = intval(strtotime('-1 minute'));
 
-        $params['body']['query']['bool']['filter'][] = ['exists' => ['field' => 'alerts']];
+        $params['body']['query']['bool']['filter'][] = ['terms' => ['alerts.name' => $syslog_alerts]];
         $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $ts_start]]];
 
         $alerts = $client->search($params);
