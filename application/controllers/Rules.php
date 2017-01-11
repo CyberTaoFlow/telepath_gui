@@ -48,7 +48,7 @@ class Rules extends Tele_Controller
 
         telepath_auth(__CLASS__, 'set_rules');
         $data = $this->input->post('ruleData');
-        $builtin_rule = $this->input->post('builtin_rule')=='true';
+        $builtin_rule = $this->input->post('builtin_rule') == '1';
         $id = $data['id'];
         $result=[];
         unset($data['id']);
