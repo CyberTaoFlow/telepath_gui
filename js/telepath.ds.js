@@ -6,12 +6,20 @@ telepath.ds = {
 
 		var cachedData = sessionStorage.getItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)));
 		if (cache && cachedData ) {
-
-			if (typeof success == 'function') {
-				success(JSON.parse(cachedData), flag);
+			if(cachedData == 'loading'){
+				setTimeout(this.get(resource, params, success, error, flag, cache),1000)
+			}
+			else {
+				if (typeof success == 'function') {
+					success(JSON.parse(cachedData), flag);
+				}
 			}
 		}
 		else {
+
+			if (cache) {
+				sessionStorage.setItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)), 'loading');
+			}
 
 
 			var dataType = 'json';
