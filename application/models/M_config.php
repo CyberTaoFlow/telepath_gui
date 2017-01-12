@@ -15,7 +15,7 @@ class M_Config extends CI_Model
 
     }
 
-    public function changed($agents_change)
+    public function agents_changed($agents_change)
     {
         // If case of changes in network interfaces settings we need to update the elastic flag also
         if ($agents_change) {
@@ -38,6 +38,28 @@ class M_Config extends CI_Model
         $redisObj = new Redis();
         $redisObj->connect('localhost', '6379');
         $redisObj->lpush("C", "1");
+    }
+
+    public function extension_changed($extension_changed)
+    {
+        // If case of changes in extensions settings we need to update the elastic flag
+        if ($extension_changed) {
+
+            $params = [
+                'index' => 'telepath-config',
+                'type' => 'config',
+                'id' => 'extension_was_changed_id',
+                'body' => [
+                    'doc' => [
+                        "value" => "1"
+                    ]
+                ]
+            ];
+
+            $this->elasticClient->update($params);
+
+        }
+
     }
 
 

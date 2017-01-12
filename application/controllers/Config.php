@@ -197,8 +197,7 @@ class Config extends Tele_Controller
 
         $config = $this->input->post(NULL, true);
 
-        // Check for changes in network interfaces settings
-        $this->M_Config->changed($this->M_Config->get_agents() != $config['agents']);
+
 
 
         // Handle White list
@@ -330,6 +329,9 @@ class Config extends Tele_Controller
                     }
 
                 }*/
+        // Check for changes in extensions settings
+        $this->M_Config->extension_changed( $this->M_Config->get_regex() != $config['regex']['URL']);
+
         // set ignore extensions, Yuli
         $regex = $this->M_Config->set_regex($config['regex']['URL']);
         //var_dump($regex);
@@ -370,6 +372,9 @@ class Config extends Tele_Controller
 
 //				system('/opt/telepath/suricata/af-packet.sh &');
 //			}
+            // Check for changes in network interfaces settings
+            $this->M_Config->agents_changed($this->M_Config->get_agents() != $config['agents']);
+
             $agents = $this->M_Config->set_agents($config['agents']);
             //var_dump($agents);
 
