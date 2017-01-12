@@ -45,18 +45,21 @@ class M_Cases extends CI_Model {
 	public function get_case_data($cid)
 	{
 
+		$params = [
+			'index' => 'telepath-cases',
+			'type' => 'case'
+		];
+
+
 		if ($cid == 'all') {
-			$response = $this->elasticClient->search(['index' => 'telepath-cases','type'=>'case']);
+			$params['timeout'] = $this->config->item('timeout');
+			$response = $this->elasticClient->search($params);
 			$cases = get_source($response);
 			return $cases;
 
 		}
 
-		$params = [
-			'index' => 'telepath-cases',
-			'type' => 'case',
-			'id' => $cid,
-		];
+		$params['id'] = $cid;
 
 		if ($this->elasticClient->exists($params)) {
 			$response = $this->elasticClient->get($params);
@@ -101,6 +104,8 @@ class M_Cases extends CI_Model {
 				)
 			)
 		);
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 
@@ -181,6 +186,7 @@ class M_Cases extends CI_Model {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ["sid" => $displayed]];
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
@@ -263,6 +269,7 @@ class M_Cases extends CI_Model {
 
 					$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
 
+					$params2['timeout'] = $this->config->item('timeout');
 
 					$params2 = append_range_query($params2, $range);
 
@@ -312,6 +319,7 @@ class M_Cases extends CI_Model {
 		$params['body']['query']['bool']['filter'][] = ['term' => ["cases_name" => $cid]];
 		$params['body']["aggs"]["sid"]["terms"] = ["field" => "sid", "size" => $limit];
 		$params['body']["aggs"]["sid"]["aggs"]['top_similar_hits']['top_hits'] = ['_source' => false, 'size' => 1];
+		$params['timeout'] = $this->config->item('timeout');
 
 
 		$params = append_access_query($params);
@@ -878,6 +886,8 @@ class M_Cases extends CI_Model {
 
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		//$params['body']['query']['bool']['must'][] = [ 'term' => [ "http.cases_name" => $cid ] ];
 
 		// todo: need to add $params['body']['query']['bool']['filter'] for the append functions
@@ -957,6 +967,7 @@ class M_Cases extends CI_Model {
 			
 			$params['body']['query']['bool']['filter'][] = [ 'term' => [ "cases_name" => $cid ] ];
 			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' => $scope_end ] ] ];
+			$params['timeout'] = $this->config->item('timeout');
 			
 			
 			$params = append_application_query($params, $apps);

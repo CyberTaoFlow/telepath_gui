@@ -127,6 +127,7 @@ class M_Search extends CI_Model {
 			break;
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
 
 
 		$params = append_application_query($params, $settings['apps']);
@@ -227,6 +228,7 @@ class M_Search extends CI_Model {
 					$params3 = $params2;
 					
 					$params3['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+					$params3['timeout'] = $this->config->item('timeout');
 
 					$result2 = $this->elasticClient->search($params3);
 
@@ -256,6 +258,7 @@ class M_Search extends CI_Model {
 								"default_operator" => 'AND'
 							]
 						];
+						$params4['timeout'] = $this->config->item('timeout');
 						$result4 = $this->elasticClient->search($params4);
 
 						if ($result4['hits']['total']){
@@ -345,6 +348,8 @@ class M_Search extends CI_Model {
 				]
 			]
 		];
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);

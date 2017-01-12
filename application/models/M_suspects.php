@@ -126,6 +126,8 @@ class M_Suspects extends CI_Model {
 			];
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
 
@@ -212,6 +214,7 @@ class M_Suspects extends CI_Model {
 				$params2['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
 				$params2['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
 				$params2['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
+				$params2['timeout'] = $this->config->item('timeout');
 
 				$params2 = append_range_query($params2, $range);
 
@@ -331,6 +334,8 @@ class M_Suspects extends CI_Model {
 		if (!empty($exclude_ips)) {
 			$params['body']['query']['bool']['must_not'][] = ['terms' => ['ip_orig' => $exclude_ips]];
 		}
+
+		$params['timeout'] = $this->config->item('timeout');
 
 
 		$params = append_range_query($params, $range);

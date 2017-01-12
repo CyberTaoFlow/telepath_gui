@@ -227,6 +227,8 @@ class M_Rules extends CI_Model {
 			$params['body']['query']['match']['category'] = $category;
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		if ($ids){
 			$params['body']['_source']= false;
 
@@ -253,6 +255,8 @@ class M_Rules extends CI_Model {
 			$params['body']['size'] = 1;
 			$params['body']['query']['bool']['filter'][] = ['match' => ['category' => $category]];
 		}
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results   = get_elastic_results($this->elasticClient->search($params));
 		
@@ -284,6 +288,8 @@ class M_Rules extends CI_Model {
 				'query' => ['match' => ['criteria.type' => $anchor]]
 			]
 		];
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$result = $this->elasticClient->search($params);
 
@@ -380,8 +386,12 @@ class M_Rules extends CI_Model {
 	}
 	
 	private function __get_categories() {
-		
-		$results   = $this->elasticClient->search(['body' => [ 'query' => [ 'term' => [ '_type' => 'rule_categories' ] ] ], 'index' => 'telepath-rules' ]);
+
+		$params['index'] = 'telepath-rules';
+		$params['type'] = 'rule_categories';
+		$params['timeout'] = $this->config->item('timeout');
+
+		$results   = $this->elasticClient->search($params);
 		if(isset($results['hits']['hits'][0])) {
 			return $results['hits']['hits'][0]['_source']['rule_categories'];	
 		} else {
@@ -447,6 +457,7 @@ class M_Rules extends CI_Model {
 			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ['category.search', 'name.search'], "query" => '*'. $search . '*']]]],
 
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$result= $this->elasticClient->search($params);
 

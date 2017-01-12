@@ -69,6 +69,8 @@ class M_Alerts extends CI_Model {
 			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
 				$scope_end ] ] ];
 
+			$params['timeout'] = $this->config->item('timeout');
+
 			$params = append_application_query($params, $apps);
 			$params = append_access_query($params);
 
@@ -140,6 +142,7 @@ class M_Alerts extends CI_Model {
 				"default_operator" => 'AND'
 			]
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -225,6 +228,8 @@ class M_Alerts extends CI_Model {
 
 			$params['body']['query']['bool']['filter'][] = ['terms' => ['sid' => $actions_sid]];
 		}
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
@@ -343,6 +348,8 @@ class M_Alerts extends CI_Model {
 //			];
 //		}
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -430,6 +437,8 @@ class M_Alerts extends CI_Model {
 						];
 
 				$params2['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
+
+				$params2['timeout'] = $this->config->item('timeout');
 
 
 				$params2 = append_range_query($params2, $range);
@@ -544,6 +553,8 @@ class M_Alerts extends CI_Model {
             $params['body']['query']['bool']['must_not'][] = ['terms' => ['sid' => $exclude_sessions]];
         }
 
+		$params['timeout'] = $this->config->item('timeout');
+
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
@@ -639,6 +650,8 @@ class M_Alerts extends CI_Model {
 		}
 
 		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND'] ];
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);

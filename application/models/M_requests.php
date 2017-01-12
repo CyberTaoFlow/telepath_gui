@@ -19,6 +19,8 @@ class M_Requests extends CI_Model {
 				]
 			]
 		];
+
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$results = $this->elasticClient->search($params);
 		$results = get_elastic_results($results);
@@ -44,6 +46,8 @@ class M_Requests extends CI_Model {
 			),
 			"sort" => [	[ "ts" => [ "order" => $desc ? "desc" : "asc" ] ] ]
 		);
+
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$results = $this->elasticClient->search($params);
 		return $results;
@@ -90,6 +94,8 @@ class M_Requests extends CI_Model {
 				]
 			]*/
 		];
+
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$results = $this->elasticClient->search($params);
 

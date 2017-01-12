@@ -195,6 +195,7 @@ class M_Config extends CI_Model
             ]
         ];
 
+        $params['timeout'] = $this->config->item('timeout');
 
         $result = $this->elasticClient->search($params);
 
@@ -364,6 +365,7 @@ public function get_scheduler()
             ]
         ]
     ];
+    $params['timeout'] = $this->config->item('timeout');
 
     $result = $this->elasticClient->search($params);
 

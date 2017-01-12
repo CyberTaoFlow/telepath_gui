@@ -19,6 +19,8 @@ class M_Actions extends CI_Model {
 					[ 'term' => [ '_type' => 'actions' ] ]
 				] ]	]
 		];
+
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$results = $this->elasticClient->search($params);
 		return $results['hits']['hits'];
@@ -48,6 +50,7 @@ class M_Actions extends CI_Model {
 			'size' => 9999,
 			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["application", "action_name"], "query" => '*' . $text . '*']]]],
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results = $this->client->search($params);
 
@@ -73,6 +76,7 @@ class M_Actions extends CI_Model {
 			'query' => ["bool" => ["filter" => ["query_string" => ["fields" => ["action_name.search"], "query" => '*' .
 				$text . '*']]]],
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results = $this->elasticClient->search($params);
 
@@ -132,6 +136,7 @@ class M_Actions extends CI_Model {
 		$params['type'] = 'actions';
 		$params['body']['size'] = 999;
 		$params['body']['query']['match']['application'] = $host;
+		$params['timeout'] = $this->config->item('timeout');
 
 		return get_elastic_results($this->client->search($params));
 
@@ -176,6 +181,7 @@ class M_Actions extends CI_Model {
 				],
 				]]
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
 		$result = get_elastic_results($this->client->search($params));
@@ -407,6 +413,7 @@ class M_Actions extends CI_Model {
 				],
 				]]
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
 		$result = $this->client->search($params);
@@ -448,6 +455,7 @@ class M_Actions extends CI_Model {
 				],
 				]]
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
 		$result = $this->client->search($params);
@@ -509,6 +517,7 @@ class M_Actions extends CI_Model {
 				]
 			]
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
 		$result = $this->client->search($params);

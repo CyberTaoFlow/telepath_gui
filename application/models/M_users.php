@@ -58,6 +58,8 @@ class M_Users extends CI_Model
         if ($last_update)
             $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gt' => $last_update - 60]]];
 
+        $params['timeout'] = $this->config->item('timeout');
+
         $results = $this->elasticClient->search($params);
 
         if (isset($results['aggregations']) && isset($results['aggregations']['users']) &&
@@ -116,6 +118,7 @@ class M_Users extends CI_Model
                 "query" => $search . '*', "default_operator" => 'AND']];
         }
 
+        $params['timeout'] = $this->config->item('timeout');
 
         $result = $this->elasticClient->search($params);
 

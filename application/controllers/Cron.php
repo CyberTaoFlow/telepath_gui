@@ -53,6 +53,7 @@ class Cron extends Tele_Controller
         $params['type'] = 'rules';
         $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
         $params['_source_include'] = ['name'];
+        $params['timeout'] = $this->config->item('timeout');
         $results = $client->search($params);
 
         if (isset($results['hits']) && !empty($results['hits']['hits'])) {
@@ -78,6 +79,7 @@ class Cron extends Tele_Controller
 
         $params['body']['query']['bool']['filter'][] = ['terms' => ['alerts.name' => $syslog_alerts]];
         $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $ts_start]]];
+        $params['timeout'] = $this->config->item('timeout');
 
         $alerts = $client->search($params);
 

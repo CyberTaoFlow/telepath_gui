@@ -268,6 +268,8 @@ class M_Applications extends CI_Model {
 		]
 		];
 
+		$params['timeout'] = $this->config->item('timeout');
+
 
 		$result = $this->elasticClient->search($params);
 
@@ -330,6 +332,8 @@ class M_Applications extends CI_Model {
 			$params['body']['query']['bool']['filter'][] = [ "query_string" => [ "fields" => $fields , "query" => '*' . $search . '*' ] ];
 			$params['body']['highlight']['fields'] = [ 'subdomains'=> new \stdClass() ];
 		}
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$res=$this->elasticClient->search($params);
 
@@ -459,6 +463,7 @@ class M_Applications extends CI_Model {
 			'size'   => 9999,
 			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "fields" => [ "host", $field] , "query" =>'*'. $search . '*' ] ] ] ],
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
@@ -528,6 +533,7 @@ class M_Applications extends CI_Model {
 		$params['body']['highlight']['fields'] = ['host' => new \stdClass(), $field => new \stdClass()];
 		$params['body']['highlight']['pre_tags'] = [''];
 		$params['body']['highlight']['post_tags'] = [''];
+		$params['timeout'] = $this->config->item('timeout');
 
 
 		$params = append_access_query($params);
@@ -577,6 +583,7 @@ class M_Applications extends CI_Model {
 			]
 			]
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_access_query($params);
 		$results = get_elastic_results($this->elasticClient->search($params));
@@ -651,6 +658,8 @@ class M_Applications extends CI_Model {
 			];
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
 
@@ -719,6 +728,7 @@ class M_Applications extends CI_Model {
 			'size'  => 0,
 			'aggs'  => [ 'host' => [ "terms" => [ "field" => "host", "size" => 999 ], ], ],
 		);
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);
@@ -746,6 +756,7 @@ class M_Applications extends CI_Model {
 			'from' => $offset,
 			'query'  => [ "bool" => [ "filter" => [ "query_string" => [ "default_field" => "host", "query" =>'*'. $filter . '*' ] ] ] ],
 		);
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$params = append_access_query($params);
 		$results = $this->elasticClient->search($params);

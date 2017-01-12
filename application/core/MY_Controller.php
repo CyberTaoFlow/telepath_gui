@@ -117,6 +117,7 @@ class Tele_Controller extends CI_Controller
                 ]
             ]
         );
+        $params['timeout'] = $this->config->item('timeout');
 
         $results = $this->elasticClient->search($params);
         $parsed = $this->user['extradata'] != '' ? json_decode($this->user['extradata'], true) : false;
@@ -150,6 +151,8 @@ class Tele_Controller extends CI_Controller
                 ]
             ]
         );
+        $params['timeout'] = $this->config->item('timeout');
+
         $result = $this->elasticClient->search($params);
 
         if(isset($result["aggregations"]) &&

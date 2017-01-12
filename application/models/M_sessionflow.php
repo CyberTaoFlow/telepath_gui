@@ -19,6 +19,8 @@ class M_Sessionflow extends CI_Model {
 				]
 			]
 		);
+
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$results = $this->elasticClient->search($params);
 //		$results = get_elastic_results($results);
@@ -81,6 +83,7 @@ class M_Sessionflow extends CI_Model {
 				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
+				$params['timeout'] = $this->config->item('timeout');
 
 				$results = $this->elasticClient->search($params);
 
@@ -94,6 +97,7 @@ class M_Sessionflow extends CI_Model {
 				$params = append_range_query($params, $range);
 
 				$params['body']['query']['bool']['filter'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+				$params['timeout'] = $this->config->item('timeout');
 
 				$results = $this->elasticClient->search($params);
 
@@ -149,6 +153,8 @@ class M_Sessionflow extends CI_Model {
 				)
 			)
 		];
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 
@@ -230,6 +236,8 @@ class M_Sessionflow extends CI_Model {
 			)
 		];
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		$results = $this->elasticClient->search($params);
 
 		if (isset($results['aggregations']) && isset($results['aggregations']['ip_orig'])
@@ -260,6 +268,8 @@ class M_Sessionflow extends CI_Model {
 					]
 				]
 			];
+
+			$params['timeout'] = $this->config->item('timeout');
 
 			$results2 = $this->elasticClient->search($params);
 		}
@@ -334,6 +344,8 @@ class M_Sessionflow extends CI_Model {
 				// Do nothing, no filter
 			break;
 		}
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_access_query($params);

@@ -54,6 +54,8 @@ class M_Livesessions extends CI_Model
 
         $params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
 
+        $params['timeout'] = $this->config->item('timeout');
+
         $result = $this->elasticClient->search($params);
 
         $results = array('items' => array());
@@ -123,6 +125,8 @@ class M_Livesessions extends CI_Model
                 $params3 = $params2;
 
                 $params3['body']['query']['bool']['filter'][] = ['term' => ['sid' => $sid['key']]];
+
+                $params3['timeout'] = $this->config->item('timeout');
 
                 $result2 = $this->elasticClient->search($params3);
 

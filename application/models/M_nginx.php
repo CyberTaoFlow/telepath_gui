@@ -128,6 +128,7 @@ class M_Nginx extends CI_Model {
 		$params['body'] = [
 			'size' => 10000
 		];
+		$params['timeout'] = $this->config->item('timeout');
 
 		$apps_dirty = get_elastic_results($this->elasticClient->search($params));
 		$apps_clean = array();

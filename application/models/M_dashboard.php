@@ -111,6 +111,8 @@ class M_Dashboard extends CI_Model {
 			]
 		);
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -171,6 +173,8 @@ class M_Dashboard extends CI_Model {
 				]
 			]
 		);
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
@@ -458,6 +462,8 @@ class M_Dashboard extends CI_Model {
 			$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 		}
 
+		$params['timeout'] = $this->config->item('timeout');
+
 //		$params = append_application_query($params, $apps);
 //		$params = append_access_query($params);
 
@@ -516,6 +522,8 @@ class M_Dashboard extends CI_Model {
 			]
 		);
 
+		$params['timeout'] = $this->config->item('timeout');
+
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -568,6 +576,8 @@ class M_Dashboard extends CI_Model {
 		if($map_mode== 'alerts') {
 			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 		}
+
+		$params['timeout'] = $this->config->item('timeout');
 		
 		$params = append_application_query($params, $apps);
 		$params = append_access_query($params);
@@ -622,6 +632,8 @@ class M_Dashboard extends CI_Model {
 				]
 			]
 		);
+
+		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_range_query($params, $range);
 		$params = append_application_query($params, $apps);
