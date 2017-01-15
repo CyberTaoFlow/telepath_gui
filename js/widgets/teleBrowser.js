@@ -62,9 +62,43 @@ $.widget( "tele.teleBrowser", {
 
 			telepath.ds.get('/applications/get_search', { search: searchTerm, /*context: 'applications',*/ mode: that.options.mode  }, function(data) {
 
-					// EXPANDING SEARCH , SHOW MIXED
+				// Search in global headers (client side search)
 
-					var treeData = telepath.config.applications.formatSearchData(data.items,that.options.mode);
+				var treeData = [];
+
+				if (that.options.mode == 'param') {
+
+					var found = $.grep(telepath.global_headers, function (value, i) {
+						return value.toLocaleLowerCase().indexOf(searchTerm.toLowerCase()) != -1
+					});
+
+					if (found.length) {
+
+						var childrens = [];
+
+						$.each(found, function (i, x) {
+							childrens.push({
+								children: false,
+								text: x,
+								icon: 'tele-icon-param',
+								data: {type: 'param', global: true, name: x}
+							});
+						});
+
+						treeData.push({
+							icon: 'tele-icon-global',
+							text: 'Global Headers',
+							children: childrens,
+							data: {'type': 'global'},
+							state: {opened: true}
+						});
+
+					}
+				}
+
+				// EXPANDING SEARCH , SHOW MIXED
+
+				treeData = $.merge(treeData, telepath.config.applications.formatSearchData(data.items, that.options.mode));
 					callback.call(that, treeData);
 					$('input', window.teleBrowseSearch).attr('complete', 'true');
 
