@@ -365,6 +365,7 @@ telepath.search = {
         // Loop our types and send out search requests for different types of data
 
         that.count=0;
+        $('.tele-search-tab span').html('0');
 
         $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
 
