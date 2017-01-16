@@ -124,7 +124,7 @@ class M_Alerts extends CI_Model {
 
 		global $query;
 
-		$query = '_exists_:alerts';
+		$query = '_exists_:alerts_count';
 
 		if (count($alerts_filter) > 0 && $alerts_filter != false) {
 			$query .= ' AND alerts.name:("' . implode('" OR "', $alerts_filter) . '")';
@@ -209,7 +209,7 @@ class M_Alerts extends CI_Model {
 
 		global $query;
 
-		$query = '_exists_:alerts';
+		$query = '_exists_:alerts_count';
 
 
 		if ($search && strlen($search) > 1) {
@@ -315,7 +315,7 @@ class M_Alerts extends CI_Model {
 
 		global $query;
 
-		$query = '_exists_:alerts';
+		$query = '_exists_:alerts_count';
 
 		if (count($alerts_filter) > 0 && $alerts_filter != false) {
 			$query .= ' AND alerts.name:("' . implode('" OR "', $alerts_filter) . '")';
@@ -543,7 +543,7 @@ class M_Alerts extends CI_Model {
 			'query' => [
 				'bool' => [
 					'filter' => [
-						['exists' => ['field' => 'alerts']],
+						['exists' => ['field' => 'alerts_count']],
 					]
 				],
 			],

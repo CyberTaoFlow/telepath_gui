@@ -104,7 +104,7 @@ class M_Dashboard extends CI_Model {
 				'bool' => [
 					'filter' => [
 //						[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ],
-						[ 'exists' => [ 'field' => 'alerts' ] ],
+						[ 'exists' => [ 'field' => 'alerts_count' ] ],
 
 					]
 				]
@@ -626,7 +626,7 @@ class M_Dashboard extends CI_Model {
 						[ 'range' => [ 'score_average' => [ ($suspects ? 'gte' : 'lt') => $suspect_threshold ] ] ],
 					],
 					'must_not'=>[
-						[ 'exists' => [ 'field' => 'alerts' ] ],
+						[ 'exists' => [ 'field' => 'alerts_count' ] ],
 					]
 
 				]

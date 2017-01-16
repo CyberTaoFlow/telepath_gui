@@ -87,7 +87,7 @@ class M_Search extends CI_Model {
 
 		switch($scope) {
 			case 'alerts':
-				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ];
 				//$params['body']["aggs"]["sid"]["aggs"]["alerts_count"] = [ "sum" => [ "field" => "alerts_count" ] ];
 				//	$params['body']['query']['bool']['must'][]=[ 'range' => [ 'alerts_count' => [ 'gte' => 1 ] ] ];
 				//$params2['body']['query']['bool']['must'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
@@ -103,7 +103,7 @@ class M_Search extends CI_Model {
 			break;
 			case 'suspects':
 				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ];
 //				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
 //				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
@@ -111,7 +111,7 @@ class M_Search extends CI_Model {
 			case 'requests':
 				// old method
 				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
-				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ] ;
+				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ] ;
 //				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'cases_name' ] ];
 //				$params2['body']['query']['bool']['must'][] = [ 'range' => [ 'score_average' => [ 'lt' => $suspect_threshold ] ] ];
 //				$params2['body']['query']['bool']['must_not'][] = [ 'filtered' => [ 'filter' => [ 'exists' => [ 'field' => 'alerts' ] ] ] ];
@@ -251,7 +251,7 @@ class M_Search extends CI_Model {
 						$params4['type'] = 'http';
 						$params4['body']['size'] = 0;
 						$params4['body']['query']['bool']['filter'][] = [ 'term' => ['sid' => $sid['key'] ] ];
-						$params4['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+						$params4['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ];
 						$params4['body']['query']['bool']['filter'][] = [
 							'query_string' => [
 								"query" => $settings['search'],

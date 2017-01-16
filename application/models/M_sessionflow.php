@@ -81,7 +81,7 @@ class M_Sessionflow extends CI_Model {
 			];
             if ($state=='Suspect' && $suspect_threshold){
 				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ];
 				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
 				$params['timeout'] = $this->config->item('timeout');
 
@@ -325,7 +325,7 @@ class M_Sessionflow extends CI_Model {
 				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'business_actions' ] ] ;
 			break;
 			case 'Alerts':
-				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts' ] ] ;
+				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ] ;
 			break;
 			case 'Search':
 				if ($key)
@@ -336,7 +336,7 @@ class M_Sessionflow extends CI_Model {
             break;
             case 'Suspect':
                 $params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-                $params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts' ] ];
+                $params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ];
                 $params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
                 break;
 			default:

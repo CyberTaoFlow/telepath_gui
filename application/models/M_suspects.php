@@ -112,7 +112,7 @@ class M_Suspects extends CI_Model {
 //		$params['body']["aggs"]["sid"]["aggs"] = [ "cases_count" => [ "sum" => [ "field" => "cases_count" ] ] ];
 
 		$params['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
-		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
+		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts_count']];
 		$params['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
 
 		$params = append_range_query($params, $range);
@@ -212,7 +212,7 @@ class M_Suspects extends CI_Model {
 
 				$params2['body']['query']['bool']['filter'][] = ['term' => ['sid' => $sid['key']]];
 				$params2['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
-				$params2['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
+				$params2['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts_count']];
 				$params2['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
 				$params2['timeout'] = $this->config->item('timeout');
 
@@ -328,7 +328,7 @@ class M_Suspects extends CI_Model {
 
 
 		$params['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
-		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts']];
+		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts_count']];
 		$params['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
 
 		if (!empty($exclude_ips)) {
