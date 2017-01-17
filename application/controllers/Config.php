@@ -265,8 +265,6 @@ class Config extends Tele_Controller
                 case 'loadbalancer_mode_id':
                 case 'smtp_port_id':
                 case 'smtp_ip_id':
-                    /*case 'loadbalancerips_id':
-                    case 'loadbalancerheaders_id':*/
                 case 'move_to_production_id':
                 case 'proxy_ip_id':
                 case 'rep_user_id':
@@ -279,8 +277,6 @@ class Config extends Tele_Controller
                 case 'add_unknown_applications_id':
                 case 'proxy_mode_id':
                 case 'rep_pass_id':
-                //case 'app_list_was_changed_id':
-
 
                     $config_response = $this->M_Config->update($key, $value);
                     //var_dump($config_response);
@@ -289,47 +285,7 @@ class Config extends Tele_Controller
             }
         }
 
-        //   $config_response=$this->M_Config->update('app_list_was_changed_id', '1');
-        //var_dump($config_response);
 
-
-        /*        foreach ($config as $key => $value) {
-
-                    switch ($key) {
-
-                         Operation mode
-                        case 'input_mode':
-                        case 'operation_mode_id':
-                        case 'moveToProductionAfter':
-                             SMTP Config
-                        case 'rep_user':
-                        case 'rep_pass':
-                        case 'smtp':
-                        case 'smtp_port':
-                        case 'write_to_syslog':
-                        case 'remote_syslog_ip':
-                             Proxy Config
-                        case 'proxy_flag':
-                        case 'proxy_ip':
-                        case 'proxy_port':
-                            case 'load_balancer_on':
-                            case 'load_balancer_ip':
-                            case 'load_balancer_header':
-                        case 'addUnknownApp':
-                            // serive enable / disable
-                            $this->M_Config->sql_update($key, $value);
-                            break;
-
-                        case 'engine_mode':
-                        case 'sniffer_mode':
-                        case 'reverse_proxy_mode':
-                            $this->M_Config->update($key, $value);
-                            // we need to restart telepath here (Yuli)
-                            break;
-
-                    }
-
-                }*/
         // Check for changes in extensions settings
         $this->M_Config->extension_changed( $this->M_Config->get_regex() != $config['regex']['URL']);
 
@@ -337,48 +293,14 @@ class Config extends Tele_Controller
         $regex = $this->M_Config->set_regex($config['regex']['URL']);
         //var_dump($regex);
 
-        /*
-        $config_path     = '/opt/telepath/conf/telepath.json';
-        $old_config_data = file_get_contents($config_path);
-        $new_config_data = json_encode([ 'ext' => (isset($config['regex']['URL']) ? $config['regex']['URL'] : ''), 'interfaces' => (isset($config['agents']) ? $config['agents'] : []) ]);
-        if($new_config_data != $old_config_data) {
-            file_put_contents($config_path, $new_config_data);
-            // This causes suricata and nginx to reload
-        }*/
 
         if (isset($config['agents'])) {
 
-//			$old_data = $this->M_Config->get_agents();
-//			$tmp_old = '';
-//			$tmp_new = '';
-//
-//			if(!empty($old_data)) {
-//				foreach($old_data as $agent) {
-//					$tmp_old .= $agent->NetworkInterface . $agent->FilterExpression;
-//				}
-//			}
-//
-//			if(!empty($config['agents'])) {
-//				foreach($config['agents'] as $agent) {
-//					$tmp_new .= $agent['NetworkInterface'] . $agent['FilterExpression'];
-//				}
-//			}
-//
-//			if($tmp_old != $tmp_new) {
-//				$this->M_Config->set_agents($config['agents']);
-
-            //not used
-//				$this->M_Config->update('agents_list_was_changed', 1);
-
-
-//				system('/opt/telepath/suricata/af-packet.sh &');
-//			}
             // Check for changes in network interfaces settings
             $this->M_Config->agents_changed($this->M_Config->get_agents() != $config['agents']);
 
             $agents = $this->M_Config->set_agents($config['agents']);
             //var_dump($agents);
-
         }
 
 
