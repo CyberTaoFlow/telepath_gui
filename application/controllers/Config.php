@@ -148,7 +148,48 @@ class Config extends Tele_Controller
             $whitelist=  [];
         }
 
-        $this->M_Config->whitelist_set_ips($whitelist);
+        // check for white list changes
+        if ($this->M_Config->whitelist_get_ips() != $whitelist) {
+
+            // update ip format white list
+            $this->M_Config->whitelist_set_ips($whitelist);
+
+            $cidr = '';
+
+            // Convert white list from ip format to CIDR and create string for BPF filter
+            if (!empty($whitelist)) {
+
+                $cidr = 'and not (net ';
+
+                foreach ($whitelist as $ip_range) {
+
+                    if (!is_ipaddr($ip_range['from'])) {
+                        continue;
+                    }
+
+                    if (!is_ipaddr($ip_range['to'])) {
+                        continue;
+                    }
+
+                    if (ip_less_than($ip_range['to'], $ip_range['from'])) {
+                        continue;
+                    }
+
+                    $cidr .= implode(' and net ', ip_range_to_subnet_array($ip_range['from'], $ip_range['to'])) . ' and net ';
+
+                }
+
+                $cidr = substr($cidr, 0, -9) . ')';
+
+            }
+
+            // Save BPF filter string
+            $this->M_Config->whitelist_set_cidr($cidr);
+
+            // Reload suricata
+            exec('sudo telepath suricata 2>&1', $outpout);
+        }
+
 
         if (isset($config['scheduler'])) {
 

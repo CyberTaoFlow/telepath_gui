@@ -99,6 +99,23 @@ class M_Config extends CI_Model
         $this->elasticClient->update($params);
     }
 
+    public function whitelist_set_cidr($cidr)
+    {
+
+        $params = [
+            'index' => 'telepath-config',
+            'type' => 'ips',
+            'id' => 'whitelist_cidr_id',
+            'body' => [
+                'doc' => [
+                    'cidr' => $cidr
+                ]
+            ]
+        ];
+
+        $this->elasticClient->update($params);
+    }
+
     public function get_ip_balances()
     {
 
