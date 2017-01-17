@@ -83,16 +83,19 @@ class Cron extends Tele_Controller
 
         $alerts = $client->search($params);
 
-        // Get time zone of the server
-        $tz = exec('date +%Z');
+//        // Get time zone of the server
+//        $tz = exec('date +%Z');
+//
+//        // Current time according to time zone
+//        $date = new DateTime("now", new DateTimeZone($tz));
+//        $end = $date->format(DATE_RFC2822);
+//
+//        // Start time according to time zone
+//        $date->setTimestamp($ts_start);
+//        $start = $date->format(DATE_RFC2822);
 
-        // Current time according to time zone
-        $date = new DateTime("now", new DateTimeZone($tz));
-        $end = $date->format(DATE_RFC2822);
-
-        // Start time according to time zone
-        $date->setTimestamp($ts_start);
-        $start = $date->format(DATE_RFC2822);
+        $start = date(DATE_RFC2822, $ts_start);
+        $end = date(DATE_RFC2822);
 
 
         echo 'Since ' . $start . ' Till ' . $end . ' there are ' . $alerts['hits']['total'] . ' alerts. ' . "\n";
