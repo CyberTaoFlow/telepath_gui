@@ -64,7 +64,8 @@ class Alerts extends Tele_Controller
             }
         }
 
-        xss_return_success([
+        // XSS filter is not needed for this internal function
+        return_success([
             'time_chart' => $time_chart,
             'distribution_chart' => $distribution_chart
         ]);
