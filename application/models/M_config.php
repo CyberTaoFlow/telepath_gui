@@ -85,8 +85,6 @@ class M_Config extends CI_Model
 
     {
 
-        usort($ips, [$this, 'compare_from']);
-
         $params = [
             'index' => 'telepath-config',
             'type' => 'ips',
@@ -131,16 +129,9 @@ class M_Config extends CI_Model
 
     }
 
-    function compare_from($a, $b)
-    {
-        return strnatcmp($a['from'], $b['from']);
-    }
-
     
     public function set_ip_balances($ips)
     {
-
-        usort($ips, [$this, 'compare_from']);
 
         $params = [
             'index' => 'telepath-config',

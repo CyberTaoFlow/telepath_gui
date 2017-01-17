@@ -205,7 +205,7 @@ class Config extends Tele_Controller
         if (isset($config['whitelist'])) {
 
             $whitelist = $config['whitelist'];
-
+            usort($whitelist, 'compare_from');
         }
         else{
             $whitelist=  [];
@@ -229,6 +229,7 @@ class Config extends Tele_Controller
         if (isset($config['ip_balances'])) {
 
             $ip_balances = $config['ip_balances'];
+            usort($ips, 'compare_from');
 
         }
         else{

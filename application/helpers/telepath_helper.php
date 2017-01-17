@@ -556,6 +556,12 @@ function get_gap($range) {
 		return $x_display;
 	}
 
+
+function compare_from($a, $b)
+{
+	return strnatcmp($a['from'], $b['from']);
+}
+
 function extractRootDomain($url)
 {
 	require FCPATH .'vendor/tldextractphp/tldextract.php';
