@@ -128,37 +128,51 @@ class Cron extends Tele_Controller
             // Just in case..
             if (!empty($alert['alerts'])) {
                 foreach ($alert['alerts'] as $a) {
-                    $row_syslog .= $a['name'] . ' ';
+                    $row_syslog .= $a['name'] . ',';
                 }
-                $row_syslog = trim($row_syslog);
-                $row_syslog .= $delimiter;
+
+                $row_syslog = substr($row_syslog, 0, -1) . $delimiter;
             }
 
-            $row_syslog .= $alert['uri'] . $delimiter . $alert['host'] . $delimiter . $alert['country_code'] . $delimiter . $alert['city'] . $delimiter . $alert['score_presence'] . $delimiter . $alert['score_landing'] . $delimiter . $alert['score_average'] . $alert['score_query'] . $delimiter . $alert['score_flow'] . $delimiter . $alert['score_geo'] . $delimiter;
+            $row_syslog .= $alert['host'] . $delimiter . $alert['uri'] . $delimiter . $alert['country_code'] .
+                $delimiter . $alert['city'] . $delimiter . $alert['score_presence'] . $delimiter .
+                $alert['score_landing'] . $delimiter . $alert['score_average'] . $alert['score_query'] . $delimiter .
+                $alert['score_flow'] . $delimiter . $alert['score_geo'] . $delimiter;
 
+            // Cases
             if (!empty($alert['cases_name'])) {
                 foreach ($alert['cases_name'] as $case) {
-                    $row_syslog .= $case . ' ';
+                    $row_syslog .= $case . ',';
                 }
-                $row_syslog = trim($row_syslog);
-                $row_syslog .= $delimiter;
+                $row_syslog = substr($row_syslog, 0, -1);
+            } else {
+                $row_syslog .= 'No Case';
             }
+            $row_syslog .= $delimiter;
+
+            // Parameters
+            $parameters = '';
 
             if (!empty($alert['parameters'])) {
 
                 // Concat interacting parameters
                 foreach ($alert['parameters'] as $p) {
                     if (intval($p['score_data']) > 85) {
-                        $row_syslog .= $p['name'] . '=' . $p['value'] . ',';
+                        $parameters .= $p['name'] . '=' . $p['value'] . ',';
                     }
                 }
                 // Trailing comma
-                $row_syslog = substr($row_syslog, 0, -1);
+                $parameters = substr($parameters, 0, -1);
             }
 
+            if ($parameters == '') {
+                $parameters = 'No relevant parameters';
+            }
+
+            $row_syslog .= $parameters . $delimiter;
+
             // add link to the specific alert
-            $row_syslog .= $delimiter.$this->config->base_url().'#'.$alert['sid'].'/'.$alert['ip_orig'].'/'.urlencode
-                ($alert['alerts'][0]['name']);
+            $row_syslog .= $this->config->base_url() . '#' . $alert['sid'] . '/' . $alert['ip_orig'] . '/' . urlencode($alert['alerts'][0]['name']);
 
             echo $row_syslog;
 
