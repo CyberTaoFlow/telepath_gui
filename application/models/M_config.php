@@ -23,7 +23,7 @@ class M_Config extends CI_Model
             $params = [
                 'index' => 'telepath-config',
                 'type' => 'config',
-                'id' => 'config_was_changed_id',
+                'id' => 'interface_was_changed_id',
                 'body' => [
                     'doc' => [
                         "value" => "1"
@@ -33,11 +33,11 @@ class M_Config extends CI_Model
 
             $this->elasticClient->update($params);
 
-        }
 
-        $redisObj = new Redis();
-        $redisObj->connect('localhost', '6379');
-        $redisObj->lpush("C", "1");
+            $redisObj = new Redis();
+            $redisObj->connect('localhost', '6379');
+            $redisObj->lpush("C", "1");
+        }
     }
 
     public function extension_changed($extension_changed)
