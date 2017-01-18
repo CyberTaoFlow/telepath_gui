@@ -264,6 +264,9 @@ class Config extends Tele_Controller
         }
 
 
+        if (!isset($config['regex']['URL'])){
+            $config['regex']['URL'] = [];
+        }
         // Check for changes in extensions settings
         $this->M_Config->extension_changed( $this->M_Config->get_regex() != $config['regex']['URL']);
 
@@ -272,14 +275,15 @@ class Config extends Tele_Controller
         //var_dump($regex);
 
 
-        if (isset($config['agents'])) {
-
+        if (!isset($config['agents'])) {
+            $config['agents'] = [];
+        }
             // Check for changes in network interfaces settings
             $this->M_Config->agents_changed($this->M_Config->get_agents() != $config['agents']);
 
             $agents = $this->M_Config->set_agents($config['agents']);
             //var_dump($agents);
-        }
+
 
 
         // Done, return updated config
