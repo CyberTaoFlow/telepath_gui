@@ -231,6 +231,13 @@ class Config extends Tele_Controller
         $this->M_Config->set_header_balances($header_balances);
 
 
+        $old_config = $this->M_Config->get();
+
+        // Check for proxy settings changes to update the elastic flag
+        $this->M_Config->proxy_changed($old_config['proxy_mode_id'] != $config['proxy_mode_id'] || $old_config['proxy_ip_id'] !=
+            $config['proxy_ip_id'] || $old_config['proxy_port_id'] != $config['proxy_port_id']);
+
+
         foreach ($config as $key => $value) {
 
             switch ($key) {

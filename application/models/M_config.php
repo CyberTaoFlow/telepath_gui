@@ -62,6 +62,28 @@ class M_Config extends CI_Model
 
     }
 
+    public function proxy_changed($proxy_changed)
+    {
+        // If case of changes in proxy settings we update the elastic flag
+        if ($proxy_changed) {
+
+            $params = [
+                'index' => 'telepath-config',
+                'type' => 'config',
+                'id' => 'proxy_was_changed_id',
+                'body' => [
+                    'doc' => [
+                        "value" => "1"
+                    ]
+                ]
+            ];
+
+            $this->elasticClient->update($params);
+
+        }
+
+    }
+
 
     public function whitelist_get_ips()
     {
