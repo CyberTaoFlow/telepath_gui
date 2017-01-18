@@ -216,7 +216,6 @@ class Config extends Tele_Controller
 
         }
 
-        $this->M_Config->set_ip_balances($ip_balances);
 
         if (isset($config['header_balances'])) {
 
@@ -228,10 +227,19 @@ class Config extends Tele_Controller
             $header_balances=[];
 
         }
+
+        $old_config = $this->M_Config->get();
+
+        // Check for changes in load balancer settings to update the elastic flag
+        $this->M_Config->extension_changed( $this->M_Config->get_ip_balances() != $ip_balances ||
+            $this->M_Config->get_header_balances() != $header_balances || $old_config['loadbalancer_mode_id'] ||
+            $config['loadbalancer_mode_id']);
+
+        $this->M_Config->set_ip_balances($ip_balances);
+
         $this->M_Config->set_header_balances($header_balances);
 
 
-        $old_config = $this->M_Config->get();
 
         // Check for proxy settings changes to update the elastic flag
         $this->M_Config->proxy_changed($old_config['proxy_mode_id'] != $config['proxy_mode_id'] || $old_config['proxy_ip_id'] !=
