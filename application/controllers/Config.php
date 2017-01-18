@@ -207,7 +207,7 @@ class Config extends Tele_Controller
         if (isset($config['ip_balances'])) {
 
             $ip_balances = $config['ip_balances'];
-            usort($ips, 'compare_from');
+            usort($ip_balances, 'compare_from');
 
         }
         else{
