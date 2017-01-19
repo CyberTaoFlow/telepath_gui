@@ -314,7 +314,7 @@ class Cron extends Tele_Controller
     public function _update($config)
     {
 
-        $base_path = 'http://www.hybridsec.com/updates/';
+        $base_path = 'http://188.166.57.109/updates/';
 
         $proxy = $config['proxy_mode_id'] == '1' &&
         $config['proxy_ip_id'] != '' &&
