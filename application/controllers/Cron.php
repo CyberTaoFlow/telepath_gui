@@ -135,9 +135,9 @@ class Cron extends Tele_Controller
             }
 
             $row_syslog .= $alert['host'] . $delimiter . $alert['uri'] . $delimiter . $alert['country_code'] .
-                $delimiter . $alert['city'] . $delimiter . $alert['score_presence'] . $delimiter .
-                $alert['score_landing'] . $delimiter . $alert['score_average'] . $alert['score_query'] . $delimiter .
-                $alert['score_flow'] . $delimiter . $alert['score_geo'] . $delimiter;
+                $delimiter . $alert['city'] . $delimiter . $alert['score_average'] . $delimiter . $alert['ip_score']
+                . $delimiter . $alert['score_landing']. $delimiter . $alert['score_query'] . $delimiter . $alert['score_flow'] .
+                $delimiter . $alert['score_geo'] . $delimiter;
 
             // Cases
             if (!empty($alert['cases_name'])) {
