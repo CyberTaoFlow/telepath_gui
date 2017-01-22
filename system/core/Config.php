@@ -94,6 +94,43 @@ class CI_Config {
 			{
 				$base_url = (is_https() ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST']
 					.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+
+
+				// NOT FROM CI Core!!!
+				// We need the base_url also when CI is running from CLI, but in this case we cannot get the
+				// $_SERVER['HTTP_HOST']. That's the reason we write the host in config file.
+				$pattern = '$config[\'base_url\']';
+				$fileName = APPPATH . "config/config.php";
+				$temFile = APPPATH . "config/config.tmp";
+//				exec('sudo touch ' . $temFile . ' 2>&1', $outpout);
+//				exec('sudo chown www-data:www-data ' . $temFile . ' 2>&1', $outpout);
+
+				if (file_exists($fileName)) {
+					$reading = fopen($fileName, 'r');
+					$writing = fopen($temFile, 'w');
+
+					$replaced = false;
+
+					while (!feof($reading)) {
+						$line = fgets($reading);
+						if (strpos($line, $pattern) !== false) {
+							$line = $pattern . " = '" . $base_url . "';\n";
+							$replaced = true;
+						}
+						fputs($writing, $line);
+					}
+					fclose($reading);
+					fclose($writing);
+					// not overwrite the file if we didn't replace anything
+					if ($replaced) {
+//						exec('sudo rm '. $fileName . ' 2>&1', $outpout);
+//						exec('sudo mv '. $temFile . ' '. $fileName . ' 2>&1', $outpout);
+						rename($temFile, $fileName);
+					} else {
+						unlink($temFile);
+					}
+				}
+				// END!
 			}
 			else
 			{
