@@ -15,10 +15,9 @@ class M_Config extends CI_Model
 
     }
 
-    public function agents_changed($agents_change)
+    public function agents_changed()
     {
-        // If case of changes in network interfaces settings we need to update the elastic flag also
-        if ($agents_change) {
+        // If case of changes in network interfaces settings we need to update the elastic flag
 
             $params = [
                 'index' => 'telepath-config',
@@ -33,11 +32,14 @@ class M_Config extends CI_Model
 
             $this->elasticClient->update($params);
 
-
-            $redisObj = new Redis();
-            $redisObj->connect('localhost', '6379');
-            $redisObj->lpush("C", "1");
         }
+
+
+    public function redis_flag_push()
+    {
+        $redisObj = new Redis();
+        $redisObj->connect('localhost', '6379');
+        $redisObj->lpush("C", "1");
     }
 
     public function extension_changed($extension_changed)
@@ -130,7 +132,7 @@ class M_Config extends CI_Model
             'id' => 'whitelist_cidr_id',
             'body' => [
                 'doc' => [
-                    'cidr' => $cidr
+                    'value' => $cidr
                 ]
             ]
         ];

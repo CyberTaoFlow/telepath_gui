@@ -186,8 +186,10 @@ class Config extends Tele_Controller
             // Save BPF filter string
             $this->M_Config->whitelist_set_cidr($cidr);
 
+            $this->M_Config->agents_changed();
+
             // Reload suricata
-            exec('sudo telepath suricata 2>&1', $outpout);
+            //exec('sudo telepath suricata 2>&1', $outpout);
         }
 
 
@@ -293,11 +295,14 @@ class Config extends Tele_Controller
         if (!isset($config['agents'])) {
             $config['agents'] = [];
         }
-            // Check for changes in network interfaces settings
-            $this->M_Config->agents_changed($this->M_Config->get_agents() != $config['agents']);
+        // Check for changes in network interfaces settings
+        if ($this->M_Config->get_agents() != $config['agents']) {
+            $this->M_Config->set_agents($config['agents']);
+            $this->M_Config->agents_changed();
+            $this->M_Config->redis_flag_push();
+        }
 
-            $agents = $this->M_Config->set_agents($config['agents']);
-            //var_dump($agents);
+
 
 
 
