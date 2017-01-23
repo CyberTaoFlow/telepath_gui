@@ -175,11 +175,12 @@ class Config extends Tele_Controller
                         continue;
                     }
 
-                    $cidr .= implode(' and net ', ip_range_to_subnet_array($ip_range['from'], $ip_range['to'])) . ' and net ';
+                    $cidr .= implode(' or net ', ip_range_to_subnet_array($ip_range['from'], $ip_range['to']))
+                        . ' or net ';
 
                 }
 
-                $cidr = substr($cidr, 0, -9) . ')';
+                $cidr = substr($cidr, 0, -8) . ')';
 
             }
 
