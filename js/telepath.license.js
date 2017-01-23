@@ -33,7 +33,7 @@ telepath.validate = {
 			$('.loader').remove();
 			
 			if(result['success']) {
-				switch(result.valid) {
+				switch(result.status.split('-')[0]) {
 						case 'VALID':
 							$('.tele-input-license').css('border-color','green');
 							$('.tele-label-license').html('Success!');

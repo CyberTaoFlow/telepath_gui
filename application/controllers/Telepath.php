@@ -84,12 +84,16 @@ class Telepath extends Tele_Controller
         $key = $this->input->post('key');
         $this->M_Config->update('license_key_id', $key);
 
-        // Allow 5 second for engine to validate the key
-        sleep(5);
+        // Check every 3 seconds if the status string was changed by the engine
+        $old_status = $this->M_Config->get_key('license_mode_id');
+        $new_status = $old_status;
 
-        $valid = $this->M_Config->get_key('license_mode_id');
+        while ($new_status == $old_status) {
+            sleep(3);
+            $new_status = $this->M_Config->get_key('license_mode_id');
+        }
 
-        return_json(array('success' => true, 'valid' => $valid));
+        return_json(array('success' => true, 'status' => $new_status));
 
     }
 
