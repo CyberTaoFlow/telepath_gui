@@ -6,6 +6,7 @@ telepath.ds = {
 
 		var cachedData = sessionStorage.getItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)));
 		if (cache && cachedData ) {
+			// wait for result before sending same request again, to get the result from cache
 			if(cachedData == 'loading'){
 				setTimeout(this.get(resource, params, success, error, flag, cache),1000)
 			}
