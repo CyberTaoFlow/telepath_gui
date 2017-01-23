@@ -140,15 +140,15 @@ class Cron extends Tele_Controller
                 $delimiter . $alert['score_geo'] . $delimiter;
 
             // Cases
-            if (!empty($alert['cases_name'])) {
-                foreach ($alert['cases_name'] as $case) {
-                    $row_syslog .= $case . ',';
-                }
-                $row_syslog = substr($row_syslog, 0, -1);
-            } else {
-                $row_syslog .= 'No Case';
-            }
-            $row_syslog .= $delimiter;
+//            if (!empty($alert['cases_name'])) {
+//                foreach ($alert['cases_name'] as $case) {
+//                    $row_syslog .= $case . ',';
+//                }
+//                $row_syslog = substr($row_syslog, 0, -1);
+//            } else {
+//                $row_syslog .= 'No Case';
+//            }
+//            $row_syslog .= $delimiter;
 
             // Parameters
             $parameters = '';
