@@ -113,6 +113,35 @@ class Rules extends Tele_Controller
         }
 
          else {
+             // If the user changed the name, we need to check if some cases include this rule, and update the case
+             // detail with the new rule name
+             $old_rule = $this->M_Rules->get_rule_by_id($id);
+             if ($old_rule['name'] != $data['name']) {
+                 $this->load->model('M_Cases');
+                 $cases = $this->M_Cases->get_case_data('all');
+                 foreach ($cases as $case) {
+                     foreach ($case['details'] as $key => $detail) {
+                         if ($detail['type'] == 'rules') {
+                             $case_rules = explode(',', $detail['value']);
+                             foreach ($case_rules as $rule_key => $case_rule) {
+                                 if (substr(strstr($case_rule, '::'), 2) == $old_rule['name']) {
+                                     $case_rules[$rule_key] = $data['category'] . '::' . $data['name'];
+                                     $detail['value'] = implode(',', $case_rules);
+                                     $case['details'][$key] = $detail;
+                                     $this->M_Cases->update($case['case_name'], $case['details'], $case['updating'],
+                                         $case['favorite']);
+                                     break;
+                                 }
+                             }
+                             break;
+                         }
+                     }
+
+                 }
+
+             }
+
+             // update the rule
             $result = $this->M_Rules->set_rule($id, $data);
         }
 
