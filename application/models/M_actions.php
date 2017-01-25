@@ -64,12 +64,12 @@ class M_Actions extends CI_Model {
 		return $ans;
 	}
 
-	function search_actions($text, $size, $start){
+	function search_actions($text, $size, $start, $dir){
 
 
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
-		$params['sort'] = ['application'];
+		$params['sort'] = ['application:' . $dir];
 		$params['body'] = [
 			'size'=>$size,
 			'from'=>$start,
