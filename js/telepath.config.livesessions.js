@@ -61,7 +61,7 @@ telepath.config.liveSessions = {
 
         telepath.ds.get('/applications/get_expand', {
             size: 150,
-            offset: telepath.config.liveSessions.offset
+            appsOffset: telepath.config.liveSessions.offset
         }, function (data) {
 
             var treeData = telepath.config.applications.formatData(data.items.data);
@@ -69,7 +69,7 @@ telepath.config.liveSessions = {
             callback.call(that, treeData);
 
             // update the offset counter with the new loading
-            telepath.config.liveSessions.offset = (data.items.finished) ? 'finished' : telepath.config.liveSessions.offset + data.items.data.length;
+            telepath.config.liveSessions.offset = (data.items.apps_offset == 'finished') ? 'finished' : telepath.config.liveSessions.offset + data.items.data.length;
             telepath.config.liveSessions.loading = false;
             $(".tele-search-input").attr("disabled", false);
         }, false, false, false);

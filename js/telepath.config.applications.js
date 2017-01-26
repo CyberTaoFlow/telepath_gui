@@ -207,7 +207,7 @@ telepath.config.applications = {
 			sort: telepath.config.applications.sort,
 			dir: telepath.config.applications.dir,
 			size: 150,
-			offset: telepath.config.applications.offset
+			appsOffset: telepath.config.applications.offset
 		}, function (data) {
 
 			var treeData = telepath.config.applications.formatData(data.items.data);
@@ -215,7 +215,7 @@ telepath.config.applications = {
 			callback.call(that, treeData);
 
 			// update the offset counter with the new loading
-			telepath.config.applications.offset = (data.items.finished) ? 'finished' : telepath.config.applications.offset + data.items.data.length;
+			telepath.config.applications.offset = (data.items.apps_offset == 'finished') ? 'finished' : telepath.config.applications.offset + data.items.data.length;
 			telepath.config.applications.loading = false;
 			$(".tele-search-input").attr("disabled", false);
 		}, false, false, false);

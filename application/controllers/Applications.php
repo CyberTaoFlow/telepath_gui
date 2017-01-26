@@ -51,7 +51,8 @@ class Applications extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
         $size = $this->input->post('size');
-        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+        $apps_offset = $this->input->post('appsOffset');
+        $actions_offset = $this->input->post('actionsOffset');
 
         if (!$sort || !in_array($sort, array('host', 'learning_so_far'))) {
             $sort = 'host';
@@ -68,35 +69,108 @@ class Applications extends Tele_Controller
 //            }
 //        }
 
-        // retrieve the apps
-        $results = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $size, $offset);
-        $data=$results['data'];
 
-        // search in business actions
-        if ($search && $actions){
-           $actions = $this->M_Actions->search_actions($search, $size, $offset, $dir );
-            $results['finished'] = $actions['finished'];
-            foreach($actions['data'] as $action){
-                //TODO: add option to add an action to a subdomain
-               //$root_domain= $this->M_Applications->get_root_domain($action['application']);
-                // if the domain already exists, we add the action to this domain
-                if($key=array_search($action['application'],array_column($data,'host'))){
-                    $data[$key]['actions'][]=$action;
-                }
-//                elseif($key=array_search($root_domain,array_column($data,'subdomains'))){
-//                    $data[$key]['subdomains']['actions'][]=$action['action_name'];
-//                    $data[$key]['subdomains']['host']=$action['application'];
-//                }
-                else{
-                    $data[]=['host'=>$action['application'], 'actions'=>[$action]];
-                }
+        if ($apps_offset != 'finished') {
+            $apps_offset = intval($this->input->post('appsOffset')) > 0 ? intval($this->input->post('appsOffset')) : 0;
 
+
+            // retrieve the apps
+            $apps = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $size, $apps_offset);
+
+            if ($apps['finished']) {
+                $apps_offset = 'finished';
+            } else {
+                $apps_offset = sizeof($apps['data']);
             }
         }
 
-//        $this->redisObj->set('cache_applications', json_encode($data), 600);
+
+        // search in business actions
+        if ($search && $actions && $actions_offset != 'finished') {
+
+                $actions_offset = intval($this->input->post('actionsOffset')) > 0 ? intval($this->input->post('actionsOffset')) : 0;
+
+                $actions = $this->M_Actions->search_actions($search, $size, $actions_offset, $dir);
+
+                if (isset($apps)) {
+
+                    $last_app = end($apps['data'])['host'];
+                    $last_action_app = end($actions['data'])['application'];
+                    $arr = [$last_app, $last_action_app];
+                    sort($arr);
+                    if (($arr[0] == $last_action_app && $dir == 'asc') || ($arr[0] == $last_app && $dir == 'desc')) {
+                        if (sizeof($actions['data'])>50) {
+                            foreach (array_reverse($apps['data'], true) as $key => $app) {
+                                $arr_cmp = [$app['host'], $last_action_app];
+                                sort($arr_cmp);
+                                if (($arr_cmp[0] == $last_action_app && $dir == 'asc') || ($arr_cmp[0] == $app['host'] && $dir == 'desc')
+                                ) {
+                                    unset($apps['data'][$key]);
+                                    $apps['finished'] = false;
+                                } else {
+                                    break;
+                                }
+                            }
+                            $apps['data'] = array_values($apps['data']);
+                        }
+                    } else {
+                        if (sizeof($apps['data'])>50) {
+                            foreach (array_reverse($actions['data'], true) as $key => $action) {
+                                $arr_cmp = [$action['application'], $last_app];
+                                sort($arr_cmp);
+                                if (($arr_cmp[0] == $last_app && $dir == 'asc') || ($arr_cmp[0] == $action['application'] && $dir
+                                        == 'desc')
+                                ) {
+                                    unset($actions['data'][$key]);
+                                    $actions['finished'] = false;
+                                } else {
+                                    break;
+                                }
+                            }
+                            $actions['data'] = array_values($actions['data']);
+                        }
+                    }
+
+                    if (!$apps['finished']) {
+                        $apps_offset = sizeof($apps['data']);
+                    }
+
+                    if ($actions['finished']) {
+                        $actions_offset = 'finished';
+                    } else {
+                        $actions_offset = sizeof($actions['data']);
+                    }
+                } else {
+                    $apps = [];
+                }
+
+
+                //    $apps['finished'] = $actions['finished'];
+                foreach ($actions['data'] as $action) {
+                    //TODO: add option to add an action to a subdomain
+                    //$root_domain= $this->M_Applications->get_root_domain($action['application']);
+                    // if the domain already exists, we add the action to this domain
+                    if (($key = array_search($action['application'], array_column($apps['data'], 'host'))) !== false) {
+                        $apps['data'][$key]['actions'][] = $action;
+                    }
+//                elseif($key=array_search($root_domain,array_column($apps['data'],'subdomains'))){
+//                    $apps['data'][$key]['subdomains']['actions'][]=$action['action_name'];
+//                    $apps['data'][$key]['subdomains']['host']=$action['application'];
+//                }
+                    else {
+                        $apps['data'][] = ['host' => $action['application'], 'actions' => [$action]];
+                    }
+
+                }
+
+        }
+
         // return the data and a boolean to indicate if all the data is loaded
-        xss_return_success(['data'=>$data,'finished'=>$results['finished']]);
+        xss_return_success([
+            'data' => $apps['data'],
+            'apps_offset' => $apps_offset,
+            'actions_offset' => $actions_offset
+        ]);
 
     }
 
