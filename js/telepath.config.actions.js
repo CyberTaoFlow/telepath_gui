@@ -311,7 +311,7 @@ telepath.config.actions = {
 		var sortRadios = $('<div>').radios({
 			title: 'Sort By',
 			items: [
-				{id: 'host', icon: 'alphabetical', tip: 'ABC', dir: that.dir},
+				{id: 'host', icon: 'alphabetical', tip: 'ABC', dir: that.dir}
 			//	{id: 'learning_so_far', icon: 'bars', tip: 'Count', dir: that.dir}
 			],
 			selected: this.sort,
