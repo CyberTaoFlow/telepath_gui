@@ -318,6 +318,8 @@
 .tele-alert-details-info-title {
 	font-size: 18px;
 	color: #333333;
+	direction: rtl;
+	text-align: left;
 }
 .tele-alert-details-info-time-wrap, .tele-alert-details-info-response-wrap, .tele-alert-details-info-operation-wrap {
 	margin-top: 10px;

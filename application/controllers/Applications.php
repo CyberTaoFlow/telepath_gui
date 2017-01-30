@@ -51,7 +51,9 @@ class Applications extends Tele_Controller
         $sort = $this->input->post('sort');
         $dir = $this->input->post('dir') == 'true' ? 'asc' : 'desc';
         $size = $this->input->post('size');
-        $offset = intval($this->input->post('offset')) > 0 ? intval($this->input->post('offset')) : 0;
+        // separate offsets for applications and actions
+        $apps_offset = $this->input->post('appsOffset');
+        $actions_offset = $this->input->post('actionsOffset');
 
         if (!$sort || !in_array($sort, array('host', 'learning_so_far'))) {
             $sort = 'host';
@@ -59,44 +61,123 @@ class Applications extends Tele_Controller
         }
 
 
-//        $res = $this->redisObj->get('cache_applications');
+        // retrieve the apps if we din't retrieve all the apps in the last batch
+        if ($apps_offset != 'finished') {
+            $apps_offset = intval($this->input->post('appsOffset')) > 0 ? intval($this->input->post('appsOffset')) : 0;
 
-//        if (isset($res) && $res) {
-//            $data = json_decode($res);
-//            if ($data && !empty($data)) {
-//                xss_return_success($data);
-//            }
-//        }
+            $apps = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $size, $apps_offset);
 
-        // retrieve the apps
-        $results = $this->M_Applications->index($search, $learning_so_far, $sort, $dir, $size, $offset);
-        $data=$results['data'];
-
-        // search in business actions
-        if ($search && $actions){
-           $actions = $this->M_Actions->search_actions($search, $size, $offset );
-            $results['finished'] = $actions['finished'];
-            foreach($actions['data'] as $action){
-                //TODO: add option to add an action to a subdomain
-               //$root_domain= $this->M_Applications->get_root_domain($action['application']);
-                // if the domain already exists, we add the action to this domain
-                if($key=array_search($action['application'],array_column($data,'host'))){
-                    $data[$key]['actions'][]=$action;
-                }
-//                elseif($key=array_search($root_domain,array_column($data,'subdomains'))){
-//                    $data[$key]['subdomains']['actions'][]=$action['action_name'];
-//                    $data[$key]['subdomains']['host']=$action['application'];
-//                }
-                else{
-                    $data[]=['host'=>$action['application'], 'actions'=>[$action]];
-                }
-
+            if ($apps['finished']) {
+                $apps_offset = 'finished';
+            } else {
+                // Need to count the applications if we don't merge them with the actions
+                $apps_offset = sizeof($apps['data']);
             }
         }
 
-//        $this->redisObj->set('cache_applications', json_encode($data), 600);
-        // return the data and a boolean to indicate if all the data is loaded
-        xss_return_success(['data'=>$data,'finished'=>$results['finished']]);
+
+        // search in business actions if we din't retrieve all the actions in the last batch
+        if ($search && $actions && $actions_offset != 'finished') {
+
+            $actions_offset = intval($this->input->post('actionsOffset')) > 0 ? intval($this->input->post('actionsOffset')) : 0;
+
+            $actions = $this->M_Actions->search_actions($search, $size, $actions_offset, $dir);
+
+            // Before we merge the actions with the applications, we need to be sure that they both match the same
+            // alphabetical scope, otherwise the next batch will retrieve data (applications or actions) from
+            // applications already displayed
+            if (isset($apps)) {
+
+                // Compare alphabetically the last element of each list (applications and actions)
+                $last_app = end($apps['data'])['host'];
+                $last_action_app = end($actions['data'])['application'];
+                $arr = [$last_app, $last_action_app];
+                sort($arr);
+
+                // Remove elements from applications list that are alphabetically after the actions list last
+                // application
+                if (($arr[0] == $last_action_app && $dir == 'asc') || ($arr[0] == $last_app && $dir == 'desc')) {
+                    // Remove elements from applications list only if there are enough actions to display
+                    if (sizeof($actions['data']) > 50) {
+                        foreach (array_reverse($apps['data'], true) as $key => $app) {
+                            $arr_cmp = [$app['host'], $last_action_app];
+                            sort($arr_cmp);
+                            if (($arr_cmp[0] == $last_action_app && $dir == 'asc') || ($arr_cmp[0] == $app['host'] && $dir == 'desc')
+                            ) {
+                                unset($apps['data'][$key]);
+                                // If
+                                $apps['finished'] = false;
+                            } else {
+                                break;
+                            }
+                        }
+                        $apps['data'] = array_values($apps['data']);
+                    }
+                }
+                // Remove elements from actions list that are alphabetically after the applications list last
+                // application
+                else {
+                    // Remove elements from actions list only if there are enough applications to display
+                    if (sizeof($apps['data']) > 50) {
+                        foreach (array_reverse($actions['data'], true) as $key => $action) {
+                            $arr_cmp = [$action['application'], $last_app];
+                            sort($arr_cmp);
+                            if (($arr_cmp[0] == $last_app && $dir == 'asc') || ($arr_cmp[0] == $action['application'] && $dir
+                                    == 'desc')
+                            ) {
+                                unset($actions['data'][$key]);
+                                $actions['finished'] = false;
+                            } else {
+                                break;
+                            }
+                        }
+                        $actions['data'] = array_values($actions['data']);
+                    }
+                }
+
+                // Need to count the applications for pagination, before we merge them with the actions
+                if (!$apps['finished']) {
+                    $apps_offset = sizeof($apps['data']);
+                }
+
+                // Need to count the actions for pagination, before we merge them with the applications
+                if ($actions['finished']) {
+                    $actions_offset = 'finished';
+                } else {
+                    $actions_offset = sizeof($actions['data']);
+                }
+            } else {
+                $apps = [];
+            }
+
+
+            // Merge actions in relevant application
+            foreach ($actions['data'] as $action) {
+                //TODO: add option to add an action to a subdomain
+                //$root_domain= $this->M_Applications->get_root_domain($action['application']);
+                // if the domain already exists, we add the action to this domain
+                if (($key = array_search($action['application'], array_column($apps['data'], 'host'))) !== false) {
+                    $apps['data'][$key]['actions'][] = $action;
+                }
+//                elseif($key=array_search($root_domain,array_column($apps['data'],'subdomains'))){
+//                    $apps['data'][$key]['subdomains']['actions'][]=$action['action_name'];
+//                    $apps['data'][$key]['subdomains']['host']=$action['application'];
+//                }
+                else {
+                    $apps['data'][] = ['host' => $action['application'], 'actions' => [$action]];
+                }
+
+            }
+
+        }
+
+        // return the data + the actions count (or 'finished' if all the action data is loaded) and the applications
+        // count (or 'finished' if all the application data is loaded) for pagination
+        xss_return_success([
+            'data' => $apps['data'],
+            'apps_offset' => $apps_offset,
+            'actions_offset' => $actions_offset
+        ]);
 
     }
 

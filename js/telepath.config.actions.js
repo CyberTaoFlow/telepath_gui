@@ -29,7 +29,8 @@ telepath.config.actions = {
 				postData.sort = telepath.config.actions.sort;
 				postData.dir = telepath.config.actions.dir;
 				postData.size = 150;
-				postData.offset = telepath.config.actions.offset;
+				postData.appsOffset = telepath.config.actions.appsOffset;
+				postData.actionsOffset = telepath.config.actions.actionsOffset;
 				if(telepath.config.actions.searchString) { postData.search = telepath.config.actions.searchString; }
 			break;
 			case 'app':
@@ -58,7 +59,8 @@ telepath.config.actions = {
 			
 				case 'root':
 
-					telepath.config.actions.offset = (data.finished) ? 'finished' : telepath.config.actions.offset + data.data.length;
+					telepath.config.actions.appsOffset = (data.apps_offset == 'finished') ? 'finished' : telepath.config.actions.appsOffset + parseInt(data.apps_offset);
+					telepath.config.actions.actionsOffset = (data.actions_offset == 'finished') ? 'finished' : telepath.config.actions.actionsOffset + parseInt(data.actions_offset);
 
 
 					$.each(data.data, function(i, row) {
@@ -217,7 +219,8 @@ telepath.config.actions = {
 		var that = this;
 
 		// reset the offset
-		that.offset = 0;
+		that.appsOffset = 0;
+		that.actionsOffset = 0;
 
 		/*$("#search-button").on("click", function (event) {
 			that.searchString = '';
@@ -254,7 +257,7 @@ telepath.config.actions = {
 			callbacks: {
 				onTotalScroll: function () {
 
-					if (that.loading || that.offset == 'finished') {
+					if (that.loading || (that.appsOffset == 'finished' && that.actionsOffset == 'finished')) {
 						return;
 					}
 
@@ -308,8 +311,8 @@ telepath.config.actions = {
 		var sortRadios = $('<div>').radios({
 			title: 'Sort By',
 			items: [
-				{id: 'host', icon: 'alphabetical', tip: 'ABC', dir: that.dir},
-				{id: 'learning_so_far', icon: 'bars', tip: 'Count', dir: that.dir}
+				{id: 'host', icon: 'alphabetical', tip: 'ABC', dir: that.dir}
+			//	{id: 'learning_so_far', icon: 'bars', tip: 'Count', dir: that.dir}
 			],
 			selected: this.sort,
 			callback: function(e, id) {

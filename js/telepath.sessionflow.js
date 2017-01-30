@@ -1092,8 +1092,10 @@ telepath.sessionflow = {
 		}
 		var link = $('<a>').attr('target', '_blank').text(path).attr('href',path ).attr('title' ,path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Browsing';
-		container.append(link);
-		container.append('&nbsp;(' + action + ')');
+		var bdi = $('<bdi>');
+		bdi.append(link);
+		bdi.append('&nbsp;(' + action + ')');
+		container.append(bdi);
 	
 	},
 	printAlertDetails: function(container) {
