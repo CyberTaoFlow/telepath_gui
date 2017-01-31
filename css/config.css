@@ -1346,9 +1346,25 @@ a.jstree-anchor{
 }
 
 .tele-rule-cmd-list .tele-checkbox {
-	width: 400px;
+	width: 600px;
 	clear: both;
 }
+
+.tele-rule-drag-params {
+	border: 1px solid #000;
+	border-radius: 14px;
+	padding: 5px;
+	margin-top: 10px;
+	font-weight: bold;
+	font-size: 16px;
+	width: 100px;
+	text-align: center;
+}
+
+.tele-rule-drag-params li {
+	margin: 3px;
+}
+
 .tele-file-upload{
 	overflow: hidden;
 	position: absolute;

@@ -223,37 +223,69 @@ telepath.config.rule = {
 		
 		this.cmd_wrap = $('<div>').addClass('tele-rule-cmd-wrap').appendTo(this.container);
 		
+		// Execute commands list
 		this.command_exec_list = $('<div>').addClass('tele-rule-cmd-list').hide();
-		if(this.data.cmd && this.data.cmd.length > 0) {
+		if (this.data.exec && this.data.exec.length > 0) {
 			this.command_exec_list.show();
-		}		
-		
-		$.each(telepath.rule_cmds, function (i,x) {
-			
-			// Block and Captcha CMD's are done via checkboxes instead
-			if(x != 'block' && x != 'captcha') {
-			
-				var checked = false;
-				if(that.data.cmd && that.data.cmd.length > 0) {
-					$.each(that.data.cmd, function(tmp1, tmp2) {
-						if(x == tmp2) {
-							checked = true;
-						}
-					});
-				}		
-				
-				var cb = $('<div>').teleCheckbox({ 
-				label: x, 
-				checked: checked,
-				}).appendTo(that.command_exec_list);
-			
+		}
+
+		$.each(telepath.rule_cmds, function (i, x) {
+
+			var checked = false;
+			var params = [];
+			// Retrieve relevant data from DB
+			if (that.data.exec && that.data.exec.length > 0) {
+				$.each(that.data.exec, function (i, val) {
+					if (x == val.command) {
+						checked = true;
+						params = val.params;
+					}
+				});
 			}
 
+			// We need an array with 6 items (empty or not) to create the boxes
+			while (params.length < 6) {
+				params.push('');
+			}
+
+			$('<div>').teleCheckbox({
+				label: x,
+				checked: checked,
+				dropBoxes: params
+			}).appendTo(that.command_exec_list);
+
 		});
+
+		// Clear the float
+		that.command_exec_list.append($('<div>').addClass('clearfix'));
+
+		// List od available params
+		var drag = function (ev) {
+			ev.originalEvent.dataTransfer.setData("text", ev.target.innerText);
+		};
+
+		var paramsList = $('<ul>');
+		paramsList.append($('<li>').text('Hostname').attr('draggable', 'true').on('dragstart', drag));
+		paramsList.append($('<li>').text('Source IP').attr('draggable', 'true').on('dragstart', drag));
+		paramsList.append($('<li>').text('Destination IP').attr('draggable', 'true').on('dragstart', drag));
+		paramsList.append($('<li>').text('Cookie').attr('draggable', 'true').on('dragstart', drag));
+		paramsList.append($('<li>').text('Username').attr('draggable', 'true').on('dragstart', drag));
+		paramsList.append($('<li>').text('URL').attr('draggable', 'true').on('dragstart', drag));
+
+		that.command_exec_list.append($('<div>').addClass('tele-rule-drag-params').on({
+			// When a parameter is dropped back to the list, we need to remove it from the boxes
+			drop: function (ev) {
+				ev.preventDefault();
+				var data = ev.originalEvent.dataTransfer.getData("text");
+				$('#' + data).remove();
+			}, dragover: function (ev) {
+				ev.preventDefault();
+			}
+		}).append(paramsList));
 		
 		this.command_exec_toggle = $('<div>').teleCheckbox({ 
 			label: '<b>Execute commands</b>', 
-			checked: this.data.cmd && this.data.cmd.length > 0,
+			checked: this.data.exec && this.data.exec.length > 0,
 			callback: function(val) {
 				that.command_exec_list.toggle();
 			}
@@ -399,19 +431,29 @@ telepath.config.rule = {
 
 			ruleData.domain = $('#limit-application input').val();
 
-			// Get rule script execution config
-			ruleData.cmd = [];
+			// Get rule commands executions
+			ruleData.exec = [];
 			// Toggle enabled
 			if(that.command_exec_toggle.data('teleTeleCheckbox').options.checked) {
 				// Iterate
 				$('.tele-checkbox', that.command_exec_list).each(function () { 
 					var opt = $(this).data('teleTeleCheckbox').options;
 					if(opt.checked) {
-						ruleData.cmd.push(opt.label);
+						var params = [];
+						var dropped = $(this).find('.tele-drop span');
+						if (!$.isEmptyObject(dropped)) {
+							$.each(dropped, function (i, val) {
+								params.push(val.innerHTML);
+							})
+						}
+						ruleData.exec.push({command: opt.label, params: params});
 					}
 				});
 			}
-			
+
+			// Captcha and block commands
+			ruleData.cmd = [];
+
 			if(that.cmd_captcha.data('teleTeleCheckbox').options.checked) {
 				ruleData.cmd.push('captcha');
 			}
