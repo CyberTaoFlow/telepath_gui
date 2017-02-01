@@ -79,21 +79,16 @@ telepath.alerts = {
 		});
 		
 		// Search
-		var searchAlerts = $('<div>').teleSearch({ callback: function (e, txt) {
-			// Search
-			telepath.alerts.searchString = txt;
-			//telepath.alerts.refresh();
-			
-		}});
+        var searchAlerts = $('<div>').teleSearch({
+            callback: function (e, txt) {
+                // Search
+                telepath.alerts.searchString = txt;
+                telepath.alerts.refresh();
 
-		// reset button in search input
-		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
-			$('.tele-panel-alerts .tele-search-input').val('');
-			telepath.alerts.searchString = '';
-			telepath.alerts.refresh();
-		});
+            }, rewrite: true
+        });
 
-		//searchAlerts.append(resetInput);
+        this.searchString = '';
 
 		panelSubBar.append(searchAlerts);
 		// Top bar items
@@ -153,48 +148,8 @@ telepath.alerts = {
 			.append('<div class="tele-navsep"></div>').append(filterApps)
 			.append('<div class="tele-navsep"></div>').append(cmdRefresh);
 		
-
-		/*var typingTimer;                //timer identifier
-		var doneTypingInterval = 1000;
-
-		$('.tele-panel-alerts .tele-search-input').keyup('input', function () {
-			clearTimeout(typingTimer);
-			if ($('.tele-panel-alerts .tele-search-input').val()){
-				typingTimer = setTimeout(function(){
-					telepath.alerts.searchString = $('.tele-panel-alerts .tele-search-input').val();
-					that.input();
-				}, doneTypingInterval);
-			}
-		});*/
-
-		$('.tele-panel-alerts .tele-search-input').keyup('input', function (e) {
-			if ($(this).val()) {
-				that.searchString = $(this).val();
-			}
-			if (e.which == 13) {
-				that.refresh()
-			}
-		});
-
-		$(".tele-search").on("click",'.tele-search-button', function () {
-			that.refresh();
-		});
-
-		// insert the value search to the input box (Moshe)
-		if (telepath.alerts.searchString) {
-			$('.tele-panel-alerts .tele-search-input').prop("value", telepath.alerts.searchString);
-		}
-		that.refresh()
+        that.refresh()
 	},
-
-	/*input: function(){
-
-		var icon= $("#search-button");
-		if (telepath.alerts.searchString.length>0)
-			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
-		else
-			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
-	},*/
 
 	refresh: function (callback) {
 
