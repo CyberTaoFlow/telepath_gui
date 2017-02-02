@@ -1216,9 +1216,22 @@ a.jstree-anchor{
 	left: 61px;
 }
 
-.tele-config-syslog .text-button{
+.tele-config-syslog .text-button, .tele-config-smtp-encrypt .text-button{
 	line-height: 24px;
 }
+
+.tele-config-smtp-encrypt{
+	clear: both;
+}
+
+.tele-config-smtp-encrypt .tele-dropbtn{
+	margin: 5px 0 0 0;
+}
+
+.tele-config-smtp-encrypt .tele-dropdown-content{
+	left: 117px;
+}
+
 
 .tele-config-system-network .tele-multi-value {
 	width: 850px;
