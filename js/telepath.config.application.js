@@ -352,58 +352,19 @@ telepath.config.application = {
 		
 	},
 	loadApp: function (app_host) {
-		
+
 		var that = this;
-		this.app_data.app_domain = app_host;
-		this.app_data.host = app_host;
-		//var ip_suggestions_str = '';
+		$('#tele-app-details').append(telepath.loader);
 
-
-		// will go inside if this host is really an application	
-		telepath.dsync.get('/applications/get_app', { host: app_host }, function(data) {
+		telepath.ds.get('/applications/get_app', {host: app_host}, function (data) {
 
 			if (data.items) {
 				that.app_data = data.items;
-
-				//if (!data.app_data.cookie_suggestions)
-
-				// Load cookie suggestions from the backend (Yuli)
-				/*	telepath.dsync.get('/applications/get_cookie_suggestion', {app_id: app_host}, function (data) {
-				 cookie_suggestions_str = '';
-				 if (data.items && data.items[0]) {
-				 for (c in data.items) {
-				 if (cookie_suggestions_str != '')
-				 cookie_suggestions_str = cookie_suggestions_str + ',';
-				 cookie_suggestions_str = cookie_suggestions_str + data.items[c].cookie;
-				 }
-				 }
-				 console.log(cookie_suggestions_str);
-				 that.app_data.cookie_suggestion = cookie_suggestions_str;
-				 });
-				 }*/
-				//if (ip_suggestions_str) {
-				//	that.app_data.ip_suggestion = ip_suggestions_str;
-				//}
+				$('#tele-app-details').empty();
+				that.showApp();
 			}
 		});
 
-		//telepath.dsync.get('/applications/get_ip_suggestion', { app_id: app_host }, function(data) {
-		//	//ip_suggestions_str = '';
-		//	//if (data.items && data.items[0]) {
-		//	//        for (c in data.items)
-		//	//        {
-		//	//                if (ip_suggestions_str != '')
-		//	//                        ip_suggestions_str = ip_suggestions_str + ',';
-		//	//                ip_suggestions_str = ip_suggestions_str + data.items[c].ip;
-		//	//        }
-		//	//}
-		//	console.log(data);
-		//	if (data.items)
-		//		that.app_data.ip_suggestion = data.items;
-		//});
-		// show app edit dialog in any case (i.e. app does not exists) (Yuli)
-		that.showApp();
-		
 	},
 	showPagesParams: function() {
 		$("#tele-app-params").html('');
