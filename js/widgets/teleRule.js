@@ -296,6 +296,19 @@ $.widget( "tele.teleRule", {
 									return false;
 								}
 
+								// Validate the regex
+								try {
+									new RegExp(json.str_match).test('');
+								}
+								catch (e) {
+									var regexError = true;
+								}
+								if (regexError) {
+									telepath.dialog({title: 'Rule Editor', msg: 'Invalid regular expression'});
+									$('.tele-rule-string-inspection input').addClass('error');
+									return false;
+								}
+
 								break;
 
 							case 'fuzzylength':
@@ -356,6 +369,19 @@ $.widget( "tele.teleRule", {
 									$('.tele-rule-string-inspection input').addClass('error');
 									return false;
 								}
+
+						// Validate the regex
+						try {
+							new RegExp(json.str_match).test('');
+						}
+						catch (e) {
+							var regexError = true;
+						}
+						if (regexError) {
+							telepath.dialog({title: 'Rule Editor', msg: 'Invalid regular expression'});
+							$('.tele-rule-string-inspection input').addClass('error');
+							return false;
+						}
 						
 						json.type = 'global';
 					
@@ -404,7 +430,23 @@ $.widget( "tele.teleRule", {
 							return false;
 						}
 
-						json.type = 'global';
+						if (json.method != 'StatusCode') {
+							// Validate the regex
+							try {
+								new RegExp(json.str_match).test('');
+							}
+							catch (e) {
+								var regexError = true;
+							}
+							if (regexError) {
+								telepath.dialog({title: 'Rule Editor', msg: 'Invalid regular expression'});
+								$('.tele-rule-string-inspection input').addClass('error');
+								return false;
+							}
+						}
+
+
+							json.type = 'global';
 					break;
 						
 					case 'Uri':
@@ -423,7 +465,20 @@ $.widget( "tele.teleRule", {
 									$('.tele-rule-string-inspection input').addClass('error');
 									return false;
 								}
-						
+
+						// Validate the regex
+						try {
+							new RegExp(json.str_match).test('');
+						}
+						catch (e) {
+							var regexError = true;
+						}
+						if (regexError) {
+							telepath.dialog({title: 'Rule Editor', msg: 'Invalid regular expression'});
+							$('.tele-rule-string-inspection input').addClass('error');
+							return false;
+						}
+
 						json.method = method;
 						
 						json.type = 'global';
