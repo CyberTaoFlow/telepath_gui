@@ -162,6 +162,7 @@ telepath.config.system = {
 		// SMTP
 		data.smtp_ip_id  = $('input', this.smtpServer).val();
 		data.smtp_port_id = $('input', this.smtp_port_id).val();
+		data.smtp_encrypt = this.smtp_encrypt.teleOption('option', 'selected');
 		data.rep_user  = $('input', this.smtpUser).val();
 		data.rep_pass_id  = $('input', this.smtpPass).val();
 		
@@ -940,6 +941,7 @@ telepath.config.system = {
 		
 		this.smtpServer = $('<div>').teleInput({ label: 'Server'  , width: 200, value: this.data.smtp_ip_id      }).addClass('tele-config-smtp-host').appendTo(this.c_reports);
 		this.smtp_port_id   = $('<div>').teleInput({ label: 'Port'    , width: 70,  value: this.data.smtp_port_id }).addClass('tele-config-smtp-port').appendTo(this.c_reports);
+		this.smtp_encrypt = $('<div>').teleOption({label: 'SMTP Encryption', options: ['', 'tls', 'ssl'], selected: this.data.smtp_encrypt}).addClass('tele-config-smtp-encrypt').appendTo(this.c_reports);
 		this.smtpUser   = $('<div>').teleInput({ label: 'Username', width: 200, value: this.data.rep_user  }).addClass('tele-config-smtp-username').appendTo(this.c_reports); 
 		this.smtpPass   = $('<div>').teleInput({ label: 'Password', width: 200, value: this.data.rep_pass_id, pass: true  }).addClass('tele-config-smtp-password').appendTo(this.c_reports);
 		
@@ -962,12 +964,13 @@ telepath.config.system = {
 					return;
 				}
 				
-				telepath.ds.get('/config/testmail', { 
-					'smtp_ip_id':		 $('input', that.smtpServer).val(),
-					'smtp_port_id': $('input', that.smtp_port_id).val(),
-					'smtp_user': $('input', that.smtpUser).val(),
-					'smtp_pass': $('input', that.smtpPass).val(),
-					'test_mail': email
+				telepath.ds.get('/config/testmail', {
+					smtp_ip_id: $('input', that.smtpServer).val(),
+					smtp_port_id: $('input', that.smtp_port_id).val(),
+					smtp_encrypt: that.smtp_encrypt.teleOption('option', 'selected'),
+					smtp_user: $('input', that.smtpUser).val(),
+					smtp_pass: $('input', that.smtpPass).val(),
+					test_mail: email
 				}, function(data) {
 					
 					telepath.dialog({ msg: 'Test mail was sent.' });

@@ -30,6 +30,7 @@ class Config extends Tele_Controller
 
         $smtp = $this->input->post('smtp_ip_id', TRUE);
         $port = $this->input->post('smtp_port_id', TRUE);
+        $encrypt = $this->input->post('smtp_encrypt', TRUE);
         $user = $this->input->post('smtp_user', TRUE);
         $pass = $this->input->post('smtp_pass', TRUE);
         $target = $this->input->post('test_mail', TRUE);
@@ -38,6 +39,7 @@ class Config extends Tele_Controller
             'protocol' => 'smtp',
             'smtp_host' => $smtp,
             'smtp_port_id' => $port,
+            'smtp_crypto' => $encrypt,
             'smtp_user' => $user,
             'smtp_pass' => $pass,
             'mailtype' => 'html',
@@ -261,6 +263,7 @@ class Config extends Tele_Controller
                 case 'loadbalancer_mode_id':
                 case 'smtp_port_id':
                 case 'smtp_ip_id':
+                case 'smtp_encrypt':
                 case 'move_to_production_id':
                 case 'proxy_ip_id':
                 case 'rep_user_id':

@@ -200,7 +200,7 @@ telepath.sessionflow = {
 		$(this.actionsContainer).css({'height': actionHeight});
 
 	},
-	init: function(SID, /*IP, alerts_names,*/ state,  searchkey, list) {
+	init: function(SID, /*IP, alerts_names,*/ state,  searchkey, list, RID) {
 
 		this.session = false;
 		this.SID  = SID;
@@ -210,6 +210,7 @@ telepath.sessionflow = {
 		this.list = list;
 		this.state= '';
 		this.range= true;
+		this.RID = RID || 0;
 
 		if (searchkey && state =='suspect')
 		{
@@ -327,20 +328,12 @@ telepath.sessionflow = {
 		
 		// Find selected index
 		// ( is the RID index that initialized the session flow within the session )
-		
-		for(x in that.session.requests) {
-			var request = that.session.requests[x];
-			if(request.RID == that.RID) {
+
+		for (x in that.session.items) {
+			var request = that.session.items[x];
+			if (request.uid == that.RID) {
 				this.selectedIndex = parseInt(x);
 				break;
-			}
-			// Copy flows into requests
-			for(y in that.session.flows) {
-				var flow = that.session.flows[y];
-				if(flow.RID == request.RID) {
-					that.session.requests[x].business_id = flow.business_id;
-					that.session.requests[x].business_status = flow.business_status;
-				}
 			}
 		}
 		
@@ -708,7 +701,18 @@ telepath.sessionflow = {
 			that.expandRequest(dataID);
 		}, 500);
 
-		$('.tele-requests-list').mCustomScrollbar("scrollTo", state == 'up' ? elTop - 400 : elTop - 50);
+		switch (state) {
+			case 'up':
+				var scrollTo = elTop - 400;
+				break;
+			case 'down':
+				var scrollTo = elTop - 50;
+				break;
+			default:
+				var scrollTo = "#alert-item-" + this.selectedIndex;
+		}
+
+		$('.tele-requests-list').mCustomScrollbar("scrollTo", scrollTo);
 	},
 	scrollUp: function() {
 		if(this.selectedIndex > 0) {

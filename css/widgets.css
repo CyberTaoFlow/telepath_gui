@@ -308,6 +308,22 @@
 	font-family: 'Roboto Condensed Regular';
 	text-overflow: ellipsis;
 }
+
+.tele-rule-cmd-list .tele-input-label {
+	width: auto;
+}
+
+.tele-drop {
+	border: 1px dashed #000;
+	height: 23px;
+	width: 52px;
+	float: left;
+	margin: 0 5px;
+	font-size: 11px;
+	padding: 1px;
+	text-align: center;
+}
+
 .tele-radio-label {
 	margin-top: 2px;
 	width: auto;

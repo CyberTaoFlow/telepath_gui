@@ -175,65 +175,22 @@ telepath.suspects = {
 
 		
 		// Search
-		var searchSuspects = $('<div>').teleSearch({ callback: function (e, txt) {
-			telepath.suspects.searchString = txt;
-			//telepath.suspects.refresh(function () {	});
-		}});
-
-		
-		var resetInput=$('<a>').addClass('icon-delete-input2').attr('id', 'remove-button').click(function(){
-			$('.tele-panel-suspects .tele-search-input').val('');
-			that.searchString = '';
-			that.refresh();
-			// console.log('Delete')
+		var searchSuspects = $('<div>').teleSearch({
+			callback: function (e, txt) {
+				telepath.suspects.searchString = txt;
+				telepath.suspects.refresh();
+			}, rewrite: true
 		});
-		//searchSuspects.append(resetInput);
+
+		this.searchString = '';
+
+
 
 		this.panelSubBar.append(searchSuspects);
 		// Load Data
 		this.refresh();
 
-		/*var typingTimer;                //timer identifier
-		var doneTypingInterval = 1000;
-
-		$(".tele-panel-suspects .tele-search-input").keyup('input', function () {
-			clearTimeout(typingTimer);
-			if ($('.tele-panel-suspects .tele-search-input').val()){
-				typingTimer = setTimeout(function(){
-					that.searchString = $('.tele-panel-suspects .tele-search-input').val();
-					that.input();
-				}, doneTypingInterval);
-			}
-		});*/
-
-		$('.tele-panel-suspects .tele-search-input').keyup('input', function (e) {
-			if ($(this).val()) {
-				that.searchString = $(this).val();
-				that.input();
-			}
-			if (e.which == 13) {
-				that.refresh()
-			}
-		});
-		$("#search-button").on("click", function () {
-			that.refresh();
-		});
-
-		if (that.searchString)
-		{
-			$('.tele-panel-suspects .tele-search-input').prop("value",that.searchString);
-
-		}
 	},
-
-	/*input: function(){
-		var that = this;
-		var icon= $("#search-button");
-		if (that.searchString.length>0)
-			icon.addClass('icon-delete-input2').removeClass("tele-search-button");
-		else
-			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
-	},*/
 
 	refresh: function (callback) {
 

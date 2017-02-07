@@ -61,7 +61,7 @@ $.widget('tele.teleOption', {
 
         select.append(caret);
 
-        select.append('<span class="text-button">' + this.options.selected + '</span>');
+        select.append('<span class="text-button unselectable">' + this.options.selected + '</span>');
 
         var options = $('<div>').addClass('tele-dropdown-content');
 

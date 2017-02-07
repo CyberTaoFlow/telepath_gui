@@ -6,7 +6,8 @@ $.widget( "tele.teleCheckbox", {
 		'checked': false,
 		'icon': 'checkbox',
 		'inputFirst': true,
-		'dataID': false
+		'dataID': false,
+		'dropBoxes': false
     },
     _create: function() {
         this.element.addClass( "tele-checkbox" );
@@ -52,6 +53,40 @@ $.widget( "tele.teleCheckbox", {
 		}else{
 			this.input.removeClass('checked');
 		}
+
+		// Add boxes to drop items
+		if (this.options.dropBoxes) {
+			$.each(this.options.dropBoxes, function (i, val) {
+				var dropBox = $('<div>').addClass('tele-drop').on({
+					drop: function (ev) {
+						ev.preventDefault();
+						// Allow only one item in each box
+						if ($(this).children().length) {
+							return;
+						}
+						// Get dropped item inner text
+						var data = ev.originalEvent.dataTransfer.getData("text");
+						// Create draggable span with the text
+						var span = $('<span>').text(data).uniqueId().attr('draggable', 'true').on('dragstart', function (ev) {
+							ev.originalEvent.dataTransfer.setData("text", ev.target.id);
+						});
+						$(ev.target).append(span);
+
+					}, dragover: function (ev) {
+						ev.preventDefault();
+					}
+				});
+				// If there is data sored in DB, we need to display it within the boxes
+				if (val) {
+					var span = $('<span>').text(val).uniqueId().attr('draggable', 'true').on('dragstart', function (ev) {
+						ev.originalEvent.dataTransfer.setData("text", ev.target.id);
+					});
+					dropBox.append(span);
+				}
+				that.element.append(dropBox);
+			});
+		}
+
 		
 		this.input.click(function () {
 			
