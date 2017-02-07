@@ -1214,7 +1214,7 @@ telepath.sessionflow = {
 
 				telepath.overlay.destroy();
 				telepath.header.searchInput.val(field + ':"' + search + '"');
-				telepath.search.init(field + ':"' + search + '"');
+				telepath.ui.displayPage('search');
 			}
 		});
 		//if(alert.user && alert.user != '') {
