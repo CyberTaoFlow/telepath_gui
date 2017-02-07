@@ -251,6 +251,8 @@ class Config extends Tele_Controller
             $config['proxy_ip_id'] || $old_config['proxy_port_id'] != $config['proxy_port_id']);
 
 
+        $params = [];
+
         foreach ($config as $key => $value) {
 
             switch ($key) {
@@ -277,12 +279,24 @@ class Config extends Tele_Controller
                 case 'proxy_mode_id':
                 case 'rep_pass_id':
 
-                    $config_response = $this->M_Config->update($key, $value);
-                    //var_dump($config_response);
+                $params['body'][] = [
+                    'update' => [
+                        '_index' => 'telepath-config',
+                        '_type' => 'config',
+                        '_id' => $key
+                    ]
+                ];
+
+                $params['body'][] = [
+                    'doc' => ['value' => $value]
+                ];
 
                     break;
             }
         }
+
+        $this->elasticClient->bulk($params);
+
 
 
         if (!isset($config['regex']['URL'])){
