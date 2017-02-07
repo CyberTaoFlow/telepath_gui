@@ -339,7 +339,7 @@ class Tele_Controller extends CI_Controller
         ];
 
 
-        if (!$this->elasticClient->test_search($params)) {
+        if (!is_cli() && !$this->elasticClient->test_search($params)) {
 
             echo $this->load->view('db_not_connected','',true);
             die();
