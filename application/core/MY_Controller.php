@@ -339,8 +339,10 @@ class Tele_Controller extends CI_Controller
         ];
 
 
-        if (!is_cli() && !$this->elasticClient->test_search($params)) {
-
+        // Display the waiting page in case of Elastic disconnection, if it's not a CLI request or an AJAX request
+        if (!is_cli() && (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])
+                != 'xmlhttprequest') && !$this->elasticClient->test_search($params)
+        ) {
             echo $this->load->view('db_not_connected','',true);
             die();
         }
