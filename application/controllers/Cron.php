@@ -16,9 +16,6 @@ class Cron extends Tele_Controller
         $write_to_syslog_id = $this->M_Config->get_key('write_to_syslog_id');
         $syslog_ip_id = $this->M_Config->get_key('syslog_ip_id');
 
-        // Default Flag
-        $syslog = false;
-
         // Check Config
         if ($write_to_syslog_id == '1' && $syslog_ip_id != '') {
 
