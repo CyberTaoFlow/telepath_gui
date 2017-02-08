@@ -76,6 +76,9 @@ telepath.ds = {
 						if (typeof error == 'string') {
 							console.log(error);
 						}
+						if (cache) {
+							sessionStorage.removeItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)));
+						}
 					}
 				},
 				error: function (xhr, textStatus, e) {
@@ -85,6 +88,9 @@ telepath.ds = {
 					}
 					if (typeof error == 'string') {
 						console.log(error);
+					}
+					if (cache) {
+						sessionStorage.removeItem('telecache' + resource + (($.isEmptyObject(params)) ? '' : '?' + $.param(params)));
 					}
 				},
 				dataType: dataType
