@@ -59,6 +59,7 @@ telepath.config.webusers = {
         this.search = $('<div>').teleSearch({
             callback: function (e, txt) {
                 that.searchString = txt;
+                that.loadData();
             }
         });
 
@@ -71,20 +72,6 @@ telepath.config.webusers = {
 
         var rightPanel = $('<div>').attr('id', 'sort-radio').css('float', 'right').append(sortRadios).append(cmdRefresh);
         $('.tele-panel-topbar').append(rightPanel);
-
-
-        var input = $(".tele-config-bar-left .tele-search-input");
-        input.keyup('input', function (e) {
-            that.searchString = input.val();
-
-            if (e.which == 13) {
-                that.loadData()
-            }
-        });
-
-        $("#search-button").on("click", function () {
-            that.loadData();
-        });
 
 
         if (typeof that.searchString != 'undefined') {
