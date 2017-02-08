@@ -65,6 +65,23 @@ class Cron extends Tele_Controller
             return;
         }
 
+        @set_time_limit(-1);
+
+        $current_update = time() - 30;
+        $this->load->model('M_Config');
+        $last_update = $this->M_Config->get_key('last_syslog_alert_update_id');
+        if (empty($last_update)) {
+            $last_update = $current_update - 60;
+        }
+
+        // search only in relevant index
+        $index1 = 'telepath-' . date("Ymd", $current_update);
+        $index2 = 'telepath-' . date("Ymd", $last_update);
+        $params['index'] = [$index1];
+        if ($index2 != $index1) {
+            array_push($params['index'], $index2);
+        }
+
         $params = [];
 
 
@@ -75,10 +92,8 @@ class Cron extends Tele_Controller
             "sort" => ['ts' => 'desc']
         ];
 
-        $ts_start = intval(strtotime('-1 minute'));
-
         $params['body']['query']['bool']['filter'][] = ['terms' => ['alerts.name' => $syslog_alerts]];
-        $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $ts_start]]];
+        $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $last_update, 'lt' => $current_update]]];
         $params['timeout'] = $this->config->item('timeout');
 
         $alerts = $client->search($params);
@@ -94,53 +109,50 @@ class Cron extends Tele_Controller
 //        $date->setTimestamp($ts_start);
 //        $start = $date->format(DATE_RFC2822);
 
-        $start = date(DATE_RFC2822, $ts_start);
-        $end = date(DATE_RFC2822);
+        $start = date(DATE_RFC2822, $last_update);
+        $end = date(DATE_RFC2822, $current_update);
 
 
         echo 'Since ' . $start . ' Till ' . $end . ' there are ' . $alerts['hits']['total'] . ' alerts. ' . "\n";
 
         if (!empty($alerts['hits']['hits'])) {
             $alerts = $alerts['hits']['hits'];
-        } else {
-            return;
-        }
 
-        $delimiter = $this->M_Config->get_key('syslog_delimiter_id');
+            $delimiter = $this->M_Config->get_key('syslog_delimiter_id');
 
-        switch ($delimiter) {
-            case "Tab":
-                $delimiter = "\t";
-                break;
-            case "Vertical Bar":
-                $delimiter = "|";
-                break;
-            default:
-                $delimiter = "\t";
-        }
-
-        foreach ($alerts as $alert) {
-
-            $id = $alert['_id'];
-            $alert = $alert['_source'];
-
-            // new line for syslog
-            $row_syslog = $alert['ts'] . $delimiter . $alert['ip_orig'] . $delimiter . $alert['ip_resp'] . $delimiter;
-            // Just in case..
-            if (!empty($alert['alerts'])) {
-                foreach ($alert['alerts'] as $a) {
-                    $row_syslog .= $a['name'] . ',';
-                }
-
-                $row_syslog = substr($row_syslog, 0, -1) . $delimiter;
+            switch ($delimiter) {
+                case "Tab":
+                    $delimiter = "\t";
+                    break;
+                case "Vertical Bar":
+                    $delimiter = "|";
+                    break;
+                default:
+                    $delimiter = "\t";
             }
 
-            $row_syslog .= $alert['host'] . $delimiter . $alert['uri'] . $delimiter . $alert['country_code'] .
-                $delimiter . $alert['city'] . $delimiter . $alert['score_average'] . $delimiter . $alert['ip_score']
-                . $delimiter . $alert['score_landing']. $delimiter . $alert['score_query'] . $delimiter . $alert['score_flow'] .
-                $delimiter . $alert['score_geo'] . $delimiter;
+            foreach ($alerts as $alert) {
 
-            // Cases
+                $id = $alert['_id'];
+                $alert = $alert['_source'];
+
+                // new line for syslog
+                $row_syslog = $alert['ts'] . $delimiter . $alert['ip_orig'] . $delimiter . $alert['ip_resp'] . $delimiter;
+                // Just in case..
+                if (!empty($alert['alerts'])) {
+                    foreach ($alert['alerts'] as $a) {
+                        $row_syslog .= $a['name'] . ',';
+                    }
+
+                    $row_syslog = substr($row_syslog, 0, -1) . $delimiter;
+                }
+
+                $row_syslog .= $alert['host'] . $delimiter . $alert['uri'] . $delimiter . $alert['country_code'] .
+                    $delimiter . $alert['city'] . $delimiter . $alert['score_average'] . $delimiter . $alert['ip_score']
+                    . $delimiter . $alert['score_landing'] . $delimiter . $alert['score_query'] . $delimiter . $alert['score_flow'] .
+                    $delimiter . $alert['score_geo'] . $delimiter;
+
+                // Cases
 //            if (!empty($alert['cases_name'])) {
 //                foreach ($alert['cases_name'] as $case) {
 //                    $row_syslog .= $case . ',';
@@ -151,37 +163,41 @@ class Cron extends Tele_Controller
 //            }
 //            $row_syslog .= $delimiter;
 
-            // Parameters
-            $parameters = '';
+                // Parameters
+                $parameters = '';
 
-            if (!empty($alert['parameters'])) {
+                if (!empty($alert['parameters'])) {
 
-                // Concat interacting parameters
-                foreach ($alert['parameters'] as $p) {
-                    if (intval($p['score_data']) > 85) {
-                        $parameters .= $p['name'] . '=' . $p['value'] . ',';
+                    // Concat interacting parameters
+                    foreach ($alert['parameters'] as $p) {
+                        if (intval($p['score_data']) > 85) {
+                            $parameters .= $p['name'] . '=' . $p['value'] . ',';
+                        }
                     }
+                    // Trailing comma
+                    $parameters = substr($parameters, 0, -1);
                 }
-                // Trailing comma
-                $parameters = substr($parameters, 0, -1);
+
+                if ($parameters == '') {
+                    $parameters = 'No relevant parameters';
+                }
+
+                $row_syslog .= $parameters . $delimiter;
+
+                // add link to the specific alert
+                $row_syslog .= $this->config->base_url() . '#' . $alert['sid'] . '/' . $alert['ip_orig'] . '/' .
+                    urlencode($alert['alerts'][0]['name']) . '/' . $id;
+
+                echo $row_syslog;
+
+                $syslog->SetContent($row_syslog);
+                $syslog->Send();
+
             }
-
-            if ($parameters == '') {
-                $parameters = 'No relevant parameters';
-            }
-
-            $row_syslog .= $parameters . $delimiter;
-
-            // add link to the specific alert
-            $row_syslog .= $this->config->base_url() . '#' . $alert['sid'] . '/' . $alert['ip_orig'] . '/' .
-                urlencode($alert['alerts'][0]['name']) . '/' . $id;
-
-            echo $row_syslog;
-
-            $syslog->SetContent($row_syslog);
-            $syslog->Send();
-
         }
+
+        $this->M_Config->update('last_syslog_alert_update_id', $current_update, true);
+
 
     }
 
