@@ -204,7 +204,6 @@ telepath.config.actions = {
 			icon.removeClass('icon-delete-input2').addClass("tele-search-button");
 
 		that.reload();
-		//that.appTree.jstree('search', that.searchString);
 
 	},
 
@@ -221,27 +220,6 @@ telepath.config.actions = {
 		// reset the offset
 		that.appsOffset = 0;
 		that.actionsOffset = 0;
-
-		/*$("#search-button").on("click", function (event) {
-			that.searchString = '';
-			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
-			that.input();
-
-		});
-
-
-		if (typeof that.searchString != 'undefined'){
-			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
-			that.input();
-		}
-
-
-		// add search on client site on key up event
-		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
-			that.searchString = $(this).val();
-			console.log(that.searchString);
-			that.input();
-		});*/
 
 		that.appTree = $('<div>');
 		var treedata = telepath.config.actions.expand;
@@ -334,10 +312,12 @@ telepath.config.actions = {
 
 
 		// Search
-		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
-			that.searchString = txt;
-			//that.reload();
-		}});
+		this.search = $('<div>').teleSearch({
+			callback: function (e, txt) {
+				that.searchString = txt;
+				that.input();
+			}, autoSearch: true
+		});
 		
 		// Create
 		//that.createCat = $('<div>').btn({ icon: 'plus', text: 'New Category', callback: function () {
@@ -352,32 +332,13 @@ telepath.config.actions = {
 				
 		this.barLeft.append(this.search)/*.append(this.createCat)*/;
 
-		$("#search-button").on("click", function (event) {
-			that.searchString = '';
-			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
-			that.input();
-
-		});
-
 
 		if (typeof that.searchString != 'undefined'){
 			$(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
 			that.input();
 		}
 
-		var typingTimer;                //timer identifier
-		var doneTypingInterval = 1000;
 
-		// add search on client site on key up event
-		$(".tele-config-bar-left .tele-search-input").keyup('input', function () {
-			clearTimeout(typingTimer);
-			if ($(".tele-config-bar-left .tele-search-input").val()){
-				typingTimer = setTimeout(function(){
-					that.searchString= $(".tele-config-bar-left .tele-search-input").val();
-					that.input();
-				}, doneTypingInterval);
-			}
-		});
 	},
 	createTree: function(div,treedata){
 		var that = this;

@@ -34,37 +34,20 @@ telepath.config.rules = {
 
 		var rightTitle = $('<div>').addClass('tele-panel-subtitle-text').html('Editor');
 
-		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
-			that.searchString = txt;
-			//that.init();
-		}});
-		this.barRight.append(rightTitle).append(this.search);
-
-		$("#search-button").on("click", function (event) {
-			that.searchString = '';
-			$(".tele-config-bar-right .tele-search-input").prop("value", that.searchString);
-			that.input();
-
+		this.search = $('<div>').teleSearch({
+			callback: function (e, txt) {
+				that.searchString = txt;
+				that.input();
+			}, autoSearch: true
 		});
 
+		this.barRight.append(rightTitle).append(this.search);
 
 		if (typeof(that.searchString) != 'undefined'){
 		 $(".tele-config-bar-right .tele-search-input").prop("value", that.searchString);
 		 that.input();
 		 }
 
-		var typingTimer;                //timer identifier
-		var doneTypingInterval = 1000;
-		// add search on client site on key up event
-		$(".tele-config-bar-right .tele-search-input").keyup('input', function () {
-			clearTimeout(typingTimer);
-			if ($(".tele-config-bar-right .tele-search-input").val()){
-				typingTimer = setTimeout(function(){
-					that.searchString  = $(".tele-config-bar-right .tele-search-input").val();
-					that.input();
-				}, doneTypingInterval);
-			}
-		});
 	},
 
 	reload: function () {

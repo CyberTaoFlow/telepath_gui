@@ -353,10 +353,12 @@ telepath.config.applications = {
 		$('.tele-panel-topbar').append(rightPanel);
 
 		// Search
-		this.search = $('<div>').teleSearch({ callback: function (e, txt) {
-			that.searchString = txt;
-
-		}});
+		this.search = $('<div>').teleSearch({
+			callback: function (e, txt) {
+				that.searchString = txt;
+				that.input();
+			}, autoSearch: true
+		});
 
 
 
@@ -466,26 +468,6 @@ telepath.config.applications = {
 
 		this.barRight.append(this.search);
 		this.barLeft.append(this.edit).append(this.delete).append(this.create).append(this.checkAll);
-
-		var typingTimer;                //timer identifier
-		var doneTypingInterval = 1000;
-
-		$(".tele-config-bar-right .tele-search-input").keyup('input', function () {
-			clearTimeout(typingTimer);
-			if ($(".tele-config-bar-right .tele-search-input").val()){
-				typingTimer = setTimeout(function(){
-					that.searchString  = $(".tele-config-bar-right .tele-search-input").val();
-					that.input();
-				}, doneTypingInterval);
-			}
-		});
-
-		$("#search-button").on("click", function (event) {
-			that.searchString = '';
-			$(".tele-config-bar-right .tele-search-input").prop("value", that.searchString);
-			that.input();
-
-		});
 
 		if (typeof that.searchString != 'undefined'){
 			$(".tele-config-bar-right .tele-search-input").prop("value", that.searchString);
