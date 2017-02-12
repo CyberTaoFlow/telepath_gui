@@ -673,7 +673,7 @@ telepath.config.system = {
 
 			this.buttonContainer=$('<div>').addClass('tele-button-container').appendTo(this.fileUpload);
 
-			$('<a href="#" class="tele-button tele-button-apply disabled">Process</a>').click(function (e) {
+			$('<a class="tele-button tele-button-apply disabled">Process</a>').click(function (e) {
 				$(this).addClass('disabled');
 
 				telepath.ds.get('/config/upload_to_db', {}, function (data) {
@@ -948,7 +948,7 @@ telepath.config.system = {
 		
 		// SMTP Test button
 		this.smtpTestEmail = $('<div>').teleInput({ label: 'Test Email', width: 200 }).css({ 'marginTop': 20 }).addClass('tele-config-smtp-test').appendTo(this.c_reports); 
-		var testSMTP   = $('<a href="#" class="tele-button tele-button-apply">Test</a>').click(function () {
+		var testSMTP   = $('<a class="tele-button tele-button-apply">Test</a>').click(function () {
 			
 			var email = $('input', that.smtpTestEmail).val();
 
@@ -1202,8 +1202,8 @@ telepath.config.system = {
 		// -----------------------------------------------------------
 		
 		var btnContain = $('<div>').addClass('tele-button-container').appendTo(this.contentRight);
-		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+		var saveBtn   = $('<a class="tele-button tele-button-apply">Save</a>');
+		var cancelBtn  = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 		
 		btnContain.append(saveBtn).append(cancelBtn);
 

@@ -30,7 +30,7 @@ $.widget( "tele.toggleFlip", {
 		var toggle_left   = $('<div>').addClass('tele-mini-toggle-left').html(this.options.left_value);
 		var toggle_right  = $('<div>').addClass('tele-mini-toggle-right').html(this.options.right_value);
 		var toggle_middle = $('<div>').addClass('tele-mini-toggle-middle');
-		var toggle_knob   = $('<a>').attr('href', '#').addClass('tele-mini-toggle-knob').html('&nbsp;');
+		var toggle_knob   = $('<a>').addClass('tele-mini-toggle-knob').html('&nbsp;');
 		
 		toggle_middle.append(toggle_knob);
 		

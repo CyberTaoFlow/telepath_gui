@@ -48,7 +48,7 @@ telepath.config.webusers = {
 
         // Refresh
         var cmdRefresh = $('<div>').addClass('tele-refresh');
-        var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+        var cmdRefreshButton = $('<a>').addClass('tele-refresh-button').html('&nbsp;');
         cmdRefresh.append(cmdRefreshButton);
 
         cmdRefreshButton.click(function () {

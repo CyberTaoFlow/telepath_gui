@@ -84,8 +84,8 @@ telepath.config.notifications = {
 		});
 		
 		this.buttonsEl = $('<div>').addClass('tele-form-buttons');
-		this.applyBtn  = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-		this.cancelBtn = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+		this.applyBtn  = $('<a class="tele-button tele-button-apply">Save</a>');
+		this.cancelBtn = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 		
 		this.buttonsEl.append(this.applyBtn).append(this.cancelBtn);
 		that.contentRight.append(this.buttonsEl);

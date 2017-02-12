@@ -1,3 +1,7 @@
+a {
+	cursor: pointer;
+}
+
 .tele-loader {
 	  background: transparent url('../img/loader.gif') 50% 0% no-repeat;
 	  width: 100%;

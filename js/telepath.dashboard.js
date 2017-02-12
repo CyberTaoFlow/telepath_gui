@@ -418,9 +418,9 @@ telepath.dashboard = {
 		
 		// Refresh
 		var cmdRefresh 			 = $('<div>').addClass('tele-refresh');
-		var cmdRefreshText       = $('<a>').attr('href', '#').addClass('tele-refresh-text').html('Refresh Rate');
-		this.cmdRefreshValue      = $('<a>').attr('href', '#').addClass('tele-refresh-value').html(this.refreshInterval + 'm');
-		var cmdRefreshButton     = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+		var cmdRefreshText       = $('<a>').addClass('tele-refresh-text').html('Refresh Rate');
+		this.cmdRefreshValue      = $('<a>').addClass('tele-refresh-value').html(this.refreshInterval + 'm');
+		var cmdRefreshButton     = $('<a>').addClass('tele-refresh-button').html('&nbsp;');
 		cmdRefresh.append(cmdRefreshText).append(this.cmdRefreshValue).append(cmdRefreshButton);
 		
 		cmdRefreshButton.click(function () {

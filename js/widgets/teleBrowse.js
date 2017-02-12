@@ -82,7 +82,7 @@ $.widget( "tele.teleBrowse", {
 		this.headerEl    = $('<div>').addClass('tele-overlay-header');
 		this.contentEl   = $('<div>').addClass('tele-overlay-content');
 		this.titleEl     = $('<div>').addClass('tele-overlay-title').html(this.options.label);
-		this.closeEl     = $('<a>').attr('href', '#').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
+		this.closeEl     = $('<a>').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
 		this.textEl      = $('<div>').addClass('tele-dialog-text').html('Some Text');
 		
 		// Add to body

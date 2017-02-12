@@ -32,7 +32,7 @@ telepath.overlay = {
 		this.headerEl    = $('<div>').addClass('tele-overlay-header');
 		this.contentEl   = $('<div>').addClass('tele-overlay-content');
 		this.titleEl     = $('<div>').addClass('tele-overlay-title').html(title);
-		this.closeEl     = $('<a>').attr('href', '#').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
+		this.closeEl     = $('<a>').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
 		this.minheight   = (typeof(minheight) !== 'undefined') ? minheight : 0 ;
 		
 		$('body').append(this.maskEl);

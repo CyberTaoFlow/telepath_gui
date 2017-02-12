@@ -283,7 +283,7 @@ $.widget( "tele.daterange", {
 		else
 			var text='Last '+ telepath.range.state[0].toUpperCase() + telepath.range.state.slice(1);
 
-		this.button = $('<a>').attr('href', '#').btn({
+		this.button = $('<a>').btn({
 			icon: 'daterange',
 			text: text,
 			callback: function () {

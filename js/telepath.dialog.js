@@ -19,7 +19,7 @@ telepath.dialog = function(options) {
 	this.headerEl    = $('<div>').addClass('tele-overlay-header');
 	this.contentEl   = $('<div>').addClass('tele-overlay-content');
 	this.titleEl     = $('<div>').addClass('tele-overlay-title').html(options.title);
-	this.closeEl     = $('<a>').attr('href', '#').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
+	this.closeEl     = $('<a>').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
 	this.textEl      = $('<div>').addClass('tele-dialog-text').html(options.msg);
 	
 	$('body').append(this.maskEl);
@@ -48,8 +48,8 @@ telepath.dialog = function(options) {
 			
 			if(options.error) { $('input', inputEl).css({ borderColor: 'red' }); }
 			
-			var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Ok</a>');
-			var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+			var saveBtn   = $('<a class="tele-button tele-button-apply">Ok</a>');
+			var cancelBtn  = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 				
 			this.textEl.after(inputEl);
 			this.btnContain.append(saveBtn).append(cancelBtn);
@@ -77,8 +77,8 @@ telepath.dialog = function(options) {
 		
 		case 'dialog':
 			
-			var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Ok</a>');
-			var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+			var saveBtn   = $('<a class="tele-button tele-button-apply">Ok</a>');
+			var cancelBtn  = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 				
 			this.btnContain.append(saveBtn).append(cancelBtn);
 					
@@ -101,7 +101,7 @@ telepath.dialog = function(options) {
 		default:
 		case 'alert':
 			
-			var closeBtn   = $('<a href="#" class="tele-button tele-button-apply">Close</a>');
+			var closeBtn   = $('<a class="tele-button tele-button-apply">Close</a>');
 			this.btnContain.append(closeBtn);
 			closeBtn.click(function () {
 				that.maskEl.remove();

@@ -26,7 +26,7 @@ $.widget( "tele.appSelect", {
 		
 		var that = this;
 		
-		this.dropdownIcon  = $('<a>').attr('href', '#').addClass('tele-icon').addClass('tele-icon-' + this.options.icon);
+		this.dropdownIcon  = $('<a>').addClass('tele-icon').addClass('tele-icon-' + this.options.icon);
 		
 		if(!this.options.value) {
 			this.options.value = telepath.appFilter;
@@ -59,9 +59,9 @@ $.widget( "tele.appSelect", {
 			}
 		}
 				
-		this.dropdownValue = $('<a>').attr('href', '#').addClass('tele-dropdown-value').html(appName);
+		this.dropdownValue = $('<a>').addClass('tele-dropdown-value').html(appName);
 		
-		this.dropdownArrow = $('<a>').attr('href', '#').addClass('tele-dropdown-arrow').html('&nbsp;');
+		this.dropdownArrow = $('<a>').addClass('tele-dropdown-arrow').html('&nbsp;');
 
 		// remove all other nodes, Yuli	
 		this.element.empty();	
@@ -136,7 +136,7 @@ $.widget( "tele.appSelect", {
 			scrollInertia: 150
 		});
 		
-		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
+		var saveBtn   = $('<a class="tele-button tele-button-apply">Save</a>');
 		var btnContain = $('<div>').addClass('tele-button-container');
 		
 		btnContain.append(saveBtn);

@@ -393,7 +393,7 @@ telepath.config.applications = {
 					]
 				}).addClass('tele-config-opmod').appendTo(this.popup);
 
-				var saveBtn = $('<a href="#" class="tele-button tele-button-apply tele-button-small">Save</a>')
+				var saveBtn = $('<a class="tele-button tele-button-apply tele-button-small">Save</a>')
 					.css({'margin-left': 17}).appendTo(this.popup);
 
 				saveBtn.click(function () {

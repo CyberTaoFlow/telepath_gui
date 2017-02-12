@@ -85,8 +85,8 @@ telepath.search = {
         });*/
 
         that.buttonsEl = $('<div>').addClass('tele-form-buttons');
-        that.applyBtn = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-        that.cancelBtn = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+        that.applyBtn = $('<a class="tele-button tele-button-apply">Save</a>');
+        that.cancelBtn = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 
         that.buttonsEl.append(that.applyBtn).append(that.cancelBtn);
         element.append(that.buttonsEl);
@@ -199,7 +199,7 @@ telepath.search = {
 
         // Refresh
         var cmdRefresh = $('<div>').addClass('tele-refresh');
-        var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+        var cmdRefreshButton = $('<a>').addClass('tele-refresh-button').html('&nbsp;');
         cmdRefresh.append(cmdRefreshButton);
 
         cmdRefreshButton.click(function () {

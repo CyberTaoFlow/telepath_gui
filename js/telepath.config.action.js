@@ -550,8 +550,8 @@ telepath.config.action = {
 		var that = this;
 		
 		this.buttonsEl = $('<div>').addClass('tele-form-buttons');
-		this.applyBtn  = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-		this.cancelBtn = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+		this.applyBtn  = $('<a class="tele-button tele-button-apply">Save</a>');
+		this.cancelBtn = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 		
 		this.buttonsEl.append(this.applyBtn).append(this.cancelBtn);
 		this.container.append(this.buttonsEl);
@@ -732,11 +732,11 @@ RecordFlow.prototype.getRequestTable = function(request) {
 				continue;
 			}
 			
-			var link = $('<a>').attr('href', '#').text(decodeURIComponent(z['att_name'])).attr('rel', z['att_id']);
+			var link = $('<a>').text(decodeURIComponent(z['att_name'])).attr('rel', z['att_id']);
 			
 			var valueCell = $('<td>');
 			var valueEdit = $('<span>').addClass('icon-edit').attr('rel', z['att_id']);
-			var valueLink = $('<span>').attr('href', '#').text(z['data']).attr('rel', z['att_id']);
+			var valueLink = $('<span>').text(z['data']).attr('rel', z['att_id']);
 			
 			if(!z.include) {
 				valueLink.addClass('excluded');

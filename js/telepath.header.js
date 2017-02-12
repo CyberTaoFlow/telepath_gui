@@ -23,9 +23,8 @@ telepath.header = {
 		];
 		$.each(this.navItems, function (i, item) {
 			if (telepath.access.admin || telepath.access.perm[item.label + '_get']) {
-				var itemEl = $('<li>').addClass('tele-nav-' + item.id).append($('<a>').attr('href', '#').append('<span class="tele-nav-icon">').append(item.label)); //	
+				var itemEl = $('<li>').addClass('tele-nav-' + item.id).append($('<a>').append('<span class="tele-nav-icon">').append(item.label));
 			}
-			;
 
 			$(that.nav).append(itemEl);
 		});
@@ -35,7 +34,7 @@ telepath.header = {
 		this.headerRight = $('<div>').addClass('tele-header-right');
 		this.search = $('<div>').addClass('tele-search-top');
 		this.searchInput = $('<input>').addClass('tele-search-input');
-		this.searchIcon = $('<a href="#">').addClass('tele-search-icon').html('Search');
+		this.searchIcon = $('<a>').addClass('tele-search-icon').html('Search');
 		//this.searchDD = $('<a href="#">').addClass('tele-search-dropdown').html('');
 
 		this.search.append(this.searchInput).append(this.searchIcon)/*.append(this.searchDD)*/;
@@ -125,7 +124,7 @@ telepath.header = {
 		
 		// Config Button
 		this.configDiv = $('<div>').addClass('tele-config');
-		this.configCmd = $('<a>').attr('href', '#').addClass('tele-icon').addClass('tele-icon-config');
+		this.configCmd = $('<a>').addClass('tele-icon').addClass('tele-icon-config');
 		this.configDiv.append(this.configCmd);
 		
 		this.configCmd/*.click(function () {
@@ -148,7 +147,7 @@ telepath.header = {
 	
 		})*/.hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });
 		
-		this.logoutCmd = $('<a>').attr('href', '#').addClass('tele-icon').addClass('tele-icon-logout').click(function () {
+		this.logoutCmd = $('<a>').addClass('tele-icon').addClass('tele-icon-logout').click(function () {
 			
 			telepath.ds.get('/auth/logout', {}, function(data) { 
 				location.reload(true);

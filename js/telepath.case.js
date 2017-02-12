@@ -131,8 +131,8 @@ telepath.caseOverlay = {
 		// Apply / Cancel buttons
 		
 		var btnContain = $('<div>').addClass('tele-button-container');
-		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+		var saveBtn   = $('<a class="tele-button tele-button-apply">Save</a>');
+		var cancelBtn  = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 		
 		btnContain.append(saveBtn).append(cancelBtn);
 		
@@ -366,12 +366,12 @@ telepath.casePanel = {
 		this.caseDesc.attr('title',this.caseDesc.text());
 		
 		// Go Back Button
-		this.goBack = $('<a>').attr('href', '#').addClass('tele-panel-case-close').html('|&nbsp;Back to all cases');
+		this.goBack = $('<a>').addClass('tele-panel-case-close').html('|&nbsp;Back to all cases');
 		this.panelTopBar.append(this.goBack);
 		
 		// Refresh
 		var cmdRefresh = $('<div>').addClass('tele-refresh');
-		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+		var cmdRefreshButton = $('<a>').addClass('tele-refresh-button').html('&nbsp;');
 		cmdRefresh.append(cmdRefreshButton);
 
 		cmdRefreshButton.click(function () {

@@ -52,8 +52,8 @@ telepath.ruleOverlay = {
 		// Apply / Cancel buttons
 		
 		var btnContain = $('<div>').addClass('tele-button-container');
-		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+		var saveBtn   = $('<a class="tele-button tele-button-apply">Save</a>');
+		var cancelBtn  = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 		
 		btnContain.append(saveBtn).append(cancelBtn);
 		

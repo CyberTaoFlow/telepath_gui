@@ -28,7 +28,7 @@ $.widget( "tele.flotGraph", {
 		this.canvasInner = $('<div>').addClass('tele-graph-canvas');
 		this.masterCanvasInner =$('<div>').addClass('tele-graph-canvas-master-inner');
 		this.masterCanvas =$('<div>').addClass('tele-graph-canvas-master');
-		this.closeEl     = $('<a>').attr('href', '#').addClass('tele-graph-close').addClass('tele-icon').addClass('tele-icon-close');
+		this.closeEl     = $('<a>').addClass('tele-graph-close').addClass('tele-icon').addClass('tele-icon-close');
 
 		this.closeEl.click(function () {
 			that.masterCanvas.css({visibility: 'hidden'});
@@ -94,7 +94,7 @@ $.widget( "tele.flotGraph", {
 			$.each(this.filterTypes, function(i, filter) {
 				
 				var filterWrap    = $('<div>').addClass('tele-dashboard-graph-filter-inner').addClass('tele-graph-filter-' + filter.type);
-				var filterToggle  = $('<a>').attr('href', '#').addClass('tele-graph-filter-toggle');
+				var filterToggle  = $('<a>').addClass('tele-graph-filter-toggle');
 				var filterTitle   = $('<div>').addClass('tele-graph-filter-title').text(filter.label);
 				var filterPercent = $('<div>').addClass('tele-graph-filter-percent').text((totalCount > 0 ? parseFloat(filter.count / totalCount * 100).toFixed(2) : 0) + '%');
 				var filterCount   = $('<div>').addClass('tele-graph-filter-count')

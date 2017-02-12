@@ -29,13 +29,13 @@ $.widget( "tele.teleDropdown", {
 		var that = this;
 		
 		if(this.icon) {
-			this.dropdownIcon  = $('<a>').attr('href', '#').addClass('tele-icon').addClass('tele-icon-' + this.options.icon);
+			this.dropdownIcon  = $('<a>').addClass('tele-icon').addClass('tele-icon-' + this.options.icon);
 			this.dropdownIcon.hover(function () { that.hoverIn(); }, function () { that.hoverOut(); }).click(function () { that.click() });
 			this.element.append(this.dropdownIcon);
 		}
 		
-		this.dropdownValue = $('<a>').attr('href', '#').addClass('tele-dropdown-value').html(this.options.value);
-		this.dropdownArrow = $('<a>').attr('href', '#').addClass('tele-dropdown-arrow').html('&nbsp;');
+		this.dropdownValue = $('<a>').addClass('tele-dropdown-value').html(this.options.value);
+		this.dropdownArrow = $('<a>').addClass('tele-dropdown-arrow').html('&nbsp;');
 		
 		this.element.append(this.dropdownValue).append(this.dropdownArrow);
 

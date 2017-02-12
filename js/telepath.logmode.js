@@ -40,7 +40,7 @@ function logmode_init(app_id) {
 	this.headerEl    = $('<div>').addClass('tele-overlay-header');
 	this.contentEl   = $('<div>').addClass('tele-overlay-content');
 	this.titleEl     = $('<div>').addClass('tele-overlay-title').html("Upload Logs");
-	this.closeEl     = $('<a>').attr('href', '#').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
+	this.closeEl     = $('<a>').addClass('tele-overlay-close').addClass('tele-icon').addClass('tele-icon-close');
 	this.textEl      = $('<div>').addClass('tele-dialog-text').html('');
 	
 	$('body').append(this.maskEl);

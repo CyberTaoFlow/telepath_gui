@@ -45,7 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div class="tele-button" id="reset-button">Reset</div>
 			</center>
 			
-			<a href="#" id="login-reset-cancel">Cancel</a>
+			<a id="login-reset-cancel">Cancel</a>
 			
 		</div>
 		<div class="tele-login">

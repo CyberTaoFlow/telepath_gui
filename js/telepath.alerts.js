@@ -122,7 +122,7 @@ telepath.alerts = {
 
 		// Refresh
 		var cmdRefresh = $('<div>').addClass('tele-refresh');
-		var cmdRefreshButton = $('<a>').attr('href', '#').addClass('tele-refresh-button').html('&nbsp;');
+		var cmdRefreshButton = $('<a>').addClass('tele-refresh-button').html('&nbsp;');
 		cmdRefresh.append(cmdRefreshButton);
 
 		cmdRefreshButton.click(function () {
@@ -134,7 +134,7 @@ telepath.alerts = {
 
 		//Clear filters
 		var clearFilters = $('<div>').addClass('tele-clear');
-		var clearFiltersButton = $('<a>').attr('href', '#').addClass('tele-clear-button').html('Clear Filters').click(function(){
+		var clearFiltersButton = $('<a>').addClass('tele-clear-button').html('Clear Filters').click(function(){
 			if (!telepath.alerts.loading) {
 				that.resetFilters();
 			}

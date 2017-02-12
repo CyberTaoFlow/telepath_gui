@@ -29,8 +29,8 @@ telepath.config.accounts = {
 		that.contentRight.append(that.groupInputs);
 		
 		var btnContain = $('<div>').addClass('tele-button-container-group');
-		var saveBtn   = $('<a href="#" class="tele-button tele-button-apply">Save</a>');
-		var cancelBtn  = $('<a href="#" class="tele-button tele-button-cancel">Cancel</a>');
+		var saveBtn   = $('<a class="tele-button tele-button-apply">Save</a>');
+		var cancelBtn  = $('<a class="tele-button tele-button-cancel">Cancel</a>');
 		
 		cancelBtn.click(function () {
 			that.getUsers();
