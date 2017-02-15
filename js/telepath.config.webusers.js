@@ -75,7 +75,7 @@ telepath.config.webusers = {
 
 
         if (typeof that.searchString != 'undefined') {
-            input.prop("value", that.searchString);
+            $(".tele-config-bar-left .tele-search-input").prop("value", that.searchString);
         }
 
         this.loadData();
