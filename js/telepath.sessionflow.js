@@ -221,7 +221,7 @@ telepath.sessionflow = {
 			this.filter = 'Search';
 
 		}
-		else if(state){
+		else {
 			switch (state){
 				case 'alert':
 					this.filter = 'Alerts';
@@ -246,7 +246,7 @@ telepath.sessionflow = {
 			this.loadSession(this.SID);
 		}else{
 			telepath.dialog({msg:'Access denied. No permissions to view Session Flow.'});
-		};
+		}
 
 
 	},
@@ -281,7 +281,15 @@ telepath.sessionflow = {
 		$(document).bind('overlay_destroy', telepath.alert.destroy);
 		
 		// Show loading
-		telepath.overlay.init('alerts', 'Loading session flow', true, 500);
+		telepath.overlay.init('alerts', 'Loading session flow', true, 500, function () {
+			// On overlay close, update the routing hash and the active page
+			var newActivePage = [telepath.activePage[0]];
+			if (newActivePage[0] === 'case' || newActivePage[0] == 'config' && newActivePage[0] == 'search') {
+				newActivePage.push(telepath.activePage[1]);
+			}
+			telepath.activePage = newActivePage;
+			location.hash = newActivePage.join('/');
+		});
 		this.overlay = telepath.overlay;
 		this.container = this.overlay.contentEl;
 		
@@ -307,9 +315,12 @@ telepath.sessionflow = {
 				count:   total, 
 				name: that.alertsList ? 'Alert' : 'Session', 
 				callback: function (itemIndex) {
-					// console.log(itemIndex);
 					that.SID = that.RIDS[itemIndex];
 					that.loadSession();
+					// Update the routing hash and the active page
+					telepath.activePage.pop();
+					telepath.activePage.push(that.RIDS[itemIndex]);
+					location.hash = telepath.activePage.join('/');
 					
 				}
 			});
@@ -544,7 +555,7 @@ telepath.sessionflow = {
 
 			telepath.overlay.destroy();
 			telepath.header.searchInput.val(search);
-			telepath.ui.displayPage('search')
+			telepath.ui.displayPage(['search', search])
 		});
 
 		this.printed++;
@@ -1213,8 +1224,9 @@ telepath.sessionflow = {
 
 
 				telepath.overlay.destroy();
-				telepath.header.searchInput.val(field + ':"' + search + '"');
-				telepath.ui.displayPage('search');
+				var search = field + ':"' + search + '"';
+				telepath.header.searchInput.val(search);
+				telepath.ui.displayPage(['search', search]);
 			}
 		});
 		//if(alert.user && alert.user != '') {

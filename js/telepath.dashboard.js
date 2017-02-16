@@ -385,8 +385,12 @@ telepath.dashboard = {
 			clearInterval(this.refreshTimer);
 		}
 		this.refreshTimer = setInterval(function () {
-			if (telepath.activePage != 'config'){
-				eval ('telepath.' + telepath.activePage + '.hardRefresh()');
+			var activePage = telepath.activePage[0];
+			if (activePage != 'config') {
+				if (activePage == 'case') {
+					activePage = 'casePanel';
+				}
+				eval('telepath.' + activePage + '.hardRefresh()');
 			}
 			else{
 				deleteCache('telecache');

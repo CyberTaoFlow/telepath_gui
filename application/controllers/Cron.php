@@ -182,7 +182,7 @@ class Cron extends Tele_Controller
                 $row_syslog .= $parameters . $delimiter;
 
                 // add link to the specific alert
-                $row_syslog .= $this->config->base_url() . '#' . $alert['sid'] . '/' . $alert['ip_orig'] . '/' .
+                $row_syslog .= $this->config->base_url() . '#alerts/' . $alert['sid'] . '/' . $alert['ip_orig'] . '/' .
                     urlencode($alert['alerts'][0]['name']) . '/' . $id;
 
                 echo $row_syslog;

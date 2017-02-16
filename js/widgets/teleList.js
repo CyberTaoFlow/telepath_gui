@@ -202,8 +202,9 @@ $.widget( "tele.teleList", {
                     }
                 }
 				if (!$(this).text().match("Not ") ){
-					telepath.header.searchInput.val(field + '"' + search + '"');
-					telepath.ui.displayPage('search')
+					var search = field + '"' + search + '"';
+					telepath.header.searchInput.val(search);
+					telepath.ui.displayPage(['search', search]);
 				}
             });
         }

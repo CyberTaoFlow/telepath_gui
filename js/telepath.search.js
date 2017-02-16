@@ -111,6 +111,9 @@ telepath.search = {
 
         this.searchStr = searchStr;
 
+        // Add the search value to the search input
+        telepath.header.searchInput.val(searchStr);
+
         this.displayed = {
             alerts: [],
             cases: [],
@@ -120,8 +123,6 @@ telepath.search = {
         
         this.container = $('.tele-panel-search');
         this.container.empty();
-
-        telepath.activePage = 'search';
 
         this.initPanel();
 

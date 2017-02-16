@@ -20,7 +20,7 @@ telepath.overlay = {
 		$(document).unbind('keydown', telepath.overlay.keydownHandler);
 		//$(document).trigger('overlay_destroy');
 	},
-	init: function(icon, title, fullscreen, minheight) {
+	init: function(icon, title, fullscreen, minheight, onClose) {
 		
 	
 		telepath.overlay.destroy();
@@ -43,6 +43,9 @@ telepath.overlay = {
 		
 		this.closeEl.click(function () {
 			telepath.overlay.destroy();
+			if (typeof onClose == 'function') {
+				onClose();
+			}
 		}).hover(function () { $(this).addClass('hover'); }, function () { $(this).removeClass('hover'); });
 		
 		$(document).bind('keydown', telepath.overlay.keydownHandler);

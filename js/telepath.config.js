@@ -1,14 +1,13 @@
 telepath.config = {
 	
 	loaded: false,
-	init: function () {
-		
-		// console.log('Configuration online');
+	init: function (id) {
+
 		this.outerContainer = $('.tele-panel-config');
-		this.initTabs();
+		this.initTabs(id);
 
 	},
-	initTabs: function() {
+	initTabs: function(id) {
 	
 		var that = this;
 		// remove canvas for loading map of countries (Yuli)
@@ -78,13 +77,17 @@ telepath.config = {
 					telepath.config[id].initLayout();
 					telepath.config[id].resizeLayout();
 					telepath.config[id].init();
+					telepath.activePage = ['config', id];
+					if (location.hash != '#config/' + id) {
+						location.hash = '#config/' + id
+					}
 
 					$(window).resize(function () {
 						telepath.config[id].resizeLayout();
 					});
 				});
 			};
-			var tabBtn = $('<div>').btn(tab).addClass('tele-config-tab');
+			var tabBtn = $('<div>').attr('id',tab.icon).btn(tab).addClass('tele-config-tab');
 			this.panelTopBar.append(tabBtn);
 			this.panelTopBar.append('<div class="tele-navsep"></div>'); // Sep
 		}
@@ -94,58 +97,15 @@ telepath.config = {
 		this.container = $('<div>').addClass('tele-panel-config-inner');
 		this.outerContainer.append(this.container);
 		this.container.append(telepath.loader);
-		telepath.config.load();
-		
+		this.start(id);
 	},
-	load: function (dont_start) {
-		
-		/*
-		if(this.loaded) {
-			if(dont_start) { return; }
-			this.start();
-			return;
-		}
-		
-		yepnope({ 
-			load: [
-				// Config Scripts
-				"js/telepath.config.account.js",
-				"js/telepath.config.accounts.js",
-				// Action
-				"js/telepath.config.action.js",
-				"js/telepath.config.actions.js",
-				// Application
-				"js/telepath.config.application.js?",
-				"js/telepath.config.applications.js",
-				"js/telepath.config.notifications.js",
-				// Rule
-				"js/telepath.config.rule.js",
-				"js/telepath.config.rules.js",
-				// Users
-				"js/telepath.config.user.js",
-				"js/telepath.config.users.js",
-				"js/telepath.config.groups.js",
-				// System
-				"js/telepath.config.system.js",
 
-			], 
-			complete: function() {
-				telepath.config.loaded = true;
-				
-				if(dont_start) { return; }
-				
-				telepath.config.start();
-		}});
-		*/
-		
-		this.start();
-		
-	},
-	start: function() {
+	// Display the specific tab
+	start: function(id) {
 		var that = this;
 		setTimeout(function () {
 			that.container.empty();
-			$('.tele-button.tele-config-tab:nth-child(1) .tele-button-text').trigger('click');
+			$('#' + id + ' .tele-button-text').trigger('click');
 			that.loading = false
 		}, 500);
 		

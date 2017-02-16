@@ -78,21 +78,7 @@ telepath.main = {
                 telepath.templates = data;
                 telepath.ui.init();
                 telepath.header.init();
-
-
-
-                telepath.dashboard.init();
-                $('.tele-nav-dashboard a').addClass('active');
-
-                // check if there is an anchor in URL, to display a specific alert on loading
-                if (location.hash) {
-                    var params = location.hash.split("/");
-                    var alerts = [];
-                    alerts["key"]=decodeURIComponent(params[2]);
-                    telepath.sessionflow.init(params[0].substr(1), params[1], alerts, "alert", params[3]);
-                }
-
-
+                telepath.ui.choosePage();
 
                 /*
                  var paramBrowse = $('<div>').teleBrowse();
@@ -150,6 +136,9 @@ telepath.ui = {
             }
         });
 
+        // Call to function on every hash change
+        $(window).on('hashchange', telepath.ui.choosePage);
+
         var that = this;
 
         this.mainEl    = $('<div>').addClass('tele-body');
@@ -166,9 +155,6 @@ telepath.ui = {
             that.contentEl.append(panelEl);
         });
 
-        $('.tele-panel-dashboard').addClass('active');
-
-        telepath.activePage = 'dashboard';
 
         $(window).resize(function () {
             telepath.ui.resize();
@@ -202,30 +188,102 @@ telepath.ui = {
 
 
     },
-    displayPage: function(id){
+    displayPage: function(params){
+
+        telepath.activePage = params;
 
         $('.tele-panel').empty().hide().removeClass('active');
         telepath.header.configCmd.removeClass('active');
         $('.tele-nav a.active').removeClass('active');
         $(".tele-file-upload").hide();
 
-        $('.tele-panel-' + id).show().addClass('active');
-        $('.tele-nav-' + id +' a').addClass('active');
+        // If session flow is open
+        telepath.overlay.destroy();
+
+        // Specific case is built above the cases panel
+        if (params[0] == 'case') {
+            $('.tele-panel-cases').show().addClass('active');
+            $('.tele-nav-cases  a').addClass('active');
+        }
+
+        // Activate the requested panel
+        $('.tele-panel-' + params[0]).show().addClass('active');
+
+        // Activate the requested icon between the 4 icons in header (in single case, config and search there is no
+        // activated icon)
+        if (params[0] != 'case' && params[0] != 'config' && params[0] != 'search') {
+            $('.tele-nav-' + params[0] + ' a').addClass('active');
+        }
 
         telepath.ui.resize();
-        if (id =='search'){
-            telepath[id].init(telepath.header.searchInput.val());
-        }
-        else{
-            telepath[id].init();
+
+        var hash;
+        // Copy the params array to get the session params
+        var session = params.slice();
+        // For all, we need to remove the first item
+        session.shift();
+
+        // Prepare the new hash tag and call the requested init function
+        switch (params[0]) {
+            // On search, case and config there is a second element. We need to add it to the init call and remove
+            // it from the session array to get only the session params
+            case 'search':
+                hash = 'search/' + encodeURIComponent(params[1]);
+                session.shift();
+                telepath.search.init(params[1]);
+                break;
+            case 'case':
+                hash = 'case/' + encodeURIComponent(params[1]);
+                session.shift();
+                telepath.casePanel.init(params[1]);
+                break;
+            case 'config':
+                hash = 'config/' + params[1];
+                session.shift();
+                telepath.config.init(params[1]);
+                break;
+            default:
+                // Check for an existing function
+                if (telepath[params[0]]) {
+                    hash = params[0];
+                    telepath[params[0]].init();
+                }
+                else {
+                    hash = 'dashboard';
+                }
         }
 
-        telepath.activePage = id;
+        // Display the session flow if it's requested
+        if (session.length) {
+            telepath.sessionflow.init(session[0], session[1], session[2], '', session[3]);
+        }
+        else {
+            location.hash = hash;
+        }
 
         setTimeout(function () {
             $('.tele-popup, .popover').remove();
         }, 100);
 
+    },
+    // Display the page according to the hash tag (default is dashboard) if the requested page is not displayed yet
+    choosePage: function () {
+        var activePage = location.hash || '#dashboard';
+        var params = activePage.substr(1).split("/");
+
+        if (!arrayCompare(params, telepath.activePage)) {
+            // Only these parameters can be URL encoded
+            if (params[1]) {
+                params[1] = decodeURIComponent(params[1]);
+            }
+            if (params[3]) {
+                params[3] = decodeURIComponent(params[3]);
+            }
+            // check if there is a record in process and stop it
+            telepath.config.actions.checkNotFinishedRecord(function () {
+                telepath.ui.displayPage(params);
+            });
+        }
     }
 
-}
+};

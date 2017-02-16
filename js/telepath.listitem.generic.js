@@ -79,6 +79,11 @@ telepath.listitem.generic = {
 			
 			telepath.sessionflow.init(widget.options.itemID, /*widget.options.raw.ip_orig, names ,*/
 			 widget.options.icon, widget.options.raw.searchkey, parent_parent);
+
+			// For now the routing is only on the session ID
+			telepath.activePage.push(widget.options.itemID);
+			location.hash = location.hash.substr(1) + '/' +  widget.options.itemID;
+
 		},
 		hover_in: function (el, item) {
 
@@ -266,9 +271,8 @@ telepath.listitem.generic = {
 
 		click: function (widget) {
 			if (telepath.access.admin || telepath.access.perm.Cases_get){
-				$(".tele-nav-cases a").click();
 				$('.popover').remove();
-				telepath.casePanel.init(widget.options.dataID);
+				telepath.ui.displayPage(['case', widget.options.dataID]);
 			}else{
 				telepath.dialog({msg:'Access denied. No permissions to view Cases details.'});
 			};

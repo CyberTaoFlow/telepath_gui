@@ -43,7 +43,7 @@ telepath.header = {
 		// Hook for icon click
 		$(this.searchIcon).click(function (e) {
 			telepath.config.actions.checkNotFinishedRecord(function(){
-				telepath.ui.displayPage('search')
+				telepath.ui.displayPage(['search',that.searchInput.val()]);
 			});
 		});
 
@@ -51,7 +51,7 @@ telepath.header = {
 		$(this.searchInput).keydown(function (e) {
 			if (e.keyCode == 13) {
 				telepath.config.actions.checkNotFinishedRecord(function(){
-					telepath.ui.displayPage('search')
+					telepath.ui.displayPage(['search',that.searchInput.val()])
 				});
 			}
 		});
@@ -162,13 +162,13 @@ telepath.header = {
 
 			var id = $(this).parent().attr('class').split('-');
 			if(id[0] == 'tele' && id[1] == 'nav' && id[2] != '') {
-				id = id[2];
+				id = [id[2]];
 			} else {
 				if (id[1] =='config'){
-					id = 'config'
+					id = ['config','accounts']
 				}
 				else{
-					id = 'dashboard'
+					id = ['dashboard']
 				}
 			}
 
