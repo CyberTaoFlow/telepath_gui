@@ -252,6 +252,7 @@ fabric.properties
 
 # *.iml
 # modules.xml
+/vendor/minify/min/cache
 # .idea/misc.xml
 # *.ipr
 .idea/
