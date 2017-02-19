@@ -454,8 +454,14 @@ telepath.config.system = {
 						date.setHours(val.from);
 						date.setMinutes(0);
 						date.setSeconds(0);
+						date.setMilliseconds(0);
 						current_from = new Date(date);
-						//date.setHours(i + 1);
+
+						// If all the day is selected, we add one day to the end date
+						if(val.from == val.to){
+							val.to = 24;
+						}
+
 						date.setHours(val.to);
 						
 						current_to = new Date(date);
