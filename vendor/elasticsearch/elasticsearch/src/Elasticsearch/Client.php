@@ -913,28 +913,6 @@ class Client
 
         return $this->performRequest($endpoint);
     }
- public function test_search($params = array())
-    {
-        $index = $this->extractArgument($params, 'index');
-        $type = $this->extractArgument($params, 'type');
-        $body = $this->extractArgument($params, 'body');
-
-        /** @var callback $endpointBuilder */
-        $endpointBuilder = $this->endpoints;
-
-        /** @var \Elasticsearch\Endpoints\Search $endpoint */
-        $endpoint = $endpointBuilder('Search');
-        $endpoint->setIndex($index)
-                 ->setType($type)
-                 ->setBody($body);
-        $endpoint->setParams($params);
-
-        try {
-            $this->performRequest($endpoint);
-        } catch (\Exception $exception) {
-            return false;
-        }        return true;
-    }
 
     /**
      * $params['index']              = (list) A comma-separated list of index names to search; use `_all` or empty string to perform the operation on all indices
