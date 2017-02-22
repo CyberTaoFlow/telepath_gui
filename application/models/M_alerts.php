@@ -103,14 +103,14 @@ class M_Alerts extends CI_Model {
 				"sid" => [
 					"terms" => [
 						"field" => "sid",
-						"size" => 0
+						"size" => 1
 					],
 					"aggs" => [
 						"actions" => [
 							"filter" => ['exists' => ['field' => 'business_actions']],
 							"aggs" => [
 								"actions_names" => [
-									"terms" => ["field" => "business_actions.name", "size" => 0]
+									"terms" => ["field" => "business_actions.name", "size" => 1]
 								]
 							]
 						],
@@ -636,7 +636,7 @@ class M_Alerts extends CI_Model {
 			'size' => 0,
 			"aggs" => [
 				"sid" => [
-					"terms" => [ "field" => "sid", "size" => 0]
+					"terms" => [ "field" => "sid", "size" => 1]
 				],
 			],
 		];

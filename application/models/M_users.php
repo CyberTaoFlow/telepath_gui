@@ -38,10 +38,10 @@ class M_Users extends CI_Model
             'size' => 0,
             "aggs" => [
                 "users" => [
-                    "terms" => ["field" => "username", "size" => 0],
+                    "terms" => ["field" => "username", "size" => 1],
                     "aggs" => [
                         "host" => [
-                            "terms" => ["field" => "host", "size" => 0],
+                            "terms" => ["field" => "host", "size" => 1],
                             "aggs" => [
                                 "last_activity" => [
                                     "max" => ["field" => "ts"]
