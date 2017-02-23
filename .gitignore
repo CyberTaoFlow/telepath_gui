@@ -3,4 +3,6 @@ application/config/windows_file_paths.php
 application/sessions/
 CI_phpStorm.php
 my_models.php
+/debug.php
+/debug.inc.php
 application/databases/telepath_users.db
