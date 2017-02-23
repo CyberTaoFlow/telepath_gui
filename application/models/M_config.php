@@ -240,10 +240,7 @@ class M_Config extends CI_Model
             'type' => 'config',
             'body' => [
                 'query' => [
-                    'match_all' => [
-                    ],
-
-
+                    'match_all' => new \StdClass
                 ],
                 "size" => '97'
             ]
@@ -413,9 +410,7 @@ public function get_scheduler()
         'type' => 'times',
         'body' => [
             'query' => [
-                'match_all' => [
-
-                ]
+                'match_all' => new \StdClass
             ]
         ]
     ];
