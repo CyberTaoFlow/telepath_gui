@@ -3,13 +3,9 @@
 class M_Alerts extends CI_Model {
 
 	function __construct() {
+
 		parent::__construct();
 
-		// Connect elastic
-		//$params = array('hosts' => array('127.0.0.1:9200'));
-//$params['logging'] = true;
-//$params['logPath'] = '/tmp/elasticsearch.log';
-		$this->elasticClient = new Elasticsearch\Client();
 	}
 
 	public function get_time_chart($range, $apps = array(), $search = '', $alerts_filter = [], $actions_sid = []) {

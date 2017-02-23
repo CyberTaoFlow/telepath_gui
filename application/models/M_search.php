@@ -3,15 +3,9 @@
 class M_Search extends CI_Model {
 	
 	function __construct() {
-		parent::__construct();
-		
-		//$params = array();
-		//$params['hosts'] = array ('127.0.0.1:9200');
-// $params['logging'] = true;
-// $params['logPath'] = '/tmp/elasticsearch.log';
 
-		
-		$this->elasticClient = new Elasticsearch\Client();
+		parent::__construct();
+
 	}
 
 	function search($scope, $settings, $suspect_threshold = false, $limit = 15)
