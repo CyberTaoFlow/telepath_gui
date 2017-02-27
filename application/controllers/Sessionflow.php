@@ -20,7 +20,7 @@ class Sessionflow extends Tele_Controller
         $anchor_field='sid';
         $anchor_value=$this->input->post('sid');
         $key = $this->input->post('searchkey');
-        $state = $this->input->post('state');
+        $suspect = $this->input->post('suspect') == 'true';
         $range = $this->input->post('range') == 'true';
 //        $alerts = $this->input->post('alerts');
 
@@ -47,12 +47,13 @@ class Sessionflow extends Tele_Controller
 
         $suspect_threshold = 0.8;
 
-        if ($state == 'Suspect'){
+        if ($suspect){
             $this->load->model('M_Suspects');
             $suspect_threshold = $this->M_Suspects->get_threshold();
         }
 
-        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $state, $range, $suspect_threshold);
+        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $suspect, $range,
+            $suspect_threshold);
         xss_return_success($stats);
 
     }
