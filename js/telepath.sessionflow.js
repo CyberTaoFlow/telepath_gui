@@ -277,11 +277,13 @@ telepath.sessionflow = {
 		telepath.overlay.init('alerts', 'Loading session flow', true, 500, function () {
 			// On overlay close, update the routing hash and the active page
 			var newActivePage = [telepath.activePage[0]];
+			var newHash = telepath.activePage[0];
 			if (newActivePage[0] == 'case' || newActivePage[0] == 'search' || newActivePage[0] == 'config' ) {
 				newActivePage.push(telepath.activePage[1]);
+				newHash += '/' + encodeURIComponent(newActivePage[1]);
 			}
 			telepath.activePage = newActivePage;
-			location.hash = newActivePage[0] + '/' + encodeURIComponent(newActivePage[1]);
+			location.hash = newHash;
 		});
 		this.overlay = telepath.overlay;
 		this.container = this.overlay.contentEl;
