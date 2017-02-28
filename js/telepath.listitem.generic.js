@@ -74,15 +74,19 @@ telepath.listitem.generic = {
 				$('.popover').remove();
 			}, 1000);
 
-			var parent_parent = widget.element.parent().parent(),
-				names = (widget.options.raw.alerts_names)?widget.options.raw.alerts_names:[];
-			
-			telepath.sessionflow.init(widget.options.itemID, /*widget.options.raw.ip_orig, names ,*/
-			 widget.options.icon, widget.options.raw.searchkey, parent_parent);
+			//var names = (widget.options.raw.alerts_names) ? widget.options.raw.alerts_names : [];
 
-			// For now the routing is only on the session ID
-			telepath.activePage.push(widget.options.itemID);
-			location.hash = location.hash.substr(1) + '/' +  widget.options.itemID;
+			var filter = widget.options.icon + 's';
+			if (widget.options.raw.searchkey) {
+				filter = 'search';
+			}
+
+			telepath.sessionflow.init(widget.options.itemID, /*widget.options.raw.ip_orig, names ,*/
+				filter, widget.options.raw.searchkey, widget.element.parent().parent());
+
+			// URL Routing
+			telepath.activePage.push(widget.options.itemID, filter);
+			location.hash = location.hash.substr(1) + '/' + widget.options.itemID + '/' + filter;
 
 		},
 		hover_in: function (el, item) {

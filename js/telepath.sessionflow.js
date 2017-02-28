@@ -200,7 +200,7 @@ telepath.sessionflow = {
 		$(this.actionsContainer).css({'height': actionHeight});
 
 	},
-	init: function(SID, /*IP, alerts_names,*/ state,  searchkey, list, RID) {
+	init: function(SID, /*IP, alerts_names,*/ filter,  searchkey, list, RID) {
 
 		this.session = false;
 		this.SID  = SID;
@@ -208,29 +208,16 @@ telepath.sessionflow = {
 		//this.alerts_names = alerts_names;
 		this.searchkey = searchkey;
 		this.list = list;
-		this.range= true;
+		this.range = true;
 		this.RID = RID || 0;
 
-		switch (state) {
-			case 'alert':
-				this.filter = 'Alerts';
-				break;
-			case 'suspect':
-				this.filter = 'Suspects';
-				break;
-			case 'case':
-				this.filter = 'All';
-				this.range = false;
-				break;
-			default:
-				this.filter = 'All';
-				break;
+		if (filter == 'cases'){
+			this.filter = 'All';
+			this.range = false;
 		}
-
-		if (searchkey) {
-			this.filter = 'Search';
+		else{
+			this.filter = filter ? filter.charAt(0).toUpperCase() + filter.slice(1) : 'All';
 		}
-
 
 		if (telepath.access.admin || telepath.access.perm.Sessionflow_get){
 			this.buildUI();
@@ -311,10 +298,18 @@ telepath.sessionflow = {
 					that.SID = that.RIDS[itemIndex];
 					that.loadSession();
 					// Update the routing hash and the active page
-					telepath.activePage.pop();
-					telepath.activePage.push(that.RIDS[itemIndex]);
-					location.hash = telepath.activePage.join('/');
-					
+					var newActivePage = [telepath.activePage[0]];
+					var newHash = telepath.activePage[0];
+					if (newActivePage[0] == 'case' || newActivePage[0] == 'search' || newActivePage[0] == 'config' ) {
+						newActivePage.push(telepath.activePage[1]);
+						newHash += '/' + encodeURIComponent(newActivePage[1]);
+					}
+					newActivePage.push(that.RIDS[itemIndex]);
+					newHash += '/' + that.RIDS[itemIndex];
+
+					telepath.activePage = newActivePage;
+					location.hash = newHash;
+
 				}
 			});
 			
@@ -381,7 +376,7 @@ telepath.sessionflow = {
 		var suspect_count  = this.session.stats.suspect_count;
 
 		var statsEl = $('<div>').addClass('tele-alert-stats');
-		$.each({'All': count_all, 'Search': search_count, 'Alerts': count_alerts, 'Actions': count_actions, Suspect: suspect_count}, function(key, stat) {
+		$.each({'All': count_all, 'Search': search_count, 'Alerts': count_alerts, 'Actions': count_actions, Suspects: suspect_count}, function(key, stat) {
 			
 			// Add filter if we have numeric vaue only, Yuli
 			if (stat > 0)
@@ -395,6 +390,25 @@ telepath.sessionflow = {
 					{
 						return $( this ).text().indexOf( key ) >= 0;
 					}).addClass('active');
+
+					// Update the routing hash and the active page
+					var newActivePage = [telepath.activePage[0]];
+					var newHash = telepath.activePage[0];
+					telepath.activePage.shift();
+					if (newActivePage[0] == 'case' || newActivePage[0] == 'search' || newActivePage[0] == 'config') {
+						newActivePage.push(telepath.activePage[0]);
+						newHash += '/' + encodeURIComponent(telepath.activePage[0]);
+						telepath.activePage.shift();
+					}
+					newActivePage.push(telepath.activePage[0]);
+					newHash += '/' + telepath.activePage[0];
+					if (key != 'All') {
+						newActivePage.push(key.toLowerCase());
+						newHash += '/' + key.toLowerCase();
+					}
+
+					telepath.activePage = newActivePage;
+					location.hash = newHash;
 				});
 			
 				if(telepath.sessionflow.filter == key) {

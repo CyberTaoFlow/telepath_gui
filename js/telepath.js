@@ -255,6 +255,10 @@ telepath.ui = {
 
         // Display the session flow if it's requested
         if (session.length) {
+            // Display the search filter even if it's not the activated filter
+            if (params[0] == 'search'){
+                session[2] = params[1];
+            }
             telepath.sessionflow.init(session[0], session[1], session[2], '', session[3]);
         }
         else {
