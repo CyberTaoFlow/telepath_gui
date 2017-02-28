@@ -55,7 +55,7 @@ class M_Sessionflow extends CI_Model {
 	
 	}
 	
-	public function get_session_stats($anchor_field, $anchor_value, $key = '',$suspect = false, $range = null,
+	public function get_session_stats($anchor_field, $anchor_value, $key = '', $range = null,
 		$suspect_threshold = 0.8) {
 		if ($range) {
 			$params['index'] = $range['indices'];
@@ -63,47 +63,50 @@ class M_Sessionflow extends CI_Model {
 			$params['index'] = 'telepath-20*';
 		}
 		$params['type'] = 'http';
-        $suspect_count = 0;
         $search_count =0;
-		if ($key || $suspect)
-		{	
-			$params['body'] = [
-				'size' => 0,
-				'query' => [
-					'bool' => [
-						'filter' => [
+
+		$params['body'] = [
+			'size' => 0,
+			'query' => [
+				'bool' => [
+					'filter' => [
 //							[ 'term' => [ '_type' => 'http' ] ],
-							[ 'term' => [$anchor_field => $anchor_value] ],
-							#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
+						['term' => [$anchor_field => $anchor_value]],
+						#[ 'range' => [ 'ts' => [ 'gte' => intval($settings['range']['start']), 'lte' => intval($settings['range']['end']) ] ] ],
 //							[ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ]
-                        	                ]
-					],
+					]
 				],
+			],
+		];
+
+		$params['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
+		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts_count']];
+		$params['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
+		$params['timeout'] = $this->config->item('timeout');
+
+		$results = $this->elasticClient->search($params);
+
+		$suspect_count = $results['hits']['total'];
+
+		if ($key) {
+			// empty body to get results matching search key only
+			$params['body'] = [];
+			$params['body']['query']['bool']['filter'][] = ['term' => [$anchor_field => $anchor_value]];
+
+			$params = append_range_query($params, $range);
+
+			$params['body']['query']['bool']['filter'][] = [
+				'query_string' => [
+					"query" => $key,
+					"default_operator" => 'AND'
+				]
 			];
-            if ($suspect && $suspect_threshold){
-				$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'score_average' => [ 'gte' => $suspect_threshold ] ] ];
-				$params['body']['query']['bool']['must_not'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ];
-				$params['body']['query']['bool']['must_not'][] =  [ 'match' => [ 'operation_mode' => '1' ] ];
-				$params['timeout'] = $this->config->item('timeout');
+			$params['timeout'] = $this->config->item('timeout');
 
-				$results = $this->elasticClient->search($params);
+			$results = $this->elasticClient->search($params);
 
-				$suspect_count = $results['hits']['total'];
-            }
-            if ($key){
-				// empty body to get results matching search key only
-				$params['body'] =  [];
-				$params['body']['query']['bool']['filter'][] =  [ 'term' => [$anchor_field => $anchor_value] ];
-
-				$params = append_range_query($params, $range);
-
-				$params['body']['query']['bool']['filter'][] =  [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
-				$params['timeout'] = $this->config->item('timeout');
-
-				$results = $this->elasticClient->search($params);
-
-				$search_count = $results['hits']['total'];
-            }
+			$search_count = $results['hits']['total'];
+		}
 
 
 			/*$results = $this->elasticClient->search($params);
@@ -118,7 +121,7 @@ class M_Sessionflow extends CI_Model {
             else{
                 $search_count = $results['hits']['total'];
             }*/
-		}
+
 
 		$params['body'] = [
 			'size'  => 0,

@@ -208,7 +208,6 @@ telepath.sessionflow = {
 		//this.alerts_names = alerts_names;
 		this.searchkey = searchkey;
 		this.list = list;
-		this.suspect = false;
 		this.range= true;
 		this.RID = RID || 0;
 
@@ -218,7 +217,6 @@ telepath.sessionflow = {
 				break;
 			case 'suspect':
 				this.filter = 'Suspects';
-				this.suspect = true;
 				break;
 			case 'case':
 				this.filter = 'All';
@@ -252,7 +250,7 @@ telepath.sessionflow = {
 		that.session = {};
 		
 		// Load session stats, then items
-		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, suspect: that.suspect, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
+		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
 			
 			that.session.stats = data.items;
 			
