@@ -507,6 +507,9 @@ telepath.dashboard = {
 			});
 			
 		});
+
+		// Init the refresh interval in first instance
+		telepath.dashboard.updateRefreshInterval(telepath.dashboard.refreshInterval);
 		
 	}
 }
