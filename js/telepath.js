@@ -112,6 +112,9 @@ telepath.main = {
             telepath.fullRangeStart = data.items;
 
         },false, false, true);
+
+        // Init the refresh interval in first instance
+        telepath.dashboard.updateRefreshInterval(sessionStorage.getItem('refreshInterval') || 5);
     }
 
 };

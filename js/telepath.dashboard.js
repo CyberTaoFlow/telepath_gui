@@ -5,7 +5,6 @@ telepath.dashboard = {
 	sort: 'count',
 	dir: false,
 	refreshTimer: false,
-	refreshInterval: 5,
 	reloadFlag: Date.now(),
 	loading: 0,
 	map_mode:false,
@@ -375,27 +374,26 @@ telepath.dashboard = {
 	
 	},
 	updateRefreshInterval: function(interval) {
-		
-		if(interval) {
-			this.refreshInterval = interval;
-		}
-		
-		this.cmdRefreshValue.html(this.refreshInterval + 'm');
-		if(this.refreshTimer) {
-			clearInterval(this.refreshTimer);
-		}
-		this.refreshTimer = setInterval(function () {
-			var activePage = telepath.activePage[0];
-			if (activePage != 'config') {
-				if (activePage == 'case') {
-					activePage = 'casePanel';
+
+		if (interval) {
+			sessionStorage.setItem('refreshInterval', interval);
+
+			if (this.refreshTimer) {
+				clearInterval(this.refreshTimer);
+			}
+			this.refreshTimer = setInterval(function () {
+				var activePage = telepath.activePage[0];
+				if (activePage != 'config') {
+					if (activePage == 'case') {
+						activePage = 'casePanel';
+					}
+					eval('telepath.' + activePage + '.hardRefresh()');
 				}
-				eval('telepath.' + activePage + '.hardRefresh()');
-			}
-			else{
-				deleteCache('telecache');
-			}
-		}, this.refreshInterval * 60000); // In minutes, need millisecond format
+				else {
+					deleteCache('telecache');
+				}
+			}, parseInt(interval) * 60000); // In minutes, need millisecond format
+		}
 		
 	},
 	showFilters: function () {
@@ -423,7 +421,7 @@ telepath.dashboard = {
 		// Refresh
 		var cmdRefresh 			 = $('<div>').addClass('tele-refresh');
 		var cmdRefreshText       = $('<a>').addClass('tele-refresh-text').html('Refresh Rate');
-		this.cmdRefreshValue      = $('<a>').addClass('tele-refresh-value').html(this.refreshInterval + 'm');
+		this.cmdRefreshValue      = $('<a>').addClass('tele-refresh-value').html(sessionStorage.getItem('refreshInterval') + 'm');
 		var cmdRefreshButton     = $('<a>').addClass('tele-refresh-button').html('&nbsp;');
 		cmdRefresh.append(cmdRefreshText).append(this.cmdRefreshValue).append(cmdRefreshButton);
 		
@@ -500,16 +498,14 @@ telepath.dashboard = {
 				//range: "min",
 				max: 60,
 				min: 1,
-				value: parseInt(telepath.dashboard.refreshInterval),
+				value: parseInt(sessionStorage.getItem('refreshInterval'))
 			}).on('slide', function(ev){
 				var value = telepath.dashboard.refresh_slider.val();
 				telepath.dashboard.updateRefreshInterval(value);
+				that.cmdRefreshValue.html(value + 'm');
 			});
 			
 		});
-
-		// Init the refresh interval in first instance
-		telepath.dashboard.updateRefreshInterval(telepath.dashboard.refreshInterval);
 		
 	}
 }
