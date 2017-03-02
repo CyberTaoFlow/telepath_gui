@@ -28,7 +28,7 @@ $js_lib_array = [
     $js_path . "lib/jquery.flot.selection.min.js",
     $js_path . "lib/jquery.flot.time.min.js",
     $js_path . "lib/jquery.flot.axislabels.min.js",
-    $js_path . "lib/bootstrap-slider.min.js",
+    $js_path . "lib/bootstrap-slider.js",
     $js_path . "lib/jquery.flot.symbol.min.js",
     $js_path . "lib/jquery.flot.tooltip.min.js",
     $js_path . "lib/jquery.tipsy.min.js",
