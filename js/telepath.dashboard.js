@@ -499,7 +499,7 @@ telepath.dashboard = {
 				max: 60,
 				min: 1,
 				value: parseInt(sessionStorage.getItem('refreshInterval'))
-			}).on('slide', function(ev){
+			}).on('slideStop', function(ev){
 				var value = telepath.dashboard.refresh_slider.val();
 				telepath.dashboard.updateRefreshInterval(value);
 				that.cmdRefreshValue.html(value + 'm');
