@@ -31,9 +31,9 @@ class M_Actions extends CI_Model {
 		$deleteParams['index'] = 'telepath-actions';
 		$deleteParams['type'] = 'actions';
 		$deleteParams['id'] = $uid;
-		$retDelete = $this->client->delete($deleteParams);
+		$retDelete = $this->elasticClient->delete($deleteParams);
 
-		$this->client->indices()->refresh(array('index' => 'telepath-actions'));
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-actions'));
 
 	}
 
@@ -50,7 +50,7 @@ class M_Actions extends CI_Model {
 		];
 		$params['timeout'] = $this->config->item('timeout');
 
-		$results = $this->client->search($params);
+		$results = $this->elasticClient->search($params);
 
 		$ans = [];
 		if (!empty($results['hits']['hits'])) {
@@ -114,7 +114,7 @@ class M_Actions extends CI_Model {
 //			'query' => ["bool" => ["must" => ["query_string" => ["fields" => ["application", "action_name","host"], "query" => '*' . $search . '*']]]],
 //		];
 //
-//		$result = $this->client->search($params);
+//		$result = $this->elasticClient->search($params);
 //
 //		return $result['hits']['hits'];
 //	}
@@ -124,7 +124,7 @@ class M_Actions extends CI_Model {
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
 		$params['body']['query']['match']['domain'] = '192.168.1.111';
-                delete_by_query($this->client, $params);
+                delete_by_query($this->elasticClient, $params);
 	}
 
 	function get_app_actions($host){
@@ -136,7 +136,7 @@ class M_Actions extends CI_Model {
 		$params['body']['query']['match']['application'] = $host;
 		$params['timeout'] = $this->config->item('timeout');
 
-		return get_elastic_results($this->client->search($params));
+		return get_elastic_results($this->elasticClient->search($params));
 
 	}
 
@@ -146,22 +146,22 @@ class M_Actions extends CI_Model {
 		// Make sure we have an index
 		$indexParams['index'] = 'telepath-actions';
 		// Create index if it does not exists only (Yuli)
-		$settings = $this->client->indices()->getSettings($indexParams);
+		$settings = $this->elasticClient->indices()->getSettings($indexParams);
 		if (!$settings) {
-			$this->client->indices()->create($indexParams);
+			$this->elasticClient->indices()->create($indexParams);
 		}
 		// Delete old
 		$params['index'] = 'telepath-actions';
 		$params['type'] = 'actions';
 		$params['body']['query']['bool']['filter'][] = ['term' => ['action_name' => $name]];
 		$params['body']['query']['bool']['filter'][] = ['term' => ['application' => $app]];
-		#$res = $this->client->deleteByQuery($params);
-                delete_by_query($this->client, $params);
+		#$res = $this->elasticClient->deleteByQuery($params);
+                delete_by_query($this->elasticClient, $params);
 
 		// Insert new
 		$params = ['body' => $new_json, 'index' => 'telepath-actions', 'type' => 'actions'];
-		$this->client->index($params);
-		$this->client->indices()->refresh(array('index' => 'telepath-actions'));
+		$this->elasticClient->index($params);
+		$this->elasticClient->indices()->refresh(array('index' => 'telepath-actions'));
 	}
 
 	function _hybridrecord_to_sid($value, $host){
@@ -182,7 +182,7 @@ class M_Actions extends CI_Model {
 		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
-		$result = get_elastic_results($this->client->search($params));
+		$result = get_elastic_results($this->elasticClient->search($params));
 		if (!empty($result)) {
 
 			foreach ($result as $row) {
@@ -260,7 +260,7 @@ class M_Actions extends CI_Model {
 		}
 
 		$results = array();
-		$result = get_elastic_results($this->client->search($params));
+		$result = get_elastic_results($this->elasticClient->search($params));
 
 		// Strip headers
 		$clean = array();
@@ -414,7 +414,7 @@ class M_Actions extends CI_Model {
 		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
-		$result = $this->client->search($params);
+		$result = $this->elasticClient->search($params);
 
 		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["sid"]) &&
@@ -456,7 +456,7 @@ class M_Actions extends CI_Model {
 		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
-		$result = $this->client->search($params);
+		$result = $this->elasticClient->search($params);
 
 		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["ip_orig"]) &&
@@ -518,7 +518,7 @@ class M_Actions extends CI_Model {
 		$params['timeout'] = $this->config->item('timeout');
 
 		$results = array();
-		$result = $this->client->search($params);
+		$result = $this->elasticClient->search($params);
 
 		if (isset($result["aggregations"]) &&
 			isset($result["aggregations"]["user"]) &&

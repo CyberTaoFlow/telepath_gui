@@ -235,7 +235,13 @@
 				}).trigger({
 					type: 'slide',
 					value: val
-				});
+				})
+				.trigger({
+					type: 'slideStop',
+					value: val
+				})
+				.data('value', val)
+				.prop('value', val);
 			return false;
 		},
 
@@ -296,6 +302,7 @@
 				})
 				.data('value', val)
 				.prop('value', val);
+			this.layout();
 			return false;
 		},
 
