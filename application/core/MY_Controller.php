@@ -323,25 +323,13 @@ class Tele_Controller extends CI_Controller
 
         // ElasticSearch Library
         require 'vendor/autoload.php';
+
         // Connect elastic
-        //$params = array('hosts' => array('127.0.0.1:9200'));
-        $this->elasticClient = new Elasticsearch\Client();
-
-        $params = [
-            'index' => 'telepath-config',
-            'type' => 'config',
-            'body' => [
-                'query' => [
-                    'match_all' => [
-                    ],
-                ],
-            ]
-        ];
-
+        $this->elasticClient = Elasticsearch\ClientBuilder::create()->build();
 
         // Display the waiting page in case of Elastic disconnection, if it's not a CLI request or an AJAX request
         if (!is_cli() && (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])
-                != 'xmlhttprequest') && !$this->elasticClient->test_search($params)
+                != 'xmlhttprequest') && !$this->elasticClient->ping()
         ) {
             echo $this->load->view('db_not_connected','',true);
             die();

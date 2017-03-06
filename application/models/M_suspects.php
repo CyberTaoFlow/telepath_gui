@@ -220,7 +220,7 @@ class M_Suspects extends CI_Model {
 						"cases_count" => $sid['cases_count']['value'],
 						"cases_names" => $sid['cases_names']['buckets'],
 						"country" => $sid['country_code']['buckets'][0]['key'],
-						"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
+						"ip_orig" => $sid['ip_orig']['buckets'][0]['key'],
 						"host" => $sid['host']['buckets'],
 						"count" => $doc_count,
 						"actions_count" => $sid['actions_count']['value'],
@@ -352,7 +352,7 @@ class M_Suspects extends CI_Model {
 					break;
 				}
 
-				$ip = $sid['ip_orig']['buckets'][0]['key_as_string'];
+				$ip = $sid['ip_orig']['buckets'][0]['key'];
 
 				// Return only distinct IPs
 				if (in_array($ip, $ips)) {
