@@ -241,6 +241,7 @@ $.widget("tele.teleSelect", {
                     clearTimeout(window.autocompleteTimer);
                 }
                 window.autocompleteTimer = setTimeout(function () {
+                    telepath.autocomplete.offset = 0;
                     telepath.autocomplete.get(input, that.type);
                 }, 500);
                 value.text = input.val();
@@ -251,6 +252,7 @@ $.widget("tele.teleSelect", {
                     clearTimeout(window.autocompleteTimer);
                 }
                 window.autocompleteTimer = setTimeout(function () {
+                    telepath.autocomplete.offset = 0;
                     telepath.autocomplete.get(input, that.type);
                 }, 500);
                 value.text = input.val();
