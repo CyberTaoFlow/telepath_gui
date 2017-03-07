@@ -772,6 +772,7 @@ telepath.alerts = {
 		this.alertsFilter = [];
 		this.actionsFilter = [];
 		this.actionsFilterSessions = [];
+		this.allAlerts = true;
 		$('.tele-panel-alerts .tele-search-input').val('');
 		telepath.alerts.searchString = '';
 		//clear filters button call to server side only if there are applications in application filter
