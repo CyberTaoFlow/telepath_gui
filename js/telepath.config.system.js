@@ -711,7 +711,7 @@ telepath.config.system = {
 
 				//We need to send dropped files to Server
 				handleFileUpload(files,container);
-			})
+			});
 
 			text.on('click', function(e){
 			$('#input').click();
@@ -781,12 +781,17 @@ telepath.config.system = {
 		{
 			for (var i = 0; i < files.length; i++)
 			{
-				var fd = new FormData();
-				fd.append('file', files[i]);
-
 				var status = new createStatusbar(obj); //Using this we can set progress.
-				status.setFileNameSize(files[i].name,files[i].size);
-				sendFileToServer(fd,status);
+				status.setFileNameSize(files[i].name, files[i].size);
+
+				if (files[i].name.split('.').pop() == 'pcap') {
+					var fd = new FormData();
+					fd.append('file', files[i]);
+					sendFileToServer(fd, status);
+				}
+				else {
+					status.displayError('Incorrect file type');
+				}
 
 			}
 		}
@@ -911,6 +916,7 @@ telepath.config.system = {
 			this.displayError = function(message)
 			{
 				this.progressBar.hide().after("<div class='error'>"+message+"</div>");
+				this.abort.hide();
 			}
 		}
 
