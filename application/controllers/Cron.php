@@ -371,9 +371,21 @@ class Cron extends Tele_Controller
         $bots = 0;
         $tors = 0;
 
-        // Delete existing index to save only relevant data
+        // Delete existing index to save only relevant data and recreate it with correct settings
         $params = ['index' => 'telepath-bad-ips'];
+
         $this->elasticClient->indices()->delete($params);
+        $this->elasticClient->indices()->refresh();
+
+        $params ['body'] = [
+            'settings' => [
+                'number_of_shards' => 1,
+                'number_of_replicas' => 0,
+                'max_result_window' => 500000
+            ]
+        ];
+
+        $this->elasticClient->indices()->create($params);
 
         $params['type'] = 'bad';
         $params ['body'] = [];
@@ -412,6 +424,17 @@ class Cron extends Tele_Controller
 
         $params = ['index' => 'telepath-tor-ips'];
         $this->elasticClient->indices()->delete($params);
+        $this->elasticClient->indices()->refresh();
+
+
+        $params ['body'] = [
+            'settings' => [
+                'number_of_shards' => 1,
+                'number_of_replicas' => 0,
+            ]
+        ];
+
+        $this->elasticClient->indices()->create($params);
 
         $params['type'] = 'tor';
         $params ['body'] = [];
