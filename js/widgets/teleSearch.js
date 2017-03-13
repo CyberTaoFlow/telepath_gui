@@ -32,6 +32,9 @@ $.widget( "tele.teleSearch", {
 		this.element.empty();
 		
 		var inputEl  = $('<input type="text">').addClass('tele-search-input');
+		if (that.options.firstValue){
+			inputEl.val(that.options.firstValue)
+		}
 		var buttonEl = $('<a>').addClass('tele-search-button').attr('id', 'search-button');
 		this.element.append(inputEl).append(buttonEl);
 
