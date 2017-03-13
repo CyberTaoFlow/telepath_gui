@@ -59,8 +59,29 @@ class M_Search extends CI_Model {
 						[
                             'query_string' => [
 //                                "query" => json_encode($settings['search']),
-                                "query" => $settings['search'],
-								"default_operator" => 'AND'
+								"fields" => [
+									'status_code',
+									'city.search',
+									'title.search',
+									'sid',
+									'ip_resp',
+									'host.search',
+									'ip_orig',
+									'method',
+									'business_actions.search',
+									'canonical_url.search',
+									'uri.search',
+									'alerts.name.search',
+									'country_code.search',
+									'cases_name.search',
+									'parameters.name',
+									'parameters.type',
+									'parameters.value.search',
+									'username.search'
+								],
+								"query" => $settings['search'],
+								"default_operator" => 'AND',
+								"lenient" => true
                             ] 
                         ]
 					],
