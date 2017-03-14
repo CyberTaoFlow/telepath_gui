@@ -85,9 +85,10 @@ telepath.alerts = {
                 telepath.alerts.searchString = txt;
                 telepath.alerts.refresh();
 
-            }, rewrite: true, firstValue: that.searchString
+            }, rewrite: true
         });
 
+        this.searchString = '';
 
 		panelSubBar.append(searchAlerts);
 		// Top bar items
