@@ -87,7 +87,7 @@ $.widget( "tele.vMap", {
 					telepath.ui.displayPage(['search', search]);
 				}
 				else {
-					telepath.alerts.searchString = 'country_code:' + y.toUpperCase();
+					telepath.alerts.firstSearchString = 'country_code:' + y.toUpperCase();
 					$('.tele-nav-alerts a').click();
 					$('.jqvmap-label').remove();
 				}

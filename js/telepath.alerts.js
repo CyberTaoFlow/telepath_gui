@@ -4,6 +4,7 @@ telepath.alerts = {
 	dir: false,
 	data: [],
 	searchString: '',
+	firstSearchString: '',
 	alertsFilter: [],
 	actionsFilter: [],
 	actionsFilterSessions: [],
@@ -88,7 +89,15 @@ telepath.alerts = {
             }, rewrite: true
         });
 
-        this.searchString = '';
+		// On Dashboard map call, we need to display the alerts with country filter
+		if (this.firstSearchString) {
+			this.searchString = this.firstSearchString;
+			searchAlerts.children().val(this.searchString);
+			this.firstSearchString = '';
+		}
+		else {
+			this.searchString = '';
+		}
 
 		panelSubBar.append(searchAlerts);
 		// Top bar items
