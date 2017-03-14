@@ -598,7 +598,7 @@ telepath.alerts = {
 			$('.legend tr').css({"cursor":"pointer"});
 			if (that.alertsFilter.length>0 && that.allAlerts == false ){
 				$.each($('.legend tr'),function (i, val){
-					if ($.inArray(val.children[1].innerText , that.alertsFilter)==-1){
+					if ($.inArray(val.children[1].innerHTML, that.alertsFilter) == -1) {
 						$( this).children(".legendColorBox").children().html('<div style="width:4px;height:0;border:5px solid #999;overflow:hidden; "></div>');
 						$( this ).css({"opacity": "0.5"});
 					}
