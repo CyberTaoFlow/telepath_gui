@@ -164,6 +164,9 @@ telepath.alerts = {
 
 		var that = this;
 
+		// If the user changed the search input without search clicking or changed to empty input
+		this.searchString = $('.tele-panel-subtitle .tele-search-input').val();
+
 		var container = $('.tele-panel-alerts');
 		// Empty panet
 		$('.tele-alerts-block, .tele-alert-graphs-block, .tele-loader', container).remove();
