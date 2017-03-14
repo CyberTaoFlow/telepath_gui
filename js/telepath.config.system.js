@@ -664,7 +664,7 @@ telepath.config.system = {
 
 			this.dragandrophandler=$('<div>').attr('id', 'dragandrophandler').appendTo(this.fileUpload);
 
-			$('<div>').addClass('dragandroptext').html('Drag & drop files you want to upload here').prependTo(this.dragandrophandler);
+			$('<div>').addClass('dragandroptext').html('Drag & drop pcap files you want to upload here').prependTo(this.dragandrophandler);
 
 			$('<div>').addClass('statusbar-container').mCustomScrollbar({advanced: {updateOnContentResize: true},
 					scrollInertia: telepath.scrollSpeed
@@ -784,7 +784,8 @@ telepath.config.system = {
 				var status = new createStatusbar(obj); //Using this we can set progress.
 				status.setFileNameSize(files[i].name, files[i].size);
 
-				if (files[i].name.split('.').pop() == 'pcap') {
+				// Upload only pcap files
+				if (files[i].name.split('.').pop().startsWith('pcap')) {
 					var fd = new FormData();
 					fd.append('file', files[i]);
 					sendFileToServer(fd, status);
