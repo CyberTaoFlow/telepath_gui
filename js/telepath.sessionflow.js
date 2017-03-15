@@ -1089,7 +1089,7 @@ telepath.sessionflow = {
 				alertObj: that,
 				callback: function (widget) {
 					telepath.alert.filters[filter.type] = widget.options.checked;
-					// We don't exactly why there is a "C" type, but it's a cookie, so we display it within headers
+					// We don't know exactly why there is a "C" type, but it's a cookie, so we display it within headers
 					if (filter.type == 'H'){
 						telepath.alert.filters['C'] = widget.options.checked;
 					}
