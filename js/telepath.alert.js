@@ -63,6 +63,7 @@ telepath.alert = {
 		G: true,
 		J: true,
 		X: true,
+		C: true
 	},
 	getSeverity: function(numeric_score) {
 		
