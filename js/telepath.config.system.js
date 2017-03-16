@@ -916,8 +916,13 @@ telepath.config.system = {
 			}
 			this.displayError = function(message)
 			{
-				this.progressBar.hide().after("<div class='error'>"+message+"</div>");
+				var that = this;
+				this.progressBar.hide().after("<div class='error'>" + message + "</div>");
 				this.abort.hide();
+				// Hide error files after 5 seconds
+				setTimeout(function () {
+					that.statusbar.hide();
+				}, 5000);
 			}
 		}
 
