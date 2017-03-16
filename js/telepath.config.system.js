@@ -789,8 +789,6 @@ telepath.config.system = {
 					var fd = new FormData();
 					fd.append('file', files[i]);
 					sendFileToServer(fd, status);
-					// Hide previous files with error
-					$('.error').parent().hide();
 				}
 				else {
 					status.displayError('Incorrect file type');
