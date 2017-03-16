@@ -727,8 +727,11 @@ class M_Cases extends CI_Model {
 		}
 
 		if ($range) {
-			$this->M_Config->update('last_case_update_id',$update_time,true);
-			logger('Update the time to: '. $update_time);
+//			Check if telepath-config index exists, to not disturb the correct mapping on fresh installation
+			if ($this->elasticClient->indices()->exists(['index' => 'telepath-config'])) {
+				$this->M_Config->update('last_case_update_id', $update_time, true);
+				logger('Update the time to: ' . $update_time);
+			}
 			return;
 		}
 

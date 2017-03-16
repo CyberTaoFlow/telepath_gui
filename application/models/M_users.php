@@ -93,9 +93,13 @@ class M_Users extends CI_Model
 
             }
 
-        $this->M_Config->update('last_web_users_update_id', $time, true);
+        //	Check if telepath-config index exists, to not disturb the correct mapping on fresh installation
+        if ($this->elasticClient->indices()->exists(['index' => 'telepath-config'])) {
 
-        logger('Update the time to: '. $time);
+            $this->M_Config->update('last_web_users_update_id', $time, true);
+
+            logger('Update the time to: ' . $time);
+        }
 
         return;
     }

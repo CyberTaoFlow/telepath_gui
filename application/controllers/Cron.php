@@ -193,7 +193,10 @@ class Cron extends Tele_Controller
             }
         }
 
-        $this->M_Config->update('last_syslog_alert_update_id', $current_update, true);
+        // Check if telepath-config index exists, to not disturb the correct mapping on fresh installation
+        if ($this->elasticClient->indices()->exists(['index' => 'telepath-config'])) {
+            $this->M_Config->update('last_syslog_alert_update_id', $current_update, true);
+        }
 
 
     }
