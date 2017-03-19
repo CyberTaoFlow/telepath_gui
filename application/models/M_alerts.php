@@ -61,6 +61,31 @@ class M_Alerts extends CI_Model {
 				]
 			];
 
+			if ($search && strlen($search) > 1) {
+				$params['body']['query']['bool']['filter'][0]['query_string']['fields'] = [
+					'status_code',
+					'city.search',
+					'title.search',
+					'sid',
+					'ip_resp',
+					'host.search',
+					'ip_orig',
+					'method',
+					'business_actions.search',
+					'canonical_url.search',
+					'uri.search',
+					'alerts.name.search',
+					'country_code.search',
+					'cases_name.search',
+					'parameters.name',
+					'parameters.type',
+					'parameters.value.search',
+					'username.search'
+				];
+				$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+			}
+
+
 			// QUERY
 			$params['body']['query']['bool']['filter'][] = [ 'range' => [ 'ts' => [ 'gte' => $scope_start, 'lte' =>
 				$scope_end ] ] ];
@@ -138,6 +163,31 @@ class M_Alerts extends CI_Model {
 				"default_operator" => 'AND'
 			]
 		];
+
+		if ($search && strlen($search) > 1) {
+			$params['body']['query']['bool']['filter'][0]['query_string']['fields'] = [
+				'status_code',
+				'city.search',
+				'title.search',
+				'sid',
+				'ip_resp',
+				'host.search',
+				'ip_orig',
+				'method',
+				'business_actions.search',
+				'canonical_url.search',
+				'uri.search',
+				'alerts.name.search',
+				'country_code.search',
+				'cases_name.search',
+				'parameters.name',
+				'parameters.type',
+				'parameters.value.search',
+				'username.search'
+			];
+			$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+		}
+
 		$params['timeout'] = $this->config->item('timeout');
 
 		$params = append_application_query($params, $apps);
@@ -219,6 +269,30 @@ class M_Alerts extends CI_Model {
 				"default_operator" => 'AND'
 			]
 		];
+
+		if ($search && strlen($search) > 1) {
+			$params['body']['query']['bool']['filter'][0]['query_string']['fields'] = [
+				'status_code',
+				'city.search',
+				'title.search',
+				'sid',
+				'ip_resp',
+				'host.search',
+				'ip_orig',
+				'method',
+				'business_actions.search',
+				'canonical_url.search',
+				'uri.search',
+				'alerts.name.search',
+				'country_code.search',
+				'cases_name.search',
+				'parameters.name',
+				'parameters.type',
+				'parameters.value.search',
+				'username.search'
+			];
+			$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+		}
 
 		if ($actions_sid) {
 
@@ -323,6 +397,30 @@ class M_Alerts extends CI_Model {
 		}
 
 		$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $query, "default_operator" => 'AND' ] ];
+
+		if ($search && strlen($search) > 1) {
+			$params['body']['query']['bool']['filter'][0]['query_string']['fields'] = [
+				'status_code',
+				'city.search',
+				'title.search',
+				'sid',
+				'ip_resp',
+				'host.search',
+				'ip_orig',
+				'method',
+				'business_actions.search',
+				'canonical_url.search',
+				'uri.search',
+				'alerts.name.search',
+				'country_code.search',
+				'cases_name.search',
+				'parameters.name',
+				'parameters.type',
+				'parameters.value.search',
+				'username.search'
+			];
+			$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+		}
 
 		if ($sortfield == "date") {
 			$params['body']["aggs"]["sid"]["aggs"]["date"] = ["max" => ["field" => "ts"]];
