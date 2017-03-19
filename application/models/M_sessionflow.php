@@ -97,8 +97,29 @@ class M_Sessionflow extends CI_Model {
 
 			$params['body']['query']['bool']['filter'][] = [
 				'query_string' => [
+					"fields" => [
+						'status_code',
+						'city.search',
+						'title.search',
+						'sid',
+						'ip_resp',
+						'host.search',
+						'ip_orig',
+						'method',
+						'business_actions.search',
+						'canonical_url.search',
+						'uri.search',
+						'alerts.name.search',
+						'country_code.search',
+						'cases_name.search',
+						'parameters.name',
+						'parameters.type',
+						'parameters.value.search',
+						'username.search'
+					],
 					"query" => $key,
-					"default_operator" => 'AND'
+					"default_operator" => 'AND',
+					"lenient" => true
 				]
 			];
 			$params['timeout'] = $this->config->item('timeout');
@@ -332,9 +353,34 @@ class M_Sessionflow extends CI_Model {
 				$params['body']['query']['bool']['filter'][] =  [ 'exists' => [ 'field' => 'alerts_count' ] ] ;
 			break;
 			case 'Search':
-				if ($key)
-				{
-					$params['body']['query']['bool']['filter'][] = [ 'query_string' => [ "query" => $key, "default_operator" => 'AND' ] ];
+				if ($key) {
+					$params['body']['query']['bool']['filter'][] = [
+						'query_string' => [
+							"fields" => [
+								'status_code',
+								'city.search',
+								'title.search',
+								'sid',
+								'ip_resp',
+								'host.search',
+								'ip_orig',
+								'method',
+								'business_actions.search',
+								'canonical_url.search',
+								'uri.search',
+								'alerts.name.search',
+								'country_code.search',
+								'cases_name.search',
+								'parameters.name',
+								'parameters.type',
+								'parameters.value.search',
+								'username.search'
+							],
+							"query" => $key,
+							"default_operator" => 'AND',
+							"lenient" => true
+						]
+					];
 					break;
 				}
             break;
