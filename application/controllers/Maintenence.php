@@ -19,11 +19,12 @@ class Maintenence extends Tele_Controller
     public function clear()
     {
 
-        $res = $this->elasticClient->indices()->getMapping();
+        $client = new Elasticsearch\Client();
+        $res = $client->indices()->getMapping();
 
         foreach (array_keys($res) as $key) {
             $deleteParams = array('index' => $key);
-            $this->elasticClient->indices()->delete($deleteParams);
+            $client->indices()->delete($deleteParams);
         }
 
     }

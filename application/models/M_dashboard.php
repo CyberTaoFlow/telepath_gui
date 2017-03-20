@@ -3,9 +3,12 @@
 class M_Dashboard extends CI_Model {
 	
 	function __construct() {
-
 		parent::__construct();
-
+		
+//		$params = array();
+//		$params['hosts'] = array ('127.0.0.1:9200');
+		
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 	
 	

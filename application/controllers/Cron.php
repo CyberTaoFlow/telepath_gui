@@ -43,7 +43,7 @@ class Cron extends Tele_Controller
         }
 
         // Gather last minute alerts
-        //$client = new Elasticsearch\Client();
+        $client = new Elasticsearch\Client();
 
         // Get rules with checked 'syslog' input (in rules board)
         $params['index'] = 'telepath-rules';
@@ -51,7 +51,7 @@ class Cron extends Tele_Controller
         $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
         $params['_source_include'] = ['name'];
         $params['timeout'] = $this->config->item('timeout');
-        $results = $this->elasticClient->search($params);
+        $results = $client->search($params);
 
         if (isset($results['hits']) && !empty($results['hits']['hits'])) {
             foreach ($results['hits']['hits'] as $syslog_alert) {
@@ -93,7 +93,7 @@ class Cron extends Tele_Controller
         $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $last_update, 'lt' => $current_update]]];
         $params['timeout'] = $this->config->item('timeout');
 
-        $alerts = $this->elasticClient->search($params);
+        $alerts = $client->search($params);
 
 //        // Get time zone of the server
 //        $tz = exec('date +%Z');

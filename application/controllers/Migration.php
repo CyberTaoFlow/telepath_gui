@@ -7,6 +7,7 @@ class Migration extends CI_Controller
     {
 
         parent::__construct();
+        require 'vendor/autoload.php';
 
     }
 
@@ -22,6 +23,7 @@ class Migration extends CI_Controller
 
         $atms_file = '/opt/telepath/conf/atms.conf';
         $atms_conf = parse_ini_file($atms_file);
+        $client = new Elasticsearch\Client();
 
         // Build config
         $config['hostname'] = $atms_conf['database_address'];
@@ -71,7 +73,7 @@ class Migration extends CI_Controller
                 $params['body'] = $doc;
                 $params['index'] = 'telepath_migration';
                 $params['type'] = 'http';
-                $ret = $this->elasticClient->index($params);
+                $ret = $client->index($params);
             }
         }
 
@@ -79,6 +81,8 @@ class Migration extends CI_Controller
 
     public function check()
     {
+
+        $client = new Elasticsearch\Client();
 
         // Checks ELASTIC / MYSQL Connectivity
         $op = isset($_REQUEST['op']) ? $_REQUEST['op'] : 'default';
@@ -107,7 +111,7 @@ class Migration extends CI_Controller
             echo 'Checking ELASTIC<br>';
 
 
-            $res = $this->elasticClient->indices()->getMapping();
+            $res = $client->indices()->getMapping();
             echo 'Have following indices : <br>';
             echo implode(', ', array_keys($res));
 

@@ -3,9 +3,8 @@
 class M_Sessionflow extends CI_Model {
 	
 	function __construct() {
-
 		parent::__construct();
-
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 	
 	public function get_sessionflow_params($uid) {

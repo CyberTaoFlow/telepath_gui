@@ -3,9 +3,9 @@
 class M_Requests extends CI_Model {
 	
 	function __construct() {
-
 		parent::__construct();
-
+		require 'vendor/autoload.php';
+		$this->elasticClient = new Elasticsearch\Client();
 	}
 	
 	function get_by_id($id) {

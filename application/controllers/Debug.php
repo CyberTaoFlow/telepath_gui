@@ -8,6 +8,12 @@ class Debug extends Tele_Controller
 
         parent::__construct();
 
+        //$params = array();
+        //$params['hosts'] = array('127.0.0.1:9200');
+
+        $this->elasticClient = new Elasticsearch\Client();
+
+
     }
 
     public function index()
