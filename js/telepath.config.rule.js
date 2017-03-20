@@ -78,7 +78,7 @@ telepath.config.rule = {
 		this.container.append(ruleScore);
 	
 		//this.data['builtin_rule'] = 0;	
-		if (!this.data['builtin_rule'])
+		if (!this.data['builtin_rule'] || this.data['allow_edit'])
 		{
 			// UI Title
 			var title1 = $('<div>').addClass('tele-title-1').text('Select type and build rule');

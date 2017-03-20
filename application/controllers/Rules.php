@@ -294,6 +294,12 @@ class Rules extends Tele_Controller
 
         $rule = $this->M_Rules->get_rule_by_id($rule_id);
 
+        // In development mode, the GUI let the user change built-in rules
+        if (ENVIRONMENT == 'development' && isset($rule['builtin_rule']) && $rule['builtin_rule'] == true){
+            $rule['allow_edit'] = true;
+        }
+
+
         if ($rule) {
             xss_return_success([$rule]);
         }

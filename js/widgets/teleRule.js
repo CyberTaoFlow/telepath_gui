@@ -63,7 +63,7 @@ $.widget( "tele.teleRule", {
 		var briefEl     = $('<span>').addClass('brief').html(that.ruleTypes[type].desc);
 		that.accordion.append(headerEl).append(containerEl);
 
-		if (!this.options.data["builtin_rule"])
+		if (!this.options.data["builtin_rule"] || this.options.data['allow_edit'])
 		{
 			var delCriteria = $('<div>').addClass('tele-icon tele-icon-delete').click(function() {
 				headerEl.remove();
@@ -118,7 +118,7 @@ $.widget( "tele.teleRule", {
 
 			}
 		});
-		if (this.options.data["builtin_rule"])
+		if (this.options.data["builtin_rule"] && !this.options.data['allow_edit'])
 		{
 			$(iconEl).click();
 		}
@@ -156,7 +156,7 @@ $.widget( "tele.teleRule", {
 			}
 		};
 	
-		if (!this.options.data["builtin_rule"])
+		if (!this.options.data["builtin_rule"] || this.options.data['allow_edit'])
 		{	
 			this.buttonsWrap = $('<div>').addClass('tele-ruletype-buttons');
 			this.element.append(this.buttonsWrap);
@@ -172,7 +172,7 @@ $.widget( "tele.teleRule", {
 			'g': 'geographic',
 			'B': 'aspect'
 		};
-		if (!this.options.data["builtin_rule"])
+		if (!this.options.data["builtin_rule"] || this.options.data['allow_edit'])
 		{
 			$.each(this.ruleTypes, function(type, data) {
 			
@@ -821,7 +821,7 @@ $.widget( "tele.teleRule", {
 		// Inner Container
 		var ruleInner    = $('<div>').addClass('tele-rule-inner');		
 		container.append(ruleInner);
-		if (this.options.data["builtin_rule"])
+		if (this.options.data["builtin_rule"] && !this.options.data['allow_edit'])
 		{
 			$(ruleInner).hide();
 		}
