@@ -1235,7 +1235,7 @@ $.widget( "tele.teleRule", {
 						case 'regex':
 							
 							inspectionType.find('.tele-radio-radio[rel="regex"]').click();
-							$('input', r_regex_input).val(data.str_match);
+							$('input', r_regex_input).val(decodeEntities(data.str_match));
 							if(data.negate) {
 								$('.tele-checkbox-checkbox', r_regex_check).click();
 							}
