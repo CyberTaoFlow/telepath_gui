@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 06/04/2013
+ * Time: 13:33:19 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Exists;
 
@@ -7,21 +12,18 @@ use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Types
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Exists
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @package Elasticsearch\Endpoints\Indices\Exists
  */
 class Types extends AbstractEndpoint
 {
+
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
+
         if (isset($this->index) !== true) {
             throw new Exceptions\RuntimeException(
                 'index is required for Types Exists'
@@ -44,7 +46,7 @@ class Types extends AbstractEndpoint
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'ignore_unavailable',
@@ -56,7 +58,7 @@ class Types extends AbstractEndpoint
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'HEAD';
     }

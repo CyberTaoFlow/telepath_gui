@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Template;
 
@@ -9,15 +14,17 @@ use Elasticsearch\Common\Exceptions;
  * Class Put
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Template
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Indices\Template
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Put extends AbstractEndpoint
 {
     // The name of the template
     private $name;
+
 
     /**
      * @param array $body
@@ -31,10 +38,12 @@ class Put extends AbstractEndpoint
             return $this;
         }
 
-        $this->body = $body;
 
+        $this->body = $body;
         return $this;
     }
+
+
 
     /**
      * @param $name
@@ -48,15 +57,15 @@ class Put extends AbstractEndpoint
         }
 
         $this->name = $name;
-
         return $this;
     }
+
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         if (isset($this->name) !== true) {
             throw new Exceptions\RuntimeException(
@@ -73,10 +82,11 @@ class Put extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'order',
@@ -87,23 +97,24 @@ class Put extends AbstractEndpoint
         );
     }
 
+
     /**
      * @return array
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      */
-    public function getBody()
+    protected function getBody()
     {
         if (isset($this->body) !== true) {
             throw new Exceptions\RuntimeException('Body is required for Put Template');
         }
-
         return $this->body;
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'PUT';
     }

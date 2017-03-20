@@ -1,31 +1,31 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Flush
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Indices
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Flush extends AbstractEndpoint
 {
-    protected $synced = false;
-
-    public function setSynced($synced)
-    {
-        $this->synced = $synced;
-    }
-
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $index = $this->index;
         $uri   = "/_flush";
@@ -34,17 +34,14 @@ class Flush extends AbstractEndpoint
             $uri = "/$index/_flush";
         }
 
-        if ($this->synced === true) {
-            $uri .= "/synced";
-        }
-
         return $uri;
     }
+
 
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'force',
@@ -52,14 +49,14 @@ class Flush extends AbstractEndpoint
             'ignore_unavailable',
             'allow_no_indices',
             'expand_wildcards',
-            'wait_if_ongoing'
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

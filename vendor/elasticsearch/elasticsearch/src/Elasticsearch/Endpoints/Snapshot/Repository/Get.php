@@ -1,22 +1,30 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Snapshot\Repository;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Get
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Snapshot\Repository
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Snapshot\Repository
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Get extends AbstractEndpoint
 {
     // A comma-separated list of repository names
     private $repository;
+
 
     /**
      * @param $repository
@@ -30,14 +38,14 @@ class Get extends AbstractEndpoint
         }
 
         $this->repository = $repository;
-
         return $this;
     }
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $repository = $this->repository;
         $uri   = "/_snapshot";
@@ -49,10 +57,11 @@ class Get extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'master_timeout',
@@ -60,10 +69,11 @@ class Get extends AbstractEndpoint
         );
     }
 
+
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

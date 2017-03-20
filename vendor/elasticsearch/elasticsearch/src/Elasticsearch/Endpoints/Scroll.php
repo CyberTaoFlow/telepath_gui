@@ -1,21 +1,32 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Scroll
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Scroll extends AbstractEndpoint
 {
+    // The scroll ID
+    private $scroll_id;
+
     private $clear = false;
+
 
     /**
      * @param array $body
@@ -29,25 +40,18 @@ class Scroll extends AbstractEndpoint
             return $this;
         }
 
-        $this->body = $body;
 
+        $this->body = $body;
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getBody()
-    {
-        return $this->body;
-    }
 
     public function setClearScroll($clear)
     {
         $this->clear = $clear;
-
         return $this;
     }
+
 
     /**
      * @param $scroll_id
@@ -60,34 +64,43 @@ class Scroll extends AbstractEndpoint
             return $this;
         }
 
-        $this->body = $scroll_id;
-
+        $this->scroll_id = $scroll_id;
         return $this;
     }
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
+        $scroll_id = $this->scroll_id;
         $uri   = "/_search/scroll";
+
+        if (isset($scroll_id) === true) {
+            $uri = "/_search/scroll/$scroll_id";
+        }
+
         return $uri;
     }
+
 
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'scroll',
+            'scroll_id',
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         if ($this->clear == true) {
             return 'DELETE';

@@ -1,24 +1,31 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Cluster;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Health
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Cluster
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Cluster
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Health extends AbstractEndpoint
 {
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $index = $this->index;
         $uri   = "/_cluster/health";
@@ -30,10 +37,11 @@ class Health extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'level',
@@ -44,15 +52,14 @@ class Health extends AbstractEndpoint
             'wait_for_nodes',
             'wait_for_relocating_shards',
             'wait_for_status',
-            'wait_for_events',
-            'wait_for_no_relocating_shards'
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

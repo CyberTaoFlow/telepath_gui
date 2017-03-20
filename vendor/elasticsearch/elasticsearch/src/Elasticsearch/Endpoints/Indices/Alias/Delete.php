@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Alias;
 
@@ -10,14 +15,16 @@ use Elasticsearch\Common\Exceptions;
  *
  * @category Elasticsearch
  * @package Elasticsearch\Endpoints\Indices\Alias
- * @author   Zachary Tong <zach@elastic.co>
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Delete extends AbstractEndpoint
 {
     // A comma-separated list of aliases to delete (supports wildcards); use `_all` to delete all aliases for the specified indices.
     private $name;
+
 
     /**
      * @param $name
@@ -31,15 +38,15 @@ class Delete extends AbstractEndpoint
         }
 
         $this->name = $name;
-
         return $this;
     }
+
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         if (isset($this->index) !== true) {
             throw new Exceptions\RuntimeException(
@@ -62,10 +69,11 @@ class Delete extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'timeout',
@@ -73,10 +81,11 @@ class Delete extends AbstractEndpoint
         );
     }
 
+
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'DELETE';
     }

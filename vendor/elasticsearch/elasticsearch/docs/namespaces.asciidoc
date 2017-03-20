@@ -23,7 +23,7 @@ namespaces work, let's look at the `_stats` output:
 
 [source,php]
 ----
-$client = ClientBuilder::create()->build();
+$client = new Elasticsearch\Client();
 
 // Index Stats
 // Corresponds to curl -XGET localhost:9200/_stats
@@ -48,7 +48,7 @@ indices:
 
 [source,php]
 ----
-$client = ClientBuilder::create()->build();
+$client = new Elasticsearch\Client();
 
 // Corresponds to curl -XGET localhost:9200/my_index/_stats
 $params['index'] = 'my_index';

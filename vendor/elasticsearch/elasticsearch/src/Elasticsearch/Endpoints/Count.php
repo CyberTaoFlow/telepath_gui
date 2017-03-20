@@ -1,18 +1,25 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Count
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Count extends AbstractEndpoint
 {
     /**
@@ -27,15 +34,17 @@ class Count extends AbstractEndpoint
             return $this;
         }
 
-        $this->body = $body;
 
+        $this->body = $body;
         return $this;
     }
+
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $index = $this->index;
         $type = $this->type;
@@ -52,10 +61,11 @@ class Count extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'ignore_unavailable',
@@ -65,21 +75,14 @@ class Count extends AbstractEndpoint
             'preference',
             'routing',
             'source',
-            'q',
-            'df',
-            'default_operator',
-            'analyzer',
-            'lowercase_expanded_terms',
-            'analyze_wildcard',
-            'lenient',
-            'lowercase_expanded_terms'
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

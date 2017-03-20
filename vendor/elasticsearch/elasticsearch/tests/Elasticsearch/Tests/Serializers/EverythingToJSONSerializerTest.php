@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 6/20/13
+ * Time: 9:15 AM
+ */
 
 namespace Elasticsearch\Tests\Serializers;
 
@@ -24,7 +29,7 @@ class EverythingToJSONSerializerTest extends PHPUnit_Framework_TestCase
 
         $ret = $serializer->serialize($body);
 
-        $body = json_encode($body, JSON_PRESERVE_ZERO_FRACTION);
+        $body = json_encode($body);
         $this->assertEquals($body, $ret);
     }
 

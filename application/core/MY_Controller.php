@@ -323,17 +323,17 @@ class Tele_Controller extends CI_Controller
 
         // ElasticSearch Library
         require 'vendor/autoload.php';
-//        // Connect elastic
-//        //$params = array('hosts' => array('127.0.0.1:9200'));
-//        $this->elasticClient = new Elasticsearch\Client();
-        $this->elasticClient = Elasticsearch\ClientBuilder::create()->build();
+        // Connect elastic
+        //$params = array('hosts' => array('127.0.0.1:9200'));
+        $this->elasticClient = new Elasticsearch\Client();
 
         $params = [
             'index' => 'telepath-config',
             'type' => 'config',
             'body' => [
                 'query' => [
-                    'match_all' => new \stdClass(),
+                    'match_all' => [
+                    ],
                 ],
             ]
         ];

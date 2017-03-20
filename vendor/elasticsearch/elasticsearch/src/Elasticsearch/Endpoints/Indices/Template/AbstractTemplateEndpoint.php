@@ -1,22 +1,20 @@
 <?php
+/**
+ * User: zach
+ * Date: 6/10/13
+ * Time: 2:51 PM
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Template;
 
+
 use Elasticsearch\Endpoints\AbstractEndpoint;
 
-/**
- * Class AbstractTemplateEndpoint
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Template
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
- */
 abstract class AbstractTemplateEndpoint extends AbstractEndpoint
 {
     /** @var  string */
     protected $name;
+
 
     /**
      * @param $name
@@ -26,7 +24,6 @@ abstract class AbstractTemplateEndpoint extends AbstractEndpoint
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 }

@@ -1,18 +1,23 @@
 <?php
+/**
+ * User: zach
+ * Date: 6/20/13
+ * Time: 9:04 AM
+ */
 
 namespace Elasticsearch\Serializers;
 
 /**
  * Class EverythingToJSONSerializer
- *
  * @category Elasticsearch
- * @package  Elasticsearch\Serializers
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Serializers
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
 class EverythingToJSONSerializer implements SerializerInterface
 {
+
     /**
      * Serialize assoc array into JSON string
      *
@@ -22,13 +27,14 @@ class EverythingToJSONSerializer implements SerializerInterface
      */
     public function serialize($data)
     {
-        $data = json_encode($data, JSON_PRESERVE_ZERO_FRACTION);
+        $data = json_encode($data);
         if ($data === '[]') {
             return '{}';
         } else {
             return $data;
         }
     }
+
 
     /**
      * Deserialize JSON into an assoc array
@@ -41,5 +47,6 @@ class EverythingToJSONSerializer implements SerializerInterface
     public function deserialize($data, $headers)
     {
         return json_decode($data, true);
+
     }
 }

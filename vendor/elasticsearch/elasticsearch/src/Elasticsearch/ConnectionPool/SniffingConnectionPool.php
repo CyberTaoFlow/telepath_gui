@@ -1,14 +1,20 @@
 <?php
+/**
+ * User: zach
+ * Date: 9/18/13
+ * Time: 7:36 PM
+ */
 
 namespace Elasticsearch\ConnectionPool;
+
 
 use Elasticsearch\Common\Exceptions\Curl\OperationTimeoutException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use Elasticsearch\ConnectionPool\Selectors\SelectorInterface;
-use Elasticsearch\Connections\Connection;
-use Elasticsearch\Connections\ConnectionFactoryInterface;
+use Elasticsearch\Connections\AbstractConnection;
+use Elasticsearch\Connections\ConnectionFactory;
 
-class SniffingConnectionPool extends AbstractConnectionPool implements ConnectionPoolInterface
+class SniffingConnectionPool extends AbstractConnectionPool
 {
     /** @var int  */
     private $sniffingInterval = 300;
@@ -16,10 +22,7 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
     /** @var  int */
     private $nextSniff = -1;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($connections, SelectorInterface $selector, ConnectionFactoryInterface $factory, $connectionPoolParams)
+    public function __construct($connections, SelectorInterface $selector, ConnectionFactory $factory, $connectionPoolParams)
     {
         parent::__construct($connections, $selector, $factory, $connectionPoolParams);
 
@@ -27,10 +30,11 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
         $this->nextSniff = time() + $this->sniffingInterval;
     }
 
+
     /**
      * @param bool $force
      *
-     * @return Connection
+     * @return AbstractConnection
      * @throws \Elasticsearch\Common\Exceptions\NoNodesAvailableException
      */
     public function nextConnection($force = false)
@@ -39,7 +43,7 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
 
         $size = count($this->connections);
         while ($size--) {
-            /** @var Connection $connection */
+            /** @var AbstractConnection $connection */
             $connection = $this->selector->select($this->connections);
             if ($connection->isAlive() === true || $connection->ping() === true) {
                 return $connection;
@@ -51,12 +55,15 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
         }
 
         return $this->nextConnection(true);
+
+
     }
 
     public function scheduleCheck()
     {
         $this->nextSniff = -1;
     }
+
 
     /**
      * @param bool $force
@@ -70,7 +77,7 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
         $total = count($this->connections);
 
         while ($total--) {
-            /** @var Connection $connection */
+            /** @var AbstractConnection $connection */
             $connection = $this->selector->select($this->connections);
 
             if ($connection->isAlive() xor $force) {
@@ -93,11 +100,12 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
         }
     }
 
+
     /**
-     * @param Connection $connection
+     * @param AbstractConnection $connection
      * @return bool
      */
-    private function sniffConnection(Connection $connection)
+    private function sniffConnection(AbstractConnection $connection)
     {
         try {
             $response = $connection->sniff();
@@ -105,7 +113,9 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
             return false;
         }
 
-        $nodes = $this->parseClusterState($connection->getTransportSchema(), $response);
+        // TODO wire in the serializer?
+        $nodeInfo = json_decode($response['text'], true);
+        $nodes = $this->parseClusterState($connection->getTransportSchema(), $nodeInfo);
 
         if (count($nodes) === 0) {
             return false;
@@ -122,9 +132,9 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
         }
 
         $this->nextSniff = time() + $this->sniffingInterval;
-
         return true;
     }
+
 
     private function parseClusterState($transportSchema, $nodeInfo)
     {
@@ -137,13 +147,14 @@ class SniffingConnectionPool extends AbstractConnectionPool implements Connectio
                 if (preg_match($pattern, $node[$schemaAddress], $match) === 1) {
                     $hosts[] = array(
                         'host' => $match[1],
-                        'port' => (int) $match[2],
+                        'port' => (int)$match[2],
                     );
                 }
             }
         }
 
         return $hosts;
+
     }
 
     private function setConnectionPoolParams($connectionPoolParams)

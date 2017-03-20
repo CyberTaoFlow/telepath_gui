@@ -1,26 +1,24 @@
 <?php
+/**
+ * User: zach
+ * Date: 5/1/13
+ * Time: 10:00 PM
+ */
 
 namespace Elasticsearch\Serializers;
-
-use Elasticsearch\Common\Exceptions\Serializer\JsonErrorException;
 
 /**
  * Class SmartSerializer
  *
  * @category Elasticsearch
  * @package  Elasticsearch\Serializers\JSONSerializer
- * @author   Zachary Tong <zach@elastic.co>
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
 class SmartSerializer implements SerializerInterface
 {
-    private $PHP_VERSION;
 
-    public function __construct()
-    {
-        $this->PHP_VERSION = phpversion();
-    }
 
     /**
      * Serialize assoc array into JSON string
@@ -34,66 +32,43 @@ class SmartSerializer implements SerializerInterface
         if (is_string($data) === true) {
             return $data;
         } else {
-            if (version_compare($this->PHP_VERSION, '5.6.6', '<') || ! defined('JSON_PRESERVE_ZERO_FRACTION')) {
-                $data = json_encode($data);
-            } else {
-                $data = json_encode($data, JSON_PRESERVE_ZERO_FRACTION);
-            }
+            $data = json_encode($data);
             if ($data === '[]') {
                 return '{}';
             } else {
                 return $data;
             }
         }
+
+
     }
 
+
     /**
-     * Deserialize by introspecting content_type. Tries to deserialize JSON,
+     * Deserialize by introspecting content_type.  Tries to deserialize JSON,
      * otherwise returns string
      *
      * @param string $data JSON encoded string
      * @param array  $headers Response Headers
      *
-     * @throws JsonErrorException
      * @return array
      */
     public function deserialize($data, $headers)
     {
         if (isset($headers['content_type']) === true) {
             if (strpos($headers['content_type'], 'json') !== false) {
-                return $this->decode($data);
+                ini_set('memory_limit', '1024M');
+                return json_decode($data, true);
             } else {
                 //Not json, return as string
                 return $data;
             }
+
         } else {
             //No content headers, assume json
-            return $this->decode($data);
-        }
-    }
-
-    /**
-     * @todo For 2.0, remove the E_NOTICE check before raising the exception.
-     *
-     * @param $data
-     *
-     * @return array
-     * @throws JsonErrorException
-     */
-    private function decode($data)
-    {
-        if ($data === null || strlen($data) === 0) {
-            return "";
+            return json_decode($data, true);
         }
 
-        $result = @json_decode($data, true);
 
-        // Throw exception only if E_NOTICE is on to maintain backwards-compatibility on systems that silently ignore E_NOTICEs.
-        if (json_last_error() !== JSON_ERROR_NONE && (error_reporting() & E_NOTICE) === E_NOTICE) {
-            $e = new JsonErrorException(json_last_error(), $data, $result);
-            throw $e;
-        }
-
-        return $result;
     }
 }

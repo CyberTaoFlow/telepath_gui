@@ -1,21 +1,19 @@
 <?php
+/**
+ * User: zach
+ * Date: 5/31/13
+ * Time: 9:49 AM
+ */
 
 namespace Elasticsearch\Endpoints;
 
+
 use Elasticsearch\Common\Exceptions\UnexpectedValueException;
-use Elasticsearch\Serializers\SerializerInterface;
 use Elasticsearch\Transport;
-use Exception;
-use GuzzleHttp\Ring\Future\FutureArrayInterface;
 
 /**
  * Class AbstractEndpoint
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Endpoints
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @package Elasticsearch\Endpoints
  */
 abstract class AbstractEndpoint
 {
@@ -37,27 +35,70 @@ abstract class AbstractEndpoint
     /** @var  array */
     protected $body = null;
 
-    /** @var array  */
-    private $options = [];
+    /** @var \Elasticsearch\Transport  */
+    private $transport = null;
 
-    /** @var  SerializerInterface */
-    protected $serializer;
+    /** @var array  */
+    private $ignore = null;
+
 
     /**
      * @return string[]
      */
-    abstract public function getParamWhitelist();
+    abstract protected function getParamWhitelist();
+
 
     /**
      * @return string
      */
-    abstract public function getURI();
+    abstract protected function getURI();
+
 
     /**
      * @return string
      */
-    abstract public function getMethod();
+    abstract protected function getMethod();
 
+    /**
+     * @param Transport $transport
+     */
+    public function __construct($transport)
+    {
+        $this->transport = $transport;
+    }
+
+
+    /**
+     *
+     * @throws \Exception
+     * @return array
+     */
+    public function performRequest()
+    {
+        $result = array();
+
+        try {
+            $result =  $this->transport->performRequest(
+                $this->getMethod(),
+                $this->getURI(),
+                $this->params,
+                $this->getBody()
+            );
+        } catch (\Exception $exception) {
+            $code = $exception->getCode();
+            if ($this->ignore === null) {
+                throw $exception;
+            } else if (array_search($code, $this->ignore) === false) {
+                throw $exception;
+            } else {
+                //TODO return null or dedicated object here instead?
+                return array('data' => $exception->getMessage());
+            }
+        }
+
+        return $result;
+
+    }
 
     /**
      * Set the parameters for this endpoint
@@ -68,32 +109,15 @@ abstract class AbstractEndpoint
     public function setParams($params)
     {
         if (is_object($params) === true) {
-            $params = (array) $params;
+            $params = (array)$params;
         }
 
         $this->checkUserParams($params);
-        $params = $this->convertCustom($params);
-        $this->extractOptions($params);
         $this->params = $this->convertArraysToStrings($params);
-
+        $this->extractIgnore();
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
 
     /**
      * @param string $index
@@ -107,14 +131,13 @@ abstract class AbstractEndpoint
         }
 
         if (is_array($index) === true) {
-            $index = array_map('trim', $index);
             $index = implode(",", $index);
         }
 
         $this->index = urlencode($index);
-
         return $this;
     }
+
 
     /**
      * @param string $type
@@ -128,14 +151,13 @@ abstract class AbstractEndpoint
         }
 
         if (is_array($type) === true) {
-            $type = array_map('trim', $type);
             $type = implode(",", $type);
         }
 
         $this->type = urlencode($type);
-
         return $this;
     }
+
 
     /**
      * @param int|string $docID
@@ -149,17 +171,18 @@ abstract class AbstractEndpoint
         }
 
         $this->id = urlencode($docID);
-
         return $this;
     }
+
 
     /**
      * @return array
      */
-    public function getBody()
+    protected function getBody()
     {
         return $this->body;
     }
+
 
     /**
      * @param string $endpoint
@@ -174,32 +197,36 @@ abstract class AbstractEndpoint
         $uri[] = $endpoint;
         $uri =  array_filter($uri);
 
-        return '/' . implode('/', $uri);
+       return '/' . implode('/', $uri);
     }
+
 
     /**
      * @return string
      */
     private function getOptionalIndex()
     {
-        if (isset($this->index) === true) {
+        if (isset($this->index) === true){
             return $this->index;
         } else {
             return '_all';
         }
     }
 
+
     /**
      * @return string
      */
     private function getOptionalType()
     {
-        if (isset($this->type) === true) {
+        if (isset($this->type) === true){
             return $this->type;
         } else {
             return '';
         }
     }
+
+
 
     /**
      * @param array $params
@@ -208,80 +235,68 @@ abstract class AbstractEndpoint
      */
     private function checkUserParams($params)
     {
-        if (isset($params) !== true) {
-            return; //no params, just return.
-        }
-
-        $whitelist = array_merge($this->getParamWhitelist(), array('client', 'custom', 'filter_path', 'human'));
-
-        $invalid = array_diff(array_keys($params), $whitelist);
-        if (count($invalid) > 0) {
-            sort($invalid);
-            sort($whitelist);
-            throw new UnexpectedValueException(sprintf(
-                (count($invalid) > 1 ? '"%s" are not valid parameters.' : '"%s" is not a valid parameter.').' Allowed parameters are "%s"',
-                implode('", "', $invalid),
-                implode('", "', $whitelist)
-            ));
+        try {
+            $this->ifParamsInvalidThrowException($params);
+        } catch (UnexpectedValueException $exception) {
+            throw $exception;
         }
     }
 
     /**
-     * @param $params       Note: this is passed by-reference!
+     * Check if param is in whitelist
+     *
+     * @param array $params    Assoc array of parameters
+     *
+     * @throws \Elasticsearch\Common\Exceptions\UnexpectedValueException
+     *
      */
-    private function extractOptions(&$params)
+    private function ifParamsInvalidThrowException($params)
     {
-        // Extract out client options, then start transforming
-        if (isset($params['client']) === true) {
-            $this->options['client'] = $params['client'];
-            unset($params['client']);
+        if (isset($params) !== true) {
+            return; //no params, just return.
         }
 
-        $ignore = isset($this->options['client']['ignore']) ? $this->options['client']['ignore'] : null;
-        if (isset($ignore) === true) {
-            if (is_string($ignore)) {
-                $this->options['client']['ignore'] = explode(",", $ignore);
-            } elseif (is_array($ignore)) {
-                $this->options['client']['ignore'] = $ignore;
-            } else {
-                $this->options['client']['ignore'] = [$ignore];
+        $whitelist = array_merge($this->getParamWhitelist(), array('ignore'));
+
+        foreach ($params as $key => $value) {
+            if (array_search($key, $whitelist) === false) {
+                throw new UnexpectedValueException($key . ' is not a valid parameter');
             }
+        }
+
+    }
+
+
+    private function extractIgnore()
+    {
+        if (isset($this->params['ignore']) === true) {
+            $this->ignore = explode(",", $this->params['ignore']);
+            unset($this->params['ignore']);
         }
     }
 
-    private function convertCustom($params)
-    {
-        if (isset($params['custom']) === true) {
-            foreach ($params['custom'] as $k => $v) {
-                $params[$k] = $v;
-            }
-            unset($params['custom']);
-        }
-
-        return $params;
-    }
 
     private function convertArraysToStrings($params)
     {
-        foreach ($params as $key => &$value) {
-            if (!($key === 'client' || $key == 'custom') && is_array($value) === true) {
-                if ($this->isNestedArray($value) !== true) {
-                    $value = implode(",", $value);
+        foreach ($params as &$param) {
+            if (is_array($param) === true) {
+                if ($this->isNestedArray($param) !== true){
+                    $param = implode(",", $param);
                 }
+
             }
         }
 
         return $params;
     }
 
-    private function isNestedArray($a)
-    {
+    private function isNestedArray($a) {
         foreach ($a as $v) {
             if (is_array($v)) {
                 return true;
             }
         }
-
         return false;
     }
+
 }

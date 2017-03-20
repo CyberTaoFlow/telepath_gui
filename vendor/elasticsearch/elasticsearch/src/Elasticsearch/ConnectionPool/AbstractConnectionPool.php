@@ -1,37 +1,34 @@
 <?php
+/**
+ * User: zach
+ * Date: 9/18/13
+ * Time: 7:25 PM
+ */
 
 namespace Elasticsearch\ConnectionPool;
 
+
 use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\ConnectionPool\Selectors\SelectorInterface;
-use Elasticsearch\Connections\Connection;
-use Elasticsearch\Connections\ConnectionFactoryInterface;
-use Elasticsearch\Connections\ConnectionInterface;
+use Elasticsearch\Connections\AbstractConnection;
+use Elasticsearch\Connections\ConnectionFactory;
 
-/**
- * Class AbstractConnectionPool
- *
- * @category Elasticsearch
- * @package  Elasticsearch\ConnectionPool
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
- */
-abstract class AbstractConnectionPool implements ConnectionPoolInterface
+abstract class AbstractConnectionPool
 {
+
     /**
      * Array of connections
      *
-     * @var ConnectionInterface[]
+     * @var AbstractConnection[]
      */
-    protected $connections;
+    protected  $connections;
 
     /**
      * Array of initial seed connections
      *
-     * @var ConnectionInterface[]
+     * @var AbstractConnection[]
      */
-    protected $seedConnections;
+    protected  $seedConnections;
 
     /**
      * Selector object, used to select a connection on each request
@@ -40,21 +37,11 @@ abstract class AbstractConnectionPool implements ConnectionPoolInterface
      */
     protected $selector;
 
-    /** @var array */
-    protected $connectionPoolParams;
 
     /** @var \Elasticsearch\Connections\ConnectionFactory  */
     protected $connectionFactory;
 
-    /**
-     * Constructor
-     *
-     * @param ConnectionInterface[]          $connections          The Connections to choose from
-     * @param SelectorInterface              $selector             A Selector instance to perform the selection logic for the available connections
-     * @param ConnectionFactoryInterface     $factory              ConnectionFactory instance
-     * @param array                          $connectionPoolParams
-     */
-    public function __construct($connections, SelectorInterface $selector, ConnectionFactoryInterface $factory, $connectionPoolParams)
+    public function __construct($connections, SelectorInterface $selector, ConnectionFactory $factory, $connectionPoolParams)
     {
         $paramList = array('connections', 'selector', 'connectionPoolParams');
         foreach ($paramList as $param) {
@@ -73,14 +60,17 @@ abstract class AbstractConnectionPool implements ConnectionPoolInterface
         $this->selector             = $selector;
         $this->connectionPoolParams = $connectionPoolParams;
         $this->connectionFactory    = $factory;
+
     }
+
 
     /**
      * @param bool $force
      *
-     * @return Connection
+     * @return AbstractConnection
      */
     abstract public function nextConnection($force = false);
 
     abstract public function scheduleCheck();
+
 }

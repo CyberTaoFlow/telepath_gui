@@ -1,22 +1,30 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Cluster;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class State
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Cluster
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Cluster
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class State extends AbstractEndpoint
 {
     // Limit the information returned to the specified metrics
     private $metric;
+
 
     /**
      * @param $metric
@@ -34,14 +42,14 @@ class State extends AbstractEndpoint
         }
 
         $this->metric = $metric;
-
         return $this;
     }
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $index = $this->index;
         $metric = $this->metric;
@@ -56,26 +64,25 @@ class State extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'local',
             'master_timeout',
             'flat_settings',
-            'index_templates',
-            'expand_wildcards',
-            'ignore_unavailable',
-            'allow_no_indices'
+            'index_templates'
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

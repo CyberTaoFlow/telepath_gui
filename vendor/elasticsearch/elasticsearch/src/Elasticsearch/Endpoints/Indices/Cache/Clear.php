@@ -1,39 +1,40 @@
 <?php
+/**
+ * User: zach
+ * Date: 05/31/2013
+ * Time: 16:47:11 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Cache;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Clear
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Cache
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @package Elasticsearch\Endpoints\Indices\Cache
  */
 class Clear extends AbstractEndpoint
 {
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
+
         $index = $this->index;
         $uri   = "/_cache/clear";
 
         if (isset($index) === true) {
             $uri = "/$index/_cache/clear";
         }
-
         return $uri;
     }
 
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'field_data',
@@ -55,7 +56,7 @@ class Clear extends AbstractEndpoint
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'POST';
     }

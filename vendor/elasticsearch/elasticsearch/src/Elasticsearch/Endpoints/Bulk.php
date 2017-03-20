@@ -1,82 +1,84 @@
 <?php
+/**
+ * User: zach
+ * Date: 05/31/2013
+ * Time: 16:47:11 pm
+ */
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 use Elasticsearch\Serializers\SerializerInterface;
 use Elasticsearch\Transport;
 
 /**
  * Class Bulk
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Endpoints
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @package Elasticsearch\Endpoints
  */
 class Bulk extends AbstractEndpoint implements BulkEndpointInterface
 {
-    /**
-     * @param SerializerInterface $serializer
-     */
-    public function __construct(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
-    }
 
     /**
-     * @param string|array|\Traversable $body
+     * @param Transport           $transport
+     * @param SerializerInterface $serializer
+     */
+    public function __construct(Transport $transport, SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+        parent::__construct($transport);
+    }
+
+
+    /**
+     * @param string|array $body
      *
      * @return $this
      */
     public function setBody($body)
     {
-        if (empty($body)) {
+        if (isset($body) !== true) {
             return $this;
         }
 
-        if (is_array($body) === true || $body instanceof \Traversable) {
+        if (is_array($body) === true) {
+            $bulkBody = "";
             foreach ($body as $item) {
-                $this->body .= $this->serializer->serialize($item) . "\n";
+                $bulkBody .= $this->serializer->serialize($item)."\n";
             }
-        } else {
-            $this->body = $body;
+            $body = $bulkBody;
         }
 
+        $this->body = $body;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
-        return $this->getOptionalURI('_bulk');
+       return $this->getOptionalURI('_bulk');
+
     }
 
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'consistency',
             'refresh',
             'replication',
             'type',
-            'fields',
-            'pipeline',
-            '_source',
-            '_source_include',
-            '_source_exclude',
-            'pipeline'
         );
     }
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'POST';
     }

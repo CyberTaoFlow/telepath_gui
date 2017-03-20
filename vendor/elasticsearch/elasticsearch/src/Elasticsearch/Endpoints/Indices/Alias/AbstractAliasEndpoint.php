@@ -1,23 +1,27 @@
 <?php
+/**
+ * User: zach
+ * Date: 6/13/13
+ * Time: 8:56 PM
+ */
+
 
 namespace Elasticsearch\Endpoints\Indices\Alias;
+
 
 use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
- * Class AbstractAliasEndpoint
- *
- * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices\Alias
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * Class AbstractNodeEndpoint
+ * @package Elasticsearch\Endpoints\Cluster\Node
  */
 abstract class AbstractAliasEndpoint extends AbstractEndpoint
 {
+
     /** @var null|string */
     protected $name = null;
+
 
     /**
      * @param $name
@@ -32,7 +36,6 @@ abstract class AbstractAliasEndpoint extends AbstractEndpoint
             throw new InvalidArgumentException('Name must be a string');
         }
         $this->name = urlencode($name);
-
         return $this;
     }
 }

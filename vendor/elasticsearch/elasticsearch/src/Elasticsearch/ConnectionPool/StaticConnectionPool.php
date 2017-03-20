@@ -1,37 +1,34 @@
 <?php
+/**
+ * User: zach
+ * Date: 9/18/13
+ * Time: 7:36 PM
+ */
 
 namespace Elasticsearch\ConnectionPool;
 
+
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use Elasticsearch\ConnectionPool\Selectors\SelectorInterface;
-use Elasticsearch\Connections\Connection;
-use Elasticsearch\Connections\ConnectionFactoryInterface;
+use Elasticsearch\Connections\AbstractConnection;
+use Elasticsearch\Connections\ConnectionFactory;
 
-class StaticConnectionPool extends AbstractConnectionPool implements ConnectionPoolInterface
+class StaticConnectionPool extends AbstractConnectionPool
 {
-    /**
-     * @var int
-     */
     private $pingTimeout    = 60;
-
-    /**
-     * @var int
-     */
     private $maxPingTimeout = 3600;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($connections, SelectorInterface $selector, ConnectionFactoryInterface $factory, $connectionPoolParams)
+    public function __construct($connections, SelectorInterface $selector, ConnectionFactory $factory, $connectionPoolParams)
     {
         parent::__construct($connections, $selector, $factory, $connectionPoolParams);
         $this->scheduleCheck();
     }
 
+
     /**
      * @param bool $force
      *
-     * @return Connection
+     * @return AbstractConnection
      * @throws \Elasticsearch\Common\Exceptions\NoNodesAvailableException
      */
     public function nextConnection($force = false)
@@ -40,10 +37,10 @@ class StaticConnectionPool extends AbstractConnectionPool implements ConnectionP
 
         $total = count($this->connections);
         while ($total--) {
-            /** @var Connection $connection */
+            /** @var AbstractConnection $connection */
             $connection = $this->selector->select($this->connections);
             if ($connection->isAlive() === true) {
-                return $connection;
+               return $connection;
             }
 
             if ($this->readyToRevive($connection) === true) {
@@ -73,11 +70,11 @@ class StaticConnectionPool extends AbstractConnectionPool implements ConnectionP
     }
 
     /**
-     * @param Connection $connection
+     * @param AbstractConnection $connection
      *
      * @return bool
      */
-    private function readyToRevive(Connection $connection)
+    private function readyToRevive(AbstractConnection $connection)
     {
         $timeout = min(
             $this->pingTimeout * pow(2, $connection->getPingFailures()),

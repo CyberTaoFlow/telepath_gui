@@ -1,4 +1,15 @@
 <?php
+/**
+ * User: zach
+ * Date: 5/1/13
+ * Time: 12:16 PM
+ *
+ * @category Elasticsearch
+ * @package  Elasticsearch\Common\Exceptions
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
+ * @link     http://elasticsearch.org
+ */
 
 namespace Elasticsearch\Common\Exceptions;
 
@@ -7,9 +18,9 @@ namespace Elasticsearch\Common\Exceptions;
  *
  * @category Elasticsearch
  * @package  Elasticsearch\Common\Exceptions
- * @author   Zachary Tong <zach@elastic.co>
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
 interface ElasticsearchException
 {

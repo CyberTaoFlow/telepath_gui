@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Snapshot;
 
@@ -9,18 +14,21 @@ use Elasticsearch\Common\Exceptions;
  * Class Restore
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Snapshot
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Snapshot
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Restore extends AbstractEndpoint
 {
     // A repository name
     private $repository;
 
+
     // A snapshot name
     private $snapshot;
+
 
     /**
      * @param array $body
@@ -34,10 +42,12 @@ class Restore extends AbstractEndpoint
             return $this;
         }
 
-        $this->body = $body;
 
+        $this->body = $body;
         return $this;
     }
+
+
 
     /**
      * @param $repository
@@ -51,9 +61,9 @@ class Restore extends AbstractEndpoint
         }
 
         $this->repository = $repository;
-
         return $this;
     }
+
 
     /**
      * @param $snapshot
@@ -67,15 +77,15 @@ class Restore extends AbstractEndpoint
         }
 
         $this->snapshot = $snapshot;
-
         return $this;
     }
+
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         if (isset($this->repository) !== true) {
             throw new Exceptions\RuntimeException(
@@ -98,10 +108,11 @@ class Restore extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'master_timeout',
@@ -109,10 +120,11 @@ class Restore extends AbstractEndpoint
         );
     }
 
+
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'POST';
     }

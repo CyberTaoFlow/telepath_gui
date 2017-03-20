@@ -1,43 +1,39 @@
 <?php
+/**
+ * User: zach
+ * Date: 11/21/13
+ * Time: 3:43 PM
+ */
 
 namespace Elasticsearch\ConnectionPool;
 
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use Elasticsearch\ConnectionPool\Selectors\SelectorInterface;
-use Elasticsearch\Connections\Connection;
-use Elasticsearch\Connections\ConnectionFactoryInterface;
+use Elasticsearch\Connections\AbstractConnection;
+use Elasticsearch\Connections\ConnectionFactory;
 
-class StaticNoPingConnectionPool extends AbstractConnectionPool implements ConnectionPoolInterface
+class StaticNoPingConnectionPool extends AbstractConnectionPool
 {
-    /**
-     * @var int
-     */
     private $pingTimeout    = 60;
-
-    /**
-     * @var int
-     */
     private $maxPingTimeout = 3600;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($connections, SelectorInterface $selector, ConnectionFactoryInterface $factory, $connectionPoolParams)
+    public function __construct($connections, SelectorInterface $selector, ConnectionFactory $factory, $connectionPoolParams)
     {
         parent::__construct($connections, $selector, $factory, $connectionPoolParams);
     }
 
+
     /**
      * @param bool $force
      *
-     * @return Connection
+     * @return AbstractConnection
      * @throws \Elasticsearch\Common\Exceptions\NoNodesAvailableException
      */
     public function nextConnection($force = false)
     {
         $total = count($this->connections);
         while ($total--) {
-            /** @var Connection $connection */
+            /** @var AbstractConnection $connection */
             $connection = $this->selector->select($this->connections);
             if ($connection->isAlive() === true) {
                 return $connection;
@@ -53,14 +49,15 @@ class StaticNoPingConnectionPool extends AbstractConnectionPool implements Conne
 
     public function scheduleCheck()
     {
+
     }
 
     /**
-     * @param \Elasticsearch\Connections\Connection $connection
+     * @param AbstractConnection $connection
      *
      * @return bool
      */
-    private function readyToRevive(Connection $connection)
+    private function readyToRevive(AbstractConnection $connection)
     {
         $timeout = min(
             $this->pingTimeout * pow(2, $connection->getPingFailures()),

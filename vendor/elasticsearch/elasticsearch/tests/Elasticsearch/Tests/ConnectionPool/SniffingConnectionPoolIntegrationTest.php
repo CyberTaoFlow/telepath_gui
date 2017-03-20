@@ -1,5 +1,6 @@
 <?php
-use Elasticsearch\ClientBuilder;
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use Elasticsearch\ConnectionPool\SniffingConnectionPool;
 
 /**
  * Class SniffingConnectionPoolIntegrationTest
@@ -13,13 +14,14 @@ use Elasticsearch\ClientBuilder;
  */
 class SniffingConnectionPoolIntegrationTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSniff()
-    {
-        $client = ClientBuilder::create()
-            ->setHosts([$_SERVER['ES_TEST_HOST']])
-            ->setConnectionPool('\Elasticsearch\ConnectionPool\SniffingConnectionPool', ['sniffingInterval' => -10])
-            ->build();
+    public function testSniff() {
+        $params['connectionPoolClass'] = '\Elasticsearch\ConnectionPool\SniffingConnectionPool';
+        $params['connectionPoolParams']['sniffingInterval'] = -10;
+        $params['hosts'] = array ($_SERVER['ES_TEST_HOST']);
+
+        $client = new \Elasticsearch\Client($params);
 
         $client->ping();
+
     }
 }

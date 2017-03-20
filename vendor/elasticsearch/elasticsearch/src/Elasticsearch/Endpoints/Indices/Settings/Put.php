@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Settings;
 
@@ -9,11 +14,12 @@ use Elasticsearch\Common\Exceptions;
  * Class Put
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Settings
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Indices\Settings
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Put extends AbstractEndpoint
 {
     /**
@@ -28,15 +34,17 @@ class Put extends AbstractEndpoint
             return $this;
         }
 
-        $this->body = $body;
 
+        $this->body = $body;
         return $this;
     }
+
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $index = $this->index;
         $uri   = "/_settings";
@@ -48,10 +56,11 @@ class Put extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'master_timeout',
@@ -59,27 +68,27 @@ class Put extends AbstractEndpoint
             'allow_no_indices',
             'expand_wildcards',
             'flat_settings',
-            'preserve_existing'
         );
     }
+
 
     /**
      * @return array
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      */
-    public function getBody()
+    protected function getBody()
     {
         if (isset($this->body) !== true) {
             throw new Exceptions\RuntimeException('Body is required for Put Settings');
         }
-
         return $this->body;
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'PUT';
     }

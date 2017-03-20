@@ -1,17 +1,23 @@
 <?php
+/**
+ * User: zach
+ * Date: 02/10/2014
+ * Time: 13:52:08 pm
+ */
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class ThreadPool
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Cat
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
 
 class ThreadPool extends AbstractEndpoint
@@ -19,17 +25,18 @@ class ThreadPool extends AbstractEndpoint
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $uri   = "/_cat/thread_pool";
 
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'local',
@@ -38,17 +45,14 @@ class ThreadPool extends AbstractEndpoint
             'help',
             'v',
             'full_id',
-            'size',
-            'thread_pool_patterns',
-            's',
-            'format',
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

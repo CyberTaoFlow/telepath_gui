@@ -2,7 +2,6 @@
 composer.lock
 vendor/
 composer.phar
-.php_cs.cache
 
 #editor related
 .idea
@@ -19,8 +18,3 @@ Thumbs.db
 
 #generator related
 generator/*
-
-# Elasticsearch related
-util/elasticsearch/
-util/cache/
-util/output

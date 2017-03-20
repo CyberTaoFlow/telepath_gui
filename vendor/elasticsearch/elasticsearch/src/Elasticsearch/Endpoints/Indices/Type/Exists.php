@@ -1,4 +1,9 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Type;
 
@@ -9,18 +14,19 @@ use Elasticsearch\Common\Exceptions;
  * Class Exists
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Type
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Indices\Type
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Exists extends AbstractEndpoint
 {
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         if (isset($this->index) !== true) {
             throw new Exceptions\RuntimeException(
@@ -32,15 +38,22 @@ class Exists extends AbstractEndpoint
                 'type is required for Exists'
             );
         }
-        $uri   = "/{$this->index}/_mapping/{$this->type}";
+        $index = $this->index;
+        $type = $this->type;
+        $uri   = "/$index/$type";
+
+        if (isset($index) === true && isset($type) === true) {
+            $uri = "/$index/$type";
+        }
 
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'ignore_unavailable',
@@ -50,10 +63,11 @@ class Exists extends AbstractEndpoint
         );
     }
 
+
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'HEAD';
     }

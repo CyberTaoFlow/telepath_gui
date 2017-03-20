@@ -1,20 +1,30 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Cluster\Nodes;
+
+use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Stats
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Cluster\Nodes
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Cluster\Nodes
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Stats extends AbstractNodesEndpoint
 {
     // Limit the information returned to the specified metrics
     private $metric;
+
 
     // Limit the information returned for `indices` metric to the specific index metrics. Isn&#039;t used if `indices` (or `all`) metric isn&#039;t specified.
     private $indexMetric;
@@ -35,9 +45,9 @@ class Stats extends AbstractNodesEndpoint
         }
 
         $this->metric = $metric;
-
         return $this;
     }
+
 
     /**
      * @param $indexMetric
@@ -55,14 +65,14 @@ class Stats extends AbstractNodesEndpoint
         }
 
         $this->indexMetric = $indexMetric;
-
         return $this;
     }
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $metric = $this->metric;
         $index_metric = $this->indexMetric;
@@ -84,10 +94,11 @@ class Stats extends AbstractNodesEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'completion_fields',
@@ -97,14 +108,14 @@ class Stats extends AbstractNodesEndpoint
             'human',
             'level',
             'types',
-            'include_segment_file_sizes',
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

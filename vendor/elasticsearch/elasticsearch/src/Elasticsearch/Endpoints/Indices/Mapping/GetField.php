@@ -1,4 +1,10 @@
 <?php
+/**
+ * User: zach
+ * Date: 11/4/13
+ * Time: 9:11 AM
+ */
+
 
 namespace Elasticsearch\Endpoints\Indices\Mapping;
 
@@ -7,72 +13,70 @@ use Elasticsearch\Common\Exceptions;
 
 /**
  * Class GetField
- *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Mapping
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Indices\Mapping
+ *
+ * @package  Elasticsearch
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class GetField extends AbstractEndpoint
 {
     /** @var  string */
-    private $fields;
+    private $field;
+
 
     /**
-     * @param string|array $fields
+     * @param string|array $field
      *
      * @return $this
      */
-    public function setFields($fields)
-    {
-        if (isset($fields) !== true) {
+    public function setField($field) {
+        if (isset($field) !== true) {
             return $this;
         }
 
-        if (is_array($fields) === true) {
-            $fields = implode(",", $fields);
+        if (is_array($field) === true) {
+            $field = implode(",", $field);
         }
 
-        $this->fields = $fields;
-
+        $this->field = $field;
         return $this;
     }
+
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
-        if (isset($this->fields) !== true) {
+        if (isset($this->field) !== true) {
             throw new Exceptions\RuntimeException(
-                'fields is required for Get Field Mapping'
+                'field is required for Get Field Mapping'
             );
         }
         $uri = $this->getOptionalURI('_mapping/field');
 
-        return $uri.'/'.$this->fields;
+        return $uri.'/'.$this->field;
     }
 
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
-            'include_defaults',
-            'ignore_unavailable',
-            'allow_no_indices',
-            'expand_wildcards',
-            'local'
+            'include_defaults'
         );
     }
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

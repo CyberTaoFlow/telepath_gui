@@ -1,27 +1,30 @@
 <?php
+/**
+ * User: zach
+ * Date: 06/04/2013
+ * Time: 13:33:19 pm
+ */
 
 namespace Elasticsearch\Endpoints\Indices\Gateway;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Snapshot
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Indices\Gateway
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @package Elasticsearch\Endpoints\Indices\Gateway
  */
 class Snapshot extends AbstractEndpoint
 {
+
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $index = $this->index;
         $uri   = "/_gateway/snapshot";
+
 
         if (isset($index) === true) {
             $uri = "/$index/_gateway/snapshot";
@@ -33,7 +36,7 @@ class Snapshot extends AbstractEndpoint
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'ignore_unavailable',
@@ -45,7 +48,7 @@ class Snapshot extends AbstractEndpoint
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'POST';
     }

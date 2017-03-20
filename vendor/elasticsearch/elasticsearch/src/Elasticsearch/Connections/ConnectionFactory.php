@@ -1,67 +1,28 @@
 <?php
+/**
+ * User: zach
+ * Date: 9/19/13
+ * Time: 1:29 PM
+ */
 
 namespace Elasticsearch\Connections;
 
-use Elasticsearch\Serializers\SerializerInterface;
-use Psr\Log\LoggerInterface;
+use Elasticsearch\Common\AbstractFactory;
 
-/**
- * Class AbstractConnection
- *
- * @category Elasticsearch
- * @package  Elasticsearch\Connections
- * @author   Zachary Tong <zach@elastic.co>
- * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
- */
-class ConnectionFactory implements ConnectionFactoryInterface
+class ConnectionFactory extends AbstractFactory
 {
-    /** @var  array */
-    private $connectionParams;
-
-    /** @var  SerializerInterface */
-    private $serializer;
-
-    /** @var  LoggerInterface */
-    private $logger;
-
-    /** @var  LoggerInterface */
-    private $tracer;
-
-    /** @var callable */
-    private $handler;
-
-    /**
-     * Constructor
-     *
-     * @param callable            $handler
-     * @param array               $connectionParams
-     * @param SerializerInterface $serializer
-     * @param LoggerInterface     $logger
-     * @param LoggerInterface     $tracer
-     */
-    public function __construct(callable $handler, array $connectionParams, SerializerInterface $serializer, LoggerInterface $logger, LoggerInterface $tracer)
-    {
-        $this->handler          = $handler;
-        $this->connectionParams = $connectionParams;
-        $this->logger           = $logger;
-        $this->tracer           = $tracer;
-        $this->serializer       = $serializer;
-    }
     /**
      * @param $hostDetails
      *
-     * @return ConnectionInterface
+     * @return AbstractConnection
      */
     public function create($hostDetails)
     {
-        return new Connection(
-            $this->handler,
+        return $this->container['connection'](
             $hostDetails,
-            $this->connectionParams,
-            $this->serializer,
-            $this->logger,
-            $this->tracer
+            $this->container['connectionParamsShared'],
+            $this->container['logObject'],
+            $this->container['traceObject']
         );
     }
 }

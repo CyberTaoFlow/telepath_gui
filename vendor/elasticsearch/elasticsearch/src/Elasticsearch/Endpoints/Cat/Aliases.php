@@ -1,22 +1,30 @@
 <?php
+/**
+ * User: zach
+ * Date: 01/20/2014
+ * Time: 14:34:49 pm
+ */
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Aliases
  *
  * @category Elasticsearch
- * @package  Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zach@elastic.co>
+ * @package Elasticsearch\Endpoints\Cat
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elastic.co
+ * @link     http://elasticsearch.org
  */
+
 class Aliases extends AbstractEndpoint
 {
     // A comma-separated list of alias names to return
     private $name;
+
 
     /**
      * @param $name
@@ -30,14 +38,14 @@ class Aliases extends AbstractEndpoint
         }
 
         $this->name = $name;
-
         return $this;
     }
+
 
     /**
      * @return string
      */
-    public function getURI()
+    protected function getURI()
     {
         $name = $this->name;
         $uri   = "/_cat/aliases";
@@ -49,10 +57,11 @@ class Aliases extends AbstractEndpoint
         return $uri;
     }
 
+
     /**
      * @return string[]
      */
-    public function getParamWhitelist()
+    protected function getParamWhitelist()
     {
         return array(
             'local',
@@ -60,16 +69,14 @@ class Aliases extends AbstractEndpoint
             'h',
             'help',
             'v',
-            'format',
-            's',
-            'format',
         );
     }
+
 
     /**
      * @return string
      */
-    public function getMethod()
+    protected function getMethod()
     {
         return 'GET';
     }

@@ -1,7 +1,11 @@
 <?php
+/**
+ * User: zach
+ * Date: 9/24/13
+ * Time: 9:41 AM
+ */
 
 namespace Elasticsearch\Tests\ConnectionPool\Selectors;
-
 use Elasticsearch;
 use Mockery as m;
 
@@ -17,10 +21,11 @@ use Mockery as m;
  */
 class StickyRoundRobinSelectorTest extends \PHPUnit_Framework_TestCase
 {
-    public function tearDown()
-    {
+
+    public function tearDown() {
         m::close();
     }
+
 
     public function testTenConnections()
     {
@@ -30,15 +35,17 @@ class StickyRoundRobinSelectorTest extends \PHPUnit_Framework_TestCase
         $mockConnections[] = m::mock('\Elasticsearch\Connections\GuzzleConnection')
                              ->shouldReceive('isAlive')->times(16)->andReturn(true)->getMock();
 
-        foreach (range(0, 9) as $index) {
+        foreach (range(0,9) as $index) {
             $mockConnections[] = m::mock('\Elasticsearch\Connections\GuzzleConnection');
         }
 
-        foreach (range(0, 15) as $index) {
+
+        foreach (range(0,15) as $index) {
             $retConnection = $roundRobin->select($mockConnections);
 
             $this->assertEquals($mockConnections[0], $retConnection);
         }
+
     }
 
     public function testTenConnectionsFirstDies()
@@ -52,14 +59,19 @@ class StickyRoundRobinSelectorTest extends \PHPUnit_Framework_TestCase
         $mockConnections[] = m::mock('\Elasticsearch\Connections\GuzzleConnection')
                              ->shouldReceive('isAlive')->times(15)->andReturn(true)->getMock();
 
-        foreach (range(0, 8) as $index) {
+        foreach (range(0,8) as $index) {
             $mockConnections[] = m::mock('\Elasticsearch\Connections\GuzzleConnection');
         }
 
-        foreach (range(0, 15) as $index) {
+
+        foreach (range(0,15) as $index) {
             $retConnection = $roundRobin->select($mockConnections);
 
             $this->assertEquals($mockConnections[1], $retConnection);
         }
+
     }
-}
+
+
+
+}//end class
