@@ -550,7 +550,7 @@ class M_Alerts extends CI_Model {
 							"cases_count" => $sid['cases_count']['value'],
 							"cases_names"=>	$sid['cases_names']['buckets'],
 							"country" => $sid['country_code']['buckets'][0]['key'],
-							"ip_orig" => $sid['ip_orig']['buckets'][0]['key'],
+							"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 							"host"    => $sid['host']['buckets'],
 //							"count"   => $doc_count,
 							"date"  => $sid['date']['value'],
@@ -677,7 +677,7 @@ class M_Alerts extends CI_Model {
 				// Session details to check for similar session details
 				$session_details = [
                     "country" => $sid['country_code']['buckets'][0]['key'],
-                    "ip_orig" => $sid['ip_orig']['buckets'][0]['key'],
+                    "ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
                 ];
 
                 // Remove doc_count that is not relevant for our array comparison
@@ -701,7 +701,7 @@ class M_Alerts extends CI_Model {
 					"alerts_count" => $sid['alerts_count']['value'],
 					"alerts_names" => $sid['alerts_names']['buckets'],
 					"country" => $sid['country_code']['buckets'][0]['key'],
-					"ip_orig" => $sid['ip_orig']['buckets'][0]['key'],
+					"ip_orig" => $sid['ip_orig']['buckets'][0]['key_as_string'],
 					"host" => $sid['host']['buckets'],
 					"date" => $sid['date']['value'],
 					'score_average' => $sid['score_average']['value'],

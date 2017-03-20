@@ -466,7 +466,7 @@ class M_Actions extends CI_Model {
 
 			$ip_buckets = $result["aggregations"]["ip_orig"]["buckets"];
 			foreach ($ip_buckets as $ip) {
-				$results[] = $ip['key'];
+				$results[] = $ip['key_as_string'];
 			}
 		}
 

@@ -275,7 +275,7 @@ class M_Applications extends CI_Model {
 			$ip_suggestion = [];
 
 			foreach ($results as $res) {
-				array_push($ip_suggestion, $res['key']);
+				array_push($ip_suggestion, $res['key_as_string']);
 			}
 
 			return $ip_suggestion;
@@ -698,9 +698,9 @@ class M_Applications extends CI_Model {
 
                         foreach($results['aggregations']['distinct_ips']['buckets'] as $bucket) {
                                 // key is a host
-                                if (isset($bucket['key']))
+                                if (isset($bucket['key_as_string']))
                                 {
-                                        $ans[$bucket['key']] = 1;
+                                        $ans[$bucket['key_as_string']] = 1;
                                 }
                         }
 
