@@ -275,17 +275,17 @@ telepath.alerts = {
 		var that = this;
 		var container = $('.tele-panel-alerts');
 		this.container = container;
-
-		if(data.alerts.total == 0) {
-			this.panelTitle.html('No Data');
-			return;
-		}
 		
 		// List
 		this.list = $('.tele-alerts-block');
 
 		// Cleanup
 		$('.tele-loader', this.list).remove();
+
+        if(!data.alerts.items.length) {
+            this.panelTitle.html('No Data');
+            return;
+        }
 
 		// Init List
 		this.list.teleList({ 
@@ -352,6 +352,10 @@ telepath.alerts = {
 		// Cleanup
 		$('.tele-loader', graphsBlock).remove();
 
+        if (!data.distribution_chart.length) {
+            return;
+        }
+
 		var graphOverTimeContainer = $('<div>').addClass('tele-alert-graph-overtime');
 		var graphOverTimeTitle 	   = $('<h2>').html('Alerts over time');
 		var graphOverTimeCanvas    = $('<div>').addClass('tele-alert-graph-overtime-canvas');
@@ -405,8 +409,8 @@ telepath.alerts = {
 		// Add the 2 graph containers
 		graphsBlock.append(graphOverTimeContainer).append(graphDistributionContainer);
 
-		// Graph
-		var options = {
+            // Graph
+            var options = {
 
 			legend: { show: false },
 			series: { lines: { show: true, fill: true }, points: { show: true, fillColor: '#fff' } },
@@ -427,24 +431,24 @@ telepath.alerts = {
 
 		//     if (item) {
 
-		// 	      hoverTip = $(toolTipHTML( item.series.data[item.dataIndex][1], item.series.label ));
-		// 	      $('.graph').parent().append(hoverTip);
-		// 	      ofsh = hoverTip.outerHeight();
-		// 	      ofsw = hoverTip.outerWidth();
-		// 	      hoverTip.offset({
-		// 	            left: item.pageX - ofsw / 2,
-		// 	            top: item.pageY - ofsh - 15
-		// 	         });
-		// 	   }
-		// };
+            // 	      hoverTip = $(toolTipHTML( item.series.data[item.dataIndex][1], item.series.label ));
+            // 	      $('.graph').parent().append(hoverTip);
+            // 	      ofsh = hoverTip.outerHeight();
+            // 	      ofsw = hoverTip.outerWidth();
+            // 	      hoverTip.offset({
+            // 	            left: item.pageX - ofsw / 2,
+            // 	            top: item.pageY - ofsh - 15
+            // 	         });
+            // 	   }
+            // };
 
-		// $('.graph').on('plotclick', function ( event, pos, item ) {
-		//     ...
-		// };
+            // $('.graph').on('plotclick', function ( event, pos, item ) {
+            //     ...
+            // };
 
-		// Generate sample data
-		var chart_data = [{ label: "random", data: this.data.time_chart, color: '#FC3D3D' }];
-		graphOverTimeCanvas.flotGraph({ data: chart_data, options: options });
+            // Generate sample data
+            var chart_data = [{label: "random", data: this.data.time_chart, color: '#FC3D3D'}];
+            graphOverTimeCanvas.flotGraph({data: chart_data, options: options});
 
 		// Sample data
 		telepath.alerts.show_alert_distribution();
