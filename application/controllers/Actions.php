@@ -8,14 +8,7 @@ class Actions extends Tele_Controller
     {
 
         parent::__construct();
-        require 'vendor/autoload.php';
         $this->load->model('M_Actions');
-        //$this->client = new Elasticsearch\Client();
-        //$params = array('hosts' => array('127.0.0.1:9200'));
-#$params = array();
-#$params['logging'] = true;
-#$params['logPath'] = '/tmp/elasticsearch.log';
-        $this->client = new Elasticsearch\Client();
 
     }
 
