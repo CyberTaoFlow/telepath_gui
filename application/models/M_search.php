@@ -81,6 +81,7 @@ class M_Search extends CI_Model {
 								],
 								"query" => $settings['search'],
 								"default_operator" => 'AND',
+								"analyzer" => "keyword",
 								"lenient" => true
                             ] 
                         ]
@@ -239,6 +240,7 @@ class M_Search extends CI_Model {
 					],
 					"query" => $settings['search'],
 					"default_operator" => 'AND',
+					"analyzer" => "keyword",
 					"lenient" => true
 				]
 			];
@@ -312,6 +314,7 @@ class M_Search extends CI_Model {
 								],
 								"query" => $settings['search'],
 								"default_operator" => 'AND',
+								"analyzer" => "keyword",
 								"lenient" => true
 							]
 						];

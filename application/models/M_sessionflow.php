@@ -119,6 +119,7 @@ class M_Sessionflow extends CI_Model {
 					],
 					"query" => $key,
 					"default_operator" => 'AND',
+					"analyzer" => "keyword",
 					"lenient" => true
 				]
 			];
@@ -378,6 +379,7 @@ class M_Sessionflow extends CI_Model {
 							],
 							"query" => $key,
 							"default_operator" => 'AND',
+							"analyzer" => "keyword",
 							"lenient" => true
 						]
 					];
