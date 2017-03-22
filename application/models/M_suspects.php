@@ -135,6 +135,7 @@ class M_Suspects extends CI_Model {
 					],
 					"query" => $search,
 					"default_operator" => 'AND',
+					"analyzer" => "keyword",
 					"lenient" => true
 				]
 			];
