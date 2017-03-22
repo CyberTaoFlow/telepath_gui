@@ -238,7 +238,7 @@ telepath.config.rule = {
 				$.each(that.data.exec, function (i, val) {
 					if (x == val.command) {
 						checked = true;
-						params = val.params;
+						params = val.params || [];
 					}
 				});
 			}
