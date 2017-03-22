@@ -21,7 +21,7 @@ class M_Users extends CI_Model
         $this->load->model('M_Config');
         $last_update = $this->M_Config->get_key('last_web_users_update_id');
 
-        if($last_update){
+        if(!empty($last_update)){
             // search only in relevant index
             $index1 = 'telepath-'.date("Ymd",$time);
             $index2 = 'telepath-'.date("Ymd",$last_update - 60);
@@ -55,7 +55,7 @@ class M_Users extends CI_Model
 
         $params['body']['query']['bool']['must_not'][] = ['term' => ['username' => ""]];
 
-        if ($last_update)
+        if (!empty($last_update))
             $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gt' => $last_update - 60]]];
 
         $params['timeout'] = $this->config->item('timeout');
@@ -93,13 +93,11 @@ class M_Users extends CI_Model
 
             }
 
-        //	Check if telepath-config index exists, to not disturb the correct mapping on fresh installation
-        if ($this->elasticClient->indices()->exists(['index' => 'telepath-config'])) {
 
-            $this->M_Config->update('last_web_users_update_id', $time, true);
+        $this->M_Config->update('last_web_users_update_id', $time);
 
-            logger('Update the time to: ' . $time);
-        }
+        logger('Update the time to: ' . $time);
+
 
         return;
     }

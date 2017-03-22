@@ -556,7 +556,7 @@ class M_Cases extends CI_Model {
 			$this->load->model('M_Config');
 			$last_update = $this->M_Config->get_key('last_case_update_id');
 			// get the relevant index
-			if($last_update){
+			if(!empty($last_update)){
 				$index1='telepath-'.date("Ymd",$time);
 				$index2='telepath-'.date("Ymd",$last_update);
 				$status['indices'][$index1]='';
@@ -564,7 +564,7 @@ class M_Cases extends CI_Model {
 			}
 		}
 
-		if(!$range || !$last_update)
+		if(!$range || empty($last_update))
 		{
 			$status = $this->elasticClient->indices()->stats(['index' => 'telepath-20*']);
 		}
@@ -686,7 +686,7 @@ class M_Cases extends CI_Model {
 					$params['body']["sort"] = ["_doc"];
 
 					// If it's a script that always run, we have to query only the latest requests
-					if ($range && $last_update)
+					if ($range && !empty($last_update))
 						$params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gt' => $last_update]]];
 
 					$docs = $this->elasticClient->search($params);  // The response will contain the first batch of results and a _scroll_id
@@ -727,11 +727,10 @@ class M_Cases extends CI_Model {
 		}
 
 		if ($range) {
-//			Check if telepath-config index exists, to not disturb the correct mapping on fresh installation
-			if ($this->elasticClient->indices()->exists(['index' => 'telepath-config'])) {
-				$this->M_Config->update('last_case_update_id', $update_time, true);
-				logger('Update the time to: ' . $update_time);
-			}
+
+			$this->M_Config->update('last_case_update_id', $update_time);
+			logger('Update the time to: ' . $update_time);
+
 			return;
 		}
 
