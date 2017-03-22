@@ -83,6 +83,7 @@ class M_Alerts extends CI_Model {
 					'username.search'
 				];
 				$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+				$params['body']['query']['bool']['filter'][0]['query_string']['analyzer'] = "keyword";
 			}
 
 
@@ -186,6 +187,7 @@ class M_Alerts extends CI_Model {
 				'username.search'
 			];
 			$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+			$params['body']['query']['bool']['filter'][0]['query_string']['analyzer'] = "keyword";
 		}
 
 		$params['timeout'] = $this->config->item('timeout');
@@ -292,6 +294,7 @@ class M_Alerts extends CI_Model {
 				'username.search'
 			];
 			$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+			$params['body']['query']['bool']['filter'][0]['query_string']['analyzer'] = "keyword";
 		}
 
 		if ($actions_sid) {
@@ -420,6 +423,7 @@ class M_Alerts extends CI_Model {
 				'username.search'
 			];
 			$params['body']['query']['bool']['filter'][0]['query_string']['lenient'] = true;
+			$params['body']['query']['bool']['filter'][0]['query_string']['analyzer'] = "keyword";
 		}
 
 		if ($sortfield == "date") {
