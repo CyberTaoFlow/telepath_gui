@@ -225,7 +225,7 @@ function new_delete_by_query($client, $params)
 					]
 				];
 			}
-			$params2['refresh'] = true;
+			$params2['refresh'] = '';
 			$client->bulk($params2);
 
 			if ($limit) {
@@ -282,7 +282,7 @@ function update_by_query($client, $params, $update, $influence = false)
 				'doc' => $update
 			];
 		}
-		$params2['refresh'] = true;
+		$params2['refresh'] = '';
 		$client->bulk($params2);
 
 		if($limit){

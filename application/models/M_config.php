@@ -292,7 +292,7 @@ class M_Config extends CI_Model
                 ],
                 'doc_as_upsert'=>$doc_as_upsert
             ],
-            'refresh' => true
+            'refresh' => ''
         ];
 
         $this->elasticClient->update($params);

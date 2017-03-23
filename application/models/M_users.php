@@ -81,7 +81,7 @@ class M_Users extends CI_Model
                             'doc_as_upsert' => true
                         ],
 
-                        'refresh' => true
+                        'refresh' => ''
                     ];
 
                     $this->elasticClient->update($params);
