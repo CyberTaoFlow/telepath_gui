@@ -93,6 +93,11 @@ class Telepath extends Tele_Controller
             $new_status = $this->M_Config->get_key('license_mode_id');
         }
 
+        // Add variable to session data to prevent anyone else from registering
+        if ($new_status == 'VALID'){
+            $_SESSION['register'] = true;
+        }
+
         return_json(array('success' => true, 'status' => $new_status));
 
     }
@@ -111,7 +116,8 @@ class Telepath extends Tele_Controller
 
         // Either login / ui
         if ($licence_valid) {
-            if ($new_installation){
+           // Only the user that enter the correct license key can register
+            if ($new_installation && isset($_SESSION['register']) && $_SESSION['register']) {
                 $this->load->view('register');
             }
             else{
@@ -120,6 +126,7 @@ class Telepath extends Tele_Controller
                 } else {
                     $this->load->view('login');
                 }
+                unset($_SESSION['register']);
             }
         } else { // Or show license window
             $this->load->view('license');

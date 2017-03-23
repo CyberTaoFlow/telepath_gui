@@ -204,6 +204,8 @@ class Auth extends CI_Controller
 
             telepath_log('Telepath', 'login', $this, array());
 
+            unset($_SESSION['register']);
+
             return_json(array('success' => true));
 
         } else {
