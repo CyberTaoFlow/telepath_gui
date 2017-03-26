@@ -122,7 +122,7 @@ class M_Suspects extends CI_Model {
 						'host.search',
 						'ip_orig',
 						'method',
-						'business_actions.search',
+						'business_actions.name.search',
 						'canonical_url.search',
 						'uri.search',
 						'alerts.name.search',
