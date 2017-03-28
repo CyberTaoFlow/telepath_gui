@@ -82,6 +82,7 @@ class M_Sessionflow extends CI_Model {
 		$params['body']['query']['bool']['filter'][] = ['range' => ['score_average' => ['gte' => $suspect_threshold]]];
 		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'alerts_count']];
 		$params['body']['query']['bool']['must_not'][] = ['match' => ['operation_mode' => '1']];
+		$params = append_range_query($params, $range);
 		$params['timeout'] = $this->config->item('timeout');
 
 		$results = $this->elasticClient->search($params);
