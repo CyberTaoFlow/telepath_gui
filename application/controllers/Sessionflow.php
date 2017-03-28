@@ -108,7 +108,7 @@ class Sessionflow extends Tele_Controller
 
         $suspect_threshold = 0.8;
 
-        if ($filter == 'Suspect'){
+        if ($filter == 'Suspects'){
             $this->load->model('M_Suspects');
             $suspect_threshold = $this->M_Suspects->get_threshold();
         }
