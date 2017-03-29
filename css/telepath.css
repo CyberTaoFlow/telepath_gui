@@ -1432,11 +1432,12 @@ html .tele-panel-topbar a.tele-panel-case-close:visited {
     margin-top: 15px;
 }
 
-.legendLabel{
+.legendLabel {
 	font-size: 15px;
 	margin-bottom: 10px;
 	padding: 4px;
-	}
+	width: 218px;
+}
 
 .tele-case-graph .tele-dropdown,
 .tele-case-graph .tele-daterange {
