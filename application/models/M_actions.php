@@ -119,13 +119,6 @@ class M_Actions extends CI_Model {
 //		return $result['hits']['hits'];
 //	}
 
-	function set_clear_actions(){
-
-		$params['index'] = 'telepath-actions';
-		$params['type'] = 'actions';
-		$params['body']['query']['match']['domain'] = '192.168.1.111';
-                delete_by_query($this->elasticClient, $params);
-	}
 
 	function get_app_actions($host){
 

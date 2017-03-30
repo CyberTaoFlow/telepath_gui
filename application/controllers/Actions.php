@@ -44,13 +44,6 @@ class Actions extends Tele_Controller
 
     }
 
-    public function set_clear_actions()
-    {
-
-        telepath_auth(__CLASS__, 'set_action');
-
-
-    }
 
     public function get_app_actions()
     {
