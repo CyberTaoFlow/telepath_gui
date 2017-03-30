@@ -131,8 +131,8 @@ class M_Applications extends CI_Model {
 
 	}
 
-	function delete($host) {
-		# Delete host from the application index, Yuli
+	# Delete host from the application index
+	function delete_from_app_domain($host) {
 		$params['index'] = 'telepath-domains';
 		$params['type'] = 'domains';
 		$params['id'] = $host;
@@ -142,13 +142,15 @@ class M_Applications extends CI_Model {
 			$this->elasticClient->delete($params);
 //			$this->elasticClient->indices()->refresh(array('index' => 'telepath-domains'));
 		}
+	}
 
-		# Delete all records where HTTP host is used the same ias $host, Yuli
+	# Delete all records where HTTP host used the same $host
+	function delete_from_indices($host){
 		$params = array();
 		$params['index'] = 'telepath-20*';
 		$params['type'] = 'http';
 		$params['body']['query']['bool']['filter']['term']['host'] = $host;
-		new_delete_by_query($this->elasticClient, $params);
+		$this->elasticClient->deleteByQuery($params);
 	}
 
 	function update_flag($host)

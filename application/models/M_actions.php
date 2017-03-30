@@ -148,8 +148,7 @@ class M_Actions extends CI_Model {
 		$params['type'] = 'actions';
 		$params['body']['query']['bool']['filter'][] = ['term' => ['action_name' => $name]];
 		$params['body']['query']['bool']['filter'][] = ['term' => ['application' => $app]];
-		#$res = $this->elasticClient->deleteByQuery($params);
-                delete_by_query($this->elasticClient, $params);
+		$this->elasticClient->deleteByQuery($params);
 
 		// Insert new
 		$params = ['body' => $new_json, 'index' => 'telepath-actions', 'type' => 'actions'];
