@@ -210,6 +210,7 @@ telepath.sessionflow = {
 		this.list = list;
 		this.range = true;
 		this.RID = RID || 0;
+		this.RIDS = [];
 
 		if (filter == 'cases'){
 			this.filter = 'All';
