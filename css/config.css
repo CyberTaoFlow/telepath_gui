@@ -1226,6 +1226,13 @@ a.jstree-anchor{
 	line-height: 24px;
 }
 
+.tele-alerts-syslog {
+	float: left;
+	clear: both;
+	width: 168px;
+	margin-top: 14px;
+}
+
 .tele-config-smtp-encrypt{
 	clear: both;
 }

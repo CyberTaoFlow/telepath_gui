@@ -45,21 +45,25 @@ class Cron extends Tele_Controller
         // Gather last minute alerts
         //$client = new Elasticsearch\Client();
 
-        // Get rules with checked 'syslog' input (in rules board)
-        $params['index'] = 'telepath-rules';
-        $params['type'] = 'rules';
-        $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
-        $params['_source_include'] = ['name'];
-        $params['timeout'] = $this->config->item('timeout');
-        $results = $this->elasticClient->search($params);
+        $all_alerts_to_syslog_id = $this->M_Config->get_key('all_alerts_to_syslog_id');
 
-        if (isset($results['hits']) && !empty($results['hits']['hits'])) {
-            foreach ($results['hits']['hits'] as $syslog_alert) {
-                $syslog_alerts[] = $syslog_alert['_source']['name'];
+        // If syslog all alerts toogle is false, get rules with checked 'syslog' input (in rules board)
+        if (!$all_alerts_to_syslog_id) {
+            $params['index'] = 'telepath-rules';
+            $params['type'] = 'rules';
+            $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
+            $params['_source_include'] = ['name'];
+            $params['timeout'] = $this->config->item('timeout');
+            $results = $this->elasticClient->search($params);
+
+            if (isset($results['hits']) && !empty($results['hits']['hits'])) {
+                foreach ($results['hits']['hits'] as $syslog_alert) {
+                    $syslog_alerts[] = $syslog_alert['_source']['name'];
+                }
+            } // If there are no rules with checked 'syslog' input we don't need to run the job
+            else {
+                return;
             }
-        } // If there are no rules with checked 'syslog' input we don't need to run the job
-        else {
-            return;
         }
 
         @set_time_limit(-1);
@@ -89,7 +93,13 @@ class Cron extends Tele_Controller
             "sort" => ['ts' => 'desc']
         ];
 
-        $params['body']['query']['bool']['filter'][] = ['terms' => ['alerts.name' => $syslog_alerts]];
+        // If syslog all alerts toogle is false, get rules with checked 'syslog' input (in rules board), else get all
+        // alerts
+        if (!$all_alerts_to_syslog_id) {
+            $params['body']['query']['bool']['filter'][] = ['terms' => ['alerts.name' => $syslog_alerts]];
+        } else {
+            $params['body']['query']['bool']['filter'][] = ['exists' => ['field' => 'alerts']];
+        }
         $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $last_update, 'lt' => $current_update]]];
         $params['timeout'] = $this->config->item('timeout');
 
