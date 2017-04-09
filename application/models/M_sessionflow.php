@@ -55,7 +55,7 @@ class M_Sessionflow extends CI_Model {
 	
 	}
 	
-	public function get_session_stats($anchor_field, $anchor_value, $key = '', $range = null,
+	public function get_session_stats($anchor_field, $anchor_value, $key = '', $fields = [], $range = null,
 		$suspect_threshold = 0.8) {
 		if ($range) {
 			$params['index'] = $range['indices'];
@@ -98,29 +98,10 @@ class M_Sessionflow extends CI_Model {
 
 			$params['body']['query']['bool']['filter'][] = [
 				'query_string' => [
-					"fields" => [
-						'status_code',
-						'city.search',
-						'title.search',
-						'sid',
-						'ip_resp',
-						'host.search',
-						'ip_orig',
-						'method',
-						'business_actions.name.search',
-						'canonical_url.search',
-						'uri.search',
-						'alerts.name.search',
-						'country_code.search',
-						'cases_name.search',
-						'parameters.name',
-						'parameters.type',
-						'parameters.value.search',
-						'username.search'
-					],
+					"fields" => $fields,
 					"query" => $key,
 					"default_operator" => 'AND',
-					"analyzer" => "keyword",
+					"analyzer" => "search-analyzer",
 					"lenient" => true
 				]
 			];
@@ -322,7 +303,7 @@ class M_Sessionflow extends CI_Model {
 
 	}
 
-	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null,
+	public function get_sessionflow($anchor_field, $anchor_value, $start, $limit, $filter, $key = null, $fields = [],
 		$range = false, $suspect_threshold = 0.8) {
 
 		if($range){
@@ -358,29 +339,10 @@ class M_Sessionflow extends CI_Model {
 				if ($key) {
 					$params['body']['query']['bool']['filter'][] = [
 						'query_string' => [
-							"fields" => [
-								'status_code',
-								'city.search',
-								'title.search',
-								'sid',
-								'ip_resp',
-								'host.search',
-								'ip_orig',
-								'method',
-								'business_actions.search',
-								'canonical_url.search',
-								'uri.search',
-								'alerts.name.search',
-								'country_code.search',
-								'cases_name.search',
-								'parameters.name',
-								'parameters.type',
-								'parameters.value.search',
-								'username.search'
-							],
+							"fields" => $fields,
 							"query" => $key,
 							"default_operator" => 'AND',
-							"analyzer" => "keyword",
+							"analyzer" => "search-analyzer",
 							"lenient" => true
 						]
 					];

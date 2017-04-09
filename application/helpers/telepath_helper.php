@@ -683,6 +683,72 @@ function ip_range_to_subnet_array($startip, $endip) {
 	return $rangesubnets;
 }
 
+function translate_to_elastic_fields($fields){
+
+	$new_fields = [];
+
+	foreach ($fields as $key => $value) {
+		if ($value == "true") {
+			switch ($key) {
+				case 'host':
+					$new_fields[] = 'host.search';
+					break;
+				case 'ip_resp':
+					$new_fields[] = 'ip_resp';
+					break;
+				case 'ip_orig':
+					$new_fields[] = 'ip_orig';
+					break;
+				case 'uri':
+					$new_fields[] = 'uri.search';
+					break;
+				case 'canonical_url':
+					$new_fields[] = 'canonical_url.search';
+					break;
+				case 'sid':
+					$new_fields[] = 'sid';
+					break;
+				case 'country_code':
+					$new_fields[] = 'country_code.search';
+					break;
+				case 'city':
+					$new_fields[] = 'city.search';
+					break;
+				case 'title':
+					$new_fields[] = 'title.search';
+					break;
+				case 'status_code':
+					$new_fields[] = 'status_code';
+					break;
+				case 'method':
+					$new_fields[] = 'method';
+					break;
+				case 'parameter_name':
+					$new_fields[] = 'parameters.name';
+					break;
+				case 'parameter_value':
+					$new_fields[] = 'parameters.value.search';
+					break;
+				case 'username':
+					$new_fields[] = 'username.search';
+					break;
+				case 'business_actions':
+					$new_fields[] = 'business_actions.search';
+					break;
+				case 'alert':
+					$new_fields[] = 'alerts.name.search';
+					break;
+				case 'case':
+					$new_fields[] = 'cases_name.search';
+					break;
+			}
+		}
+	}
+
+	return $new_fields;
+
+}
+
 
 
 

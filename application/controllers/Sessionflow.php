@@ -20,6 +20,12 @@ class Sessionflow extends Tele_Controller
         $anchor_field='sid';
         $anchor_value=$this->input->post('sid');
         $key = $this->input->post('searchkey');
+        $fields = [];
+        if ($key){
+            $key = json_encode($key);
+            $fields = translate_to_elastic_fields($this->input->post('fields'));
+        }
+
         $range = $this->input->post('range') == 'true';
 //        $alerts = $this->input->post('alerts');
 
@@ -48,7 +54,7 @@ class Sessionflow extends Tele_Controller
         $suspect_threshold = $this->M_Suspects->get_threshold();
 
 
-        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $range,
+        $stats = $this->M_Sessionflow->get_session_stats($anchor_field, $anchor_value, $key, $fields, $range,
             $suspect_threshold);
         xss_return_success($stats);
 
@@ -94,6 +100,12 @@ class Sessionflow extends Tele_Controller
 //        }
 
         $key = $this->input->post('searchkey');
+        $fields = [];
+        if ($key){
+            $key = json_encode($key);
+            $fields = translate_to_elastic_fields($this->input->post('fields'));
+        }
+
 //        if (!empty($key) && substr($key, -1) != '*' && strpos($key, 'country_code') !== 0)
 //        {
 //            $key = str_replace('OR*','OR',str_replace('AND*','AND',str_replace(' ','* ',$key))) . '*';
@@ -115,7 +127,7 @@ class Sessionflow extends Tele_Controller
 
 
         $sessionflow = $this->M_Sessionflow->get_sessionflow($anchor_field, $anchor_value, $offset, 100, $filter,
-            $key, $range, $suspect_threshold);
+            $key, $fields, $range, $suspect_threshold);
         xss_return_success($sessionflow);
 
     }

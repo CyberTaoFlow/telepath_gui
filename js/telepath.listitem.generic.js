@@ -82,7 +82,7 @@ telepath.listitem.generic = {
 			}
 
 			telepath.sessionflow.init(widget.options.itemID, /*widget.options.raw.ip_orig, names ,*/
-				filter, widget.options.raw.searchkey, widget.element.parent().parent());
+				filter, widget.options.raw.searchkey, widget.options.raw.fields, widget.element.parent().parent());
 
 			// URL Routing
 			telepath.activePage.push(widget.options.itemID, filter);

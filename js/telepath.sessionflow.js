@@ -4,6 +4,26 @@ telepath.sessionflow = {
 	RIDS: [],
 	list: false,
 	searchkey: '',
+	default_fields: {
+		'host': true,
+		'ip_resp': true,
+		'ip_orig': true,
+		'uri': true,
+		'canonical_url': true,
+		'sid': true,
+		'country_code': true,
+		'city': true,
+		'title': true,
+		'status_code': true,
+		'method': true,
+		'parameter_name': true,
+		'parameter_value': true,
+		'username': true,
+		'business_actions': true,
+		'alert': true,
+		'case': true
+	},
+	fields: false,
 	selectedIndex: 0,
 	selectedBox:'',
 	similarities: [],
@@ -200,13 +220,14 @@ telepath.sessionflow = {
 		$(this.actionsContainer).css({'height': actionHeight});
 
 	},
-	init: function(SID, /*IP, alerts_names,*/ filter,  searchkey, list, RID) {
+	init: function(SID, /*IP, alerts_names,*/ filter,  searchkey, fields, list, RID) {
 
 		this.session = false;
 		this.SID  = SID;
 		//this.IP  = IP;
 		//this.alerts_names = alerts_names;
 		this.searchkey = searchkey;
+		this.fields = fields || this.default_fields;
 		this.list = list;
 		this.range = true;
 		this.RID = RID || 0;
@@ -238,11 +259,11 @@ telepath.sessionflow = {
 		that.session = {};
 		
 		// Load session stats, then items
-		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
+		telepath.ds.get('/sessionflow/get_session_stats', { sid: that.SID, searchkey: that.searchkey, fields: that.fields, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
 			
 			that.session.stats = data.items;
 			
-			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
+			telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, fields: that.fields, /*alerts: that.alerts_names, ip: that.IP ,*/ range: that.range }, function (data) {
 				that.session.items = data.items;
 				that.showSession();
 			}, false, false, true);
@@ -492,7 +513,7 @@ telepath.sessionflow = {
 					
 						var offset = that.session.items.length;
 						
-						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, /*alerts: that.alerts_names, ip: that.IP,*/ offset: offset, range: that.range }, function (data) {
+						telepath.ds.get('/sessionflow/get_sessionflow', { sid: that.SID, filter: that.filter, searchkey: that.searchkey, fields: that.fields, /*alerts: that.alerts_names, ip: that.IP,*/ offset: offset, range: that.range }, function (data) {
 							that.loading = false;
 							$('.tele-loader', that.actionsContainer).remove();
 						
@@ -559,11 +580,12 @@ telepath.sessionflow = {
 
 		$('.tele-title-2 span', newListItem).click(function () {
 
-			var search = 'alerts.name:"' + $(this).text() + '"';
-
+			//var search = 'alerts.name:"' + $(this).text() + '"';
 			telepath.overlay.destroy();
-			telepath.header.searchInput.val(search);
-			telepath.ui.displayPage(['search', search])
+			//telepath.header.searchInput.val(search);
+			telepath.search.options = {};
+			telepath.search.options['alert'] = true;
+			telepath.ui.displayPage(['search', $(this).text()])
 		});
 
 		this.printed++;
@@ -1236,8 +1258,10 @@ telepath.sessionflow = {
 
 
 				telepath.overlay.destroy();
-				var search = field + ':"' + search + '"';
-				telepath.header.searchInput.val(search);
+				//var search = field + ':"' + search + '"';
+				telepath.search.options = {};
+				telepath.search.options[field] = true;
+				//telepath.header.searchInput.val(search);
 				telepath.ui.displayPage(['search', search]);
 			}
 		});

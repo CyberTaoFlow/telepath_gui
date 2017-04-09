@@ -2,15 +2,23 @@ telepath.search = {
 
     results: {},
     defaults: {
-        'application': true,
-        'pages': true,
-        'attributes': true,
-        'requests': true,
-        'suspects': true,
-        'alerts': true,
-        'cases': true,
-        'request_data': true,
-        'users': false
+        'host': true,
+        'ip_resp': true,
+        'ip_orig': true,
+        'uri': true,
+        'canonical_url': true,
+        'sid': true,
+        'country_code': true,
+        'city': true,
+        'title': true,
+        'status_code': true,
+        'method': true,
+        'parameter_name': true,
+        'parameter_value': true,
+        'username': true,
+        'business_actions': true,
+        'alert': true,
+        'case': true
     },
     sort: 'date',
     dir: false,
@@ -24,18 +32,26 @@ telepath.search = {
     },
 
     options: false,
-    /*searchTypes: [
-        {id: 'cases', label: 'Request Data', desc: 'Search Cases'},					// Scope
-        {id: 'alerts', label: 'Applications', desc: 'Search Alerts'},					// Scope
-        {id: 'suspects', label: 'Request Data', desc: 'Search suspects'},				// Scope
-        {id: 'requests', label: 'Requests', desc: 'Search Requests'},					// Scope
-        {id: 'request_data', label: 'Request Data', desc: 'Search request data'}, 	// Variant TODO:: See performance cost to have these on by default
-        {id: 'application', label: 'Applications', desc: 'Search domain names'},		// Variant
-        {id: 'pages', label: 'Applications', desc: 'Search application page names'},	// Variant
-        {id: 'attributes', label: 'Applications', desc: 'Search attribute names'},	// Variant
-        {id: 'users', label: 'Request Data', desc: 'Search web application users'},	// Variant
-        {id: 'users', label: 'Request Data', desc: 'Search in countries and cities'}	// Variant
-    ],*/
+    searchTypes: [
+        // TODO:: See performance cost to have these on by default
+        {id: 'host', desc: 'Hostname'},
+        {id: 'ip_resp', desc: 'Response IP'},
+        {id: 'ip_orig', desc: 'Request IP'},
+        {id: 'uri', desc: 'URI'},
+        {id: 'canonical_url', desc: 'Canonical link element'},
+        {id: 'sid', desc: 'Session ID'},
+        {id: 'country_code', desc: 'Country Code'},
+        {id: 'city', desc: 'City'},
+        {id: 'title', desc: 'HTML Title'},
+        {id: 'status_code', desc: 'Status Code'},
+        {id: 'method', desc: 'HTTP Request Method'},
+        {id: 'parameter_name', desc: 'Parameter Name'},
+        {id: 'parameter_value', desc: 'Parameter Value'},
+        {id: 'username', desc: 'Username'},
+        {id: 'business_actions', desc: 'Business Action'},
+        {id: 'alert', desc: 'Alert Name'},
+        {id: 'case', desc: 'Case Name'}
+    ],
 
 
     printTypes: function (element) {
@@ -63,7 +79,7 @@ telepath.search = {
         }
 
 
-        /*$.each(that.searchTypes, function (i, data) {
+        $.each(that.searchTypes, function (i, data) {
 
             var wrap = $('<div>').addClass('tele-search-filter').attr('id', 'tele-search-filter-' + data.id);
             //var title = $('<div>').addClass('tele-title-2').html(data.label);
@@ -82,25 +98,25 @@ telepath.search = {
             wrap.append(cb);
             element.append(wrap);
 
-        });*/
-
-        that.buttonsEl = $('<div>').addClass('tele-form-buttons');
-        that.applyBtn = $('<a class="tele-button tele-button-apply">Save</a>');
-        that.cancelBtn = $('<a class="tele-button tele-button-cancel">Cancel</a>');
-
-        that.buttonsEl.append(that.applyBtn).append(that.cancelBtn);
-        element.append(that.buttonsEl);
-
-        // BIND Validate
-        that.applyBtn.click(function () {
-            //$('.tele-search-filters').remove();
         });
 
-        // BIND Cancel -- Simply reload
-        that.cancelBtn.click(function () {
-            that.options = that.defaults; // USE $.extend
-            //$('.tele-search-filters').remove();
-        });
+        //that.buttonsEl = $('<div>').addClass('tele-form-buttons');
+        //that.applyBtn = $('<a class="tele-button tele-button-apply">Save</a>');
+        //that.cancelBtn = $('<a class="tele-button tele-button-cancel">Cancel</a>');
+        //
+        //that.buttonsEl.append(that.applyBtn).append(that.cancelBtn);
+        //element.append(that.buttonsEl);
+        //
+        //// BIND Validate
+        //that.applyBtn.click(function () {
+        //    $('.tele-search-filters').remove();
+        //});
+        //
+        //// BIND Cancel -- Simply reload
+        //that.cancelBtn.click(function () {
+        //    that.options = that.defaults; // USE $.extend
+        //    $('.tele-search-filters').remove();
+        //});
 
     },
 
@@ -337,7 +353,7 @@ telepath.search = {
 
 
         // Fallback to defaults
-        if (this.options === false) {
+        if (this.fields === false) {
             this.options = this.defaults; // USE $.extend
         }
 
@@ -370,7 +386,7 @@ telepath.search = {
 
         $.each(['alerts', 'cases', 'suspects', 'requests'], function (i, type) {
 
-            if (that.options[type]) {
+            //if (that.options[type]) {
 
                 telepath.ds.get('/search/' + type, searchSettingsObj, function (data) {
                     // remove loading image, Yuli
@@ -408,16 +424,16 @@ telepath.search = {
                 }, false, true);
 
 
-            }
-            else {
-                that.count++;
-                if (that.count==4)
-                    that.selectTab();
-                that.container = $('#tele-search-' + type);
-                that.container.empty();
-                var p = $('<p>').text("No select option " + type);
-                that.container.append(p);
-            }
+            //}
+            //else {
+            //    that.count++;
+            //    if (that.count==4)
+            //        that.selectTab();
+            //    that.container = $('#tele-search-' + type);
+            //    that.container.empty();
+            //    var p = $('<p>').text("No select option " + type);
+            //    that.container.append(p);
+            //}
 
         });
 
@@ -517,6 +533,7 @@ telepath.search = {
         this.list.teleList({
             data: this.results.cases,
             searchkey: this.searchStr,
+            fields: this.options,
             formatter: function (item) {
 
                 return telepath.case.rowFormatter(item,'search');
@@ -560,6 +577,7 @@ telepath.search = {
         this.list.teleList({
             data: this.results.alerts,
             searchkey: this.searchStr,
+            fields: this.options,
             formatter: function (item) {
 
                 //item.checkable = true;
@@ -603,7 +621,9 @@ telepath.search = {
 
         // Init Suspects
         this.list.teleList({
-            data: this.results.suspects, searchkey: this.searchStr,
+            data: this.results.suspects,
+            searchkey: this.searchStr,
+            fields: this.options,
             formatter: function (item) {
                 // item.checkable = true;
                 return telepath.suspects.rowFormatter(item);
@@ -646,7 +666,9 @@ telepath.search = {
 
         // Init Suspects
         this.list.teleList({
-            data: this.results.requests, searchkey: this.searchStr,
+            data: this.results.requests,
+            searchkey: this.searchStr,
+            fields: this.options,
             formatter: function (item) {
                 //   item.checkable = true;
                 return telepath.suspects.rowFormatter(item);

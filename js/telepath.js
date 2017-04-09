@@ -262,7 +262,7 @@ telepath.ui = {
             if (params[0] == 'search'){
                 session[2] = params[1];
             }
-            telepath.sessionflow.init(session[0], session[1], session[2], '', session[3]);
+            telepath.sessionflow.init(session[0], session[1], null, session[2], '', session[3]);
         }
         else {
             location.hash = hash;

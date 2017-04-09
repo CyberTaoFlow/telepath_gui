@@ -35,9 +35,9 @@ telepath.header = {
 		this.search = $('<div>').addClass('tele-search-top');
 		this.searchInput = $('<input>').addClass('tele-search-input');
 		this.searchIcon = $('<a>').addClass('tele-search-icon').html('Search');
-		//this.searchDD = $('<a href="#">').addClass('tele-search-dropdown').html('');
+		this.searchDD = $('<a>').addClass('tele-search-dropdown').html('');
 
-		this.search.append(this.searchInput).append(this.searchIcon)/*.append(this.searchDD)*/;
+		this.search.append(this.searchInput).append(this.searchIcon).append(this.searchDD);
 		this.headerRight.append(this.search);
 
 		// Hook for icon click
@@ -94,7 +94,7 @@ telepath.header = {
 
 
 		// Hook for dropdown arrow
-		/*this.searchDD.click(function () {
+		this.searchDD.click(function () {
 
 			if ($('.tele-search-filters').size() > 0) {
 				$('.tele-search-filters').remove();
@@ -103,12 +103,12 @@ telepath.header = {
 
 			that.searchWrap = $('<div>').addClass('tele-search-filters').addClass('tele-popup');
 
-			var title = $('<div>').addClass('tele-title-1').html('What to search');
-			that.searchWrap.append(title);
+			//var title = $('<div>').addClass('tele-title-1').html('What to search');
+			//that.searchWrap.append(title);
 			that.headerRight.append(that.searchWrap);
 			telepath.search.printTypes(that.searchWrap);
 
-		});*/
+		});
 
 		
 		$('.tele-header').append(this.logo).append(this.nav).append(this.headerRight);

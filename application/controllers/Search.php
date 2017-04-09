@@ -19,7 +19,7 @@ class Search extends Tele_Controller
             return_fail('No search string defined, aborting');
         }
 
-        $key = $this->input->post('search');
+        $search = json_encode($this->input->post('search'));
 
         # Automatically add * to the end of search string
 //        if (substr($key, -1) != '*' && $key[0]!='"' && substr($key, -1) != '"' )
@@ -32,9 +32,12 @@ class Search extends Tele_Controller
         if (!$sort || !in_array($sort, array('date', 'name', 'count', 'score'))) {
             $sort = 'date';
         }
+
+        $fields = translate_to_elastic_fields($this->input->post('options'));
+
         return array(
-            'search' => $key,
-//            'options' => $this->input->post('options'),
+            'search' => $search,
+            'fields' => $fields,
             'range' => $this->_get_range(),
             //'apps' 	  	 => $this->input->post('apps'),
             'apps' => $this->_get_apps(),

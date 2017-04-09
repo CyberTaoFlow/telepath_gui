@@ -40,6 +40,7 @@ $.widget( "tele.teleList", {
 		data: false,
 		formatter: false,
 		searchkey: '',
+		fields: false,
 		clickable: true,
 		callbacks: {}
     },
@@ -160,36 +161,36 @@ $.widget( "tele.teleList", {
 
                 // check if displayed field name (before ":")
                 if ($(this).parent().text().indexOf(":") > -1) {
-                    field = $(this).parent().text().split(/\s{1}/)[0];
+                    field = $(this).parent().text().split(/:\s{1}/)[0];
 
-                    // change field to elastic field name
+                    // change field name to correspond to search dropdown
                     switch (field) {
-                        case "IP:":
-                            field = 'ip_orig:';
+                        case "IP":
+                            field = 'ip_orig';
                             break;
-                        case "rules:":
-                            field = 'alerts.name:';
+                        case "rules":
+                            field = 'alert';
                             break;
-						case "country:":
+						case "country":
 							$.each(telepath.countries.map, function (k, val) {
 								if (val.toLowerCase() == search.toLowerCase()) {
 									search = k;
 								}
 							});
-                            field = 'country_code:';
+                            field = 'country_code';
                             break;
-						case "application:":
-                            field = 'host:';
+						case "application":
+                            field = 'host';
                             break;
-						case "parameter:":
-                            field = 'parameters.name:';
+						case "parameter":
+                            field = 'parameter_name';
                             break;
                     }
                 }
                 // user and country fields
                 else {
                     if ($(this).attr("class") == 'tele-user') {
-                        field = 'username:';
+                        field = 'username';
                         search = $.trim(search);
                     }
                     else {
@@ -198,12 +199,14 @@ $.widget( "tele.teleList", {
                                 search = k;
                             }
                         });
-                        field = 'country_code:';
+                        field = 'country_code';
                     }
                 }
 				if (!$(this).text().match("Not ") ){
-					var search = field + '"' + search + '"';
-					telepath.header.searchInput.val(search);
+					//var search = field + '"' + search + '"';
+					//telepath.header.searchInput.val(search);
+					telepath.search.options = {};
+					telepath.search.options[field] = true;
 					telepath.ui.displayPage(['search', search]);
 				}
             });
@@ -236,6 +239,7 @@ $.widget( "tele.teleList", {
 		for(x in this.options.data) {
 			var item = this.options.data[x];
 			item.searchkey = this.options.searchkey;
+			item.fields = this.options.fields;
 			this.appendItem(item);
 		}
 
@@ -261,6 +265,7 @@ $.widget( "tele.teleList", {
 							for(x in data.items) {
 								var item = data.items[x];
 								item.searchkey = that.options.searchkey;
+								item.fields = that.options.fields;
 								that.appendItem(item);
 							}
 							

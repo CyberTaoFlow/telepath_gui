@@ -82,9 +82,11 @@ $.widget( "tele.vMap", {
 
 				if (telepath.dashboard.map_mode == "traffic"){
 					$('.jqvmap-label').remove();
-					var search = 'country_code:' + y.toUpperCase();
-					$('.tele-search-top .tele-search-input').val(search);
-					telepath.ui.displayPage(['search', search]);
+					//var search =  y.toUpperCase();
+					telepath.search.options = {};
+					telepath.search.options['country_code'] = true;
+					//$('.tele-search-top .tele-search-input').val(search);
+					telepath.ui.displayPage(['search', y.toUpperCase()]);
 				}
 				else {
 					telepath.alerts.firstSearchString = 'country_code:' + y.toUpperCase();

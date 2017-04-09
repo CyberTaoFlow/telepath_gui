@@ -1319,12 +1319,12 @@ a.jstree-anchor{
 	position: absolute;
 	z-index: 999;
 	padding: 10px;
-	right: 180px;
-    top: 70px;
+	right: 107px;
+    top: 64px;
 	display: block;
 }
 .tele-search-filter .tele-input-label {
-	width: 255px;
+	width: 200px;
 }
 .tele-search-filters .tele-button {
 	margin-left: 23px;
