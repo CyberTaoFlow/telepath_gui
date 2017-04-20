@@ -56,27 +56,39 @@ telepath.header = {
 			}
 		});
 
-		/*$(this.searchInput).autocomplete({
-			source: function(request, response) {
-				telepath.ds.get('/search/getAutoComplete', { search: telepath.header.searchInput.val() }, function(data) {
-					if(data.items) {
+		// Auto-complete
+		$(this.searchInput).autocomplete({
+			source: function (request, response) {
+				telepath.ds.get('/search/autocomplete', {
+					search: request,
+					options: telepath.search.options
+				}, function (data) {
+					if (data.items) {
 						response(data.items);
 					}
-				});
+				}, false, false, true);
 			},
-			select: function (event, ui){
+			delay: 50,
+			minLength: 2,
+			search: function (event, ui) {
+				// Search only for words that are analyzed (when the user enter - or _ or \ or / or . or space)
+				var lastChar = event.target.value.slice(-1);
+				if (lastChar != '-' && lastChar != '_' && lastChar != '\\' && lastChar != '/' && lastChar != '.' && lastChar != " ") {
+					return false;
+				}
+			},
+			select: function (event, ui) {
 				if (event.keyCode == 13) {
 					return
 				}
 				telepath.search.init(ui.item.value);
 				telepath.ui.resize();
 			},
-			open: function(event, ui) {
+			open: function (event, ui) {
 				$(this).autocomplete("widget").css({
 					"width": $('.tele-search-top').width()
 				});
-			},
-
+			}
 
 		}).focus(function () {
 			$(this).autocomplete('search', telepath.header.searchInput.val());
@@ -88,9 +100,9 @@ telepath.header = {
 				+ ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<span style='font-weight: normal'>$1</span>");
 			return $("<li></li>")
 				.data("item.autocomplete", item)
-				.append("<a class='text-autocomplete' style='font-weight: bold;  font-family: "+"Roboto Condensed Regular;"+"'>" + item.label +"</a>")
+				.append("<a class='text-autocomplete' style='font-weight: bold;  font-family: " + "Roboto Condensed Regular;" + "'>" + item.label + "</a>")
 				.appendTo(ul);
-		};*/
+		};
 
 
 		// Hook for dropdown arrow

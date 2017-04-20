@@ -317,6 +317,64 @@ class M_Search extends CI_Model {
 	
 	}
 
+	function autocomplete($settings)
+	{
+
+		$params['index'] = $settings['range']['indices'];
+		$params['type'] = 'http';
+		$params['body'] = [
+			'size' => 0,
+			'query' => [
+				'bool' => [
+					'filter' => [
+						[
+							'query_string' => [
+								"fields" => $settings['fields'],
+								"query" => $settings['search'],
+								"default_operator" => 'AND',
+								"analyzer" => "search-analyzer",
+								"lenient" => true
+							]
+						]
+					]
+				]
+			]
+		];
+
+		// Add aggregation for each checked field, if the field has an analyzer
+		foreach ($settings['fields'] as $field) {
+			$field = strstr($field, '.search', true);
+			if ($field) {
+				$params['body']['aggs'][$field]['terms'] = [
+					"field" => $field,
+					"size" => 5,
+					// include only results that match the search
+					"include" => $settings['search'] . '.*' //TODO: Transform this regex to case insensitive
+				];
+			}
+		}
+
+		$params = append_range_query($params, $settings['range']);
+
+		$params['timeout'] = $this->config->item('timeout');
+
+		$params = append_application_query($params, $settings['apps']);
+
+		$result = $this->elasticClient->search($params);
+
+		$data = [];
+		if (!empty($result) && !empty($result['aggregations'])) {
+			foreach ($result['aggregations'] as $agg) {
+				foreach ($agg['buckets'] as $bucket) {
+					$data[] = $bucket['key'];
+				}
+			}
+		}
+
+		return array_unique($data);
+
+	}
+
 	function getAutoComplete($search, $range, $apps)
 	{
 

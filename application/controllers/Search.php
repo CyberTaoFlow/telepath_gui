@@ -179,4 +179,19 @@ class Search extends Tele_Controller
 
     }
 
+    function autocomplete()
+    {
+        $search = $this->input->post('search');
+
+        $settings = [
+            'search' => json_encode($search['term']),
+            'fields' => translate_to_elastic_fields($this->input->post('options')),
+            'range' => $this->_get_range(),
+            'apps' => $this->_get_apps(),
+        ];
+
+        xss_return_success($this->M_Search->autocomplete($settings));
+
+    }
+
 }
