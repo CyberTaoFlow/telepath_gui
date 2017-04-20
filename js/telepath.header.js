@@ -59,24 +59,22 @@ telepath.header = {
 		// Auto-complete
 		$(this.searchInput).autocomplete({
 			source: function (request, response) {
-				telepath.ds.get('/search/autocomplete', {
-					search: request,
-					options: telepath.search.options
-				}, function (data) {
-					if (data.items) {
-						response(data.items);
-					}
-				}, false, false, true);
+				// Search only for words that are analyzed (when the user enter - or _ or \ or / or . or space)
+				var lastChar = request.term.slice(-1);
+				if (lastChar == '-' || lastChar == '_' || lastChar == '\\' || lastChar == '/' || lastChar == '.' || lastChar == " ") {
+
+					telepath.ds.get('/search/autocomplete', {
+						search: request.term,
+						options: telepath.search.options
+					}, function (data) {
+						if (data.items) {
+							response(data.items);
+						}
+					}, false, false, true);
+				}
 			},
 			delay: 50,
 			minLength: 2,
-			search: function (event, ui) {
-				// Search only for words that are analyzed (when the user enter - or _ or \ or / or . or space)
-				var lastChar = event.target.value.slice(-1);
-				if (lastChar != '-' && lastChar != '_' && lastChar != '\\' && lastChar != '/' && lastChar != '.' && lastChar != " ") {
-					return false;
-				}
-			},
 			select: function (event, ui) {
 				if (event.keyCode == 13) {
 					return
