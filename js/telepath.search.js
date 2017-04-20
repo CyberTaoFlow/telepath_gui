@@ -1,7 +1,7 @@
 telepath.search = {
 
     results: {},
-    defaults: {
+    options: {
         'host': true,
         'ip_resp': true,
         'ip_orig': true,
@@ -31,7 +31,6 @@ telepath.search = {
         requests:[]
     },
 
-    options: false,
     searchTypes: [
         // TODO:: See performance cost to have these on by default
         {id: 'host', desc: 'Hostname'},
@@ -74,9 +73,7 @@ telepath.search = {
          this.defaults.suspects=false;
          }*/
 
-        if (this.options === false) {
-            this.options = this.defaults; // USE $.extend
-        }
+
 
 
         $.each(that.searchTypes, function (i, data) {
@@ -352,10 +349,6 @@ telepath.search = {
         this.results = {};
 
 
-        // Fallback to defaults
-        if (this.fields === false) {
-            this.options = this.defaults; // USE $.extend
-        }
 
         // Quick country conversion
         //if (telepath.countries.n2a(this.searchStr) != '00') {
