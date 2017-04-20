@@ -81,8 +81,7 @@ telepath.header = {
 				if (event.keyCode == 13) {
 					return
 				}
-				telepath.search.init(ui.item.value);
-				telepath.ui.resize();
+				telepath.ui.displayPage(['search',ui.item.value]);
 			},
 			open: function (event, ui) {
 				$(this).autocomplete("widget").css({
