@@ -277,15 +277,15 @@ telepath.ui = {
     choosePage: function () {
         var activePage = location.hash || '#dashboard';
         var params = activePage.substr(1).split("/");
+        // Only these parameters can be URL encoded
+        if (params[1]) {
+            params[1] = decodeURIComponent(params[1]);
+        }
+        if (params[3]) {
+            params[3] = decodeURIComponent(params[3]);
+        }
 
         if (!arrayCompare(params, telepath.activePage)) {
-            // Only these parameters can be URL encoded
-            if (params[1]) {
-                params[1] = decodeURIComponent(params[1]);
-            }
-            if (params[3]) {
-                params[3] = decodeURIComponent(params[3]);
-            }
             // check if there is a record in process and stop it
             telepath.config.actions.checkNotFinishedRecord(function () {
                 telepath.ui.displayPage(params);
