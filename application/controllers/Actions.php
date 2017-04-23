@@ -15,7 +15,7 @@ class Actions extends Tele_Controller
     public function set_delete_action()
     {
 
-        // telepath_auth(__CLASS__, 'set_action');
+         telepath_auth(__CLASS__, 'set_action');
 
         $host = $this->input->post('application');
         $action = $this->input->post('action');
