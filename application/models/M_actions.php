@@ -31,7 +31,7 @@ class M_Actions extends CI_Model {
 		$deleteParams['index'] = 'telepath-actions';
 		$deleteParams['type'] = 'actions';
 		$deleteParams['id'] = $uid;
-		$retDelete = $this->elasticClient->delete($deleteParams);
+		$this->elasticClient->delete($deleteParams);
 
 		$this->elasticClient->indices()->refresh(array('index' => 'telepath-actions'));
 
@@ -84,7 +84,7 @@ class M_Actions extends CI_Model {
 			$finished = false;
 		}
 
-		$results=get_app_source($results);
+		$results = get_elastic_results($results);
 
 //		$results = array_map(function($result) {
 //			return array(

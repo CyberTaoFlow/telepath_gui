@@ -184,8 +184,8 @@ telepath.config.actions = {
 			telepath.ds.get('/actions/set_delete_action', {
 
 				uid: node.uid,
-				action: node.action_name,
-				application: node.application
+				//action: node.action_name,
+				//application: node.application
 
 			}, function(data) {
 

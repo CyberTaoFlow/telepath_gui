@@ -17,8 +17,8 @@ class Actions extends Tele_Controller
 
          telepath_auth(__CLASS__, 'set_action');
 
-        $host = $this->input->post('application');
-        $action = $this->input->post('action');
+//        $host = $this->input->post('application');
+//        $action = $this->input->post('action');
         $uid = $this->input->post('uid');
 
        $this->M_Actions->set_delete_action($uid);
@@ -26,7 +26,7 @@ class Actions extends Tele_Controller
         $this->load->model('M_Config');
         $this->M_Config->update('business_flow_was_changed_id', '1');
 
-        xss_return_success($uid);
+        xss_return_success();
 
     }
 
