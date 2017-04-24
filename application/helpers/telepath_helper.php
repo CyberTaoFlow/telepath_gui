@@ -124,8 +124,8 @@ function append_range_query($base, $range)
 				$new_row  = $row['_source'];
 				if(isset($row['_id'])) { $new_row['uid'] = $row['_id']; }
 				if(isset($row['_score']) && !isset($new_row['score'])) { $new_row['score'] = $row['_score']; }
-				if(isset($row['_index'])) { $new_row['index'] = $row['_index']; }
-				if(isset($row['_type'])) { $new_row['type'] = $row['_type']; }
+//				if(isset($row['_index'])) { $new_row['index'] = $row['_index']; }
+//				if(isset($row['_type'])) { $new_row['type'] = $row['_type']; }
 				$result[] = $new_row;
 			}
 		}		
