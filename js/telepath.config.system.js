@@ -948,12 +948,12 @@ telepath.config.system = {
 		
 		$('<div>').addClass('tele-title-1').html('Syslog').appendTo(this.c_reports).addClass('tele-title-syslog');
 		this.syslogToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.write_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
+		$('<div>').addClass('tele-input-label tele-alerts-syslog').html('Send all alerts in syslog').appendTo(this.c_reports);
+		this.syslogAllAlertsToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.all_alerts_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
 		this.syslogIP     = $('<div>').teleInput({ label: 'Server', width: 120, value: this.data.syslog_ip_id }).addClass('tele-config-syslog').appendTo(this.c_reports);
 		this.syslogPort = $('<div>').teleInput({ label: 'Port', width: 70, value: this.data.syslog_port_id, css: {clear: 'none'} }).addClass('tele-config-syslog').appendTo(this.c_reports);
 		this.syslogProtocol = $('<div>').teleOption({label: 'Protocol', options: ['UDP', 'TCP'], selected: this.data.syslog_protocol_id}).addClass('tele-config-syslog').appendTo(this.c_reports);
 		this.syslogDelimiter = $('<div>').teleOption({label: 'Delimiter', options: ['Tab', 'Vertical Bar'], selected: this.data.syslog_delimiter_id}).addClass('tele-config-syslog').appendTo(this.c_reports);
-		$('<div>').addClass('tele-input-label tele-alerts-syslog').html('Send all alerts in syslog').appendTo(this.c_reports);
-		this.syslogAllAlertsToggle = $('<div>').toggleFlip({ left_value: 'OFF', right_value: 'ON', flipped: this.data.all_alerts_to_syslog_id == '1' }).addClass('tele-syslog-toggle').appendTo(this.c_reports);
 
 
 

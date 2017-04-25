@@ -439,7 +439,7 @@ class M_Rules extends CI_Model {
 		return $this->__get_categories();
 	}
 
-	function searchRules($search){
+	public function searchRules($search){
 
 		$params['index']='telepath-rules';
 		$params['type']=['rules'];
@@ -454,6 +454,24 @@ class M_Rules extends CI_Model {
 		$result= $this->elasticClient->search($params);
 
 		return $result['hits']['hits'];
+	}
+
+	public function update_rule_syslog($value)
+	{
+		$params = [
+			'index' => 'telepath-rules',
+			'type' => 'rules',
+			'body' => [
+				'script' => [
+					'inline' => 'ctx._source.action_syslog ='. $value,
+					'lang' => 'painless'
+				]
+			]
+		];
+
+		$params['timeout'] = $this->config->item('timeout');
+
+		$this->elasticClient->updateByQuery($params);
 	}
 
 }

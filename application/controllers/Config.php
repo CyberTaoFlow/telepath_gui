@@ -251,6 +251,14 @@ class Config extends Tele_Controller
             $config['proxy_ip_id'] || $old_config['proxy_port_id'] != $config['proxy_port_id']);
 
 
+        // Check for 'all_alerts_to_syslog_id' toggle change to update all the rule syslog elastic fields
+        if ($old_config['all_alerts_to_syslog_id'] != $config['all_alerts_to_syslog_id']) {
+            $this->load->model('M_Rules');
+            $this->M_Rules->update_rule_syslog(intval($config['all_alerts_to_syslog_id']));
+        }
+
+
+
         $params = [];
 
         foreach ($config as $key => $value) {

@@ -103,7 +103,7 @@ telepath.config.rule = {
 		
 		this.action_syslog = $('<div>').teleCheckbox({
 			label: 'Syslog', 
-			checked: this.data.action_syslog
+			checked: this.data.action_syslog == '1'
 		}).appendTo(this.container);
 		
 		/*this.headerInjection = $('<div>').teleCheckbox({

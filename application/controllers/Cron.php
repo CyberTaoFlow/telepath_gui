@@ -45,10 +45,7 @@ class Cron extends Tele_Controller
         // Gather last minute alerts
         //$client = new Elasticsearch\Client();
 
-        $all_alerts_to_syslog_id = $this->M_Config->get_key('all_alerts_to_syslog_id');
-
-        // If syslog all alerts toogle is false, get rules with checked 'syslog' input (in rules board)
-        if (!$all_alerts_to_syslog_id) {
+        // Get rules with checked 'syslog' input (in rules board)
             $params['index'] = 'telepath-rules';
             $params['type'] = 'rules';
             $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
@@ -64,7 +61,6 @@ class Cron extends Tele_Controller
             else {
                 return;
             }
-        }
 
         @set_time_limit(-1);
 
@@ -93,13 +89,7 @@ class Cron extends Tele_Controller
             "sort" => ['ts' => 'desc']
         ];
 
-        // If syslog all alerts toogle is false, get rules with checked 'syslog' input (in rules board), else get all
-        // alerts
-        if (!$all_alerts_to_syslog_id) {
             $params['body']['query']['bool']['filter'][] = ['terms' => ['alerts.name' => $syslog_alerts]];
-        } else {
-            $params['body']['query']['bool']['filter'][] = ['exists' => ['field' => 'alerts']];
-        }
         $params['body']['query']['bool']['filter'][] = ['range' => ['ts' => ['gte' => $last_update, 'lt' => $current_update]]];
         $params['timeout'] = $this->config->item('timeout');
 

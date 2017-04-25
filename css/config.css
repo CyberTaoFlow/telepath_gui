@@ -1197,7 +1197,11 @@ a.jstree-anchor{
 	margin-top: 12px;
 }
 
-.tele-config-system-reports .tele-title-syslog,
+.tele-config-system-reports .tele-title-syslog {
+	width: 168px;
+	float: left;
+}
+
 .tele-config-system-reports .tele-title-proxy {
 	width: 120px;
 	float: left;
