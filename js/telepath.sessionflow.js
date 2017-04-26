@@ -916,6 +916,10 @@ telepath.sessionflow = {
 			return;
 		}
 
+		// Highlight strings that match the search key
+		if (this.searchkey) {
+			this.highlightSearchResults();
+		}
 		
 		this.boxRight.empty();
 
@@ -1139,7 +1143,7 @@ telepath.sessionflow = {
 		if (!$.isEmptyObject(get_params)) {
 			path += '?' + $.param(get_params);
 		}
-		var link = $('<a>').attr('target', '_blank').text(path).attr('href',path ).attr('title' ,path);
+		var link = $('<a>').attr('target', '_blank').html(path).attr('href', path).attr('title', path);
 		var action = request.business_id ? this.lookupAction(request.business_id) : 'Browsing';
 		var bdi = $('<bdi>');
 		bdi.append(link);
@@ -1223,8 +1227,13 @@ telepath.sessionflow = {
 		//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
 		table.append(getRow('Application:', this.requestInfo.host));
 		table.append(getRow('IP:', this.requestInfo.ip_orig));
-		table.append(getRow('Location:', (this.requestInfo.country_code!='00'?'<span class="flag flag-' + this.requestInfo.country_code + '"></span>':'') +
-							'<span class="tele-country">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
+		// Remove the highlight tags and the 'highlight' class "manually"
+		if (this.requestInfo.country_code.search('highlight') > 0) {
+			this.requestInfo.country_code = this.requestInfo.country_code.substring(24, 26);
+			var highlight = true;
+		}
+		table.append(getRow('Location:', (this.requestInfo.country_code != '00' ? '<span class="flag flag-' + this.requestInfo.country_code + '"></span>' : '') +
+			'<span class="tele-country' + (highlight ? " highlight" : "") + '">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
 		if(this.requestInfo.username){
 			table.append(getRow('User:', this.requestInfo.username));
 		}
@@ -1293,7 +1302,7 @@ telepath.sessionflow = {
 			if(param_display) {
 				
 				var row = $('<tr>');
-				var col_name  = $('<td>').addClass('tele-param-name').html(param.name).attr('title',param.name);
+				var col_name = $('<td>').addClass('tele-param-name').html(param.name).attr('title', (param.title || param.name));
 				var col_data  = $('<td>').addClass('tele-param-data').html(param.value);
 				var col_score = $('<td>').addClass('tele-param-score').html(parseInt(param.score_data) + '%');
 				
@@ -1316,6 +1325,30 @@ telepath.sessionflow = {
 		
 		//$(tableWrap).mCustomScrollbar({ advanced:{ updateOnContentResize: true } });
 		
+	},
+	highlightSearchResults: function () {
+		var that = this;
+		var searchRegex = new RegExp('(' + this.searchkey + ')', 'ig');
+
+		$.each(this.requestInfo, function (key, value) {
+			if (that.fields[key] && typeof value == 'string') {
+				that.requestInfo[key] = value.replace(searchRegex, '<span class="highlight">$1</span>');
+			}
+			else if (key == 'parameters') {
+				$.each(value, function (paramKey, paramValue) {
+
+					if (that.fields.parameter_name) {
+						paramValue.title = paramValue.name;
+						paramValue.name = paramValue.name.replace(searchRegex, '<span class="highlight">$1</span>');
+					}
+					if (that.fields.parameter_value || that.fields[paramKey]) {
+						paramValue.value = paramValue.value.replace(searchRegex, '<span class="highlight">$1</span>');
+					}
+
+				});
+			}
+
+		})
 	}
 	
 }
