@@ -50,6 +50,7 @@ class Cron extends Tele_Controller
             $params['type'] = 'rules';
             $params['body']['query']['bool']['filter'][] = ['term' => ['action_syslog' => 'true']];
             $params['_source_include'] = ['name'];
+            $params['size'] = 999;
             $params['timeout'] = $this->config->item('timeout');
             $results = $this->elasticClient->search($params);
 
