@@ -1227,13 +1227,8 @@ telepath.sessionflow = {
 		//table.append(getRow('Severity:', this.getSeverity(alert.numeric_score)));
 		table.append(getRow('Application:', this.requestInfo.host));
 		table.append(getRow('IP:', this.requestInfo.ip_orig));
-		// Remove the highlight tags and the 'highlight' class "manually"
-		if (this.requestInfo.country_code.search('highlight') > 0) {
-			this.requestInfo.country_code = this.requestInfo.country_code.substring(24, 26);
-			var highlight = true;
-		}
 		table.append(getRow('Location:', (this.requestInfo.country_code != '00' ? '<span class="flag flag-' + this.requestInfo.country_code + '"></span>' : '') +
-			'<span class="tele-country' + (highlight ? " highlight" : "") + '">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
+			'<span class="tele-country' + (this.requestInfo.highlightCountryCode ? " highlight" : "") + '">' + telepath.countries.a2n(this.requestInfo.country_code) + '</span>'));
 		if(this.requestInfo.username){
 			table.append(getRow('User:', this.requestInfo.username));
 		}
@@ -1331,8 +1326,16 @@ telepath.sessionflow = {
 		var searchRegex = new RegExp('(' + this.searchkey + ')', 'ig');
 
 		$.each(this.requestInfo, function (key, value) {
+			// Highlight only if the relevant field is checked (in dropdown search)
 			if (that.fields[key] && typeof value == 'string') {
-				that.requestInfo[key] = value.replace(searchRegex, '<span class="highlight">$1</span>');
+				// Cannot highlight country_code straight now, only flag it as highlight
+				if (key == 'country_code') {
+					if (value == that.searchkey)
+						that.requestInfo.highlightCountryCode = true;
+				}
+				else {
+					that.requestInfo[key] = value.replace(searchRegex, '<span class="highlight">$1</span>');
+				}
 			}
 			else if (key == 'parameters') {
 				$.each(value, function (paramKey, paramValue) {
@@ -1341,7 +1344,9 @@ telepath.sessionflow = {
 						paramValue.title = paramValue.name;
 						paramValue.name = paramValue.name.replace(searchRegex, '<span class="highlight">$1</span>');
 					}
-					if (that.fields.parameter_value || that.fields[paramKey]) {
+					// highlight parameters if 'parameter value' checked, or if the parameter display the field
+					// requested (ex: host, username,...)
+					if (that.fields.parameter_value || that.fields[paramValue.name]) {
 						paramValue.value = paramValue.value.replace(searchRegex, '<span class="highlight">$1</span>');
 					}
 
