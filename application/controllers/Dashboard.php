@@ -200,7 +200,7 @@ class Dashboard extends Tele_Controller
             }
         }
         if (count($result)<5 && count($result)>0){
-            foreach ($cases as $key => $case){
+            foreach ($cases as $key => $case) {
                 $duplicate = false;
                 foreach ($result as $res) {
                     if ($case['name'] == $res['name']) {
@@ -208,10 +208,10 @@ class Dashboard extends Tele_Controller
                         break;
                     }
                 }
-                if (!$duplicate){
+                if (!$duplicate) {
                     $result[] = $case;
                 }
-                if (count($result)==5){
+                if (count($result) == 5) {
                     break;
                 }
             }
