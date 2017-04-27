@@ -1330,7 +1330,7 @@ telepath.sessionflow = {
 			if (that.fields[key] && typeof value == 'string') {
 				// Cannot highlight country_code straight now, only flag it as highlight
 				if (key == 'country_code') {
-					if (value == that.searchkey)
+					if (value.search(searchRegex) >= 0)
 						that.requestInfo.highlightCountryCode = true;
 				}
 				else {
