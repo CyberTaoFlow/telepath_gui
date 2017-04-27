@@ -200,11 +200,19 @@ class Dashboard extends Tele_Controller
             }
         }
         if (count($result)<5 && count($result)>0){
-            foreach ($cases as $case){
+            foreach ($cases as $key => $case){
+                $duplicate = false;
                 foreach ($result as $res) {
-                    if ($case['name'] != $res['name'] && count($result) < 5) {
-                        $result[] = $case;
+                    if ($case['name'] == $res['name']) {
+                        $duplicate = true;
+                        break;
                     }
+                }
+                if (!$duplicate){
+                    $result[] = $case;
+                }
+                if (count($result)==5){
+                    break;
                 }
             }
         }
