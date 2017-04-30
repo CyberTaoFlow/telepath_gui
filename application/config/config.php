@@ -516,8 +516,6 @@ $config['certs_dir']  = '/opt/telepath/openresty/nginx/certs/';
 
 $config['scripts']='/opt/telepath/scripts';
 
-$config['atms_config']='/opt/telepath/conf/atms.conf';
-
 $config['timeout'] = '1m'; // Elastic queries timeout
 
 if (file_exists('C:\Ampps\www\telepath\application\config\windows_file_paths.php')){

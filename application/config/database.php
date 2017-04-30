@@ -49,67 +49,6 @@ $active_group = 'default';
 //$active_record = TRUE;
 $query_builder = TRUE;
 
-
-// Need to read our ATMS.CONF
-
-//$context = &get_instance();
-//
-//$config_file = $context->config->item('atms_config');
-//
-//$atms_conf = parse_ini_file($config_file);
-//// Main DB Config
-//
-//$db['default']['hostname'] = $atms_conf['database_address'];
-//
-//if(isset($atms_conf['database_port'])) {
-//	$db['default']['port']     = $atms_conf['database_port'];
-//}
-//
-//$db['default']['database'] = $atms_conf['database_name'];
-//$db['default']['username'] = $atms_conf['username'];
-//$db['default']['password'] = $atms_conf['password'];
-//
-//
-////$db['default']['hostname'] = "localhost";
-////$db['default']['port']     = "3307";
-////$db['default']['database'] = "telepath";
-////$db['default']['username'] = "telepath";
-//////$db['default']['password'] = "L4ttbIcQlIbgEfZR";
-////$db['default']['password'] = "SsKrqVnpQxJ7eCBG";
-//////
-//////
-//$db['default']['dbdriver'] = 'mysqli';
-////
-////// Main DB Config -- CodeIgniter
-////
-//$db['default']['dbprefix'] = '';
-//$db['default']['pconnect'] = FALSE;
-//$db['default']['db_debug'] = FALSE;
-//$db['default']['cache_on'] = FALSE;
-//$db['default']['cachedir'] = '';
-//$db['default']['char_set'] = 'utf8';
-//$db['default']['dbcollat'] = 'utf8_general_ci';
-//$db['default']['swap_pre'] = '';
-//$db['default']['autoinit'] = TRUE;
-//$db['default']['stricton'] = FALSE;
-
-
-//$db['default']['hostname'] = 'sqlite:'.APPPATH.'databases/telepath_users.db';
-//$db['default']['username'] = '';
-//$db['default']['password'] = '';
-//$db['default']['database'] = '';
-//$db['default']['dbdriver'] = 'pdo';
-//$db['default']['dbprefix'] = '';
-//$db['default']['pconnect'] = TRUE;
-//$db['default']['db_debug'] = TRUE;
-//$db['default']['cache_on'] = FALSE;
-//$db['default']['cachedir'] = '';
-//$db['default']['char_set'] = 'utf8';
-//$db['default']['dbcollat'] = 'utf8_general_ci';
-//$db['default']['swap_pre'] = '';
-//$db['default']['autoinit'] = TRUE;
-//$db['default']['stricton'] = FALSE;
-
 $db['default'] = array(
 	'dsn'   => '',
 	'hostname' => '',
