@@ -53,7 +53,7 @@ telepath.sessionflow = {
 		if (this.width <= 1250) {
 
 			this.similaritiesList = $('<div>').appendTo($('.mCSB_container',this.boxRight)[0]).addClass('tele-similarities-list');
-			height = 'auto'
+			height = 'auto';
 			//var height = this.overlay.contentEl.height() - this.requestScoreEl.outerHeight() - $('.tele-alert-info-table', this.overlay.contentEl).outerHeight()- 2*20 - 75 -75;
 			//this.similaritiesList.css({ 'height': height });
 		}
@@ -911,6 +911,9 @@ telepath.sessionflow = {
 		var req = this.lookupRequest(uid);
 		if(req) {
 			this.requestInfo = req;
+			// Store original request for similar request highlight, in case of changes in requestInfo by the search
+			// highlights
+			this.originalRequest = $.extend( true, {}, req );
 		} else {
 			// console.log('RID ' + uid + ' was not found in requests');
 			return;
@@ -986,7 +989,7 @@ telepath.sessionflow = {
 
 	expandSimilar: function(requestData,element){
 
-		this.requestData = requestData;
+		this.requestData = this.highlightSimilarities(requestData);
 
 		$(element).parent().find('.tele-listitem-inner.selected').removeClass('selected');
 		$('.tele-listitem-inner', element).addClass('selected');
@@ -1033,7 +1036,7 @@ telepath.sessionflow = {
 		// Response status
 		this.alertDetailsResponseWrap   = $('<div>').addClass('tele-alert-details-info-response-wrap');
 		this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
-		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( this.requestData.status_code);
+		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').html( this.requestData.status_code);
 		this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
 
 		// Operation mode
@@ -1170,7 +1173,7 @@ telepath.sessionflow = {
 		// Response status
 		this.alertDetailsResponseWrap   = $('<div>').addClass('tele-alert-details-info-response-wrap');
 		this.alertDetailsResponseLabel  = $('<div>').addClass('tele-alert-details-info-response-label').text('Response Status:');
-		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').text( this.requestInfo.status_code);
+		this.alertDetailsResponse  		= $('<div>').addClass('tele-alert-details-info-response').html( this.requestInfo.status_code);
 		this.alertDetailsResponseWrap.append(this.alertDetailsResponseLabel).append(this.alertDetailsResponse);
 
 		// Operation mode
@@ -1354,6 +1357,60 @@ telepath.sessionflow = {
 			}
 
 		})
+	},
+	highlightSimilarities: function (requestData) {
+
+		var that = this;
+
+		// Host
+		var similarHost = requestData.host.split('.').filter(function (el) {
+			return that.originalRequest.host.split('.').indexOf(el) != -1
+		});
+
+		if (similarHost.length) {
+			$.each(similarHost, function (n, param) {
+				requestData.host = requestData.host.replace(param, '<span class="similar-highlight">' + param + '</span>');
+			});
+		}
+
+		// URI
+		var similarURI = requestData.uri.split('/').filter(function (el) {
+			return that.originalRequest.uri.split('/').indexOf(el) != -1
+		});
+
+		if (similarURI.length) {
+			$.each(similarURI, function (n, param) {
+				requestData.uri = requestData.uri.replace(param, '<span class="similar-highlight">' + param + '</span>');
+			});
+		}
+
+		// Response Status
+		if (requestData.status_code == that.originalRequest.status_code){
+			requestData.status_code = '<span class="similar-highlight">' + requestData.status_code + '</span>'
+		}
+
+		// Parameters
+		var paramsRequest = [];
+		$.each(this.originalRequest.parameters, function (paramKey, paramValue) {
+			paramsRequest[paramValue.name] = paramValue.value;
+		});
+
+
+		$.each(requestData.parameters, function (n, paramValue) {
+
+			var similarParams = paramValue.value.split(' ').filter(function (el) {
+				return paramsRequest[paramValue.name].split(' ').indexOf(el) != -1
+			});
+
+			if (similarParams.length) {
+				$.each(similarParams, function (n, param) {
+					paramValue.value = paramValue.value.replace(param, '<span class="similar-highlight">' + param + '</span>');
+				});
+			}
+		});
+
+		return requestData;
 	}
+
 	
 }
