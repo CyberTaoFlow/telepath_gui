@@ -111,7 +111,7 @@ class Cron extends Tele_Controller
         $end = date(DATE_RFC2822, $current_update);
 
 
-        echo 'Since ' . $start . ' Till ' . $end . ' there are ' . $alerts['hits']['total'] . ' alerts. ' . "\n";
+//        echo 'Since ' . $start . ' Till ' . $end . ' there are ' . $alerts['hits']['total'] . ' alerts. ' . "\n";
 
         if (!empty($alerts['hits']['hits'])) {
             $alerts = $alerts['hits']['hits'];
@@ -186,7 +186,7 @@ class Cron extends Tele_Controller
                 $row_syslog .= $this->config->base_url() . '#alerts/' . $alert['sid'] . '/' . $alert['ip_orig'] . '/' .
                     urlencode($alert['alerts'][0]['name']) . '/' . $id;
 
-                echo $row_syslog;
+//                echo $row_syslog;
 
                 $syslog->SetContent($row_syslog);
                 $syslog->Send();
