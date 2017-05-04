@@ -308,7 +308,7 @@ class M_Applications extends CI_Model {
 //		);
 
 		if($learning_so_far){
-            $include=["host","subdomains","learning_so_far", "display_name", "operation_mode"];
+            $include=["host","subdomains","learning_so_far", "display_name", "operation_mode", "low_requests"];
         }
 		else{
 			$include=["host","subdomains", "display_name", "operation_mode"];
@@ -883,7 +883,7 @@ class M_Applications extends CI_Model {
 	}*/
 
 
-	public function set_operation_mode($app_ids, $mode)
+	function set_operation_mode($app_ids, $mode)
 	{
 		$params = [];
 		foreach ($app_ids as $app_id) {
@@ -913,6 +913,70 @@ class M_Applications extends CI_Model {
 			];
 		}
 		return $this->elasticClient->bulk($params);
+	}
+
+	function get_apps_eta()
+	{
+
+		$params = [
+			'index' => 'telepath-domains',
+			'type' => 'domains',
+			'_source_include' => ["host", "eta"],
+			'sort' => ['learning_so_far'],
+			'body' => [
+				'size' => 999
+			],
+		];
+
+		$params['body']['query']['bool']['filter'][] = ['match' => ['operation_mode' => '1']];
+		$params['body']['query']['bool']['must_not'][] = ['exists' => ['field' => 'low_requests']];
+
+		$params['timeout'] = $this->config->item('timeout');
+
+		$res = $this->elasticClient->search($params);
+
+		return get_app_source($res);
+
+	}
+
+	function first_request_time($host)
+	{
+		$params['index'] = 'telepath-20*';
+		$params['body'] = array(
+			'size' => 0,
+			'aggs' => [
+				'min_time' => [
+					'min' => [
+						'field' => 'ts'
+					]
+				]
+			]
+		);
+
+		$params['body']['query']['bool']['filter']['term']['host'] = $host;
+
+		$params['timeout'] = $this->config->item('timeout');
+
+		$result = $this->elasticClient->search($params);
+
+		if (isset($result["aggregations"]) &&
+			isset($result["aggregations"]["min_time"]) &&
+			!empty($result["aggregations"]["min_time"]["value"])
+		) {
+			return $result['aggregations']['min_time']['value'];
+		}
+
+		return false;
+	}
+
+	function mark_low_request($host)
+	{
+		$params['index'] = 'telepath-domains';
+		$params['type'] = 'domains';
+		$params['id'] = $host;
+		$params['body']['doc'] = ['low_requests' => true];
+
+		$this->elasticClient->update($params);
 	}
 
 }

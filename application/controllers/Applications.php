@@ -406,6 +406,29 @@ class Applications extends Tele_Controller
 
     }
 
+    public function mark_low_requests()
+    {
+        telepath_auth(__CLASS__, __FUNCTION__);
+
+        logger('Start','/var/log/mark_low_requests.log');
+
+        @set_time_limit(-1);
+
+        $apps = $this->M_Applications->get_apps_eta();
+
+        foreach ($apps as $app) {
+            // Check if 'eta' is empty (means less than 1000 requests) or eta is more than 30 days
+            if (empty($app['eta']) || intval(strstr($app['eta'], 'd', true)) > 30) {
+                // If the first request of this application was 2 days ago or more, mark it as low requests
+                $first_request_time = $this->M_Applications->first_request_time($app['host']);
+                if (!$first_request_time || (time() - $first_request_time > 172800)) {
+                    $this->M_Applications->mark_low_request($app['host']);
+                    logger('Mark application: '.$app['host']. ' as low requests');
+                }
+            }
+        }
+    }
+
 
 
 

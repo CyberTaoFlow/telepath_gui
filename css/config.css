@@ -103,6 +103,10 @@ body .jstree-anchor {
 	color: #555;
 	padding: 15px 20px;
 }
+
+body .jstree-anchor[low=true] {
+	color: red;
+}
 body .jstree-grid-cell {
 	z-index: 100;
 	position: relative;
