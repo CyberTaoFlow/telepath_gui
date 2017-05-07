@@ -924,7 +924,7 @@ class M_Applications extends CI_Model {
 			'_source_include' => ["host", "eta"],
 			'sort' => ['learning_so_far'],
 			'body' => [
-				'size' => 999
+				'size' => 9999
 			],
 		];
 
@@ -969,14 +969,41 @@ class M_Applications extends CI_Model {
 		return false;
 	}
 
-	function mark_low_request($host)
+	function mark_low_request($hosts)
 	{
-		$params['index'] = 'telepath-domains';
-		$params['type'] = 'domains';
-		$params['id'] = $host;
-		$params['body']['doc'] = ['low_requests' => true];
 
-		$this->elasticClient->update($params);
+		$params = ['body' => []];
+		$counter = 0;
+
+		foreach ($hosts as $host) {
+			$params['body'][] = [
+				'update' => [
+					'_index' => 'telepath-domains',
+					'_type' => 'domains',
+					'_id' => $host
+				]
+			];
+
+			$params['body'][] = [
+				'doc' => ['low_requests' => true]
+			];
+
+			$counter++;
+
+			// Every 1000 documents stop and send the bulk request
+			if ($counter % 1000 == 0) {
+				$this->elasticClient->bulk($params);
+
+				// erase the old bulk request
+				$params = ['body' => []];
+
+			}
+		}
+
+		// Send the last batch if it exists
+		if (!empty($params['body'])) {
+			$this->elasticClient->bulk($params);
+		}
 	}
 
 }
